@@ -1,2 +1,8 @@
-package org.example.am24is44.model;public class DrawableCard {
+package org.example.am24is44.model;
+
+public abstract class DrawableCard {
+
+    private Point point;
+
+
 }
