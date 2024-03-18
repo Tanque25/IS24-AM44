@@ -8,15 +8,17 @@ public class Player {
     private DrawableCard[][] playArea;
     private ObjectiveCard secretObjective;
     private int score;
+    private int position=0;
 
     //constructor
-    public Player(String nickName, Pion pion, DrawableCard[] hand, DrawableCard[][] playArea, ObjectiveCard secretObjective, int score) {
+    public Player(String nickName, Pion pion, DrawableCard[] hand, DrawableCard[][] playArea, ObjectiveCard secretObjective, int score,int position) {
         this.nickName = nickName;
         this.pion = pion;
         this.hand = hand;
         this.playArea = playArea;
         this.secretObjective = secretObjective;
         this.score=score;
+        this.position=position;
     }
 
     //get e set
@@ -28,6 +30,7 @@ public class Player {
     public DrawableCard[][] getPlayArea(){return playArea;}
     public ObjectiveCard getSecretObjective() {return secretObjective;}
     public int getScore() {return score;}
+    public int getPosition() {return position;}
 
     //scegli la carta obbiettvo
     public void ChooseObjectiveCard(){
