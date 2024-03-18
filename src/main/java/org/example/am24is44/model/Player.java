@@ -32,7 +32,7 @@ public class Player {
     public int getScore() {return score;}
     public int getPosition() {return position;}
 
-    //scegli la carta obbiettvo
+    //scegli la carta obbiettvo, te ne danno due
     public void ChooseObjectiveCard(){
 
     }
