@@ -1,6 +1,6 @@
 package org.example.am24is44.model;
 
-public enum Point {
+public enum CardPoints {
 
     ONE,
     TWO,

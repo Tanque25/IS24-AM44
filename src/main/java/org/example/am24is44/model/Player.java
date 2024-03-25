@@ -1,40 +1,53 @@
 package org.example.am24is44.model;
 
 public class Player {
-    //attribute
-    private String nickName;
-    private Pion pion;
-    private DrawableCard[] hand;
-    private DrawableCard[][] playArea;
-    private ObjectiveCard secretObjective;
-    private int score;
-    private int position=0;
+    private String nickname;
+    private Card[] hand;
+    private Card[][] playArea;
+    private ObjectiveCard[] secretObjective;
 
-    //constructor
-    public Player(String nickName, Pion pion, DrawableCard[] hand, DrawableCard[][] playArea, ObjectiveCard secretObjective, int score,int position) {
-        this.nickName = nickName;
-        this.pion = pion;
-        this.hand = hand;
-        this.playArea = playArea;
-        this.secretObjective = secretObjective;
-        this.score=score;
-        this.position=position;
+    // Constructor
+    public Player(String nickname) {
+        this.nickname = nickname;
+        initializeHand();
+        initializePlayArea();
+        setSecretObjective();
     }
 
-    //get e set
-    public void setNickName(String nome){nickName=nome;}
-    public void setPion (Pion p){pion=p;}
-    public String getNickName(){return nickName;}
-    public Pion getPion(){return pion;}
-    public DrawableCard[] getHand(){return hand;}
-    public DrawableCard[][] getPlayArea(){return playArea;}
-    public ObjectiveCard getSecretObjective() {return secretObjective;}
-    public int getScore() {return score;}
-    public int getPosition() {return position;}
+    // Getter for the nickname
+    public String getNickname() {
+        return nickname;
+    }
 
-    //scegli la carta obbiettvo, te ne danno due
-    public void ChooseObjectiveCard(){
+    // Method to initialize the player's hand
+    private void initializeHand() {
+        // Implement initialization logic for the hand
+    }
 
+    // Method to initialize the player's play area
+    private void initializePlayArea() {
+        // Implement initialization logic for the play area
+    }
+
+    // Method to set the player's secret objective
+    private void setSecretObjective() {
+        // Implement logic to assign secret objectives to the player
+    }
+
+    // Method to play a card
+    public void playCard() {
+        // Implement logic to allow the player to play a card
+    }
+
+    // Method to draw a card
+    public void drawCard() {
+        // Implement logic to allow the player to draw a card
+    }
+
+    // Method to calculate the final score
+    public int finalScoreCalculator() {
+        // Implement logic to calculate the final score
+        return 0;
     }
 
 }
