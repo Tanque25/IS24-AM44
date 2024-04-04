@@ -7,26 +7,26 @@ public class Corner {
     private boolean covered;
 
     // Constructor
-    public Corner() {
-        // Constructor implementation
+    public Corner(boolean visibility, Resource resource, SpecialObject specialObject) {
+        this.visibility = visibility;
+        this.resource = resource;
+        this.specialObject = specialObject;
+        this.covered = false;
     }
 
     // Method to get visibility
     public boolean getVisibility() {
-        // Method implementation
-        return false; // Placeholder, replace with actual implementation
+        return visibility;
     }
 
     // Method to get resource
     public Resource getResource() {
-        // Method implementation
-        return null; // Placeholder, replace with actual implementation
+        return resource;
     }
 
     // Method to get special object
     public SpecialObject getSpecialObject() {
-        // Method implementation
-        return null; // Placeholder, replace with actual implementation
+        return specialObject;
     }
 
 }

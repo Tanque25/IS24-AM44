@@ -10,38 +10,36 @@ public class Card {
     private boolean playedBack;
 
     // Constructor
-    public Card() {
-        // Constructor implementation
+    public Card(Resource[] resource, Map<CornerPosition, Corner> corners, Map<CornerPosition, Card> connections, CardPoints cardPoints) {
+        this.resource = resource;
+        this.corners = corners;
+        this.connections = connections;
+        this.cardPoints = cardPoints;
     }
 
     // Getter for resource
     public Resource[] getResource() {
-        // Getter implementation
-        return null; // Placeholder, replace with actual implementation
+        return this.resource;
     }
 
     // Method to get corner by position
     public Corner getCorner(CornerPosition position) {
-        // Method implementation
-        return null; // Placeholder, replace with actual implementation
+        return corners.get(position);
     }
 
     // Method to get connection by corner position
     public Card getConnection(CornerPosition position) {
-        // Method implementation
-        return null; // Placeholder, replace with actual implementation
+        return connections.get(position);
     }
 
     // Method to get card points
     public CardPoints getCardPoints() {
-        // Method implementation
-        return null; // Placeholder, replace with actual implementation
+        return this.cardPoints;
     }
 
     // Method to check if card has been played back
     public boolean playedBack() {
-        // Method implementation
-        return false; // Placeholder, replace with actual implementation
+        return playedBack;
     }
 
 }
