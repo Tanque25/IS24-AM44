@@ -42,8 +42,7 @@ package org.example.am24is44.model;public class Game {
 
     // Method to initialize the game
     private void initializeGame() {
-        //ciao come va
-        //costoso
+        //bella
         // Implement initialization logic for the game
     }
 
@@ -70,6 +69,7 @@ package org.example.am24is44.model;public class Game {
     // Getter for common objectives
     public ObjectiveCard[] getCommonObjectives() {
         return commonObjectives;
+
     }
 
     // Method to play a card
