@@ -37,7 +37,6 @@ package org.example.am24is44.model;public class Game {
 
     // Constructor
     public Game() {
-        initializeGame();
     }
 
     // Method to initialize the game
