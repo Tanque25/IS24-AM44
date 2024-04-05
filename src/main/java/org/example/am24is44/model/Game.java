@@ -42,6 +42,8 @@ package org.example.am24is44.model;public class Game {
 
     // Method to initialize the game
     private void initializeGame() {
+        //ciao come va
+        //costoso
         // Implement initialization logic for the game
     }
 
