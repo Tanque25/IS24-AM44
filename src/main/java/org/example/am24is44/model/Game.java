@@ -49,6 +49,7 @@ package org.example.am24is44.model;public class Game {
     // Method to add a player to the game
     public void addPlayer(String nickname) {
         // Implement logic to add a player to the game
+        // Conflict test
     }
 
     // Method to get the current player
