@@ -10,14 +10,17 @@ package org.example.am24is44.model;public class Game {
     private Card[] visibleCards;
     private Card[] starterDeck;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/main
     // Constructor
     public Game() {
     }
 
     // Method to initialize the game
     private void initializeGame() {
-        //bella
-        // Implement initialization logic for the game
+
     }
 
     // Method to add a player to the game
