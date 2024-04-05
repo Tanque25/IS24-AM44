@@ -1,4 +1,5 @@
-package org.example.am24is44.model;public class Game {
+package org.example.am24is44.model;
+public class Game {
 
     private Player[] players;
     private Player startingPlayer;
