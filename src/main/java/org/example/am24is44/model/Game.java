@@ -34,6 +34,7 @@ public class Game {
         this.corners = new HashMap<>();
 
         //prima carta:
+        //io sposterei creazione dei corner nella classe Card ??????? --> da capire
         corners.put(UP_LEFT,new Corner(true,VUOTO));
         corners.put(BOTTOM_LEFT,new Corner(true,INSECT_KINGDOM));
         corners.put(UP_RIGHT,new Corner(true,PLANT_KINGDOM));
