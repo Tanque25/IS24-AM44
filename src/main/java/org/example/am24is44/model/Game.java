@@ -1,6 +1,11 @@
 package org.example.am24is44.model;
-public class Game {
+import static org.example.am24is44.model.Resource.*;
+import static org.example.am24is44.model.CardPoints.*;
 
+import java.util.Map;
+import java.util.Stack;
+
+public class Game {
     private Player[] players;
     private Player startingPlayer;
     private Player currentPlayer;
@@ -10,15 +15,33 @@ public class Game {
     private GoldCard[] goldPile;
     private Card[] visibleCards;
     private Card[] starterDeck;
-
+    private Resource[] resource;
 
     // Constructor
     public Game() {
     }
 
+
     // Method to initialize the game
     private void initializeGame() {
+        Card[] starterDeck = new Card[6];
 
+        resource[0]=INSECT_KINGDOM;
+        starterDeck[0]=new Card(resource,ZERO);
+        resource[0]=FUNGI_KINGDOM;
+        starterDeck[1]=new Card(resource,ZERO);
+        resource[0]=PLANT_KINGDOM;
+        resource[1]=FUNGI_KINGDOM;
+        starterDeck[2]=new Card(resource,ZERO);
+        resource[0]=ANIMAL_KINGDOM;
+        resource[1]=INSECT_KINGDOM;
+        starterDeck[3]=new Card(resource,ZERO);
+        resource[2]=PLANT_KINGDOM;
+        starterDeck[4]=new Card(resource,ZERO);
+        resource[0]=PLANT_KINGDOM;
+        resource[1]=ANIMAL_KINGDOM;
+        resource[1]=FUNGI_KINGDOM;
+        starterDeck[5]=new Card(resource,ZERO);
     }
 
     // Method to add a player to the game

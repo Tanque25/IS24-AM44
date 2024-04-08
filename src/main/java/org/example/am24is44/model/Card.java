@@ -1,19 +1,23 @@
 package org.example.am24is44.model;
-
+import static org.example.am24is44.model.Resource.*;
 import java.util.Map;
 
 public class Card {
     private Resource[] resource;
+    private Corner corner;
     private Map<CornerPosition, Corner> corners;
     private Map<CornerPosition, Card> connections;
     private CardPoints cardPoints;
     private boolean playedBack;
+    //private int i;
 
     // Constructor
-    public Card(Resource[] resource, Map<CornerPosition, Corner> corners, Map<CornerPosition, Card> connections, CardPoints cardPoints) {
+    public Card(Resource[] resource, CardPoints cardPoints) {
+
         this.resource = resource;
-        this.corners = corners;
-        this.connections = connections;
+        corner=new Corner(true,VUOTO);
+        //this.corners = new Map<CornerPosition, Corner>;
+        //this.connections = new Map<CornerPosition, Card>;
         this.cardPoints = cardPoints;
     }
 
@@ -30,6 +34,14 @@ public class Card {
     // Method to get connection by corner position
     public Card getConnection(CornerPosition position) {
         return connections.get(position);
+    }
+
+    public void setResource(Resource resource,int i) {
+        this.resource[i] = resource;
+    }
+
+    public void setCorners(Map<CornerPosition, Corner> corners) {
+        this.corners = corners;
     }
 
     // Method to get card points
