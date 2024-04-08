@@ -1,7 +1,9 @@
 package org.example.am24is44.model;
+import static org.example.am24is44.model.CornerPosition.*;
 import static org.example.am24is44.model.Resource.*;
 import static org.example.am24is44.model.CardPoints.*;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
@@ -16,6 +18,8 @@ public class Game {
     private Card[] visibleCards;
     private Card[] starterDeck;
     private Resource[] resource;
+    private Corner corner;
+    private Map<CornerPosition, Corner> corners;
 
     // Constructor
     public Game() {
@@ -24,24 +28,46 @@ public class Game {
 
     // Method to initialize the game
     private void initializeGame() {
+        //inizializzazione StarterCard
         Card[] starterDeck = new Card[6];
 
+        this.corners = new HashMap<>();
+
+        //prima carta:
+        corners.put(UP_LEFT,new Corner(true,VUOTO));
+        corners.put(BOTTOM_LEFT,new Corner(true,INSECT_KINGDOM));
+        corners.put(UP_RIGHT,new Corner(true,PLANT_KINGDOM));
+        corners.put(BOTTOM_RIGHT,new Corner(true,VUOTO));
+
         resource[0]=INSECT_KINGDOM;
-        starterDeck[0]=new Card(resource,ZERO);
+        starterDeck[0]=new Card(resource,ZERO,corners);
+
+        //seconda carta
+        corners.put(UP_LEFT,new Corner(true,ANIMAL_KINGDOM));
+        corners.put(BOTTOM_LEFT,new Corner(true,VUOTO));
+        corners.put(UP_RIGHT,new Corner(true,VUOTO));
+        corners.put(BOTTOM_RIGHT,new Corner(true,FUNGI_KINGDOM));
+
         resource[0]=FUNGI_KINGDOM;
-        starterDeck[1]=new Card(resource,ZERO);
+        starterDeck[0]=new Card(resource,ZERO,corners);
+
+        //terza carta..
+
         resource[0]=PLANT_KINGDOM;
         resource[1]=FUNGI_KINGDOM;
-        starterDeck[2]=new Card(resource,ZERO);
+
+        starterDeck[1]=new Card(resource,ZERO,corners);
+
+        starterDeck[2]=new Card(resource,ZERO,corners);
         resource[0]=ANIMAL_KINGDOM;
         resource[1]=INSECT_KINGDOM;
-        starterDeck[3]=new Card(resource,ZERO);
+        starterDeck[3]=new Card(resource,ZERO,corners);
         resource[2]=PLANT_KINGDOM;
-        starterDeck[4]=new Card(resource,ZERO);
+        starterDeck[4]=new Card(resource,ZERO,corners);
         resource[0]=PLANT_KINGDOM;
         resource[1]=ANIMAL_KINGDOM;
         resource[1]=FUNGI_KINGDOM;
-        starterDeck[5]=new Card(resource,ZERO);
+        starterDeck[5]=new Card(resource,ZERO,corners);
     }
 
     // Method to add a player to the game

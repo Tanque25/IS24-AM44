@@ -1,10 +1,12 @@
 package org.example.am24is44.model;
 import static org.example.am24is44.model.Resource.*;
+import static org.example.am24is44.model.CornerPosition.*;
 import java.util.Map;
+import java.util.HashMap;
 
 public class Card {
     private Resource[] resource;
-    private Corner corner;
+
     private Map<CornerPosition, Corner> corners;
     private Map<CornerPosition, Card> connections;
     private CardPoints cardPoints;
@@ -12,10 +14,10 @@ public class Card {
     //private int i;
 
     // Constructor
-    public Card(Resource[] resource, CardPoints cardPoints) {
+    public Card(Resource[] resource, CardPoints cardPoints,Map<CornerPosition, Corner> corners) {
 
         this.resource = resource;
-        corner=new Corner(true,VUOTO);
+        this.corners=corners;
         //this.corners = new Map<CornerPosition, Corner>;
         //this.connections = new Map<CornerPosition, Card>;
         this.cardPoints = cardPoints;
