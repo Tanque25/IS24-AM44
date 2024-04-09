@@ -1,17 +1,20 @@
 package org.example.am24is44.model;
 
 public class Player {
-    private String nickname;
-    private Card[] hand;
-    private Card[][] playArea;
-    private ObjectiveCard[] secretObjective;
+    private String nickname = "";
+    private Card[] hand = new Card[3];
+    private Card[][] playArea = new Card[20][20];
+    private ObjectiveCard secretObjective;
+
+    //private int achievedObjective;
+
 
     // Constructor
     public Player(String nickname) {
         this.nickname = nickname;
         initializeHand();
         initializePlayArea();
-        setSecretObjective();
+        //setSecretObjective();
     }
 
     // Getter for the nickname
@@ -30,18 +33,28 @@ public class Player {
     }
 
     // Method to set the player's secret objective
-    private void setSecretObjective() {
-        // Implement logic to assign secret objectives to the player
+    private void setSecretObjective(ObjectiveCard card) {
+
+        this.secretObjective = card;
     }
 
     // Method to play a card
-    public void playCard() {
-        // Implement logic to allow the player to play a card
+    public void playCard(int cardIndex, int x, int y) {
+            this.playArea[x][y]= this.hand[cardIndex];
+            this.hand[cardIndex] = null;
     }
 
+
+
+
     // Method to draw a card
-    public void drawCard() {
-        // Implement logic to allow the player to draw a card
+    public void setCard(Card card) {
+        for(int i = 0; i < this.hand.length; i++){
+            if(this.hand[i] == null){
+                this.hand[i] = card;
+                return;
+            }
+        }
     }
 
     // Method to calculate the final score
