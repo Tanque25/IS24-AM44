@@ -14,12 +14,9 @@ public class Card {
     //private int i;
 
     // Constructor
-    public Card(Resource[] resource, CardPoints cardPoints,Map<CornerPosition, Corner> corners) {
-
+    public Card(Resource[] resource, CardPoints cardPoints, Map<CornerPosition, Corner> corners) {
         this.resource = resource;
-        this.corners=corners;
-        //this.corners = new Map<CornerPosition, Corner>;
-        //this.connections = new Map<CornerPosition, Card>;
+        this.corners = corners;
         this.cardPoints = cardPoints;
     }
 

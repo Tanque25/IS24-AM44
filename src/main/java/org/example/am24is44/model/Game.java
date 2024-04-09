@@ -3,78 +3,167 @@ import static org.example.am24is44.model.CornerPosition.*;
 import static org.example.am24is44.model.Resource.*;
 import static org.example.am24is44.model.CardPoints.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 public class Game {
-    private Player[] players;
+    private Board board;
+    private List<Player> players;
     private Player startingPlayer;
     private Player currentPlayer;
     private GameStatus status;
-    private ObjectiveCard[] commonObjectives;
-    private Card[] resourcePile;
-    private GoldCard[] goldPile;
-    private Card[] visibleCards;
-    private Card[] starterDeck;
-    private Resource[] resource;
-    private Corner corner;
-    private Map<CornerPosition, Corner> corners;
+    private Stack<StarterCard> starterDeck;
+    private ObjectiveDeck objectiveDeck;
+    private Stack<Card> resourcePile;
+    private Stack<Card> goldPile;
+    private List<ObjectiveCard> commonObjectives;
+    private List<Card> visibleCards;
 
     // Constructor
     public Game() {
+        this.board = new Board();
+        this.players = new ArrayList<>();
     }
 
-
     // Method to initialize the game
-    private void initializeGame() {
-        //inizializzazione StarterCard
-        Card[] starterDeck = new Card[6];
+    public void initializeGame() {
 
-        this.corners = new HashMap<>();
+        // Set game status
+        status = GameStatus.INITIALIZATION;
 
-        //prima carta:
-        //io sposterei creazione dei corner nella classe Card ??????? --> da capire
-        corners.put(UP_LEFT,new Corner(true,VUOTO));
-        corners.put(BOTTOM_LEFT,new Corner(true,INSECT_KINGDOM));
-        corners.put(UP_RIGHT,new Corner(true,PLANT_KINGDOM));
-        corners.put(BOTTOM_RIGHT,new Corner(true,VUOTO));
+        // StarterCard initialization
+        initializeStarterDeck();
 
-        resource[0]=INSECT_KINGDOM;
-        starterDeck[0]=new Card(resource,ZERO,corners);
+        // ObjectiveDeck initialization
+        objectiveDeck = new ObjectiveDeck();
+        objectiveDeck.setCards();
 
-        //seconda carta
-        corners.put(UP_LEFT,new Corner(true,ANIMAL_KINGDOM));
-        corners.put(BOTTOM_LEFT,new Corner(true,VUOTO));
-        corners.put(UP_RIGHT,new Corner(true,VUOTO));
-        corners.put(BOTTOM_RIGHT,new Corner(true,FUNGI_KINGDOM));
+        // ResourcePile initialization
+        initializeResourcePile();
 
-        resource[0]=FUNGI_KINGDOM;
-        starterDeck[0]=new Card(resource,ZERO,corners);
+        // GoldPile initialization
+        initializeGoldPile();
 
-        //terza carta..
+        // Draw common objectives
+        commonObjectives.add(objectiveDeck.drawCard());
+        commonObjectives.add(objectiveDeck.drawCard());
 
-        resource[0]=PLANT_KINGDOM;
-        resource[1]=FUNGI_KINGDOM;
+        // Draw visible cards
+        visibleCards.add(resourcePile.pop());
+        visibleCards.add(resourcePile.pop());
+        visibleCards.add(goldPile.pop());
+        visibleCards.add(goldPile.pop());
+    }
 
-        starterDeck[1]=new Card(resource,ZERO,corners);
+    // Method to initialize ResourcePile
+    private void initializeStarterDeck() {
+        this.starterDeck = new Stack<>();
 
-        starterDeck[2]=new Card(resource,ZERO,corners);
-        resource[0]=ANIMAL_KINGDOM;
-        resource[1]=INSECT_KINGDOM;
-        starterDeck[3]=new Card(resource,ZERO,corners);
-        resource[2]=PLANT_KINGDOM;
-        starterDeck[4]=new Card(resource,ZERO,corners);
-        resource[0]=PLANT_KINGDOM;
-        resource[1]=ANIMAL_KINGDOM;
-        resource[1]=FUNGI_KINGDOM;
-        starterDeck[5]=new Card(resource,ZERO,corners);
+        Resource[] resources;
+        Map<CornerPosition, Corner> corners;
+        Map<CornerPosition, Corner> backCorners;
+
+        // Card #81
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null));
+        corners.put(UP_RIGHT,new Corner(true, PLANT_KINGDOM));
+        corners.put(BOTTOM_LEFT,new Corner(true, INSECT_KINGDOM));
+        corners.put(BOTTOM_RIGHT,new Corner(true, null));
+        backCorners = new HashMap<>();
+        backCorners.put(UP_LEFT,new Corner(true, FUNGI_KINGDOM));
+        backCorners.put(UP_RIGHT,new Corner(true, PLANT_KINGDOM));
+        backCorners.put(BOTTOM_LEFT,new Corner(true, INSECT_KINGDOM));
+        backCorners.put(BOTTOM_RIGHT,new Corner(true, ANIMAL_KINGDOM));
+        resources = new Resource[]{INSECT_KINGDOM};
+        starterDeck.push(new StarterCard(resources, ZERO, corners, backCorners));
+
+        // Card #82
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, ANIMAL_KINGDOM));
+        corners.put(UP_RIGHT,new Corner(true, null));
+        corners.put(BOTTOM_LEFT,new Corner(true, null));
+        corners.put(BOTTOM_RIGHT,new Corner(true, FUNGI_KINGDOM));
+        backCorners = new HashMap<>();
+        backCorners.put(UP_LEFT,new Corner(true, PLANT_KINGDOM));
+        backCorners.put(UP_RIGHT,new Corner(true, ANIMAL_KINGDOM));
+        backCorners.put(BOTTOM_LEFT,new Corner(true, FUNGI_KINGDOM));
+        backCorners.put(BOTTOM_RIGHT,new Corner(true, INSECT_KINGDOM));
+        resources = new Resource[]{FUNGI_KINGDOM};
+        starterDeck.push(new StarterCard(resources, ZERO, corners, backCorners));
+
+        // Card #83
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null));
+        corners.put(UP_RIGHT,new Corner(true, null));
+        corners.put(BOTTOM_LEFT,new Corner(true, null));
+        corners.put(BOTTOM_RIGHT,new Corner(true, null));
+        backCorners = new HashMap<>();
+        backCorners.put(UP_LEFT,new Corner(true, INSECT_KINGDOM));
+        backCorners.put(UP_RIGHT,new Corner(true, ANIMAL_KINGDOM));
+        backCorners.put(BOTTOM_LEFT,new Corner(true, FUNGI_KINGDOM));
+        backCorners.put(BOTTOM_RIGHT,new Corner(true, PLANT_KINGDOM));
+        resources = new Resource[]{PLANT_KINGDOM, FUNGI_KINGDOM};
+        starterDeck.push(new StarterCard(resources, ZERO, corners, backCorners));
+
+        // Next cards...
+
+        // Shuffle starterDeck
+        Collections.shuffle(starterDeck);
+    }
+
+    // Method to initialize ResourcePile
+    private void initializeResourcePile() {
+        this.resourcePile = new Stack<>();
+
+        Resource[] resources;
+        Map<CornerPosition, Corner> corners;
+
+        // Card #1
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, FUNGI_KINGDOM));
+        corners.put(UP_RIGHT,new Corner(true, null));
+        corners.put(BOTTOM_LEFT,new Corner(true, FUNGI_KINGDOM));
+        corners.put(BOTTOM_RIGHT,new Corner(true, null));
+        resources = new Resource[]{FUNGI_KINGDOM};
+        resourcePile.push(new Card(resources, ZERO, corners));
+
+        // Card 2
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, FUNGI_KINGDOM));
+        corners.put(UP_RIGHT,new Corner(true, FUNGI_KINGDOM));
+        corners.put(BOTTOM_LEFT,new Corner(true, null));
+        corners.put(BOTTOM_RIGHT,new Corner(true, null));
+        resources = new Resource[]{FUNGI_KINGDOM};
+        resourcePile.push(new Card(resources, ZERO, corners));
+
+        // Card 3
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null));
+        corners.put(UP_RIGHT,new Corner(false, null));
+        corners.put(BOTTOM_LEFT,new Corner(true, FUNGI_KINGDOM));
+        corners.put(BOTTOM_RIGHT,new Corner(true, FUNGI_KINGDOM));
+        resources = new Resource[]{FUNGI_KINGDOM};
+        resourcePile.push(new Card(resources, ZERO, corners));
+
+        // Next cards...
+
+        // Shuffle resourcePile
+        Collections.shuffle(resourcePile);
+    }
+
+    // Method to initialize GoldPile
+    private void initializeGoldPile() {
+        this.goldPile = new Stack<>();
+
+        Resource[] resources;
+        Map<CornerPosition, Corner> corners;
+        Resource[] cost;
+
+        // Card
     }
 
     // Method to add a player to the game
     public void addPlayer(String nickname) {
-        // Implement logic to add a player to the game
-        // Conflict test
+        players.add(new Player(nickname));
     }
 
     // Method to get the current player
@@ -83,17 +172,35 @@ public class Game {
     }
 
     // Method to choose secret objectives
-    public void chooseSecretObjective() {
-        // Implement logic to choose secret objectives
+    public void chooseSecretObjective(Player player) {
+        // Prepare two objective options
+        ObjectiveCard objectiveOption1 = objectiveDeck.drawCard();
+        ObjectiveCard objectiveOption2 = objectiveDeck.drawCard();
+
+        // Display options to the player via the view - COULD BE SOMETHING LIKE THIS
+        // view.displayObjectiveOptions(player, objectiveOption1, objectiveOption2);
+
+        // Wait for player input (handled by the controller)
+
+        // Once player has chosen, update the player's secret objective - COULD BE SOMETHING LIKE THIS
+        // ObjectiveCard chosenObjective = controller.getPlayerInput();
+        // player.setSecretObjective(chosenObjective);
     }
 
     // Method to choose starting side
     public void chooseStartingSide() {
-        // Implement logic to choose starting side
+        // Prepare the starter card
+        StarterCard starterCard = starterDeck.pop();
+
+        // Display to the player both sides of the starter card via the view
+
+        // Wait for the player choice
+
+        // Once the player has chosen, update the player's playArea
     }
 
     // Getter for common objectives
-    public ObjectiveCard[] getCommonObjectives() {
+    public List<ObjectiveCard> getCommonObjectives() {
         return commonObjectives;
 
     }
@@ -109,7 +216,7 @@ public class Game {
     }
 
     // Getter for visible cards
-    public Card[] getVisibleCards() {
+    public List<Card> getVisibleCards() {
         return visibleCards;
     }
 

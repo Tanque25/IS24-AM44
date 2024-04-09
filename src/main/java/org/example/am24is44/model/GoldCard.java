@@ -6,8 +6,8 @@ public class GoldCard extends Card {
     private Resource[] cost;
 
     // Constructor
-    public GoldCard(Resource[] resource, Map<CornerPosition, Corner> corners, Map<CornerPosition, Card> connections, CardPoints cardPoints, Resource[] cost) {
-        super(resource, corners, connections, cardPoints);
+    public GoldCard(Resource[] resource, CardPoints cardPoints, Map<CornerPosition, Corner> corners, Resource[] cost) {
+        super(resource, cardPoints, corners);
         this.cost = cost;
     }
 
