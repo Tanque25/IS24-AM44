@@ -7,10 +7,10 @@ public class Corner {
     private boolean covered;
 
     // Constructor
-    public Corner(boolean visibility, Resource resource, SpecialObject specialObject) {
+    public Corner(boolean visibility, Resource resource) {
         this.visibility = visibility;
         this.resource = resource;
-        this.specialObject = specialObject;
+        //this.specialObject = specialObject; ???
         this.covered = false;
     }
 

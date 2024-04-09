@@ -4,5 +4,7 @@ public enum Resource {
     PLANT_KINGDOM,
     ANIMAL_KINGDOM,
     FUNGI_KINGDOM,
-    INSECT_KINGDOM
+    INSECT_KINGDOM,
+
+    VUOTO
 }
