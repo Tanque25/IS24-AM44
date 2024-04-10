@@ -1,9 +1,11 @@
 package org.example.am24is44.model;
 
+import java.util.List;
+
 public class Player {
-    private String nickname = "";
-    private Card[] hand = new Card[3];
-    private Card[][] playArea = new Card[20][20];
+    private String nickname;
+    private List<Card> hand;
+    private Card[][] playArea;
     private ObjectiveCard secretObjective;
 
     //private int achievedObjective;
@@ -12,8 +14,7 @@ public class Player {
     // Constructor
     public Player(String nickname) {
         this.nickname = nickname;
-        initializeHand();
-        initializePlayArea();
+        this.playArea = new Card[81][81];
         //setSecretObjective();
     }
 
@@ -23,13 +24,13 @@ public class Player {
     }
 
     // Method to initialize the player's hand
-    private void initializeHand() {
-        // Implement initialization logic for the hand
+    public void initializeHand(List<Card> starterHand) {
+        this.hand = starterHand;
     }
 
     // Method to initialize the player's play area
-    private void initializePlayArea() {
-        // Implement initialization logic for the play area
+    private void initializePlayArea(StarterCard starterCard) {
+        playArea[41][41] = starterCard;
     }
 
     // Method to set the player's secret objective
@@ -39,22 +40,14 @@ public class Player {
     }
 
     // Method to play a card
-    public void playCard(int cardIndex, int x, int y) {
-            this.playArea[x][y]= this.hand[cardIndex];
-            this.hand[cardIndex] = null;
+    public void playCard(Card card, int x, int y) {
+        playArea[x][y] = card;
+        hand.remove(card);
     }
 
-
-
-
     // Method to draw a card
-    public void setCard(Card card) {
-        for(int i = 0; i < this.hand.length; i++){
-            if(this.hand[i] == null){
-                this.hand[i] = card;
-                return;
-            }
-        }
+    public void drawCard(Card card) {
+        hand.add(card);
     }
 
     // Method to calculate the final score

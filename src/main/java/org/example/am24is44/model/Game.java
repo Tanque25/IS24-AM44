@@ -163,7 +163,28 @@ public class Game {
 
     // Method to add a player to the game
     public void addPlayer(String nickname) {
-        players.add(new Player(nickname));
+
+        // Istantiate a new player object
+        Player player = new Player(nickname);
+
+        // Create the player hand
+        List<Card> hand = null;
+        Card card;
+
+        for (int i = 1; i <= 2; i++){
+            card = resourcePile.pop();
+            hand.add(card);
+        }
+
+        for (int i = 1; i <= 2; i++){
+            card = goldPile.pop();
+            hand.add(card);
+        }
+
+        player.initializeHand(hand);
+
+        // I add the player to the player list
+        this.players.add(player);
     }
 
     // Method to get the current player
