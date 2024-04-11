@@ -230,6 +230,123 @@ public class Game {
         resources = new Resource[]{FUNGI_KINGDOM};
         resourcePile.push(new Card(resources, ONE, corners));
 
+        //card 9
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, FUNGI_KINGDOM,null));
+        corners.put(UP_RIGHT,new Corner(false,null ,null));
+        corners.put(BOTTOM_LEFT,new Corner(true, null,null));
+        corners.put(BOTTOM_RIGHT,new Corner(true, null,null));
+        resources = new Resource[]{FUNGI_KINGDOM};
+        resourcePile.push(new Card(resources, ONE, corners));
+
+        //card 10
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(false, null,null));
+        corners.put(UP_RIGHT,new Corner(true,null ,null));
+        corners.put(BOTTOM_LEFT,new Corner(true, FUNGI_KINGDOM,null));
+        corners.put(BOTTOM_RIGHT,new Corner(true, null,null));
+        resources = new Resource[]{FUNGI_KINGDOM};
+        resourcePile.push(new Card(resources, ONE, corners));
+
+        //card 11
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null,null));
+        corners.put(UP_RIGHT,new Corner(true,PLANT_KINGDOM ,null));
+        corners.put(BOTTOM_LEFT,new Corner(true, PLANT_KINGDOM,null));
+        corners.put(BOTTOM_RIGHT,new Corner(false, null,null));
+        resources = new Resource[]{PLANT_KINGDOM};
+        resourcePile.push(new Card(resources, ZERO, corners));
+
+        //card 12
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, PLANT_KINGDOM,null));
+        corners.put(UP_RIGHT,new Corner(true,PLANT_KINGDOM ,null));
+        corners.put(BOTTOM_LEFT,new Corner(false, null,null));
+        corners.put(BOTTOM_RIGHT,new Corner(true, null,null));
+        resources = new Resource[]{PLANT_KINGDOM};
+        resourcePile.push(new Card(resources, ZERO, corners));
+
+        //card 13
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null,null));
+        corners.put(UP_RIGHT,new Corner(false, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(true, PLANT_KINGDOM,null));
+        corners.put(BOTTOM_RIGHT,new Corner(true, PLANT_KINGDOM,null));
+        resources = new Resource[]{PLANT_KINGDOM};
+        resourcePile.push(new Card(resources, ZERO, corners));
+
+        //card 14
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(false, null,null));
+        corners.put(UP_RIGHT,new Corner(true, PLANT_KINGDOM,null));
+        corners.put(BOTTOM_LEFT,new Corner(true, null,null));
+        corners.put(BOTTOM_RIGHT,new Corner(true, PLANT_KINGDOM,null));
+        resources = new Resource[]{PLANT_KINGDOM};
+        resourcePile.push(new Card(resources, ZERO, corners));
+
+        //card 15
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(false, null,null));
+        corners.put(UP_RIGHT,new Corner(true, INSECT_KINGDOM,null));
+        corners.put(BOTTOM_LEFT,new Corner(true, null,QUILL));
+        corners.put(BOTTOM_RIGHT,new Corner(true, PLANT_KINGDOM,null));
+        resources = new Resource[]{PLANT_KINGDOM};
+        resourcePile.push(new Card(resources, ZERO, corners));
+
+        //card 16
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, FUNGI_KINGDOM,null));
+        corners.put(UP_RIGHT,new Corner(true, PLANT_KINGDOM,null));
+        corners.put(BOTTOM_LEFT,new Corner(false, null,null));
+        corners.put(BOTTOM_RIGHT,new Corner(true, null,INKWELL));
+        resources = new Resource[]{PLANT_KINGDOM};
+        resourcePile.push(new Card(resources, ZERO, corners));
+
+        //card 17
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null,MANUSCRIPT));
+        corners.put(UP_RIGHT,new Corner(false, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(true, PLANT_KINGDOM,null));
+        corners.put(BOTTOM_RIGHT,new Corner(true, ANIMAL_KINGDOM,null));
+        resources = new Resource[]{PLANT_KINGDOM};
+        resourcePile.push(new Card(resources, ZERO, corners));
+
+        //card 18
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null,null));
+        corners.put(UP_RIGHT,new Corner(true, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(true, PLANT_KINGDOM,null));
+        corners.put(BOTTOM_RIGHT,new Corner(false, null,null));
+        resources = new Resource[]{PLANT_KINGDOM};
+        resourcePile.push(new Card(resources, ONE, corners));
+
+        //card 19
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null,null));
+        corners.put(UP_RIGHT,new Corner(true, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(false,null ,null));
+        corners.put(BOTTOM_RIGHT,new Corner(true, PLANT_KINGDOM,null));
+        resources = new Resource[]{PLANT_KINGDOM};
+        resourcePile.push(new Card(resources, ONE, corners));
+
+        //card 20
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(false, null,null));
+        corners.put(UP_RIGHT,new Corner(true, PLANT_KINGDOM,null));
+        corners.put(BOTTOM_LEFT,new Corner(true,null ,null));
+        corners.put(BOTTOM_RIGHT,new Corner(true,null ,null));
+        resources = new Resource[]{PLANT_KINGDOM};
+        resourcePile.push(new Card(resources, ONE, corners));
+
+        //card 21
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, ANIMAL_KINGDOM,null));
+        corners.put(UP_RIGHT,new Corner(true, ANIMAL_KINGDOM,null));
+        corners.put(BOTTOM_LEFT,new Corner(true,null ,null));
+        corners.put(BOTTOM_RIGHT,new Corner(false,null ,null));
+        resources = new Resource[]{ANIMAL_KINGDOM};
+        resourcePile.push(new Card(resources, ZERO, corners));
+
         // Shuffle resourcePile
         Collections.shuffle(resourcePile);
     }
