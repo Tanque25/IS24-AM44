@@ -104,7 +104,47 @@ public class Game {
         resources = new Resource[]{PLANT_KINGDOM, FUNGI_KINGDOM};
         starterDeck.push(new StarterCard(resources, ZERO, corners, backCorners));
 
-        // Next cards...
+        //Card 84
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null));
+        corners.put(UP_RIGHT,new Corner(true, null));
+        corners.put(BOTTOM_LEFT,new Corner(true, null));
+        corners.put(BOTTOM_RIGHT,new Corner(true, null));
+        backCorners = new HashMap<>();
+        backCorners.put(UP_LEFT,new Corner(true, PLANT_KINGDOM));
+        backCorners.put(UP_RIGHT,new Corner(true, INSECT_KINGDOM));
+        backCorners.put(BOTTOM_LEFT,new Corner(true, ANIMAL_KINGDOM));
+        backCorners.put(BOTTOM_RIGHT,new Corner(true, FUNGI_KINGDOM));
+        resources = new Resource[]{ANIMAL_KINGDOM, INSECT_KINGDOM};
+        starterDeck.push(new StarterCard(resources, ZERO, corners, backCorners));
+
+        //Card 85
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null));
+        corners.put(UP_RIGHT,new Corner(true, null));
+        corners.put(BOTTOM_LEFT,new Corner(false, null));
+        corners.put(BOTTOM_RIGHT,new Corner(false, null));
+        backCorners = new HashMap<>();
+        backCorners.put(UP_LEFT,new Corner(true, INSECT_KINGDOM));
+        backCorners.put(UP_RIGHT,new Corner(true, FUNGI_KINGDOM));
+        backCorners.put(BOTTOM_LEFT,new Corner(true, PLANT_KINGDOM));
+        backCorners.put(BOTTOM_RIGHT,new Corner(true, ANIMAL_KINGDOM));
+        resources = new Resource[]{ANIMAL_KINGDOM, INSECT_KINGDOM,PLANT_KINGDOM};
+        starterDeck.push(new StarterCard(resources, ZERO, corners, backCorners));
+
+        //Card 86
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null));
+        corners.put(UP_RIGHT,new Corner(true, null));
+        corners.put(BOTTOM_LEFT,new Corner(false, null));
+        corners.put(BOTTOM_RIGHT,new Corner(false, null));
+        backCorners = new HashMap<>();
+        backCorners.put(UP_LEFT,new Corner(true, FUNGI_KINGDOM));
+        backCorners.put(UP_RIGHT,new Corner(true, ANIMAL_KINGDOM));
+        backCorners.put(BOTTOM_LEFT,new Corner(true, PLANT_KINGDOM));
+        backCorners.put(BOTTOM_RIGHT,new Corner(true, INSECT_KINGDOM));
+        resources = new Resource[]{PLANT_KINGDOM, ANIMAL_KINGDOM,FUNGI_KINGDOM,};
+        starterDeck.push(new StarterCard(resources, ZERO, corners, backCorners));
 
         // Shuffle starterDeck
         Collections.shuffle(starterDeck);
@@ -144,7 +184,7 @@ public class Game {
         resources = new Resource[]{FUNGI_KINGDOM};
         resourcePile.push(new Card(resources, ZERO, corners));
 
-        // Next cards...
+
 
         // Shuffle resourcePile
         Collections.shuffle(resourcePile);
