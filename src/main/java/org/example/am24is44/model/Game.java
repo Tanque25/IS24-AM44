@@ -347,6 +347,90 @@ public class Game {
         resources = new Resource[]{ANIMAL_KINGDOM};
         resourcePile.push(new Card(resources, ZERO, corners));
 
+        //card 22
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(false, null,null));
+        corners.put(UP_RIGHT,new Corner(true, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(true,ANIMAL_KINGDOM ,null));
+        corners.put(BOTTOM_RIGHT,new Corner(false,ANIMAL_KINGDOM ,null));
+        resources = new Resource[]{ANIMAL_KINGDOM};
+        resourcePile.push(new Card(resources, ZERO, corners));
+
+        //card 23
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, ANIMAL_KINGDOM,null));
+        corners.put(UP_RIGHT,new Corner(false, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(true,ANIMAL_KINGDOM ,null));
+        corners.put(BOTTOM_RIGHT,new Corner(false,null ,null));
+        resources = new Resource[]{ANIMAL_KINGDOM};
+        resourcePile.push(new Card(resources, ZERO, corners));
+
+        //card 24
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null,null));
+        corners.put(UP_RIGHT,new Corner(true, ANIMAL_KINGDOM,null));
+        corners.put(BOTTOM_LEFT,new Corner(false,null ,null));
+        corners.put(BOTTOM_RIGHT,new Corner(true,ANIMAL_KINGDOM ,null));
+        resources = new Resource[]{ANIMAL_KINGDOM};
+        resourcePile.push(new Card(resources, ZERO, corners));
+
+        //card 25
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(false, null,null));
+        corners.put(UP_RIGHT,new Corner(true, INSECT_KINGDOM,null));
+        corners.put(BOTTOM_LEFT,new Corner(true,null ,INKWELL));
+        corners.put(BOTTOM_RIGHT,new Corner(true,ANIMAL_KINGDOM ,null));
+        resources = new Resource[]{ANIMAL_KINGDOM};
+        resourcePile.push(new Card(resources, ZERO, corners));
+
+        //card 26
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, PLANT_KINGDOM,null));
+        corners.put(UP_RIGHT,new Corner(true, ANIMAL_KINGDOM,null));
+        corners.put(BOTTOM_LEFT,new Corner(false,null ,null));
+        corners.put(BOTTOM_RIGHT,new Corner(true,null ,MANUSCRIPT));
+        resources = new Resource[]{ANIMAL_KINGDOM};
+        resourcePile.push(new Card(resources, ZERO, corners));
+
+        //card 27
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null,QUILL));
+        corners.put(UP_RIGHT,new Corner(false, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(true,ANIMAL_KINGDOM ,null));
+        corners.put(BOTTOM_RIGHT,new Corner(true,FUNGI_KINGDOM ,null));
+        resources = new Resource[]{ANIMAL_KINGDOM};
+        resourcePile.push(new Card(resources, ZERO, corners));
+
+        //card 28
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(false, null,null));
+        corners.put(UP_RIGHT,new Corner(true, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(true,ANIMAL_KINGDOM ,null));
+        corners.put(BOTTOM_RIGHT,new Corner(true,null ,null));
+        resources = new Resource[]{ANIMAL_KINGDOM};
+        resourcePile.push(new Card(resources, ONE, corners));
+
+        //card 29
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null,null));
+        corners.put(UP_RIGHT,new Corner(false, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(true, null,null));
+        corners.put(BOTTOM_RIGHT,new Corner(true,ANIMAL_KINGDOM ,null));
+        resources = new Resource[]{ANIMAL_KINGDOM};
+        resourcePile.push(new Card(resources, ONE, corners));
+
+        //card 30
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null,null));
+        corners.put(UP_RIGHT,new Corner(true, ANIMAL_KINGDOM,null));
+        corners.put(BOTTOM_LEFT,new Corner(true, null,null));
+        corners.put(BOTTOM_RIGHT,new Corner(false, null,null));
+        resources = new Resource[]{ANIMAL_KINGDOM};
+        resourcePile.push(new Card(resources, ONE, corners));
+
+        //card 31
+
+
         // Shuffle resourcePile
         Collections.shuffle(resourcePile);
     }
