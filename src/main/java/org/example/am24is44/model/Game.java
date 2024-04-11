@@ -433,9 +433,57 @@ public class Game {
     }
 
     // Method to draw a card
-    public void drawCard() {
-        // Implement logic to draw a card
+    public void drawCard(Player player, int choice) {
+
+        // The controller manages the gameflow, so it will check that the player first plays the card
+        // Then he draws another one
+
+        if(!resourcePile.empty() && !goldPile.empty() && !visibleCards.isEmpty() ) {
+
+            // int choice is a variable which cames from controller
+            // it will return 0-> resourcePile, 1-> goldPile, 2,3,4,5-> visible
+            if(choice >= 0 && choice <= 5){
+                switch (choice) {
+                    case 0:
+                        player.drawCard(resourcePile.getFirst());
+                        resourcePile.removeFirst();
+                        break;
+                    case 1:
+                        player.drawCard(goldPile.getFirst());
+                        goldPile.removeFirst();
+                        break;
+
+                    case 2: // the resource card at the top of the list
+                        player.drawCard(visibleCards.getFirst());
+                        visibleCards.removeFirst();
+                        visibleCards.addFirst(resourcePile.pop());
+                        break;
+
+                    case 3: // the second resource card
+                        player.drawCard(visibleCards.get(1));
+                        visibleCards.remove(1);
+                        visibleCards.add(1, resourcePile.pop());
+                        break;
+
+                    case 4: // the gold card in the third position of the list
+                        player.drawCard(visibleCards.get(2));
+                        visibleCards.remove(2);
+                        visibleCards.add(2, goldPile.pop());
+                        break;
+
+                    case 5: // the gold card at the end of the list
+                        player.drawCard(visibleCards.getLast());
+                        visibleCards.removeLast();
+                        visibleCards.addLast(goldPile.pop());
+                        break;
+                }
+            }
+            else
+                throw new IllegalArgumentException("Invalid choice" + choice);
+        return;
     }
+
+
 
     // Getter for visible cards
     public List<Card> getVisibleCards() {
