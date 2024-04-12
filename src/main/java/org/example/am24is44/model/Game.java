@@ -516,7 +516,7 @@ public class Game {
         corners.put(BOTTOM_LEFT,new Corner(true,null ,null));
         corners.put(BOTTOM_RIGHT,new Corner(true,null ,null));
         resources = new Resource[]{INSECT_KINGDOM};
-        resourcePile.push(new Card(resources, ONE, corners));
+        resourcePile.push(new Card(resources, ONE, corners));  
 
         // Shuffle resourcePile
         Collections.shuffle(resourcePile);
