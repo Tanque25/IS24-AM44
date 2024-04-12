@@ -15,7 +15,6 @@ public class Game {
     private Stack<StarterCard> starterDeck;
     private ObjectiveDeck objectiveDeck;
     private Stack<Card> resourcePile;
-    private Stack<ObjectiveCard> ObjectivePile;
     private Stack<Card> goldPile;
     private List<ObjectiveCard> commonObjectives;
     private List<Card> visibleCards;
@@ -751,14 +750,6 @@ public class Game {
         cost = new Resource[]{ANIMAL_KINGDOM, ANIMAL_KINGDOM, PLANT_KINGDOM};
         goldPile.push(new GoldCard(resources, ONE, corners, cost));
 
-
-    }
-
-    // Method to initialize ResourcePile
-    private void initializeObjectiveDeck() {
-        this.ObjectivePile = new Stack<>();
-
-        //Resource[] resources;
 
     }
 
