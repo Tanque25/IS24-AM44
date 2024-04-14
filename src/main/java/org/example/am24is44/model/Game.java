@@ -538,7 +538,7 @@ public class Game {
         corners.put(BOTTOM_RIGHT,new Corner(true, null, QUILL));
         resources = new Resource[]{FUNGI_KINGDOM};
         cost = new Resource[]{FUNGI_KINGDOM, FUNGI_KINGDOM, ANIMAL_KINGDOM};
-        goldPile.push(new GoldCard(resources, ONE, corners, cost));
+        goldPile.push(new GoldCard(resources, ONE, corners, cost, QUILL));
 
         //card 42
         corners = new HashMap<>();
@@ -548,7 +548,7 @@ public class Game {
         corners.put(BOTTOM_RIGHT,new Corner(true, null, null));
         resources = new Resource[]{FUNGI_KINGDOM};
         cost = new Resource[]{FUNGI_KINGDOM, FUNGI_KINGDOM, PLANT_KINGDOM};
-        goldPile.push(new GoldCard(resources, ONE, corners, cost));
+        goldPile.push(new GoldCard(resources, ONE, corners, cost, INKWELL));
 
         //card 43
         corners = new HashMap<>();
@@ -558,7 +558,7 @@ public class Game {
         corners.put(BOTTOM_RIGHT,new Corner(false, null, null));
         resources = new Resource[]{FUNGI_KINGDOM};
         cost = new Resource[]{FUNGI_KINGDOM, FUNGI_KINGDOM, INSECT_KINGDOM};
-        goldPile.push(new GoldCard(resources, ONE, corners, cost));
+        goldPile.push(new GoldCard(resources, ONE, corners, cost, MANUSCRIPT));
 
         //card 44
         corners = new HashMap<>();
@@ -568,7 +568,7 @@ public class Game {
         corners.put(BOTTOM_RIGHT,new Corner(true, null, null));
         resources = new Resource[]{FUNGI_KINGDOM};
         cost = new Resource[]{FUNGI_KINGDOM, FUNGI_KINGDOM, FUNGI_KINGDOM, ANIMAL_KINGDOM};
-        goldPile.push(new GoldCard(resources, TWO, corners, cost));
+        goldPile.push(new GoldCard(resources, TWO, corners, cost, CORNER));
 
         //card 45
         corners = new HashMap<>();
@@ -578,7 +578,7 @@ public class Game {
         corners.put(BOTTOM_RIGHT,new Corner(false, null, null));
         resources = new Resource[]{FUNGI_KINGDOM};
         cost = new Resource[]{FUNGI_KINGDOM, FUNGI_KINGDOM, FUNGI_KINGDOM, PLANT_KINGDOM};
-        goldPile.push(new GoldCard(resources, TWO, corners, cost));
+        goldPile.push(new GoldCard(resources, TWO, corners, cost, CORNER));
 
         //card 46
         corners = new HashMap<>();
@@ -588,7 +588,7 @@ public class Game {
         corners.put(BOTTOM_RIGHT,new Corner(true, null, null));
         resources = new Resource[]{FUNGI_KINGDOM};
         cost = new Resource[]{FUNGI_KINGDOM, FUNGI_KINGDOM, FUNGI_KINGDOM, INSECT_KINGDOM};
-        goldPile.push(new GoldCard(resources, TWO, corners, cost));
+        goldPile.push(new GoldCard(resources, TWO, corners, cost, CORNER));
 
         //card 47
         corners = new HashMap<>();
@@ -598,7 +598,7 @@ public class Game {
         corners.put(BOTTOM_RIGHT,new Corner(false, null, null));
         resources = new Resource[]{FUNGI_KINGDOM};
         cost = new Resource[]{FUNGI_KINGDOM, FUNGI_KINGDOM, FUNGI_KINGDOM};
-        goldPile.push(new GoldCard(resources, THREE, corners, cost));
+        goldPile.push(new GoldCard(resources, THREE, corners, cost, null));
 
         //card 48
         corners = new HashMap<>();
@@ -608,7 +608,7 @@ public class Game {
         corners.put(BOTTOM_RIGHT,new Corner(false, null, null));
         resources = new Resource[]{FUNGI_KINGDOM};
         cost = new Resource[]{FUNGI_KINGDOM, FUNGI_KINGDOM, FUNGI_KINGDOM};
-        goldPile.push(new GoldCard(resources, THREE, corners, cost));
+        goldPile.push(new GoldCard(resources, THREE, corners, cost, null));
 
         //card 49
         corners = new HashMap<>();
@@ -618,7 +618,7 @@ public class Game {
         corners.put(BOTTOM_RIGHT,new Corner(true, null, null));
         resources = new Resource[]{FUNGI_KINGDOM};
         cost = new Resource[]{FUNGI_KINGDOM, FUNGI_KINGDOM, FUNGI_KINGDOM};
-        goldPile.push(new GoldCard(resources, THREE, corners, cost));
+        goldPile.push(new GoldCard(resources, THREE, corners, cost, null));
 
         //card 50
         corners = new HashMap<>();
@@ -628,7 +628,7 @@ public class Game {
         corners.put(BOTTOM_RIGHT,new Corner(false, null, null));
         resources = new Resource[]{FUNGI_KINGDOM};
         cost = new Resource[]{FUNGI_KINGDOM, FUNGI_KINGDOM, FUNGI_KINGDOM, FUNGI_KINGDOM, FUNGI_KINGDOM};
-        goldPile.push(new GoldCard(resources, FIVE, corners, cost));
+        goldPile.push(new GoldCard(resources, FIVE, corners, cost, null));
 
         //card 51
         corners = new HashMap<>();
@@ -638,7 +638,7 @@ public class Game {
         corners.put(BOTTOM_RIGHT,new Corner(false, null, null));
         resources = new Resource[]{PLANT_KINGDOM};
         cost = new Resource[]{PLANT_KINGDOM, PLANT_KINGDOM, INSECT_KINGDOM};
-        goldPile.push(new GoldCard(resources, ONE, corners, cost));
+        goldPile.push(new GoldCard(resources, ONE, corners, cost, QUILL));
 
         //card 52
         corners = new HashMap<>();
@@ -648,7 +648,7 @@ public class Game {
         corners.put(BOTTOM_RIGHT,new Corner(true, null, null));
         resources = new Resource[]{PLANT_KINGDOM};
         cost = new Resource[]{PLANT_KINGDOM, PLANT_KINGDOM, FUNGI_KINGDOM};
-        goldPile.push(new GoldCard(resources, ONE, corners, cost));
+        goldPile.push(new GoldCard(resources, ONE, corners, cost, MANUSCRIPT));
 
         //card 53
         corners = new HashMap<>();
@@ -658,7 +658,7 @@ public class Game {
         corners.put(BOTTOM_RIGHT,new Corner(true, null, null));
         resources = new Resource[]{PLANT_KINGDOM};
         cost = new Resource[]{PLANT_KINGDOM, PLANT_KINGDOM, ANIMAL_KINGDOM};
-        goldPile.push(new GoldCard(resources, ONE, corners, cost));
+        goldPile.push(new GoldCard(resources, ONE, corners, cost, INKWELL));
 
         //card 54
         corners = new HashMap<>();
@@ -668,7 +668,7 @@ public class Game {
         corners.put(BOTTOM_RIGHT,new Corner(true, null, null));
         resources = new Resource[]{PLANT_KINGDOM};
         cost = new Resource[]{PLANT_KINGDOM, PLANT_KINGDOM, PLANT_KINGDOM, INSECT_KINGDOM};
-        goldPile.push(new GoldCard(resources, TWO, corners, cost));
+        goldPile.push(new GoldCard(resources, TWO, corners, cost, CORNER));
 
         //card 55
         corners = new HashMap<>();
@@ -678,17 +678,17 @@ public class Game {
         corners.put(BOTTOM_RIGHT,new Corner(false, null, null));
         resources = new Resource[]{PLANT_KINGDOM};
         cost = new Resource[]{PLANT_KINGDOM, PLANT_KINGDOM, PLANT_KINGDOM, ANIMAL_KINGDOM};
-        goldPile.push(new GoldCard(resources, TWO, corners, cost));
+        goldPile.push(new GoldCard(resources, TWO, corners, cost, CORNER));
 
         //card 56
         corners = new HashMap<>();
         corners.put(UP_LEFT,new Corner(true, null, null));
         corners.put(UP_RIGHT,new Corner(false, null,null));
         corners.put(BOTTOM_LEFT,new Corner(true,null ,null));
-        corners.put(BOTTOM_RIGHT,new Corner(false, null, null));
+        corners.put(BOTTOM_RIGHT,new Corner(true, null, null));
         resources = new Resource[]{PLANT_KINGDOM};
         cost = new Resource[]{PLANT_KINGDOM, PLANT_KINGDOM, PLANT_KINGDOM, FUNGI_KINGDOM};
-        goldPile.push(new GoldCard(resources, TWO, corners, cost));
+        goldPile.push(new GoldCard(resources, TWO, corners, cost, CORNER));
 
         //card 57
         corners = new HashMap<>();
@@ -698,7 +698,7 @@ public class Game {
         corners.put(BOTTOM_RIGHT,new Corner(false, null, null));
         resources = new Resource[]{PLANT_KINGDOM};
         cost = new Resource[]{PLANT_KINGDOM, PLANT_KINGDOM, PLANT_KINGDOM};
-        goldPile.push(new GoldCard(resources, THREE, corners, cost));
+        goldPile.push(new GoldCard(resources, THREE, corners, cost, null));
 
         //card 58
         corners = new HashMap<>();
@@ -708,7 +708,7 @@ public class Game {
         corners.put(BOTTOM_RIGHT,new Corner(false, null, null));
         resources = new Resource[]{PLANT_KINGDOM};
         cost = new Resource[]{PLANT_KINGDOM, PLANT_KINGDOM, PLANT_KINGDOM};
-        goldPile.push(new GoldCard(resources, THREE, corners, cost));
+        goldPile.push(new GoldCard(resources, THREE, corners, cost, null));
 
         //card 59
         corners = new HashMap<>();
@@ -718,7 +718,7 @@ public class Game {
         corners.put(BOTTOM_RIGHT,new Corner(true, null, null));
         resources = new Resource[]{PLANT_KINGDOM};
         cost = new Resource[]{PLANT_KINGDOM, PLANT_KINGDOM, PLANT_KINGDOM};
-        goldPile.push(new GoldCard(resources, THREE, corners, cost));
+        goldPile.push(new GoldCard(resources, THREE, corners, cost, null));
 
         //card 60
         corners = new HashMap<>();
@@ -728,7 +728,7 @@ public class Game {
         corners.put(BOTTOM_RIGHT,new Corner(false, null, null));
         resources = new Resource[]{PLANT_KINGDOM};
         cost = new Resource[]{PLANT_KINGDOM, PLANT_KINGDOM, PLANT_KINGDOM, PLANT_KINGDOM, PLANT_KINGDOM};
-        goldPile.push(new GoldCard(resources, FIVE, corners, cost));
+        goldPile.push(new GoldCard(resources, FIVE, corners, cost, null));
 
         //card 61
         corners = new HashMap<>();
@@ -738,7 +738,7 @@ public class Game {
         corners.put(BOTTOM_RIGHT,new Corner(false, null, null));
         resources = new Resource[]{ANIMAL_KINGDOM};
         cost = new Resource[]{ANIMAL_KINGDOM, ANIMAL_KINGDOM, INSECT_KINGDOM};
-        goldPile.push(new GoldCard(resources, ONE, corners, cost));
+        goldPile.push(new GoldCard(resources, ONE, corners, cost, INKWELL));
 
         //card 62
         corners = new HashMap<>();
@@ -748,8 +748,187 @@ public class Game {
         corners.put(BOTTOM_RIGHT,new Corner(true, null, MANUSCRIPT));
         resources = new Resource[]{ANIMAL_KINGDOM};
         cost = new Resource[]{ANIMAL_KINGDOM, ANIMAL_KINGDOM, PLANT_KINGDOM};
-        goldPile.push(new GoldCard(resources, ONE, corners, cost));
+        goldPile.push(new GoldCard(resources, ONE, corners, cost, MANUSCRIPT));
 
+        //card 63
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null,null));
+        corners.put(UP_RIGHT,new Corner(false, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(true,null ,QUILL));
+        corners.put(BOTTOM_RIGHT,new Corner(true, null, null));
+        resources = new Resource[]{ANIMAL_KINGDOM};
+        cost = new Resource[]{ANIMAL_KINGDOM, ANIMAL_KINGDOM, FUNGI_KINGDOM};
+        goldPile.push(new GoldCard(resources, ONE, corners, cost, QUILL));
+
+        //card 64
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null,null));
+        corners.put(UP_RIGHT,new Corner(true, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(false,null ,null));
+        corners.put(BOTTOM_RIGHT,new Corner(true, null, null));
+        resources = new Resource[]{ANIMAL_KINGDOM};
+        cost = new Resource[]{ANIMAL_KINGDOM, ANIMAL_KINGDOM, ANIMAL_KINGDOM, INSECT_KINGDOM};
+        goldPile.push(new GoldCard(resources, TWO, corners, cost, CORNER));
+
+        //card 65
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null,null));
+        corners.put(UP_RIGHT,new Corner(false, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(true,null ,null));
+        corners.put(BOTTOM_RIGHT,new Corner(true, null, null));
+        resources = new Resource[]{ANIMAL_KINGDOM};
+        cost = new Resource[]{ANIMAL_KINGDOM, ANIMAL_KINGDOM, ANIMAL_KINGDOM, FUNGI_KINGDOM};
+        goldPile.push(new GoldCard(resources, TWO, corners, cost, CORNER));
+
+        //card 66
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(false, null,null));
+        corners.put(UP_RIGHT,new Corner(true, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(true,null ,null));
+        corners.put(BOTTOM_RIGHT,new Corner(true, null, null));
+        resources = new Resource[]{ANIMAL_KINGDOM};
+        cost = new Resource[]{ANIMAL_KINGDOM, ANIMAL_KINGDOM, ANIMAL_KINGDOM, PLANT_KINGDOM};
+        goldPile.push(new GoldCard(resources, TWO, corners, cost, CORNER));
+
+        //card 67
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null,null));
+        corners.put(UP_RIGHT,new Corner(false, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(true,null ,MANUSCRIPT));
+        corners.put(BOTTOM_RIGHT,new Corner(false, null, null));
+        resources = new Resource[]{ANIMAL_KINGDOM};
+        cost = new Resource[]{ANIMAL_KINGDOM, ANIMAL_KINGDOM, ANIMAL_KINGDOM};
+        goldPile.push(new GoldCard(resources, THREE, corners, cost, null));
+
+        //card 68
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null,null));
+        corners.put(UP_RIGHT,new Corner(true, null,INKWELL));
+        corners.put(BOTTOM_LEFT,new Corner(false,null ,null));
+        corners.put(BOTTOM_RIGHT,new Corner(false, null, null));
+        resources = new Resource[]{ANIMAL_KINGDOM};
+        cost = new Resource[]{ANIMAL_KINGDOM, ANIMAL_KINGDOM, ANIMAL_KINGDOM};
+        goldPile.push(new GoldCard(resources, THREE, corners, cost, null));
+
+        //card 69
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(false, null,null));
+        corners.put(UP_RIGHT,new Corner(true, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(false,null ,null));
+        corners.put(BOTTOM_RIGHT,new Corner(true, null, QUILL));
+        resources = new Resource[]{ANIMAL_KINGDOM};
+        cost = new Resource[]{ANIMAL_KINGDOM, ANIMAL_KINGDOM, ANIMAL_KINGDOM};
+        goldPile.push(new GoldCard(resources, THREE, corners, cost, null));
+
+        //card 70
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(false, null,null));
+        corners.put(UP_RIGHT,new Corner(true, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(false,null ,null));
+        corners.put(BOTTOM_RIGHT,new Corner(true, null, null));
+        resources = new Resource[]{ANIMAL_KINGDOM};
+        cost = new Resource[]{ANIMAL_KINGDOM, ANIMAL_KINGDOM, ANIMAL_KINGDOM,ANIMAL_KINGDOM, ANIMAL_KINGDOM};
+        goldPile.push(new GoldCard(resources, FIVE, corners, cost, null));
+
+        //card 71
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null,null));
+        corners.put(UP_RIGHT,new Corner(true, null,INKWELL));
+        corners.put(BOTTOM_LEFT,new Corner(false,null ,null));
+        corners.put(BOTTOM_RIGHT,new Corner(true, null, null));
+        resources = new Resource[]{INSECT_KINGDOM};
+        cost = new Resource[]{INSECT_KINGDOM, INSECT_KINGDOM, PLANT_KINGDOM};
+        goldPile.push(new GoldCard(resources, ONE, corners, cost, INKWELL));
+
+        //card 72
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null,null));
+        corners.put(UP_RIGHT,new Corner(false, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(true,null ,MANUSCRIPT));
+        corners.put(BOTTOM_RIGHT,new Corner(true, null, null));
+        resources = new Resource[]{INSECT_KINGDOM};
+        cost = new Resource[]{INSECT_KINGDOM, INSECT_KINGDOM, ANIMAL_KINGDOM};
+        goldPile.push(new GoldCard(resources, ONE, corners, cost, MANUSCRIPT));
+
+        //card 73
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(false, null,null));
+        corners.put(UP_RIGHT,new Corner(true, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(true,null ,null));
+        corners.put(BOTTOM_RIGHT,new Corner(true, null, INKWELL));
+        resources = new Resource[]{INSECT_KINGDOM};
+        cost = new Resource[]{INSECT_KINGDOM, INSECT_KINGDOM, FUNGI_KINGDOM};
+        goldPile.push(new GoldCard(resources, ONE, corners, cost, INKWELL));
+
+        //card 74
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null,null));
+        corners.put(UP_RIGHT,new Corner(true, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(false,null ,null));
+        corners.put(BOTTOM_RIGHT,new Corner(true, null, null));
+        resources = new Resource[]{INSECT_KINGDOM};
+        cost = new Resource[]{INSECT_KINGDOM, INSECT_KINGDOM, INSECT_KINGDOM, ANIMAL_KINGDOM};
+        goldPile.push(new GoldCard(resources, TWO, corners, cost, CORNER));
+
+        //card 75
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null,null));
+        corners.put(UP_RIGHT,new Corner(true, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(true,null ,null));
+        corners.put(BOTTOM_RIGHT,new Corner(false, null, null));
+        resources = new Resource[]{INSECT_KINGDOM};
+        cost = new Resource[]{INSECT_KINGDOM, INSECT_KINGDOM, INSECT_KINGDOM, PLANT_KINGDOM};
+        goldPile.push(new GoldCard(resources, TWO, corners, cost, CORNER));
+
+        //card 76
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null,null));
+        corners.put(UP_RIGHT,new Corner(false, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(true,null ,null));
+        corners.put(BOTTOM_RIGHT,new Corner(true, null, null));
+        resources = new Resource[]{INSECT_KINGDOM};
+        cost = new Resource[]{INSECT_KINGDOM, INSECT_KINGDOM, INSECT_KINGDOM, FUNGI_KINGDOM};
+        goldPile.push(new GoldCard(resources, TWO, corners, cost, CORNER));
+
+        //card 77
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null,INKWELL));
+        corners.put(UP_RIGHT,new Corner(false, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(true,null ,null));
+        corners.put(BOTTOM_RIGHT,new Corner(false, null, null));
+        resources = new Resource[]{INSECT_KINGDOM};
+        cost = new Resource[]{INSECT_KINGDOM, INSECT_KINGDOM, INSECT_KINGDOM};
+        goldPile.push(new GoldCard(resources, THREE, corners, cost, null));
+
+        //card 78
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null,null));
+        corners.put(UP_RIGHT,new Corner(true, null,MANUSCRIPT));
+        corners.put(BOTTOM_LEFT,new Corner(false,null ,null));
+        corners.put(BOTTOM_RIGHT,new Corner(false, null, null));
+        resources = new Resource[]{INSECT_KINGDOM};
+        cost = new Resource[]{INSECT_KINGDOM, INSECT_KINGDOM, INSECT_KINGDOM};
+        goldPile.push(new GoldCard(resources, THREE, corners, cost, null));
+
+        //card 79
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(false, null,null));
+        corners.put(UP_RIGHT,new Corner(false, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(true,null ,QUILL));
+        corners.put(BOTTOM_RIGHT,new Corner(true, null, null));
+        resources = new Resource[]{INSECT_KINGDOM};
+        cost = new Resource[]{INSECT_KINGDOM, INSECT_KINGDOM, INSECT_KINGDOM};
+        goldPile.push(new GoldCard(resources, THREE, corners, cost, null));
+
+        //card 80
+        corners = new HashMap<>();
+        corners.put(UP_LEFT,new Corner(true, null,null));
+        corners.put(UP_RIGHT,new Corner(true, null,null));
+        corners.put(BOTTOM_LEFT,new Corner(false,null ,null));
+        corners.put(BOTTOM_RIGHT,new Corner(false, null, null));
+        resources = new Resource[]{INSECT_KINGDOM};
+        cost = new Resource[]{INSECT_KINGDOM, INSECT_KINGDOM, INSECT_KINGDOM, INSECT_KINGDOM, INSECT_KINGDOM};
+        goldPile.push(new GoldCard(resources, FIVE, corners, cost, null));
 
     }
 
