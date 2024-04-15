@@ -620,6 +620,7 @@ public class Game {
                         player.drawCard(resourcePile.getFirst());
                         resourcePile.removeFirst();
                         break;
+
                     case 1:
                         player.drawCard(goldPile.getFirst());
                         goldPile.removeFirst();

@@ -1,13 +1,18 @@
 package org.example.am24is44.model;
 
+import java.util.Map;
 import java.util.List;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.lang.Enum;
+import java.util.HashMap;
 
 public class Player {
     private String nickname;
     private List<Card> hand;
     private Card[][] playArea;
     private ObjectiveCard secretObjective;
-
+    private Map<MergeEnumInterface, Integer> summaryScore;
     //private int achievedObjective;
 
 
@@ -16,6 +21,15 @@ public class Player {
         this.nickname = nickname;
         this.playArea = new Card[81][81];
         //setSecretObjective();
+
+        summaryScore = new HashMap<>(); //new map with values set to 0
+        for (MergeEnumInterface value : SpecialObject.values()) {
+            summaryScore.put(value, 0);
+        }
+        for (MergeEnumInterface value : Resource.values()) {
+            summaryScore.put(value, 0);
+        }
+
     }
 
     // Getter for the nickname
@@ -37,6 +51,11 @@ public class Player {
     private void setSecretObjective(ObjectiveCard card) {
 
         this.secretObjective = card;
+    }
+
+    // Getter for the Map
+    public int getObjectValue(MergeEnumInterface object) {
+        return summaryScore.get(object);
     }
 
     // Method to play a card
