@@ -516,7 +516,7 @@ public class Game {
         corners.put(BOTTOM_LEFT,new Corner(true,null ,null));
         corners.put(BOTTOM_RIGHT,new Corner(true,null ,null));
         resources = new Resource[]{INSECT_KINGDOM};
-        resourcePile.push(new Card(resources, ONE, corners));  
+        resourcePile.push(new Card(resources, ONE, corners));
 
         // Shuffle resourcePile
         Collections.shuffle(resourcePile);
@@ -998,8 +998,21 @@ public class Game {
     }
 
     // Method to play a card
-    public void playCard() {
-        // Implement logic to play a card
+    public void playCard(Player player, int cardChoice, int x, int y, boolean frontSide) {
+        // the 4 int came from controller
+        // cardChoice returns the position of the card in the player's hand
+        // x, y return the possible position in the playArea of the card (the player wants to play)
+        // frontSide returns true if the player chooses the front side (controller will call the method getPlayback)
+        if(player.checkXY(x,y) && player.checkCard(cardChoice, frontSide)){
+                player.playCard(cardChoice, x, y);
+                //update the Player's score
+
+        } else if (!player.checkXY(x,y)) {
+            throw new IllegalArgumentException("Invalid position" + x + y);
+
+        } else {
+            throw new IllegalArgumentException("Invalid Card" + cardChoice);
+        }
     }
 
     // Method to draw a card

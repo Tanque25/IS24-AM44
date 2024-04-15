@@ -59,7 +59,8 @@ public class Player {
     }
 
     // Method to play a card
-    public void playCard(Card card, int x, int y) {
+    public void playCard(int handChoice, int x, int y) {
+        Card card = hand.get(handChoice);
         playArea[x][y] = card;
         hand.remove(card);
     }
@@ -73,6 +74,86 @@ public class Player {
     public int finalScoreCalculator() {
         // Implement logic to calculate the final score
         return 0;
+    }
+
+    public boolean checkXY (int x, int y){
+
+        if (this.playArea[x][y]==null && (x>=0 && x<playArea.length) && (y>=0 && y< playArea[0].length)){
+
+            for(int i=x-1; i<=x+1; i++){
+                for(int j=y-1; j<=y+1 && (j!=y && i!=x); j++){
+                    //there is a card but not in the cross
+
+                    if(this.playArea[i][j]!=null && (i >= 0 && i < playArea.length && j >= 0 && j < playArea[0].length)){
+
+                        if((i!=x && j!=y-1) && (i!=x+1 && j!=y) && (i!=x && j!=y+1) && (i!=x-1 && j!=y)){ //the card is in the diagonal
+
+                            if (checkCorner(x, y, i, j)){
+                                return true;
+                            }
+
+                        }
+                    }
+                }
+
+            }
+        }
+        return false;
+    }
+
+    public boolean checkCard (int cardChoice, boolean side){
+        Card card= hand.get(cardChoice);
+        int nAnimal=0, nFungi=0, nPlant=0, nInsect=0;
+        if (side && (card instanceof GoldCard)) {
+            GoldCard goldCard = (GoldCard) card;
+            for(int i=0; i< goldCard.getCost().length; i++){
+                if (goldCard.getCost()[i] == Resource.ANIMAL_KINGDOM ){
+                    nAnimal++;
+                }
+                if (goldCard.getCost()[i] == Resource.FUNGI_KINGDOM ) {
+                    nFungi++;
+                }
+                if (goldCard.getCost()[i] == Resource.PLANT_KINGDOM ) {
+                    nPlant++;
+                }
+                if (goldCard.getCost()[i] == Resource.INSECT_KINGDOM ) {
+                    nInsect++;
+                }
+            }
+
+            if (nAnimal==summaryScore.get(Resource.ANIMAL_KINGDOM) && nFungi==summaryScore.get(Resource.FUNGI_KINGDOM) &&
+            nPlant==summaryScore.get(Resource.PLANT_KINGDOM) && nInsect==summaryScore.get(Resource.INSECT_KINGDOM)) {
+                return true;
+                // check #cardResource==#playerResource
+            }
+        }
+        return  false;
+    }
+
+    public boolean checkCorner (int x, int y, int h, int k){
+        boolean check = false;
+        Card alreadyPlayedCard = playArea[h][k];
+        if (h<x && k<y){ //case: c'è carta sopra a sx
+            if (alreadyPlayedCard.getCorner(CornerPosition.BOTTOM_RIGHT).getVisibility()) {
+                check = true;
+            }
+        }
+        else if (h<x && k>y) { //case: c'è carta sopra a dx
+            if (alreadyPlayedCard.getCorner(CornerPosition.BOTTOM_LEFT).getVisibility()) {
+                check = true;
+            }
+        }
+        else if (h>x && k<y) { //case: c'è carta sotto a sx
+            if (alreadyPlayedCard.getCorner(CornerPosition.UP_RIGHT).getVisibility()) {
+                check = true;
+            }
+        }
+        else if (h>x && k>y) { //case: c'è carta sotto a dx
+            if (alreadyPlayedCard.getCorner(CornerPosition.UP_LEFT).getVisibility()) {
+                check = true;
+            }
+        }
+        return check;
     }
 
 }
