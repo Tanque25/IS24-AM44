@@ -81,6 +81,12 @@ public class ObjectiveDeck {
         objectiveCards.push(c94);
 
         //card95
+        Resource[][] objective95 = new Resource[3][3];
+        objective90[0][2] = ANIMAL_KINGDOM;
+        objective90[1][1] = INSECT_KINGDOM;
+        objective90[1][0] = INSECT_KINGDOM;
+        PatternObjectiveCard c95 = new PatternObjectiveCard(THREE, objective95);
+        objectiveCards.push(c95);
 
         Collections.shuffle(objectiveCards);
     }
