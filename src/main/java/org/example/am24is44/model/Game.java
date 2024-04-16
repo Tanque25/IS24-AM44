@@ -3,6 +3,7 @@ import static org.example.am24is44.model.CornerPosition.*;
 import static org.example.am24is44.model.Resource.*;
 import static org.example.am24is44.model.CardPoints.*;
 import static org.example.am24is44.model.SpecialObject.*;
+import static org.example.am24is44.model.Board.*;
 
 import java.util.*;
 
@@ -23,7 +24,7 @@ public class Game {
      * Game's constructor
      */
     public Game() {
-        this.board = new Board();
+        this.board = new Board(new HashMap<>());
         this.players = new ArrayList<>();
     }
 
@@ -34,6 +35,11 @@ public class Game {
 
         // Set game status
         status = GameStatus.INITIALIZATION;
+
+        //per ogni player creo una chiave nella board
+        for (Player elemento : players){
+            board.createKey(elemento);
+        }
 
         // StarterCard initialization
         initializeStarterDeck();

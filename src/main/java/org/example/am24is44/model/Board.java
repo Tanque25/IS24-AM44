@@ -1,5 +1,6 @@
 package org.example.am24is44.model;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Board {
@@ -8,27 +9,38 @@ public class Board {
     /**
      * Board's constructor
      */
-    public Board() {
+
+    public Board(Map<Player, Integer> scores) {
         // Constructor implementation
+        this.scores=scores;
+    }
+
+    //crea le chiavi e le impone =0
+    public  void createKey (Player player){
+        scores.put(player,0);
     }
 
     /**
      * Method to update the score for a player
      * @param player
-     * @param score
+     * @param newScore
      */
-    public void updateScore(Player player, int score) {
-        // Method implementation
+    public void updateScore(Player player, int newScore) {
+
+        if (player != null) {
+            scores.put(player, newScore); // Aggiorna l'elemento nella mappa
+        }//else throws exception, nell'if dovrei controllare altre cose, che player ci sia nella mappa...
     }
 
     /**
      * Method to get the score of a player
      * @param player
-     * @return 0
+     * @return scores.get(player)
      */
     public int getScore(Player player) {
         // Method implementation
-        return 0; // Placeholder, replace with actual implementation
+        return scores.get(player);
+        //exception?
     }
-
+    //pion gestione
 }

@@ -6,7 +6,6 @@ public enum SpecialObject implements MergeEnumInterface {
     MANUSCRIPT,
     CORNER;
 
-
     /**
      *
      * @return true
