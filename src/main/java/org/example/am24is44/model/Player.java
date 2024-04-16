@@ -79,24 +79,18 @@ public class Player {
     public boolean checkXY (int x, int y){
 
         if (this.playArea[x][y]==null && (x>=0 && x<playArea.length) && (y>=0 && y< playArea[0].length)){
-
-            for(int i=x-1; i<=x+1; i++){
-                for(int j=y-1; j<=y+1 && (j!=y && i!=x); j++){
-                    //there is a card but not in the cross
-
-                    if(this.playArea[i][j]!=null && (i >= 0 && i < playArea.length && j >= 0 && j < playArea[0].length)){
-
-                        if((i!=x && j!=y-1) && (i!=x+1 && j!=y) && (i!=x && j!=y+1) && (i!=x-1 && j!=y)){ //the card is in the diagonal
-
-                            if (checkCorner(x, y, i, j)){
-                                return true;
-                            }
-
-                        }
-                    }
-                }
-
+            if(playArea[x-1][y]==null && playArea[x][y+1]==null && playArea[x+1][y]==null && playArea[x][y-1]==null){
+                //check x-1, y-1, x+1, y+1 all'interno della matrice
+                if (playArea[x-1][y+1]!=null && checkCorner(x,y,x-1,y+1))
+                    return true;
+                if (playArea[x+1][y+1]!=null && checkCorner(x,y,x+1,y+1))
+                    return true;
+                if (playArea[x+1][y-1]!=null && checkCorner(x,y,x+1,y-1))
+                    return true;
+                if (playArea[x-1][y-1]!=null && checkCorner(x,y,x-1,y-1))
+                    return true;
             }
+
         }
         return false;
     }
@@ -131,29 +125,28 @@ public class Player {
     }
 
     public boolean checkCorner (int x, int y, int h, int k){
-        boolean check = false;
         Card alreadyPlayedCard = playArea[h][k];
         if (h<x && k<y){ //case: c'è carta sopra a sx
             if (alreadyPlayedCard.getCorner(CornerPosition.BOTTOM_RIGHT).getVisibility()) {
-                check = true;
+                return true;
             }
         }
         else if (h<x && k>y) { //case: c'è carta sopra a dx
             if (alreadyPlayedCard.getCorner(CornerPosition.BOTTOM_LEFT).getVisibility()) {
-                check = true;
+                return true;
             }
         }
         else if (h>x && k<y) { //case: c'è carta sotto a sx
             if (alreadyPlayedCard.getCorner(CornerPosition.UP_RIGHT).getVisibility()) {
-                check = true;
+               return true;
             }
         }
         else if (h>x && k>y) { //case: c'è carta sotto a dx
             if (alreadyPlayedCard.getCorner(CornerPosition.UP_LEFT).getVisibility()) {
-                check = true;
+                return true;
             }
         }
-        return check;
+        return false;
     }
 
 }
