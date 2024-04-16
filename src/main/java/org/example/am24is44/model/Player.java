@@ -2,9 +2,6 @@ package org.example.am24is44.model;
 
 import java.util.Map;
 import java.util.List;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.lang.Enum;
 import java.util.HashMap;
 
 public class Player {
@@ -13,10 +10,9 @@ public class Player {
     private Card[][] playArea;
     private ObjectiveCard secretObjective;
     private Map<MergeEnumInterface, Integer> summaryScore;
+
+    private int score;
     //private int achievedObjective;
-
-
-
 
     /**
      * player's constructor
@@ -93,6 +89,10 @@ public class Player {
         hand.remove(card);
     }
 
+    public void setScore(int score) {
+        this.score = score;
+    }
+
     /**
      * Method to draw a card
      * @param card
@@ -105,9 +105,18 @@ public class Player {
      *Method to calculate the final score
      * @return 0
      */
-    public int finalScoreCalculator() {
-        // Implement logic to calculate the final score
-        return 0;
+    public int finalScoreCalculator(List<ObjectiveCard> commonObjectives) {
+
+        int ObjectiveScore=0;
+        for (ObjectiveCard obbiettivo : commonObjectives) {
+            //qui fare un flag per ogni tipo di obbiettivo controllo se rispettato:
+            //per esempio nella se flag=0 --> è un pattern objective e quindi controllo nella play area la disposizione
+            //se è un recource Objective --> controllo le risorse
+            //se è un specialObjective -->controllo gli special object
+            //è un' idea che ho buttato li in 3 min, probabilmente ce ne sono di migliori, magari utilizzando
+            //il polimorfismo?
+        }
+        return ObjectiveScore;
     }
 
     /**

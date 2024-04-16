@@ -3,6 +3,7 @@ import static org.example.am24is44.model.CornerPosition.*;
 import static org.example.am24is44.model.Resource.*;
 import static org.example.am24is44.model.CardPoints.*;
 import static org.example.am24is44.model.SpecialObject.*;
+import static org.example.am24is44.model.Player.*;
 import static org.example.am24is44.model.Board.*;
 
 import java.util.*;
@@ -1124,7 +1125,20 @@ public class Game {
      * @return null
      */
     public Player Winner() {
-        // Implement logic to determine the winner
+        int ObjectiveScore=0, finalScore=0, score=0;
+
+        //biusogna gestire parità??????-->
+
+        //per ogni player calcolo il punteggio finale
+        for (Player elemento : players) {
+            //passo al finalScoreCalculator gli obbiettivi comuni cosi che possa controllare quello
+            ObjectiveScore=elemento.finalScoreCalculator(commonObjectives);
+            score=board.getScore(elemento);
+            elemento.setScore(ObjectiveScore+score);
+        }
+
+        //stabilire il vincitore....
+
         return null; // Placeholder, replace with actual winner
     }
 
