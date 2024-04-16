@@ -5,17 +5,27 @@ import java.util.Map;
 public class Board {
     private Map<Player, Integer> scores;
 
-    // Constructor
+    /**
+     * Board's constructor
+     */
     public Board() {
         // Constructor implementation
     }
 
-    // Method to update the score for a player
+    /**
+     * Method to update the score for a player
+     * @param player
+     * @param score
+     */
     public void updateScore(Player player, int score) {
         // Method implementation
     }
 
-    // Method to get the score of a player
+    /**
+     * Method to get the score of a player
+     * @param player
+     * @return 0
+     */
     public int getScore(Player player) {
         // Method implementation
         return 0; // Placeholder, replace with actual implementation

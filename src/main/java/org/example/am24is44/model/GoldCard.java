@@ -6,7 +6,14 @@ public class GoldCard extends Card {
     private Resource[] cost;
     private SpecialObject multiplier;
 
-    // Constructor
+    /**
+     * GoldCard's constructor
+     * @param resource
+     * @param cardPoints
+     * @param corners
+     * @param cost
+     * @param multiplier
+     */
     public GoldCard(Resource[] resource, CardPoints cardPoints, Map<CornerPosition, Corner> corners, Resource[] cost, SpecialObject multiplier) {
         super(resource, cardPoints, corners);
         this.cost = cost;
@@ -14,12 +21,19 @@ public class GoldCard extends Card {
 
     }
 
-    // Method to get the cost
+    /**
+     * Method to get the cost
+     * @return this.cost
+     */
     public Resource[] getCost() {
         // Method implementation
         return this.cost;
     }
 
+    /**
+     * Method to calculate the card's points
+     * @return extraPoints
+     */
     public Integer calculatePoints(){
         // Da implementare, idealmente si passerà
         // la playArea al metodo per calcolare

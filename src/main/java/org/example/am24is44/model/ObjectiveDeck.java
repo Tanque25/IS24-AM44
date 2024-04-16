@@ -9,12 +9,16 @@ import java.util.Stack;
 public class ObjectiveDeck {
     private Stack<ObjectiveCard> objectiveCards;
 
-    // Constructor
+    /**
+     * ObjectiveDeck's constructor
+     */
     public ObjectiveDeck() {
         this.objectiveCards = new Stack<>();
     }
 
-    // Method to set objective cards
+    /**
+     * Method to set objective cards
+     */
     public void setCards() {
         // Card 87
         Resource[][] objective87 = new Resource[3][3];
@@ -85,12 +89,18 @@ public class ObjectiveDeck {
         Collections.shuffle(objectiveCards);
     }
 
-    // Method to get objective cards
+    /**
+     * Method to get objective cards
+     * @return objectiveCards
+     */
     public Stack<ObjectiveCard> getCards() {
         return objectiveCards;
     }
 
-    // Method to remove an objective card
+    /**
+     * Method to remove an objective card
+     * @return objectiveCards.pop()
+     */
     public ObjectiveCard drawCard() {
 
         if (objectiveCards.empty()) {

@@ -7,6 +7,10 @@ public enum SpecialObject implements MergeEnumInterface {
     CORNER;
 
 
+    /**
+     *
+     * @return true
+     */
     @Override
     public boolean isSpecialObj() {
         return true;

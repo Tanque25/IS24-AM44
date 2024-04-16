@@ -7,6 +7,9 @@ public enum Resource implements MergeEnumInterface{
     INSECT_KINGDOM,
     ;
 
+    /**
+     * @return false
+     */
     @Override
     public boolean isSpecialObj() {
         return false;

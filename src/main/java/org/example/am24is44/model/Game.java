@@ -19,13 +19,17 @@ public class Game {
     private List<ObjectiveCard> commonObjectives;
     private List<Card> visibleCards;
 
-    // Constructor
+    /**
+     * Game's constructor
+     */
     public Game() {
         this.board = new Board();
         this.players = new ArrayList<>();
     }
 
-    // Method to initialize the game
+    /**
+     * Method to initialize the game
+     */
     public void initializeGame() {
 
         // Set game status
@@ -55,7 +59,9 @@ public class Game {
         visibleCards.add(goldPile.pop());
     }
 
-    // Method to initialize ResourcePile
+    /**
+     * Method to initialize ResourcePile
+     */
     private void initializeStarterDeck() {
         this.starterDeck = new Stack<>();
 
@@ -151,7 +157,9 @@ public class Game {
         Collections.shuffle(starterDeck);
     }
 
-    // Method to initialize ResourcePile
+    /**
+     * Method to initialize ResourcePile
+     */
     private void initializeResourcePile() {
         this.resourcePile = new Stack<>();
 
@@ -522,7 +530,9 @@ public class Game {
         Collections.shuffle(resourcePile);
     }
 
-    // Method to initialize GoldPile
+    /**
+     * Method to initialize GoldPile
+     */
     private void initializeGoldPile() {
         this.goldPile = new Stack<>();
 
@@ -932,7 +942,10 @@ public class Game {
 
     }
 
-    // Method to add a player to the game
+    /**
+     * Method to add a player to the game
+     * @param nickname
+     */
     public void addPlayer(String nickname) {
 
         // Istantiate a new player object
@@ -958,12 +971,18 @@ public class Game {
         this.players.add(player);
     }
 
-    // Method to get the current player
+    /**
+     * Method to get the current player
+     * @return currentPlayer
+     */
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
 
-    // Method to choose secret objectives
+    /**
+     * Method to choose secret objectives
+     * @param player
+     */
     public void chooseSecretObjective(Player player) {
         // Prepare two objective options
         ObjectiveCard objectiveOption1 = objectiveDeck.drawCard();
@@ -979,7 +998,9 @@ public class Game {
         // player.setSecretObjective(chosenObjective);
     }
 
-    // Method to choose starting side
+    /**
+     * Method to choose starting side
+     */
     public void chooseStartingSide() {
         // Prepare the starter card
         StarterCard starterCard = starterDeck.pop();
@@ -991,13 +1012,23 @@ public class Game {
         // Once the player has chosen, update the player's playArea
     }
 
-    // Getter for common objectives
+    /**
+     * Getter for common objectives
+     * @return commonObjectives
+     */
     public List<ObjectiveCard> getCommonObjectives() {
         return commonObjectives;
 
     }
 
-    // Method to play a card
+    /**
+     * Method to play a card
+     * @param player
+     * @param cardChoice
+     * @param x
+     * @param y
+     * @param frontSide
+     */
     public void playCard(Player player, int cardChoice, int x, int y, boolean frontSide) {
         // the 4 int came from controller
         // cardChoice returns the position of the card in the player's hand
@@ -1015,7 +1046,11 @@ public class Game {
         }
     }
 
-    // Method to draw a card
+    /**
+     * Method to draw a card
+     * @param player
+     * @param choice
+     */
 
     public void drawCard(Player player, int choice) {
 
@@ -1071,12 +1106,18 @@ public class Game {
 
     }
 
-    // Getter for visible cards
+    /**
+     * Getter for visible cards
+     * @return visibleCards
+     */
     public List<Card> getVisibleCards() {
         return visibleCards;
     }
 
-    // Method to determine the winner
+    /**
+     * Method to determine the winner
+     * @return null
+     */
     public Player Winner() {
         // Implement logic to determine the winner
         return null; // Placeholder, replace with actual winner

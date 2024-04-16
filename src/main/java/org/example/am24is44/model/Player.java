@@ -16,7 +16,12 @@ public class Player {
     //private int achievedObjective;
 
 
-    // Constructor
+
+
+    /**
+     * player's constructor
+     * @param nickname
+     */
     public Player(String nickname) {
         this.nickname = nickname;
         this.playArea = new Card[81][81];
@@ -32,50 +37,85 @@ public class Player {
 
     }
 
-    // Getter for the nickname
+    /**
+     * Getter for the nickname
+     * @return nickname
+     */
     public String getNickname() {
         return nickname;
     }
 
-    // Method to initialize the player's hand
+
+    /**
+     * Method to initialize the player's hand
+     * @param starterHand
+     */
     public void initializeHand(List<Card> starterHand) {
         this.hand = starterHand;
     }
 
-    // Method to initialize the player's play area
+
+    /**
+     * Method to initialize the player's play area
+     * @param starterCard
+     */
     private void initializePlayArea(StarterCard starterCard) {
         playArea[41][41] = starterCard;
     }
 
-    // Method to set the player's secret objective
+    /**
+     * Method to set the player's secret objective
+     * @param card
+     */
     private void setSecretObjective(ObjectiveCard card) {
 
         this.secretObjective = card;
     }
 
-    // Getter for the Map
+    /**
+     * Getter for the Map
+     * @param object
+     * @return summaryScore.get(object)
+     */
     public int getObjectValue(MergeEnumInterface object) {
         return summaryScore.get(object);
     }
 
-    // Method to play a card
+    /**
+     * Method to play a card
+     * @param handChoice
+     * @param x
+     * @param y
+     */
     public void playCard(int handChoice, int x, int y) {
         Card card = hand.get(handChoice);
         playArea[x][y] = card;
         hand.remove(card);
     }
 
-    // Method to draw a card
+    /**
+     * Method to draw a card
+     * @param card
+     */
     public void drawCard(Card card) {
         hand.add(card);
     }
 
-    // Method to calculate the final score
+    /**
+     *Method to calculate the final score
+     * @return 0
+     */
     public int finalScoreCalculator() {
         // Implement logic to calculate the final score
         return 0;
     }
 
+    /**
+     * method to check the possible position of the card the player wants to play
+     * @param x
+     * @param y
+     * @return boolean
+     */
     public boolean checkXY (int x, int y){
 
         if (this.playArea[x][y]==null && (x>=0 && x<playArea.length) && (y>=0 && y< playArea[0].length)){
@@ -95,6 +135,12 @@ public class Player {
         return false;
     }
 
+    /**
+     * method to check if the card the player wants to play is playable
+     * @param cardChoice
+     * @param side
+     * @return boolean
+     */
     public boolean checkCard (int cardChoice, boolean side){
         Card card= hand.get(cardChoice);
         int nAnimal=0, nFungi=0, nPlant=0, nInsect=0;
@@ -124,6 +170,14 @@ public class Player {
         return  false;
     }
 
+    /**
+     * method to check if the found card has visible corner
+     * @param x
+     * @param y
+     * @param h
+     * @param k
+     * @return boolean
+     */
     public boolean checkCorner (int x, int y, int h, int k){
         Card alreadyPlayedCard = playArea[h][k];
         if (h<x && k<y){ //case: c'è carta sopra a sx
