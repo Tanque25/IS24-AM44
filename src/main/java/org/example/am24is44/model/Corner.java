@@ -6,7 +6,12 @@ public class Corner {
     private SpecialObject specialObject;
     private boolean covered;
 
-    // Constructor
+    /**
+     * Corner's constructor
+     * @param visibility
+     * @param resource
+     * @param specialObject
+     */
     public Corner(boolean visibility, Resource resource,SpecialObject specialObject) {
         this.visibility = visibility;
         this.resource = resource;
@@ -14,17 +19,26 @@ public class Corner {
         this.covered = false;
     }
 
-    // Method to get visibility
+    /**
+     * Method to get visibility
+     * @return visibility
+     */
     public boolean getVisibility() {
         return visibility;
     }
 
-    // Method to get resource
+    /**
+     * Method to get resource
+     * @return resource
+     */
     public Resource getResource() {
         return resource;
     }
 
-    // Method to get special object
+    /**
+     * Method to get special object
+     * @return specialObject
+     */
     public SpecialObject getSpecialObject() {
         return specialObject;
     }

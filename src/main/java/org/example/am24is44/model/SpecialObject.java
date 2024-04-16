@@ -1,8 +1,18 @@
 package org.example.am24is44.model;
 
-public enum SpecialObject {
+public enum SpecialObject implements MergeEnumInterface {
     QUILL,
     INKWELL,
     MANUSCRIPT,
-    CORNER
+    CORNER;
+
+
+    /**
+     *
+     * @return true
+     */
+    @Override
+    public boolean isSpecialObj() {
+        return true;
+    }
 }
