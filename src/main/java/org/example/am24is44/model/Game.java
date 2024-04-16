@@ -36,11 +36,6 @@ public class Game {
         // Set game status
         status = GameStatus.INITIALIZATION;
 
-        //per ogni player creo una chiave nella board
-        for (Player elemento : players){
-            board.createKey(elemento);
-        }
-
         // StarterCard initialization
         initializeStarterDeck();
 
@@ -960,6 +955,10 @@ public class Game {
         // Create the player hand
         List<Card> hand = null;
         Card card;
+
+        //per ogni player creo una chiave nella board
+            board.createKey(player);
+
 
         for (int i = 1; i <= 2; i++){
             card = resourcePile.pop();
