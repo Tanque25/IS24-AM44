@@ -541,6 +541,7 @@ public class Game {
         Resource[] resources;
         Map<CornerPosition, Corner> corners;
         Resource[] cost;
+        SpecialObject specialObject;
 
         //card 41
         corners = new HashMap<>();

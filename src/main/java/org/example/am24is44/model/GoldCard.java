@@ -4,7 +4,7 @@ import java.util.Map;
 
 public class GoldCard extends Card {
     private Resource[] cost;
-    private SpecialObject multiplier;
+    private SpecialObject specialObject;
 
     /**
      * GoldCard's constructor
@@ -17,7 +17,7 @@ public class GoldCard extends Card {
     public GoldCard(Resource[] resource, CardPoints cardPoints, Map<CornerPosition, Corner> corners, Resource[] cost, SpecialObject multiplier) {
         super(resource, cardPoints, corners);
         this.cost = cost;
-        this.multiplier = multiplier;
+        this.specialObject = multiplier;
 
     }
 

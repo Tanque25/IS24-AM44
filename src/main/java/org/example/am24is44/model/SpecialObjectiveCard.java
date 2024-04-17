@@ -9,7 +9,11 @@ public class SpecialObjectiveCard extends ObjectiveCard {
      * @param objective
      */
     public SpecialObjectiveCard(CardPoints cardPoints, SpecialObject[] objective) {
-        super(cardPoints);
+        super(cardPoints,3);
         this.objective = objective;
+    }
+
+    public SpecialObject[] getObjective() {
+        return objective;
     }
 }

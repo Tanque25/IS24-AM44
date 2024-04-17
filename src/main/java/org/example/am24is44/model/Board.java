@@ -17,6 +17,7 @@ public class Board {
 
     //crea le chiavi e le impone =0
     public  void createKey (Player player){
+
         scores.put(player,0);
     }
 
