@@ -6,7 +6,6 @@ public enum SpecialObject implements MergeEnumInterface {
     MANUSCRIPT,
     CORNER;
 
-
     /**
      * Method inherited from the MergeEnumInterface, which indicates if the object is a special object
      * @return boolean true because this object is considered a special object

@@ -3,6 +3,8 @@ import static org.example.am24is44.model.CornerPosition.*;
 import static org.example.am24is44.model.Resource.*;
 import static org.example.am24is44.model.CardPoints.*;
 import static org.example.am24is44.model.SpecialObject.*;
+import static org.example.am24is44.model.Player.*;
+import static org.example.am24is44.model.Board.*;
 
 import java.util.*;
 
@@ -23,7 +25,7 @@ public class Game {
      * Game's constructor
      */
     public Game() {
-        this.board = new Board();
+        this.board = new Board(new HashMap<>());
         this.players = new ArrayList<>();
     }
 
@@ -547,6 +549,7 @@ public class Game {
         Resource[] resources;
         Map<CornerPosition, Corner> corners;
         Resource[] cost;
+        SpecialObject specialObject;
 
         //card 41
         corners = new HashMap<>();
@@ -963,6 +966,10 @@ public class Game {
         List<Card> hand = null;
         Card card;
 
+        //per ogni player creo una chiave nella board
+            board.createKey(player);
+
+
         for (int i = 1; i <= 2; i++){
             card = resourcePile.pop();
             hand.add(card);
@@ -1135,7 +1142,20 @@ public class Game {
      * @return null
      */
     public Player Winner() {
-        // Implement logic to determine the winner
+        int ObjectiveScore=0, finalScore=0, score=0;
+
+        //biusogna gestire parità??????-->
+
+        //per ogni player calcolo il punteggio finale
+        for (Player elemento : players) {
+            //passo al finalScoreCalculator gli obbiettivi comuni cosi che possa controllare quello
+            ObjectiveScore=elemento.finalScoreCalculator(commonObjectives);
+            score=board.getScore(elemento);
+            elemento.setScore(ObjectiveScore+score);
+        }
+
+        //stabilire il vincitore....
+
         return null; // Placeholder, replace with actual winner
     }
 

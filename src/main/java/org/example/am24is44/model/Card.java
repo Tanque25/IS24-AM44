@@ -87,4 +87,6 @@ public class Card {
 
     public boolean isGoldCard(){return false;}
 
+
+
 }

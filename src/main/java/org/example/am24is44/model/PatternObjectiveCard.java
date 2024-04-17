@@ -9,7 +9,11 @@ public class PatternObjectiveCard extends ObjectiveCard {
      * @param objective
      */
     public PatternObjectiveCard(CardPoints cardPoints, Resource[][] objective) {
-        super(cardPoints);
+        super(cardPoints,1);
         this.objective = objective;
+    }
+
+    public Resource[][] getObjective() {
+        return objective;
     }
 }

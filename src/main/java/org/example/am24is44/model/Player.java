@@ -2,9 +2,6 @@ package org.example.am24is44.model;
 
 import java.util.Map;
 import java.util.List;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.lang.Enum;
 import java.util.HashMap;
 
 public class Player {
@@ -13,10 +10,9 @@ public class Player {
     private Card[][] playArea;
     private ObjectiveCard secretObjective;
     private Map<MergeEnumInterface, Integer> summaryScore;
+    private int score;
+
     //private int achievedObjective;
-
-
-
 
     /**
      * Player's constructor
@@ -105,6 +101,10 @@ public class Player {
         hand.remove(card);
     }
 
+    public void setScore(int score) {
+        this.score = score;
+    }
+
     /**
      * Method to draw a card
      * @param card the player has drawn
@@ -117,9 +117,48 @@ public class Player {
      *Method to calculate the final score
      * @return 0
      */
-    public int finalScoreCalculator() {
-        // Implement logic to calculate the final score
-        return 0;
+    public int finalScoreCalculator(List<ObjectiveCard> commonObjectives) {
+
+        int ObjectiveScore=0,y=0,counter=0;
+        for (ObjectiveCard obbiettivo : commonObjectives) {
+
+            //PatternObjectiveCard
+            if(obbiettivo.getFlag()==1){
+                //PatterObjective faccio per ultimo
+            }
+
+            //RecourceObjectiveCard
+            if(obbiettivo.getFlag()==2){
+                //casto come sottoclasse
+                ResourceObjectiveCard sottoObbiettivo = (ResourceObjectiveCard) obbiettivo;
+                //scorro matrice riga per riga
+                for(int i=0;i<playArea[y].length;i++) {
+                    //cosa fa playarea.lenght --> da modificare e metteere numero tot.
+                    //se risorsi sono ugualli allora:
+                    if(playArea[i][y].getResource()==sottoObbiettivo.getObjective() && counter<3){
+                        //contatore per carte
+                        counter++;
+                    } else if (counter>=3) {
+                        ObjectiveScore=ObjectiveScore+2;
+                    }
+                }
+            }
+            //specialObjectiveCard
+            if(obbiettivo.getFlag()==3){
+                //devo castare come sottoclasse
+                assert obbiettivo instanceof SpecialObjectiveCard; //assert
+                SpecialObjectiveCard sottoObbiettivo3 = (SpecialObjectiveCard) obbiettivo;
+                //scorro matrice riga per riga
+                for(int i=0;i<playArea[y].length;i++) {
+                    //cosa fa playarea.lenght --> da modificare e metteere numero tot.
+                    //se risorsi sono ugualli allora:
+                    //se è playArea è una goldCard --> allora controllo lo specialObject--> qui bisogna spostare
+                    //specialObjective nelle Card e nelle recource imporlo uguale a null, cosi posso controllare
+                    //piu facilmente
+                }
+            }
+        }
+        return ObjectiveScore;
     }
 
     /**
