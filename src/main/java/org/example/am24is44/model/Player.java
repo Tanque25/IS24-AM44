@@ -53,15 +53,11 @@ public class Player {
 
     /**
      * Method to initialize the player's play area
-     * @param starterCard
+     * @param starterCard chosen by the player
      */
-    public void initializePlayArea(StarterCard starterCard, int i, int j) {
-        playArea[i][j] = starterCard;
-    }
-
-    /*private void initializePlayArea(StarterCard starterCard) {
+     public void initializePlayArea(StarterCard starterCard) {
         playArea[41][41] = starterCard;
-    }*/
+    }
 
     /**
      * Method to set the player's secret objective
@@ -70,13 +66,6 @@ public class Player {
     public void setSecretObjective(ObjectiveCard card) {
 
         this.secretObjective = card;
-    }
-
-    /**
-     * Method to get the playArea
-     */
-    public Card[][] getPlayArea() {
-        return playArea;
     }
 
 
@@ -114,7 +103,7 @@ public class Player {
     }
 
     /**
-     *Method to calculate the final score
+     * Method to calculate the final score
      * @return 0
      */
     public int finalScoreCalculator(List<ObjectiveCard> commonObjectives) {

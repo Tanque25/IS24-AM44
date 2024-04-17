@@ -1020,16 +1020,14 @@ public class Game {
     /**
      * Method for choosing the side of the started card and playing it in the empty play area
      * @param player current player
-     * @param x returns the coordinate x in the play area where the player wants to play his card
-     * @param y returns the coordinate y in the play area where the player wants to play his card
+     * @param side returns true if the player chooses the front side
      */
-    public void chooseStartingSide(Player player, int x, int y) {
+    public void chooseStartingSide(Player player, boolean side) {
         // Prepare the starter card
 
         StarterCard starterCard = starterDeck.pop();
 
-        player.initializePlayArea(starterCard, x,y);
-        //la sto finendo
+        player.initializePlayArea(starterCard);
         // Update player's score
     }
 
