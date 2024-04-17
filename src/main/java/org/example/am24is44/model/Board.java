@@ -14,7 +14,7 @@ public class Board {
 
     /**
      * Method to update the score for a player
-     * @param player
+     * @param player current player
      * @param score
      */
     public void updateScore(Player player, int score) {
@@ -23,7 +23,7 @@ public class Board {
 
     /**
      * Method to get the score of a player
-     * @param player
+     * @param player current player
      * @return 0
      */
     public int getScore(Player player) {

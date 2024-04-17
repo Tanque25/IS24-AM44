@@ -98,13 +98,15 @@ public class ObjectiveDeck {
     }
 
     /**
-     * Method to remove an objective card
-     * @return objectiveCards.pop()
+     * Method to draw an objective card from the objective deck
+     * @return the objective card drawn from the top of the deck
+     *
+     * @throws IllegalArgumentException if the deck is empty and no cards can be drawn
      */
-    public ObjectiveCard drawCard() {
+    public ObjectiveCard drawCard() throws IllegalArgumentException {
 
         if (objectiveCards.empty()) {
-            // Manage the empty deck case
+            throw new IllegalArgumentException("There are no more objective cards to draw");
         }
 
         // pop a card and return it

@@ -42,4 +42,8 @@ public class GoldCard extends Card {
         return extraPoints;
     }
 
+    @Override
+    public boolean isGoldCard() {
+        return true;
+    }
 }

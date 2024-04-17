@@ -8,8 +8,8 @@ public enum SpecialObject implements MergeEnumInterface {
 
 
     /**
-     *
-     * @return true
+     * Method inherited from the MergeEnumInterface, which indicates if the object is a special object
+     * @return boolean true because this object is considered a special object
      */
     @Override
     public boolean isSpecialObj() {

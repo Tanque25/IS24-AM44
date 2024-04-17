@@ -13,7 +13,7 @@ public abstract class ObjectiveCard {
 
     /**
      * Method to get the card points
-     * @return this.cardPoints
+     * @return cardPoints
      */
     public CardPoints getCardPoints() {
         return this.cardPoints;

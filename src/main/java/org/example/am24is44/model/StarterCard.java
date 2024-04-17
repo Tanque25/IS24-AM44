@@ -16,4 +16,13 @@ public class StarterCard extends Card{
         super(resource, cardPoints, corners);
         this.backCorners = backCorners;
     }
+
+    /**
+     * Method inherited from the Card class, which indicates if the card is a gold card
+     * @return boolean false because a started card isn't a gold card
+     */
+    @Override
+    public boolean isGoldCard() {
+        return false;
+    }
 }

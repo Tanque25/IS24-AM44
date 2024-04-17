@@ -4,7 +4,7 @@ public class SpecialObjectiveCard extends ObjectiveCard {
     private SpecialObject[] objective;
 
     /**
-     * SpecialObjectiveCar' constructor
+     * SpecialObjectiveCard's constructor
      * @param cardPoints
      * @param objective
      */

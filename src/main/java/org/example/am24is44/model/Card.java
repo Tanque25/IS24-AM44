@@ -8,13 +8,14 @@ public class Card {
     private Resource[] resource;
 
     private Map<CornerPosition, Corner> corners;
-    private Map<CornerPosition, Card> connections;
+    private Map<CornerPosition, Card> connections; //da vedere
     private CardPoints cardPoints;
     private boolean playedBack;
     //private int i;
 
+
     /**
-     * card's constructor
+     * Card's constructor
      * @param resource
      * @param cardPoints
      * @param corners
@@ -78,10 +79,12 @@ public class Card {
 
     /**
      * Method to check if card has been played back
-     * @return playedBack
+     * @return playedBack a boolean
      */
     public boolean playedBack() {
         return playedBack;
     }
+
+    public boolean isGoldCard(){return false;}
 
 }

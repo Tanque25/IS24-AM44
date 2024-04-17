@@ -4,8 +4,9 @@ package org.example.am24is44.model;
 interface MergeEnumInterface{
 
     /**
+     * Checks if the object is a specialObject.
+     * @return true if the object is a specialObject, false otherwise.
      *
-     * @return boolean
      */
     public boolean isSpecialObj();
 }

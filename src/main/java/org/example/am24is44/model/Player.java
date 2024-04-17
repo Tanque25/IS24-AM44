@@ -19,8 +19,8 @@ public class Player {
 
 
     /**
-     * player's constructor
-     * @param nickname
+     * Player's constructor
+     * @param nickname the nickname of the player
      */
     public Player(String nickname) {
         this.nickname = nickname;
@@ -59,18 +59,30 @@ public class Player {
      * Method to initialize the player's play area
      * @param starterCard
      */
-    private void initializePlayArea(StarterCard starterCard) {
-        playArea[41][41] = starterCard;
+    public void initializePlayArea(StarterCard starterCard, int i, int j) {
+        playArea[i][j] = starterCard;
     }
+
+    /*private void initializePlayArea(StarterCard starterCard) {
+        playArea[41][41] = starterCard;
+    }*/
 
     /**
      * Method to set the player's secret objective
-     * @param card
+     * @param card is an objectiveCard
      */
-    private void setSecretObjective(ObjectiveCard card) {
+    public void setSecretObjective(ObjectiveCard card) {
 
         this.secretObjective = card;
     }
+
+    /**
+     * Method to get the playArea
+     */
+    public Card[][] getPlayArea() {
+        return playArea;
+    }
+
 
     /**
      * Getter for the Map
@@ -83,9 +95,9 @@ public class Player {
 
     /**
      * Method to play a card
-     * @param handChoice
-     * @param x
-     * @param y
+     * @param handChoice returns the position of the card in the player's hand (player's choice)
+     * @param x x coordinate in the play area
+     * @param y y coordinate in the play area
      */
     public void playCard(int handChoice, int x, int y) {
         Card card = hand.get(handChoice);
@@ -95,7 +107,7 @@ public class Player {
 
     /**
      * Method to draw a card
-     * @param card
+     * @param card the player has drawn
      */
     public void drawCard(Card card) {
         hand.add(card);
@@ -112,9 +124,9 @@ public class Player {
 
     /**
      * method to check the possible position of the card the player wants to play
-     * @param x
-     * @param y
-     * @return boolean
+     * @param x possible x coordinate (in the play area) where the player wants to put the card
+     * @param y possible y coordinate (in the play area) where the player wants to put the card
+     * @return boolean true if the player can play the card in the position he chose
      */
     public boolean checkXY (int x, int y){
 
@@ -137,14 +149,14 @@ public class Player {
 
     /**
      * method to check if the card the player wants to play is playable
-     * @param cardChoice
-     * @param side
-     * @return boolean
+     * @param cardChoice returns the position of the card in the player's hand (player's choice)
+     * @param side returns false if the card is played
+     * @return boolean true if the player can play the card he chose
      */
     public boolean checkCard (int cardChoice, boolean side){
         Card card= hand.get(cardChoice);
         int nAnimal=0, nFungi=0, nPlant=0, nInsect=0;
-        if (side && (card instanceof GoldCard)) {
+        if (side && (card.isGoldCard())) {
             GoldCard goldCard = (GoldCard) card;
             for(int i=0; i< goldCard.getCost().length; i++){
                 if (goldCard.getCost()[i] == Resource.ANIMAL_KINGDOM ){
@@ -172,11 +184,11 @@ public class Player {
 
     /**
      * method to check if the found card has visible corner
-     * @param x
-     * @param y
-     * @param h
-     * @param k
-     * @return boolean
+     * @param x possible x coordinate (of the play area) of the card the player wants to play
+     * @param y possible y coordinate (of the play area) of the card the player wants to play
+     * @param h first coordinate of the found card
+     * @param k second coordinate of the found card
+     * @return boolean true if the found card has only a visible corner, false otherwise
      */
     public boolean checkCorner (int x, int y, int h, int k){
         Card alreadyPlayedCard = playArea[h][k];

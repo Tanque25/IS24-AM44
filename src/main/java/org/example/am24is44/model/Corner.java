@@ -8,7 +8,7 @@ public class Corner {
 
     /**
      * Corner's constructor
-     * @param visibility
+     * @param visibility true if the corner is visible
      * @param resource
      * @param specialObject
      */

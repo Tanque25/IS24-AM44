@@ -29,6 +29,14 @@ public class Game {
 
     /**
      * Method to initialize the game
+     * This method sets up the game environment by performing the following tasks:
+     * - Sets the game status to initialization.
+     * - Initializes the starter deck with starter cards.
+     * - Initializes the objective deck and sets its cards.
+     * - Initializes the resourcePile.
+     * - Initializes the goldPile.
+     * - Draws two common objectives from the objective deck.
+     * - Draws four visible cards from the resource and gold piles.
      */
     public void initializeGame() {
 
@@ -60,7 +68,7 @@ public class Game {
     }
 
     /**
-     * Method to initialize ResourcePile
+     * Method to initialize the ResourcePile
      */
     private void initializeStarterDeck() {
         this.starterDeck = new Stack<>();
@@ -158,7 +166,7 @@ public class Game {
     }
 
     /**
-     * Method to initialize ResourcePile
+     * Method to initialize the ResourcePile
      */
     private void initializeResourcePile() {
         this.resourcePile = new Stack<>();
@@ -531,7 +539,7 @@ public class Game {
     }
 
     /**
-     * Method to initialize GoldPile
+     * Method to initialize the GoldPile
      */
     private void initializeGoldPile() {
         this.goldPile = new Stack<>();
@@ -943,8 +951,8 @@ public class Game {
     }
 
     /**
-     * Method to add a player to the game
-     * @param nickname
+     * Method to add a player to the game with the specified nickname
+     * @param nickname returns the nickname of the player to be added
      */
     public void addPlayer(String nickname) {
 
@@ -980,41 +988,47 @@ public class Game {
     }
 
     /**
-     * Method to choose secret objectives
-     * @param player
+     * Method to draw and choose one of the two secret objectives
+     * @param player current Player
+     * @param objChoice returns the player's choice that represents one of the two objective cards
+     *
+     * @throws IllegalArgumentException for invalid choice of the player
      */
-    public void chooseSecretObjective(Player player) {
+    public void chooseSecretObjective(Player player, int objChoice) throws IllegalArgumentException {
         // Prepare two objective options
         ObjectiveCard objectiveOption1 = objectiveDeck.drawCard();
         ObjectiveCard objectiveOption2 = objectiveDeck.drawCard();
 
-        // Display options to the player via the view - COULD BE SOMETHING LIKE THIS
-        // view.displayObjectiveOptions(player, objectiveOption1, objectiveOption2);
+        if(objChoice == 0){ //player choose objCard 1
+            player.setSecretObjective(objectiveOption1);
 
-        // Wait for player input (handled by the controller)
+        } else if (objChoice == 1) { // player choose objCard 2
+            player.setSecretObjective(objectiveOption2);
 
-        // Once player has chosen, update the player's secret objective - COULD BE SOMETHING LIKE THIS
-        // ObjectiveCard chosenObjective = controller.getPlayerInput();
-        // player.setSecretObjective(chosenObjective);
+        } else
+            throw new IllegalArgumentException("Invalid choice" + objChoice);
+
     }
 
     /**
-     * Method to choose starting side
+     * Method for choosing the side of the started card and playing it in the empty play area
+     * @param player current player
+     * @param x returns the coordinate x in the play area where the player wants to play his card
+     * @param y returns the coordinate y in the play area where the player wants to play his card
      */
-    public void chooseStartingSide() {
+    public void chooseStartingSide(Player player, int x, int y) {
         // Prepare the starter card
+
         StarterCard starterCard = starterDeck.pop();
 
-        // Display to the player both sides of the starter card via the view
-
-        // Wait for the player choice
-
-        // Once the player has chosen, update the player's playArea
+        player.initializePlayArea(starterCard, x,y);
+        //la sto finendo
+        // Update player's score
     }
 
     /**
      * Getter for common objectives
-     * @return commonObjectives
+     * @return commonObjectives of the players
      */
     public List<ObjectiveCard> getCommonObjectives() {
         return commonObjectives;
@@ -1023,16 +1037,16 @@ public class Game {
 
     /**
      * Method to play a card
-     * @param player
-     * @param cardChoice
-     * @param x
-     * @param y
-     * @param frontSide
+     * @param player current player
+     * @param cardChoice returns the position of the card in the player's hand (player's choice)
+     * @param x returns the possible x coordinate of the play area of the card (the player wants to play)
+     * @param y returns the possible y coordinate of the play area of the card (the player wants to play)
+     * @param frontSide returns true if the player chooses the front side
+     *
+     * @throws IllegalArgumentException for invalid position or invalid choice of the card to play
      */
-    public void playCard(Player player, int cardChoice, int x, int y, boolean frontSide) {
+    public void playCard(Player player, int cardChoice, int x, int y, boolean frontSide) throws IllegalArgumentException {
         // the 4 int came from controller
-        // cardChoice returns the position of the card in the player's hand
-        // x, y return the possible position in the playArea of the card (the player wants to play)
         // frontSide returns true if the player chooses the front side (controller will call the method getPlayback)
         if(player.checkXY(x,y) && player.checkCard(cardChoice, frontSide)){
                 player.playCard(cardChoice, x, y);
@@ -1048,11 +1062,13 @@ public class Game {
 
     /**
      * Method to draw a card
-     * @param player
-     * @param choice
+     * @param player current player
+     * @param choice returns the choice of deck from which the player wants to draw
+     *
+     * @throws IllegalArgumentException for invalid choice or empty Pile
      */
 
-    public void drawCard(Player player, int choice) {
+    public void drawCard(Player player, int choice) throws IllegalArgumentException {
 
         // The controller manages the gameflow, so it will check that the player first plays the card
         // Then he draws another one
@@ -1101,9 +1117,9 @@ public class Game {
             else
                 throw new IllegalArgumentException("Invalid choice" + choice);
 
-            return;
             }
-
+        else
+            throw new IllegalStateException("One of the piles is empty. Impossible to draw");
     }
 
     /**
