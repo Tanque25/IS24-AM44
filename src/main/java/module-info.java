@@ -1,9 +1,9 @@
-module org.example.am24is44 {
+module org.example.myversion {
     requires javafx.controls;
     requires javafx.fxml;
 
     requires org.controlsfx.controls;
 
-    opens org.example.am24is44 to javafx.fxml;
-    exports org.example.am24is44;
+    opens org.example.myversion to javafx.fxml;
+    exports org.example.myversion;
 }
