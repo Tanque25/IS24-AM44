@@ -21,6 +21,7 @@ class ResourceDeckTest {
      */
     @BeforeEach
     void setUp() {
+
         // Creates a new ResourceDeck instance
         resourceDeck = new ResourceDeck();
 
@@ -34,6 +35,7 @@ class ResourceDeckTest {
     @Test
     void drawCard() {
         // Verifies that the initial deck is not empty
+
         assertFalse(resourceDeck.getResourceDeck().isEmpty());
 
         // Draws a card from the deck
@@ -58,6 +60,7 @@ class ResourceDeckTest {
     void getResourceDeck() {
         // Verifies that the returned deck is not null
         assertNotNull(resourceDeck.getResourceDeck());
+
 
         // Verifies that the returned deck is the same object as the internal one
         assertSame(resourceDeck.getResourceDeck(), resourceDeck.getResourceDeck());
