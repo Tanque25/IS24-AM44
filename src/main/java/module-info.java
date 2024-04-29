@@ -3,7 +3,7 @@ module org.example.myversion {
     requires javafx.fxml;
 
     requires org.controlsfx.controls;
-    requires java.rmi;
+    requires java.json;
 
     opens org.example.myversion to javafx.fxml;
     exports org.example.myversion;
