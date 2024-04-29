@@ -68,8 +68,8 @@ public class Game {
         players.add(tmp);
         board.addPlayer(tmp);
 
-        if (!players.isEmpty()) { //il primo giocatore è scelto a caso--> fare una shuffle per scegliere il primo
-            currentPlayer = players.get(0);
+        if (!players.isEmpty()) {
+            currentPlayer = players.getFirst();
         }
     }
 
