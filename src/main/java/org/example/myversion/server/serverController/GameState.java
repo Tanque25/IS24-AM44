@@ -2,7 +2,8 @@ package org.example.myversion.server.serverController;
 
 public enum GameState  {
     INITIALIZATION,
-    LOGIN,
+    LOGIN, //cosa succede nella fase di login?
     IN_GAME,
+
     END
 }
