@@ -5,6 +5,7 @@ import org.example.myversion.server.model.Coordinates;
 import org.example.myversion.server.model.Game;
 import org.example.myversion.server.model.Player;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
+import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -52,16 +53,20 @@ public class GameController {
      * if isFirstPlayer is true the player chooses maxPlayerNumber (then isFirstPlayer became false), otherwise, each player's nickname will be checked,
      * there will be an update of the player's list
      * @param nickname the name of the player who wants to enter the game
-     * @param isFirstPlayer true if he is the first player to enter
      */
-    public void addPlayer(String nickname, Boolean isFirstPlayer){
+    public void addPlayer(String nickname){
         int numCurrentPlayers = 0;
         if (isFirstPlayer){
-
+            game.newPlayer(nickname);
+            numCurrentPlayers++;
+            isFirstPlayer = false;
         }
         else {
+            if(checkNickname(nickname)==1 && numCurrentPlayers<=maxPlayerNumber){
+                game.newPlayer(nickname);
+                numCurrentPlayers++;
+            }
         }
-
     }
 
     /**
@@ -70,22 +75,20 @@ public class GameController {
      * @param nickname the username chosen by the player
      * @return a number representing the availability of the username
      */
-    public int checkNickname(String nickname, boolean isFirstPlayer){
-        if (!isFirstPlayer){
-            /*for (Player player : players) {
-                if (player.getUsername().equals(username)) {
-                    if (disconnectedPlayers.contains(username)) {
-                        disconnectedPlayers.remove(username);
+    public int checkNickname(String nickname){
+            for (Player player : game.getPlayers()) {
+                if (player.getNickname().equals(nickname)) {
+                    if (disconnectedPlayers.contains(nickname)) {
+                        disconnectedPlayers.remove(nickname);
                         return -1;
                     }
                     return 0;
                 }
             }
             return 1;
-            */
-        }
-        return 0;
     }
+
+
 
     /**
      * Notifies the server that a client is still connected.
@@ -117,15 +120,19 @@ public class GameController {
         return isFirstPlayer;
     }
 
+
     /**
      * It checks if the player's number chosen by the first player is correct
      * @return true if the player's number chosen by the first player is correct
+     * @throws InvalidChoiceException if the number of players is not within the valid range
      */
-    public boolean checkNumberPlayer(int numPlayer){
-        if (numPlayer >= 0 && numPlayer <= maxPlayerNumber)
+    public boolean chooseNumberPlayer(int numPlayer) throws InvalidChoiceException{
+        if(numPlayer>=2 && numPlayer<=4) {
             return true;
-        else
-            return false;
+        }
+        else {
+            throw new InvalidChoiceException("Invalid number of players. Please change the number.");
+        }
     }
 
     /**
@@ -140,6 +147,13 @@ public class GameController {
      * If isGameSaved is false this method starts a new game, resetting the game state.
      */
     public void newGame() {
+        game = new Game();
+            // Aggiunge i giocatori e inizializza le loro aree di gioco
+            for (Player player : game.getPlayers()) {
+
+
+        }
+        gameIsStarted = true;
     }
 
     /**
@@ -228,6 +242,7 @@ public class GameController {
      * This method will be called to set the winner of the game.
      */
     public void setWinner() {
+        game.winner();
     }
 
 
