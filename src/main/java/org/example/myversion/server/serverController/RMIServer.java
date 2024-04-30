@@ -1,20 +1,21 @@
 package org.example.myversion.server.serverController;
 
+import java.rmi.Remote;
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.RemoteException;
 
-import org.example.myversion.server.Server;
+
+import org.example.myversion.server.serverController.RMIInterface;
 import org.example.myversion.server.serverController.ServerInterface;
 
-public class RMIServer implements ServerInterface {
+public class RMIServer extends RMIInterface implements ServerInterface {
     private int port;
     private Registry registry;
 
-    private RMIServer server;//glielo devo passare dalla classe server o lo creo qui???
+    private RMIInterface serverInterface;//glielo devo passare dalla classe server o lo creo qui???
 
-    private static final int RMI_PORT = 1000;
 
     public RMIServer(int port) {
         this.port = port;
@@ -23,9 +24,10 @@ public class RMIServer implements ServerInterface {
     @Override
     public void start() {
         try {
+             //interfaccia non puo essere inizializzata??
+            serverInterface=new RMIServer(70);// Esporto l'oggetto remoto e ottieni il riferimento allo stub
 
-            // Esporto l'oggetto remoto e ottieni il riferimento allo stub
-            MyRemote stub = (MyRemote) UnicastRemoteObject.exportObject(remoteObj, 0);
+            RMIInterface stub = (RMIInterface) UnicastRemoteObject.exportObject(serverInterface, 0);
 
             // Ottieni il registro RMI esistente o crea uno nuovo sulla porta specificata
             registry = LocateRegistry.createRegistry(port);
