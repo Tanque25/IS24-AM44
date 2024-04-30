@@ -4,6 +4,7 @@ module org.example.myversion {
 
     requires org.controlsfx.controls;
     requires java.json;
+    requires java.rmi;
 
     opens org.example.myversion to javafx.fxml;
     exports org.example.myversion;
