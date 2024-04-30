@@ -4,8 +4,12 @@ import org.example.myversion.server.Server;
 import org.example.myversion.server.model.Coordinates;
 import org.example.myversion.server.model.Game;
 import org.example.myversion.server.model.Player;
+import org.example.myversion.server.model.decks.StarterDeck;
+import org.example.myversion.server.model.decks.cards.ObjectiveCard;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
+import org.example.myversion.server.model.decks.cards.StarterCard;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
+import org.example.myversion.server.model.exceptions.InvalidMoveException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -148,13 +152,20 @@ public class GameController {
      */
     public void newGame() {
         game = new Game();
-            // Aggiunge i giocatori e inizializza le loro aree di gioco
-            for (Player player : game.getPlayers()) {
+        game.getBoard().initializePlayerScores(game.getPlayers());
 
-
+        for (Player player : game.getPlayers()) {
+            List<ObjectiveCard> secretObjectives = game.drawSecretObjectives();
+            //draw secret obj -> set secret obj
+                game.setPlayerSecretObjective(player, secretObjectives.getFirst());
+                game.setPlayerSecretObjective(player, secretObjectives.get(1));
+                //choose starter card - > place starter card (initialize play area)
+                StarterCard starterCard = game.drawStarterCard();
+                game.placeStarterCard(player, starterCard);
         }
         gameIsStarted = true;
-    }
+    } //rivedere il playedback
+
 
     /**
      * Loads the last saved game state.
@@ -175,11 +186,13 @@ public class GameController {
      * Allows a player to play a card, it will call the game's playCard
      * This method will be called by the client to play a card.
      *
-     * @param nickname the name of the player who is playing the card.
+     * @param player the name of the player who is playing the card.
      * @param card the card to be played.
      * @param coordinates the coordinates on the board where the card will be placed.
      */
-    public void playCard(String nickname, PlayableCard card, Coordinates coordinates) {
+    public void playCard(Player player, PlayableCard card, Coordinates coordinates) throws InvalidMoveException {
+        game.playCard(player, card, coordinates);
+        notifyAll();//implementare notifyall
     }
 
 
@@ -188,10 +201,11 @@ public class GameController {
      * Allows a player to draw a card from the available options.
      * This method will be called by the client to draw a card.
      *
-     * @param nickname the name of the player who is drawing the card.
+     * @param player the name of the player who is drawing the card.
      * @param chosenCard The card chosen by the player.
      */
-    public void drawCard(String nickname, PlayableCard chosenCard) {
+    public void drawCard(Player player, PlayableCard chosenCard) throws InvalidChoiceException {
+        game.drawCard(player, chosenCard);
     }
 
     /**
@@ -199,6 +213,11 @@ public class GameController {
      * This method will be called to switch the turn to the next player.
      */
     public void changeTurn() {
+
+        int currentIndex = game.getPlayers().indexOf(game.getCurrentPlayer());
+        int nextIndex = (currentIndex + 1) % game.getPlayers().size();
+        game.setCurrentPlayer(game.getPlayers().get(nextIndex));
+
 
     }
 

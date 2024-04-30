@@ -123,6 +123,18 @@ public class Game {
     }
 
     /**
+     * Draws the starter card for the player.
+     *
+     * @return the drawn starter card
+     */
+    public StarterCard drawStarterCard(){
+        StarterCard starterCard;
+
+        starterCard  = starterDeck.drawCard();
+        return starterCard;
+    }
+
+    /**
      * Sets the secret objective for the specified player.
      *
      * @param player         The player whose secret objective is being set.
