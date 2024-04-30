@@ -6,6 +6,8 @@ import org.example.myversion.server.model.Game;
 import org.example.myversion.server.model.Player;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
+import org.example.myversion.server.model.exceptions.InvalidMoveException;
+import org.example.myversion.server.model.exceptions.InvalidNicknameException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -179,7 +181,19 @@ public class GameController {
      * @param card the card to be played.
      * @param coordinates the coordinates on the board where the card will be placed.
      */
-    public void playCard(String nickname, PlayableCard card, Coordinates coordinates) {
+    public void playCard(String nickname, PlayableCard card, Coordinates coordinates) throws InvalidNicknameException, InvalidMoveException {
+        Player actualPlayer = null;
+
+        for (Player player : game.getPlayers()) {
+            if (player.getNickname().equals(nickname)) {
+                actualPlayer = player;
+                game.playCard(actualPlayer, card, coordinates);
+            }
+        }
+        if(actualPlayer == null) {
+            throw new InvalidNicknameException("Invalid nickname");
+        }
+
     }
 
 
