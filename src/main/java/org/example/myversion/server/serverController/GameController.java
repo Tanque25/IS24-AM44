@@ -10,6 +10,7 @@ import org.example.myversion.server.model.decks.cards.PlayableCard;
 import org.example.myversion.server.model.decks.cards.StarterCard;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
+import org.example.myversion.server.model.exceptions.InvalidNicknameException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -164,8 +165,7 @@ public class GameController {
                 game.placeStarterCard(player, starterCard);
         }
         gameIsStarted = true;
-    } //rivedere il playedback
-
+    }
 
     /**
      * Loads the last saved game state.
@@ -186,13 +186,23 @@ public class GameController {
      * Allows a player to play a card, it will call the game's playCard
      * This method will be called by the client to play a card.
      *
-     * @param player the name of the player who is playing the card.
+     * @param nickname the name of the player who is playing the card.
      * @param card the card to be played.
      * @param coordinates the coordinates on the board where the card will be placed.
      */
-    public void playCard(Player player, PlayableCard card, Coordinates coordinates) throws InvalidMoveException {
-        game.playCard(player, card, coordinates);
-        notifyAll();//implementare notifyall
+    public void playCard(String nickname, PlayableCard card, Coordinates coordinates) throws InvalidNicknameException, InvalidMoveException {
+        Player actualPlayer = null;
+
+        for (Player player : game.getPlayers()) {
+            if (player.getNickname().equals(nickname)) {
+                actualPlayer = player;
+                game.playCard(actualPlayer, card, coordinates);
+            }
+        }
+        if(actualPlayer == null) {
+            throw new InvalidNicknameException("Invalid nickname");
+        }
+
     }
 
 
