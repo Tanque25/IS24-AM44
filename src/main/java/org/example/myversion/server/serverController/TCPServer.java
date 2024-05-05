@@ -1,5 +1,6 @@
 package org.example.myversion.server.serverController;
 
+import org.example.myversion.messages.Message;
 import org.example.myversion.server.serverController.ServerInterface;
 
 import java.io.*;
@@ -69,4 +70,16 @@ public class TCPServer implements ServerInterface{
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public void receiveMessageTCP(Message message) throws IllegalAccessException {
+        String messageType = message.getArgument();
+
+        switch (messageType){
+            case "PickCard" -> {//ne faccio un caso diverso a seconda della carta che vuole prendere? (da che mazzo)
+
+            }
+        }
+    }
+
 }
