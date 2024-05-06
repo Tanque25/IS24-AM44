@@ -24,7 +24,7 @@ public class Message implements Serializable {
      *
      * @param messageCode the identifier of the message.
      */
-    public Message(int messageCode) {
+    public Message(String messageCode) {
         json = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
                 .build();
@@ -39,7 +39,7 @@ public class Message implements Serializable {
      * @param messageCode represents the identifier of the message.
      * @param argument represents the body of the message.
      */
-    public Message(int messageCode, String argument) {
+    public Message(String messageCode, String argument) {
         json = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
                 .add("argument", argument)
@@ -52,7 +52,7 @@ public class Message implements Serializable {
      * @param messageCode the identifier of the message.
      * @param maxPlayers  the maximum number of players.
      */
-    public Message(int messageCode, int maxPlayers) {
+    public Message(String messageCode, int maxPlayers) {
         json = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
                 .add("maxPlayers", maxPlayers)
@@ -66,7 +66,7 @@ public class Message implements Serializable {
      * @param messageCode the identifier of the message.
      * @param starterCard the StarterCard to include in the message.
      */
-    public Message(int messageCode, StarterCard starterCard) {
+    public Message(String messageCode, StarterCard starterCard) {
         json = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
                 .add("resources", createObjectiveObject(starterCard.getResource()))
@@ -83,7 +83,7 @@ public class Message implements Serializable {
      * @param messageCode    the identifier of the message.
      * @param objectiveCard  the objective card for which the message is created.
      */
-    public Message(int messageCode, ObjectiveCard objectiveCard) {
+    public Message(String messageCode, ObjectiveCard objectiveCard) {
         json = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
                 .add("objective", createObjectiveObject(objectiveCard.getObjective()))
@@ -98,7 +98,7 @@ public class Message implements Serializable {
      * @param messageCode   The identifier of the message.
      * @param playableCard  The PlayableCard to include in the message.
      */
-    public Message(int messageCode, PlayableCard playableCard) {
+    public Message(String messageCode, PlayableCard playableCard) {
         json = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
                 .add("resource", playableCard.getResource().toString())
@@ -115,7 +115,7 @@ public class Message implements Serializable {
      * @param messageCode   The identifier of the message.
      * @param goldCard      The GoldCard to include in the message.
      */
-    public Message(int messageCode, GoldCard goldCard) {
+    public Message(String messageCode, GoldCard goldCard) {
         json = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
                 .add("resource", goldCard.getResource().toString())
@@ -134,7 +134,7 @@ public class Message implements Serializable {
      * @param xCoordinate   The x-coordinate value.
      * @param yCoordinate   The y-coordinate value.
      */
-    public Message(int messageCode, int xCoordinate, int yCoordinate) {
+    public Message(String messageCode, int xCoordinate, int yCoordinate) {
         json = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
                 .add("xCoordinate", xCoordinate)
@@ -216,8 +216,8 @@ public class Message implements Serializable {
      *
      * @return The message code.
      */
-    public int getMessageCode() {
-        return json.getInt("messageCode", -1);
+    public String getMessageCode() {
+        return json.getString("messageCode");
     }
 
     /**

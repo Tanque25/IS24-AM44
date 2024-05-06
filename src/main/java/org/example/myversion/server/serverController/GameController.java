@@ -46,8 +46,8 @@ public class GameController {
 
 
 
-    public GameController(Game game, List<String> players) {
-        this.game = game;
+    public GameController() {
+        //this.game = game;
         this.disconnectedPlayers = new ArrayList<>();
         this.pongLost = new HashMap<>();
         this.pongReceived = new ArrayList<>();
@@ -115,7 +115,7 @@ public class GameController {
      * @param nickname the name of the client that sent the pong.
      */
     public void pong(String nickname){
-
+        //dentro il pong chiamo checkNickaname ?
     }
 
     /**
@@ -189,6 +189,11 @@ public class GameController {
     public void loadLastGame() {
     }
 
+    public boolean isValidMove(){
+
+        return true;
+    }
+
     /**
      * Checks if the game has started.
      *
@@ -212,11 +217,17 @@ public class GameController {
         for (Player player : game.getPlayers()) {
             if (player.getNickname().equals(nickname)) {
                 actualPlayer = player;
-                game.playCard(actualPlayer, card, coordinates);
-                //checkLastTurn();
+                try {
+                    game.playCard(actualPlayer, card, coordinates);
+                } catch (InvalidMoveException e) {
+                    throw new InvalidMoveException("Invalid move: " + e.getMessage());
+                }
+                return; // Esci dal metodo dopo aver giocato la carta, non so se ha senso
             }
         }
-        if(actualPlayer == null) {
+
+        // Se actualPlayer è ancora null, il nickname non è stato trovato
+        if (actualPlayer == null) {
             throw new InvalidNicknameException("Invalid nickname");
         }
 
