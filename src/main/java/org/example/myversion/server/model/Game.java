@@ -69,7 +69,8 @@ public class Game {
         players.add(tmp);
         board.addPlayer(tmp);
 
-        if (!players.isEmpty()) {
+        //se player non è vuoto allora prendo il primo ???
+        if (players.isEmpty()) {
             currentPlayer = players.getFirst();
         }
     }
