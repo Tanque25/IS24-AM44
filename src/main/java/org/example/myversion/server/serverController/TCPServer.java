@@ -3,6 +3,7 @@ package org.example.myversion.server.serverController;
 import org.example.myversion.messages.Message;
 import org.example.myversion.server.model.decks.cards.GoldCard;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
+import org.example.myversion.server.model.exceptions.ExtraRoundException;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
 import org.example.myversion.server.model.exceptions.InvalidNicknameException;
@@ -80,7 +81,7 @@ public class TCPServer implements ServerInterface{
 
     //ha senso gestire questi tipi di ecceezioni qui?
     @Override
-    public void receiveMessageTCP(Message message) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException {
+    public void receiveMessageTCP(Message message) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, ExtraRoundException {
         String messageType = message.getMessageCode();
 
         switch (messageType){
