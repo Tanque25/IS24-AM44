@@ -39,6 +39,7 @@ public class Game {
         this.visibleGoldCards = new ArrayList<>();
         this.visibleResourceCards = new ArrayList<>();
         this.players = new ArrayList<>();
+        this.lastTurn = false;
         initializeGame();
     }
 
@@ -171,7 +172,7 @@ public class Game {
 
             // updating the player score
             board.updateScore(player, playedCard.getCardPoints());
-        }
+            }
     }
 
     /**
@@ -301,5 +302,12 @@ public class Game {
 
     public void setCurrentPlayer(Player player) {
         this.currentPlayer = player;
+    }
+
+    public boolean checkLastTurn(){
+        if(getBoard().getScore(getCurrentPlayer())>= 20 || goldDeck.getGoldDeck().empty() || resourceDeck.getResourceDeck().empty())
+            lastTurn = true;
+
+        return lastTurn;
     }
 }

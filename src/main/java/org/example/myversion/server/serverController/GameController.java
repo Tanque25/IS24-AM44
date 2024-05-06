@@ -25,11 +25,17 @@ public class GameController {
     public List<String> disconnectedPlayers;
     public HashMap<String, Integer> pongLost;
     public List<String> pongReceived;
+    public int roundsPlayed;
     private boolean gameOver;
     private int maxPlayerNumber;
     private boolean isGameLoaded;
     private boolean gameIsStarted;
     private boolean isFirstPlayer;
+    private Player firstPlayer;
+    private HashMap <Player, Integer> playerRoundsPlayed;
+    private boolean lastTurn;
+    private boolean roundOver;
+
     //private final HashMap<String, ClientCommunicationInterface> rmiClients;
     //private final HashMap<String, SocketClientHandler> tcpClients;
     //private final List<Thread> checkThreads;
@@ -50,7 +56,9 @@ public class GameController {
         this.gameOver = false;
         this.isFirstPlayer = true;
         this.maxPlayerNumber = 4;
-
+        this.lastTurn=false;
+        this.roundOver=false;
+        this.playerRoundsPlayed= new HashMap<>();
     }
 
     /**
@@ -65,6 +73,7 @@ public class GameController {
             game.newPlayer(nickname);
             numCurrentPlayers++;
             isFirstPlayer = false;
+            firstPlayer = game.getPlayers().getFirst();
         }
         else {
             if(checkNickname(nickname)==1 && numCurrentPlayers<=maxPlayerNumber){
@@ -72,6 +81,11 @@ public class GameController {
                 numCurrentPlayers++;
             }
         }
+    }
+
+    private void initializeRoundMap (){
+        for (Player player : game.getPlayers())
+            playerRoundsPlayed.put(player, 0);
     }
 
     /**
@@ -154,6 +168,8 @@ public class GameController {
     public void newGame() {
         game = new Game();
         game.getBoard().initializePlayerScores(game.getPlayers());
+        initializeRoundMap();
+        roundsPlayed = 0;
 
         for (Player player : game.getPlayers()) {
             List<ObjectiveCard> secretObjectives = game.drawSecretObjectives();
@@ -197,11 +213,15 @@ public class GameController {
             if (player.getNickname().equals(nickname)) {
                 actualPlayer = player;
                 game.playCard(actualPlayer, card, coordinates);
+                //checkLastTurn();
             }
         }
         if(actualPlayer == null) {
             throw new InvalidNicknameException("Invalid nickname");
         }
+
+        if(actualPlayer == game.getPlayers().getFirst() && roundOver)
+            roundOver=false;
 
     }
 
@@ -211,11 +231,28 @@ public class GameController {
      * Allows a player to draw a card from the available options.
      * This method will be called by the client to draw a card.
      *
-     * @param player the name of the player who is drawing the card.
+     * @param nickname the name of the player who is drawing the card.
      * @param chosenCard The card chosen by the player.
      */
-    public void drawCard(Player player, PlayableCard chosenCard) throws InvalidChoiceException {
-        game.drawCard(player, chosenCard);
+    public void drawCard(String nickname, PlayableCard chosenCard) throws InvalidNicknameException, InvalidChoiceException {
+        Player actualPlayer = null;
+
+        for (Player player : game.getPlayers()) {
+            if (player.getNickname().equals(nickname)) {
+                actualPlayer = player;
+                game.drawCard(actualPlayer, chosenCard);
+                changeTurn();
+                playerRoundsPlayed.put(actualPlayer, playerRoundsPlayed.get(player) + 1);
+                //checkLastTurn();
+            }
+        }
+        if(actualPlayer == null) {
+            throw new InvalidNicknameException("Invalid nickname");
+        }
+        if (actualPlayer == game.getPlayers().getLast() && !roundOver) {
+            roundOver = true;
+            roundsPlayed++;
+        }
     }
 
     /**
@@ -227,7 +264,6 @@ public class GameController {
         int currentIndex = game.getPlayers().indexOf(game.getCurrentPlayer());
         int nextIndex = (currentIndex + 1) % game.getPlayers().size();
         game.setCurrentPlayer(game.getPlayers().get(nextIndex));
-
 
     }
 
@@ -274,5 +310,41 @@ public class GameController {
         game.winner();
     }
 
+    /**
+     * Checks whether it is the last turn of the game.
+     * The last turn is triggered when at least one player reaches (or exceeds) a certain score
+     * or when both decks are empty. Players finish their current rounds and each plays an additional
+     * turn, so they resolve the same number of turns by the end of the game.
+     *
+     * @return  true if it is the last turn,  false otherwise.
+     */
+    public boolean checkLastTurn(){
+        lastTurn = game.checkLastTurn();
+        return lastTurn;
+
+    }
+
+    /**
+     * Checks whether an extra round should be played.
+     * An extra round is played when it is the last turn of the game and all players have finished
+     * their current rounds.
+     *
+     * @return true if an extra round should be played, false otherwise.
+     */
+    public boolean playExtraRound(){
+        return lastTurn && roundOver;
+    }
+
+    /**
+     * Checks if the game is over.
+     * This method will be called to determine if the game has ended.
+     * @return True if the game is over, false otherwise.
+     */
+    public boolean endGame(){
+        for (Player player : game.getPlayers())
+            if (playerRoundsPlayed.get(player)==roundsPlayed)
+                gameOver=true;
+        return gameOver;
+    }
 
 }
