@@ -39,6 +39,7 @@ public class Game {
         this.visibleGoldCards = new ArrayList<>();
         this.visibleResourceCards = new ArrayList<>();
         this.players = new ArrayList<>();
+        this.lastTurn = false;
         initializeGame();
     }
 
@@ -123,6 +124,18 @@ public class Game {
     }
 
     /**
+     * Draws the starter card for the player.
+     *
+     * @return the drawn starter card
+     */
+    public StarterCard drawStarterCard(){
+        StarterCard starterCard;
+
+        starterCard  = starterDeck.drawCard();
+        return starterCard;
+    }
+
+    /**
      * Sets the secret objective for the specified player.
      *
      * @param player         The player whose secret objective is being set.
@@ -159,7 +172,7 @@ public class Game {
 
             // updating the player score
             board.updateScore(player, playedCard.getCardPoints());
-        }
+            }
     }
 
     /**
@@ -289,5 +302,12 @@ public class Game {
 
     public void setCurrentPlayer(Player player) {
         this.currentPlayer = player;
+    }
+
+    public boolean checkLastTurn(){
+        if(getBoard().getScore(getCurrentPlayer())>= 20 || goldDeck.getGoldDeck().empty() || resourceDeck.getResourceDeck().empty())
+            lastTurn = true;
+
+        return lastTurn;
     }
 }

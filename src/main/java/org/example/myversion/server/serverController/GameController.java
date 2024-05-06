@@ -4,7 +4,11 @@ import org.example.myversion.server.Server;
 import org.example.myversion.server.model.Coordinates;
 import org.example.myversion.server.model.Game;
 import org.example.myversion.server.model.Player;
+import org.example.myversion.server.model.decks.StarterDeck;
+import org.example.myversion.server.model.decks.cards.ObjectiveCard;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
+import org.example.myversion.server.model.decks.cards.StarterCard;
+import org.example.myversion.server.model.exceptions.ExtraRoundException;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
 import org.example.myversion.server.model.exceptions.InvalidNicknameException;
@@ -22,11 +26,18 @@ public class GameController {
     public List<String> disconnectedPlayers;
     public HashMap<String, Integer> pongLost;
     public List<String> pongReceived;
+    public int roundsPlayed;
     private boolean gameOver;
     private int maxPlayerNumber;
     private boolean isGameLoaded;
     private boolean gameIsStarted;
     private boolean isFirstPlayer;
+    private Player firstPlayer;
+    private HashMap <Player, Integer> playerRoundsPlayed;
+    private boolean lastTurn;
+    private boolean roundOver;
+    private GameState gameState;
+
     //private final HashMap<String, ClientCommunicationInterface> rmiClients;
     //private final HashMap<String, SocketClientHandler> tcpClients;
     //private final List<Thread> checkThreads;
@@ -47,7 +58,10 @@ public class GameController {
         this.gameOver = false;
         this.isFirstPlayer = true;
         this.maxPlayerNumber = 4;
-
+        this.lastTurn=false;
+        this.roundOver=false;
+        this.playerRoundsPlayed= new HashMap<>();
+        this.gameState = GameState.INITIALIZATION;
     }
 
     /**
@@ -57,11 +71,13 @@ public class GameController {
      * @param nickname the name of the player who wants to enter the game
      */
     public void addPlayer(String nickname){
+        gameState = GameState.LOGIN;
         int numCurrentPlayers = 0;
         if (isFirstPlayer){
             game.newPlayer(nickname);
             numCurrentPlayers++;
             isFirstPlayer = false;
+            firstPlayer = game.getPlayers().getFirst();
         }
         else {
             if(checkNickname(nickname)==1 && numCurrentPlayers<=maxPlayerNumber){
@@ -69,6 +85,11 @@ public class GameController {
                 numCurrentPlayers++;
             }
         }
+    }
+
+    private void initializeRoundMap (){
+        for (Player player : game.getPlayers())
+            playerRoundsPlayed.put(player, 0);
     }
 
     /**
@@ -150,12 +171,21 @@ public class GameController {
      */
     public void newGame() {
         game = new Game();
-            // Aggiunge i giocatori e inizializza le loro aree di gioco
-            for (Player player : game.getPlayers()) {
+        game.getBoard().initializePlayerScores(game.getPlayers());
+        initializeRoundMap();
+        roundsPlayed = 0;
 
-
+        for (Player player : game.getPlayers()) {
+            List<ObjectiveCard> secretObjectives = game.drawSecretObjectives();
+            //draw secret obj -> set secret obj
+                game.setPlayerSecretObjective(player, secretObjectives.getFirst());
+                game.setPlayerSecretObjective(player, secretObjectives.get(1));
+                //choose starter card - > place starter card (initialize play area)
+                StarterCard starterCard = game.drawStarterCard();
+                game.placeStarterCard(player, starterCard);
         }
         gameIsStarted = true;
+        gameState = GameState.IN_GAME;
     }
 
     /**
@@ -189,24 +219,34 @@ public class GameController {
     public void playCard(String nickname, PlayableCard card, Coordinates coordinates) throws InvalidNicknameException, InvalidMoveException {
         Player actualPlayer = null;
 
-        for (Player player : game.getPlayers()) {
-            if (player.getNickname().equals(nickname)) {
-                actualPlayer = player;
-                try {
-                    game.playCard(actualPlayer, card, coordinates);
-                } catch (InvalidMoveException e) {
-                    throw new InvalidMoveException("Invalid move: " + e.getMessage());
+        if (gameState == GameState.IN_GAME || gameState == GameState.LAST_ROUND) {
+            for (Player player : game.getPlayers()) {
+                if (player.getNickname().equals(nickname)) {
+                    actualPlayer = player;
+                    try {
+                        game.playCard(actualPlayer, card, coordinates);
+                        playerRoundsPlayed.put(actualPlayer, playerRoundsPlayed.get(player) + 1);
+                        roundsPlayed++;
+                        lastTurn = checkLastTurn();
+                        gameOver = endGame();
+                    } catch (InvalidMoveException e) {
+                        throw new InvalidMoveException("Invalid move: " + e.getMessage());
+                    }
+                    return; // Esci dal metodo dopo aver giocato la carta, non so se ha senso
                 }
-                return; // Esci dal metodo dopo aver giocato la carta, non so se ha senso
+
             }
+
+            // Se actualPlayer è ancora null, il nickname non è stato trovato
+            if (actualPlayer == null) {
+                throw new InvalidNicknameException("Invalid nickname");
+            }
+
+            if (actualPlayer == game.getPlayers().getFirst() && roundOver)
+                roundOver = false;
         }
 
-        // Se actualPlayer è ancora null, il nickname non è stato trovato
-        if (actualPlayer == null) {
-            throw new InvalidNicknameException("Invalid nickname");
-        }
     }
-
 
 
 
@@ -217,7 +257,29 @@ public class GameController {
      * @param nickname the name of the player who is drawing the card.
      * @param chosenCard The card chosen by the player.
      */
-    public void drawCard(String nickname, PlayableCard chosenCard) {
+    public void drawCard(String nickname, PlayableCard chosenCard) throws InvalidNicknameException, ExtraRoundException, InvalidChoiceException {
+        Player actualPlayer = null;
+
+        if(gameState == GameState.IN_GAME) {
+            for (Player player : game.getPlayers()) {
+                if (player.getNickname().equals(nickname)) {
+                    actualPlayer = player;
+
+
+                    game.drawCard(actualPlayer, chosenCard);
+                    changeTurn();
+
+                    if (actualPlayer == game.getPlayers().getLast() && !roundOver) {
+                        roundOver = true;
+                    }
+
+                    // Check se è l'ultimo turno
+                    lastTurn = checkLastTurn();
+                }
+            }
+        }
+        else
+            throw new ExtraRoundException("You can't draw new cards, you must play only the cards you have.");
     }
 
     /**
@@ -226,6 +288,11 @@ public class GameController {
      */
     public void changeTurn() {
 
+        if (gameState == GameState.IN_GAME || gameState == GameState.LAST_ROUND) {
+            int currentIndex = game.getPlayers().indexOf(game.getCurrentPlayer());
+            int nextIndex = (currentIndex + 1) % game.getPlayers().size();
+            game.setCurrentPlayer(game.getPlayers().get(nextIndex));
+        }
     }
 
     /**
@@ -268,8 +335,53 @@ public class GameController {
      * This method will be called to set the winner of the game.
      */
     public void setWinner() {
-        game.winner();
+        if (gameState == GameState.LAST_ROUND) {
+            game.winner();
+        }
     }
 
+    /**
+     * Checks whether it is the last turn of the game.
+     * The last turn is triggered when at least one player reaches (or exceeds) a certain score
+     * or when both decks are empty. Players finish their current rounds and each plays an additional
+     * turn, so they resolve the same number of turns by the end of the game.
+     *
+     * @return  true if it is the last turn,  false otherwise.
+     */
+    public boolean checkLastTurn(){
+        lastTurn = game.checkLastTurn();
+        return lastTurn;
+
+    }
+
+    /**
+     * Checks whether an extra round should be played.
+     * An extra round is played when it is the last turn of the game and all players have finished
+     * their current rounds.
+     *
+     * @return true if an extra round should be played, false otherwise.
+     */
+    public boolean playExtraRound(){
+        if (lastTurn && roundOver && gameState == GameState.IN_GAME) {
+            gameState = GameState.LAST_ROUND;
+        }
+        return lastTurn && roundOver;
+    }
+
+    /**
+     * Checks if the game is over.
+     * This method will be called to determine if the game has ended.
+     * @return True if the game is over, false otherwise.
+     */
+    public boolean endGame(){
+        if(gameState == GameState.LAST_ROUND) {
+            for (Player player : game.getPlayers())
+                if (playerRoundsPlayed.get(player) == roundsPlayed) {
+                    gameOver = true;
+                    gameState = GameState.END;
+                }
+        }
+        return gameOver;
+    }
 
 }
