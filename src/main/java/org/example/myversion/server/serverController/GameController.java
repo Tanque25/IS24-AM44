@@ -149,7 +149,7 @@ public class GameController {
      * @return true if the player's number chosen by the first player is correct
      * @throws InvalidChoiceException if the number of players is not within the valid range
      */
-    public boolean chooseNumberPlayer(int numPlayer) throws InvalidChoiceException{
+    public boolean checkNumberOfPlayer(int numPlayer) throws InvalidChoiceException{
         if(numPlayer>=2 && numPlayer<=4) {
             return true;
         }
