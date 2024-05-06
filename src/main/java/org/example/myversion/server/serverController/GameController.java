@@ -8,6 +8,7 @@ import org.example.myversion.server.model.decks.StarterDeck;
 import org.example.myversion.server.model.decks.cards.ObjectiveCard;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
 import org.example.myversion.server.model.decks.cards.StarterCard;
+import org.example.myversion.server.model.exceptions.ExtraRoundException;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
 import org.example.myversion.server.model.exceptions.InvalidNicknameException;
@@ -219,6 +220,8 @@ public class GameController {
                 actualPlayer = player;
                 try {
                     game.playCard(actualPlayer, card, coordinates);
+                    playerRoundsPlayed.put(actualPlayer, playerRoundsPlayed.get(player) + 1);
+                    roundsPlayed++;
                 } catch (InvalidMoveException e) {
                     throw new InvalidMoveException("Invalid move: " + e.getMessage());
                 }
@@ -245,24 +248,30 @@ public class GameController {
      * @param nickname the name of the player who is drawing the card.
      * @param chosenCard The card chosen by the player.
      */
-    public void drawCard(String nickname, PlayableCard chosenCard) throws InvalidNicknameException, InvalidChoiceException {
+    public void drawCard(String nickname, PlayableCard chosenCard) throws InvalidNicknameException, ExtraRoundException, InvalidChoiceException {
         Player actualPlayer = null;
 
         for (Player player : game.getPlayers()) {
             if (player.getNickname().equals(nickname)) {
                 actualPlayer = player;
-                game.drawCard(actualPlayer, chosenCard);
-                changeTurn();
-                playerRoundsPlayed.put(actualPlayer, playerRoundsPlayed.get(player) + 1);
-                //checkLastTurn();
+
+                if (playExtraRound()) {
+                    // Extra round: i giocatori non possono pescare nuove carte
+                    throw new ExtraRoundException("You can't draw new cards, you must play only the cards you have.");
+                } else {
+                    game.drawCard(actualPlayer, chosenCard);
+                    changeTurn();
+
+                    if (actualPlayer == game.getPlayers().getLast() && !roundOver) {
+                        roundOver = true;
+                    }
+
+                    // Check se è l'ultimo turno
+                    lastTurn = checkLastTurn();
+                    // Controlla se la partita è finita
+                    gameOver = endGame();
+                }
             }
-        }
-        if(actualPlayer == null) {
-            throw new InvalidNicknameException("Invalid nickname");
-        }
-        if (actualPlayer == game.getPlayers().getLast() && !roundOver) {
-            roundOver = true;
-            roundsPlayed++;
         }
     }
 
