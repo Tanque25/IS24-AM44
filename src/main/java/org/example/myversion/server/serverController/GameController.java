@@ -115,7 +115,8 @@ public class GameController {
      * @param nickname the name of the client that sent the pong.
      */
     public void pong(String nickname){
-        //dentro il pong chiamo checkNickaname ?
+
+
     }
 
     /**

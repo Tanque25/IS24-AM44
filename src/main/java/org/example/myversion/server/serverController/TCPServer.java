@@ -3,6 +3,7 @@ package org.example.myversion.server.serverController;
 import org.example.myversion.messages.Message;
 import org.example.myversion.server.model.decks.cards.GoldCard;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
+import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
 import org.example.myversion.server.model.exceptions.InvalidNicknameException;
 import org.example.myversion.server.serverController.ServerInterface;
@@ -79,7 +80,7 @@ public class TCPServer implements ServerInterface{
 
     //ha senso gestire questi tipi di ecceezioni qui?
     @Override
-    public void receiveMessageTCP(Message message) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException {
+    public void receiveMessageTCP(Message message) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException {
         String messageType = message.getMessageCode();
 
         switch (messageType){
@@ -89,6 +90,8 @@ public class TCPServer implements ServerInterface{
                 String nickname = message.getArgument(); //nel ping c'è anche nickname
                 controller.pong(nickname);
                 sendMessageToClient(new Message("Pong","Nickname is valid"));
+
+                //deve vedere se primo giocatore:
             }
             case "DrawCard" -> {//ne faccio un caso diverso a seconda della carta che vuole prendere? (da che mazzo)
                 //non ci vuole una checkDraw di sicurezza !!!! controllare
