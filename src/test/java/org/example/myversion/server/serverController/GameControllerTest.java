@@ -65,6 +65,11 @@ class GameControllerTest {
     @Test
     void chooseNumberPlayer_caseFalse() {
         int numPlayers = 100;
+
+        assertThrows(InvalidChoiceException.class, () -> {
+            gameController.chooseNumberPlayer(numPlayers);
+        }, "chooseNumberPlayer should throw InvalidChoiceException for an invalid number of players");
+
     }
 
     @Test
