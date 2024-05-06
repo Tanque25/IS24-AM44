@@ -36,6 +36,7 @@ public class GameController {
     private HashMap <Player, Integer> playerRoundsPlayed;
     private boolean lastTurn;
     private boolean roundOver;
+    private GameState gameState;
 
     //private final HashMap<String, ClientCommunicationInterface> rmiClients;
     //private final HashMap<String, SocketClientHandler> tcpClients;
@@ -60,6 +61,7 @@ public class GameController {
         this.lastTurn=false;
         this.roundOver=false;
         this.playerRoundsPlayed= new HashMap<>();
+        this.gameState = GameState.INITIALIZATION;
     }
 
     /**
@@ -69,6 +71,7 @@ public class GameController {
      * @param nickname the name of the player who wants to enter the game
      */
     public void addPlayer(String nickname){
+        gameState = GameState.LOGIN;
         int numCurrentPlayers = 0;
         if (isFirstPlayer){
             game.newPlayer(nickname);
@@ -182,6 +185,7 @@ public class GameController {
                 game.placeStarterCard(player, starterCard);
         }
         gameIsStarted = true;
+        gameState = GameState.IN_GAME;
     }
 
     /**
@@ -215,27 +219,32 @@ public class GameController {
     public void playCard(String nickname, PlayableCard card, Coordinates coordinates) throws InvalidNicknameException, InvalidMoveException {
         Player actualPlayer = null;
 
-        for (Player player : game.getPlayers()) {
-            if (player.getNickname().equals(nickname)) {
-                actualPlayer = player;
-                try {
-                    game.playCard(actualPlayer, card, coordinates);
-                    playerRoundsPlayed.put(actualPlayer, playerRoundsPlayed.get(player) + 1);
-                    roundsPlayed++;
-                } catch (InvalidMoveException e) {
-                    throw new InvalidMoveException("Invalid move: " + e.getMessage());
+        if (gameState == GameState.IN_GAME || gameState == GameState.LAST_ROUND) {
+            for (Player player : game.getPlayers()) {
+                if (player.getNickname().equals(nickname)) {
+                    actualPlayer = player;
+                    try {
+                        game.playCard(actualPlayer, card, coordinates);
+                        playerRoundsPlayed.put(actualPlayer, playerRoundsPlayed.get(player) + 1);
+                        roundsPlayed++;
+                        lastTurn = checkLastTurn();
+                        gameOver = endGame();
+                    } catch (InvalidMoveException e) {
+                        throw new InvalidMoveException("Invalid move: " + e.getMessage());
+                    }
+                    return; // Esci dal metodo dopo aver giocato la carta, non so se ha senso
                 }
-                return; // Esci dal metodo dopo aver giocato la carta, non so se ha senso
+
             }
-        }
 
-        // Se actualPlayer è ancora null, il nickname non è stato trovato
-        if (actualPlayer == null) {
-            throw new InvalidNicknameException("Invalid nickname");
-        }
+            // Se actualPlayer è ancora null, il nickname non è stato trovato
+            if (actualPlayer == null) {
+                throw new InvalidNicknameException("Invalid nickname");
+            }
 
-        if(actualPlayer == game.getPlayers().getFirst() && roundOver)
-            roundOver=false;
+            if (actualPlayer == game.getPlayers().getFirst() && roundOver)
+                roundOver = false;
+        }
 
     }
 
@@ -251,14 +260,12 @@ public class GameController {
     public void drawCard(String nickname, PlayableCard chosenCard) throws InvalidNicknameException, ExtraRoundException, InvalidChoiceException {
         Player actualPlayer = null;
 
-        for (Player player : game.getPlayers()) {
-            if (player.getNickname().equals(nickname)) {
-                actualPlayer = player;
+        if(gameState == GameState.IN_GAME) {
+            for (Player player : game.getPlayers()) {
+                if (player.getNickname().equals(nickname)) {
+                    actualPlayer = player;
 
-                if (playExtraRound()) {
-                    // Extra round: i giocatori non possono pescare nuove carte
-                    throw new ExtraRoundException("You can't draw new cards, you must play only the cards you have.");
-                } else {
+
                     game.drawCard(actualPlayer, chosenCard);
                     changeTurn();
 
@@ -268,11 +275,11 @@ public class GameController {
 
                     // Check se è l'ultimo turno
                     lastTurn = checkLastTurn();
-                    // Controlla se la partita è finita
-                    gameOver = endGame();
                 }
             }
         }
+        else
+            throw new ExtraRoundException("You can't draw new cards, you must play only the cards you have.");
     }
 
     /**
@@ -281,10 +288,11 @@ public class GameController {
      */
     public void changeTurn() {
 
-        int currentIndex = game.getPlayers().indexOf(game.getCurrentPlayer());
-        int nextIndex = (currentIndex + 1) % game.getPlayers().size();
-        game.setCurrentPlayer(game.getPlayers().get(nextIndex));
-
+        if (gameState == GameState.IN_GAME || gameState == GameState.LAST_ROUND) {
+            int currentIndex = game.getPlayers().indexOf(game.getCurrentPlayer());
+            int nextIndex = (currentIndex + 1) % game.getPlayers().size();
+            game.setCurrentPlayer(game.getPlayers().get(nextIndex));
+        }
     }
 
     /**
@@ -327,7 +335,9 @@ public class GameController {
      * This method will be called to set the winner of the game.
      */
     public void setWinner() {
-        game.winner();
+        if (gameState == GameState.LAST_ROUND) {
+            game.winner();
+        }
     }
 
     /**
@@ -352,6 +362,9 @@ public class GameController {
      * @return true if an extra round should be played, false otherwise.
      */
     public boolean playExtraRound(){
+        if (lastTurn && roundOver && gameState == GameState.IN_GAME) {
+            gameState = GameState.LAST_ROUND;
+        }
         return lastTurn && roundOver;
     }
 
@@ -361,9 +374,13 @@ public class GameController {
      * @return True if the game is over, false otherwise.
      */
     public boolean endGame(){
-        for (Player player : game.getPlayers())
-            if (playerRoundsPlayed.get(player)==roundsPlayed)
-                gameOver=true;
+        if(gameState == GameState.LAST_ROUND) {
+            for (Player player : game.getPlayers())
+                if (playerRoundsPlayed.get(player) == roundsPlayed) {
+                    gameOver = true;
+                    gameState = GameState.END;
+                }
+        }
         return gameOver;
     }
 
