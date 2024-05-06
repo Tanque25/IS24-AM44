@@ -384,4 +384,7 @@ public class GameController {
         return gameOver;
     }
 
+    public Game getGame() {
+        return game;
+    }
 }

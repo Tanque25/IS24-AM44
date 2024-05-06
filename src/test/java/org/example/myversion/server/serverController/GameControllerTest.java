@@ -7,16 +7,23 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GameControllerTest {
 
+    private GameController gameController;
+
     @BeforeEach
     void setUp() {
+        gameController = new GameController();
+        gameController.newGame(); // Inizializza un nuovo gioco
+
     }
 
     @Test
     void addPlayer() {
+        gameController.addPlayer("Player1");
+        assertEquals(1, gameController.getGame().getPlayers().size());
     }
 
     @Test
-    void checkNickname() {
+    void avaibleNickname() {
     }
 
     @Test
