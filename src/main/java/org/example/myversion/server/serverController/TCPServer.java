@@ -20,10 +20,6 @@ public class TCPServer implements ServerInterface{
 
     private Thread acceptThread;
 
-
-
-
-
     //costruttore, crea thread per gestire creazione server TCP
     public TCPServer(int port) {
         try {
@@ -41,7 +37,6 @@ public class TCPServer implements ServerInterface{
                     }
                 }
             });
-            acceptThread.start();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -49,10 +44,11 @@ public class TCPServer implements ServerInterface{
 
     }
 
-
     @Override
-    public void start(){
-        acceptThread.start();//starta il thread
+    public void start() {
+        if (acceptThread.getState() == Thread.State.NEW) {
+            acceptThread.start();
+        }
     }
 
     @Override
@@ -61,6 +57,7 @@ public class TCPServer implements ServerInterface{
 
         try {
             serverSocket.close();//chiude server
+            acceptThread.interrupt();  // Ensure thread is interrupted if blocked on accept()
         } catch (IOException e) {
             e.printStackTrace();//da sostituire
         }

@@ -20,6 +20,15 @@ public class Message implements Serializable {
     ///////////////////////////////////////////////////////CONSTRUCTORS////////////////////////////////////////////////////////
 
     /**
+     * Constructs a Message object from a JsonObject.
+     *
+     * @param jsonObject the JsonObject containing message data.
+     */
+    public Message(JsonObject jsonObject) {
+        this.json = jsonObject;  // Assume jsonObject is valid and properly structured.
+    }
+
+    /**
      * Constructs a Message object representing a single message with the given message code.
      *
      * @param messageCode the identifier of the message.
