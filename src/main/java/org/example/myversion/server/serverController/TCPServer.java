@@ -114,20 +114,37 @@ public class TCPServer implements ServerInterface{
             case "Ping" ->{
                 System.out.println("Received ping from " /*+ client.getUsername()*/); //per CLI
                 String nickname = message.getArgument(); //nel ping c'è anche nickname
-                controller.pong(nickname);
-                sendMessageToClient(new Message("Pong","Nickname is valid"));
+                //controller.pong(nickname);
+                if (controller.checkNickname(nickname)==1){
+                    sendMessageToClient(new Message("Pong","Nickname is valid"));
+                    controller.addPlayer(nickname);//aggiungo il player
+                    //se la lobby ha il numero di giocatori = maxnumberOfplayer, se non
+                    if (controller.checkLobby()){
+                        controller.newGame();
+                    }
+
+                }else if(controller.checkNickname(nickname)==0){
+                    sendMessageToClient(new Message("Pong","Nickname is  already in use"));
+                }else{
+                    sendMessageToClient(new Message("Pong","Nickname is  already in use by a disconnected player"));
+                }
 
             }
+
             case "NumberOfPlayer" ->{
                 int numberOfPlayer = message.getMaxPlayers();
                 //controllo sia valido
                 if (controller.checkNumberOfPlayer(numberOfPlayer)){
                     sendMessageToClient(new Message("Valid Number of Player"));
-                    //setto
+                    //setto numero giocatori del controller
+                    controller.setNumberOfPlayer(numberOfPlayer);
 
                 }
-
+                else{
+                    sendMessageToClient(new Message("Invalid number of Player"));
+                }
             }
+
             case "DrawCard" -> {//ne faccio un caso diverso a seconda della carta che vuole prendere? (da che mazzo)
                 //non ci vuole una checkDraw di sicurezza !!!! controllare
                 PlayableCard chosenCard = message.getPlayableCard();
@@ -137,6 +154,7 @@ public class TCPServer implements ServerInterface{
                 sendMessageToClient(new Message("Card drew successfully"));//pescata
 
             }
+
             case "PlayCard" ->{
                 String nickname = message.getArgument();
                 PlayableCard chosenCard = message.getPlayableCard();
@@ -154,6 +172,7 @@ public class TCPServer implements ServerInterface{
                     }
                 }
             }
+
         }
     }
 

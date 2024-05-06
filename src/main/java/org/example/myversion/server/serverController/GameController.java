@@ -38,6 +38,8 @@ public class GameController {
     private boolean roundOver;
     private GameState gameState;
 
+    private int numberOfPlayer=0;
+
     //private final HashMap<String, ClientCommunicationInterface> rmiClients;
     //private final HashMap<String, SocketClientHandler> tcpClients;
     //private final List<Thread> checkThreads;
@@ -195,7 +197,7 @@ public class GameController {
     }
 
     public boolean isValidMove(){
-
+        //da togliere???
         return true;
     }
 
@@ -296,6 +298,18 @@ public class GameController {
     }
 
     /**
+     * Checks if the lobby is full and starts a new game if it is.
+     *
+     * @return {@code true} if the lobby is full and a new game is started; {@code false} otherwise.
+     */
+    public boolean checkLobby() {
+        // Se il numero di giocatori nella lobby è uguale al massimo consentito
+        // Se la lobby non è ancora piena
+        return game.getPlayers().size() == numberOfPlayer;
+    }
+
+
+    /**
      * Checks if it is the last turn of the game.
      * @return true if it is the last turn, false otherwise.
      */
@@ -338,6 +352,10 @@ public class GameController {
         if (gameState == GameState.LAST_ROUND) {
             game.winner();
         }
+    }
+
+    public void setNumberOfPlayer(int numberOfPlayer) {
+        this.numberOfPlayer = numberOfPlayer;
     }
 
     /**
