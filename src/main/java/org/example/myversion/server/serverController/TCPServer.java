@@ -91,7 +91,8 @@ public class TCPServer implements ServerInterface{
                 controller.pong(nickname);
                 sendMessageToClient(new Message("Pong","Nickname is valid"));
 
-                //deve vedere se primo giocatore:
+
+
             }
             case "DrawCard" -> {//ne faccio un caso diverso a seconda della carta che vuole prendere? (da che mazzo)
                 //non ci vuole una checkDraw di sicurezza !!!! controllare

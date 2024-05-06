@@ -67,21 +67,21 @@ public class GameController {
      * there will be an update of the player's list
      * @param nickname the name of the player who wants to enter the game
      */
-    public void addPlayer(String nickname){
-        int numCurrentPlayers = 0;
-        if (isFirstPlayer){
+    public void addPlayer(String nickname) {
+        if (game.getPlayers().isEmpty()) {
+            // Se la lista dei giocatori è vuota, aggiungo il primo giocatore
             game.newPlayer(nickname);
-            numCurrentPlayers++;
-            isFirstPlayer = false;
-            firstPlayer = game.getPlayers().getFirst();
-        }
-        else {
-            if(checkNickname(nickname)==1 && numCurrentPlayers<=maxPlayerNumber){
+            isFirstPlayer = false; //  isFirstPlayer = false perché abbiamo aggiunto il primo giocatore
+            firstPlayer = game.getPlayers().getFirst(); // Imposta il primo giocatore nella variabile firstPlayer
+        } else {
+            //altrimenti aggiungo un nuovo giocatore
+            int numCurrentPlayers = game.getPlayers().size(); // Ottieni il numero attuale di giocatori
+            if (checkNickname(nickname) == 1 && numCurrentPlayers <= maxPlayerNumber) {
                 game.newPlayer(nickname);
-                numCurrentPlayers++;
             }
         }
     }
+
 
     private void initializeRoundMap (){
         for (Player player : game.getPlayers())
@@ -137,7 +137,8 @@ public class GameController {
      * @return True if the player is the first player, false otherwise.
      */
     public boolean isFirstPlayer(String nickname) {
-        return isFirstPlayer;
+        //ritorno se nickname = firstPlayer -->lo dovrò settare nell'addplayer.
+        return firstPlayer != null && firstPlayer.getNickname().equals(nickname);
     }
 
 
