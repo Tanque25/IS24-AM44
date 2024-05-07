@@ -6,6 +6,26 @@ package org.example.myversion.server.model.enumerations;
  * This class enumerates the empty and corner cases.
  */
 public enum ParameterType implements PointsParameter{
-    CORNER,
-    EMPTY
+    CORNER("C"),
+    EMPTY("E");
+
+    private final String shortName;
+
+    /**
+     * Constructor for ParameterType enum to set the short name.
+     *
+     * @param shortName the short single-letter name used for TUI representation.
+     */
+    ParameterType(String shortName) {
+        this.shortName = shortName;
+    }
+
+    /**
+     * Gets the short name of the parameter type.
+     *
+     * @return the short name of the parameter type.
+     */
+    public String getShortName() {
+        return shortName;
+    }
 }

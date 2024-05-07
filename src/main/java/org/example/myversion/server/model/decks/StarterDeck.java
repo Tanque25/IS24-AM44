@@ -3,6 +3,7 @@ package org.example.myversion.server.model.decks;
 import org.example.myversion.server.model.decks.cards.Corner;
 import org.example.myversion.server.model.decks.cards.StarterCard;
 import org.example.myversion.server.model.enumerations.CornerPosition;
+import org.example.myversion.server.model.enumerations.CornerVisibility;
 import org.example.myversion.server.model.enumerations.Resource;
 
 import java.util.Collections;
@@ -33,10 +34,10 @@ public class StarterDeck {
         starterDeck.push(new StarterCard(
                 new Resource[]{Resource.INSECT_KINGDOM},
                 Map.of(
-                        CornerPosition.UP_LEFT, new Corner(null),
+                        CornerPosition.UP_LEFT, new Corner(CornerVisibility.EMPTY),
                         CornerPosition.UP_RIGHT, new Corner(Resource.PLANT_KINGDOM),
                         CornerPosition.BOTTOM_LEFT, new Corner(Resource.INSECT_KINGDOM),
-                        CornerPosition.BOTTOM_RIGHT, new Corner(null)
+                        CornerPosition.BOTTOM_RIGHT, new Corner(CornerVisibility.EMPTY)
                 ),
                 Map.of(
                         CornerPosition.UP_LEFT, new Corner(Resource.FUNGI_KINGDOM),
@@ -50,8 +51,8 @@ public class StarterDeck {
                 new Resource[]{Resource.FUNGI_KINGDOM},
                 Map.of(
                         CornerPosition.UP_LEFT, new Corner(Resource.ANIMAL_KINGDOM),
-                        CornerPosition.UP_RIGHT, new Corner(null),
-                        CornerPosition.BOTTOM_LEFT, new Corner(null),
+                        CornerPosition.UP_RIGHT, new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.BOTTOM_LEFT, new Corner(CornerVisibility.EMPTY),
                         CornerPosition.BOTTOM_RIGHT, new Corner(Resource.FUNGI_KINGDOM)
                 ),
                 Map.of(
@@ -65,10 +66,10 @@ public class StarterDeck {
         starterDeck.push(new StarterCard(
                 new Resource[]{Resource.PLANT_KINGDOM, Resource.FUNGI_KINGDOM},
                 Map.of(
-                        CornerPosition.UP_LEFT, new Corner(null),
-                        CornerPosition.UP_RIGHT, new Corner(null),
-                        CornerPosition.BOTTOM_LEFT, new Corner(null),
-                        CornerPosition.BOTTOM_RIGHT, new Corner(null)
+                        CornerPosition.UP_LEFT, new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.UP_RIGHT, new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.BOTTOM_LEFT, new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.BOTTOM_RIGHT, new Corner(CornerVisibility.EMPTY)
                 ),
                 Map.of(
                         CornerPosition.UP_LEFT, new Corner(Resource.INSECT_KINGDOM),
@@ -81,10 +82,10 @@ public class StarterDeck {
         starterDeck.push(new StarterCard(
                 new Resource[]{Resource.ANIMAL_KINGDOM, Resource.INSECT_KINGDOM},
                 Map.of(
-                        CornerPosition.UP_LEFT, new Corner(null),
-                        CornerPosition.UP_RIGHT, new Corner(null),
-                        CornerPosition.BOTTOM_LEFT, new Corner(null),
-                        CornerPosition.BOTTOM_RIGHT, new Corner(null)
+                        CornerPosition.UP_LEFT, new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.UP_RIGHT, new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.BOTTOM_LEFT, new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.BOTTOM_RIGHT, new Corner(CornerVisibility.EMPTY)
                 ),
                 Map.of(
                         CornerPosition.UP_LEFT, new Corner(Resource.PLANT_KINGDOM),
@@ -97,10 +98,10 @@ public class StarterDeck {
         starterDeck.push(new StarterCard(
                 new Resource[]{Resource.ANIMAL_KINGDOM, Resource.INSECT_KINGDOM, Resource.PLANT_KINGDOM},
                 Map.of(
-                        CornerPosition.UP_LEFT, new Corner(null),
-                        CornerPosition.UP_RIGHT, new Corner(null),
-                        CornerPosition.BOTTOM_LEFT, new Corner(null),
-                        CornerPosition.BOTTOM_RIGHT, new Corner(null)
+                        CornerPosition.UP_LEFT, new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.UP_RIGHT, new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.BOTTOM_LEFT, new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.BOTTOM_RIGHT, new Corner(CornerVisibility.EMPTY)
                 ),
                 Map.of(
                         CornerPosition.UP_LEFT, new Corner(Resource.INSECT_KINGDOM),
@@ -113,10 +114,10 @@ public class StarterDeck {
         starterDeck.push(new StarterCard(
                 new Resource[]{Resource.PLANT_KINGDOM, Resource.ANIMAL_KINGDOM, Resource.FUNGI_KINGDOM},
                 Map.of(
-                        CornerPosition.UP_LEFT, new Corner(null),
-                        CornerPosition.UP_RIGHT, new Corner(null),
-                        CornerPosition.BOTTOM_LEFT, new Corner(null),
-                        CornerPosition.BOTTOM_RIGHT, new Corner(null)
+                        CornerPosition.UP_LEFT, new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.UP_RIGHT, new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.BOTTOM_LEFT, new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.BOTTOM_RIGHT, new Corner(CornerVisibility.EMPTY)
                 ),
                 Map.of(
                         CornerPosition.UP_LEFT, new Corner(Resource.FUNGI_KINGDOM),
