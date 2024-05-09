@@ -6,8 +6,8 @@ package org.example.myversion.server.model.enumerations;
  * If the corner is full it is not visible.
  */
 public enum CornerVisibility implements CornerContent{
-    EMPTY("E"),
-    FULL("F");
+    EMPTY("▫"),
+    FULL("▪");
 
     private final String shortName;
 
