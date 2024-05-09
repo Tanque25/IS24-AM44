@@ -22,20 +22,31 @@ import java.util.*;
  */
 public class GameController {
     private Server server;
+
+
+
     private Game game;
     public List<String> disconnectedPlayers;
     public HashMap<String, Integer> pongLost;
     public List<String> pongReceived;
+
+
     public int roundsPlayed;
     private boolean gameOver;
     private int maxPlayerNumber;
     private boolean isGameLoaded;
+
+
     private boolean gameIsStarted;
+
     private boolean isFirstPlayer;
     private Player firstPlayer;
+
     private HashMap <Player, Integer> playerRoundsPlayed;
     private boolean lastTurn;
     private boolean roundOver;
+
+
     private GameState gameState;
 
     private int numberOfPlayer=0;
@@ -65,6 +76,29 @@ public class GameController {
         this.playerRoundsPlayed= new HashMap<>();
         this.gameState = GameState.INITIALIZATION;
     }
+
+    public GameState getGameState() {
+        return gameState;
+    }
+    public boolean isGameIsStarted() {
+        return gameIsStarted;
+    }
+    public Game getGame() {
+        return game;
+    }
+
+    public boolean isFirstPlayer() {
+        return isFirstPlayer;
+    }
+
+    public HashMap<Player, Integer> getPlayerRoundsPlayed() {
+        return playerRoundsPlayed;
+    }
+
+    public int getRoundsPlayed() {
+        return roundsPlayed;
+    }
+
 
     /**
      * This method add a Player in the game,
@@ -141,7 +175,7 @@ public class GameController {
      * @param nickname The name of the player to check.
      * @return True if the player is the first player, false otherwise.
      */
-    public boolean isFirstPlayer(String nickname) {
+    public boolean checkIsFirstPlayer(String nickname) {
         return isFirstPlayer;
     }
 
@@ -228,17 +262,15 @@ public class GameController {
                     try {
                         game.playCard(actualPlayer, card, coordinates);
                         playerRoundsPlayed.put(actualPlayer, playerRoundsPlayed.get(player) + 1);
-                        roundsPlayed++;
                         lastTurn = checkLastTurn();
+                        roundsPlayed++;
                         gameOver = endGame();
                     } catch (InvalidMoveException e) {
                         throw new InvalidMoveException("Invalid move: " + e.getMessage());
                     }
                     return; // Esci dal metodo dopo aver giocato la carta, non so se ha senso
                 }
-
             }
-
             // Se actualPlayer è ancora null, il nickname non è stato trovato
             if (actualPlayer == null) {
                 throw new InvalidNicknameException("Invalid nickname");
