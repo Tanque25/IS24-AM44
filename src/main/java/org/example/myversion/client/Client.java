@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * It is abstract because each client will either be an RMI client or a Socket client.
  */
 public abstract class Client extends UnicastRemoteObject implements Serializable {
-    private String username;
+    private String nickname;
     private GameView gameView;
     private boolean serverConnection;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -65,7 +65,6 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
         scheduler.scheduleAtFixedRate(connectionCheck, 0, 20, TimeUnit.SECONDS);
     }
 
-
     /**
      * Parses and handles messages received from the server.
      *
@@ -75,8 +74,11 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
         String messageCode = message.getMessageCode();
 
         switch (messageCode) {
-            case "ping", "pong" -> serverConnection = true;
-            // TODO other cases
+            case "Ping" ->
+                serverConnection = true;
+            case "Nickname" ->
+                setNickname(message.getArgument());
+                // TODO might have to add a checkServerConnection method
             default -> throw new IllegalArgumentException("Invalid messageCode: " + messageCode);
         }
     }
@@ -98,6 +100,10 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
 
         // Exit the application
         System.exit(0);
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public void setGameView(GameView gameView) {

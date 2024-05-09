@@ -11,6 +11,10 @@ import org.example.myversion.server.serverController.ServerInterface;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class TCPServer implements ServerInterface{
 
@@ -20,12 +24,19 @@ public class TCPServer implements ServerInterface{
 
     private Thread acceptThread;
 
+    private List<HandleClientSocket> clients;
+
+    public ExecutorService executor;
+
     /**
      * Constructor, it initializes a TCP server on the specified port.
      *
      * @param port The port number on which the server will listen for incoming connections.
      */
     public TCPServer(int port) {
+        clients = new ArrayList<>();
+        executor = Executors.newCachedThreadPool();
+
         try {
             serverSocket = new ServerSocket(port);//port è la porta della connessione che li passeremo
             running = true;//
@@ -34,12 +45,15 @@ public class TCPServer implements ServerInterface{
             acceptThread = new Thread(() -> {
                 while (running) {
                     try {
-                        Socket clientSocket = serverSocket.accept();//accept continua ad accettare nuova connesioni
-                        //HandleClientSocket ClientSocket;
+                        Socket clientSocket = serverSocket.accept(); //accept continua ad accettare nuova connesioni
 
-                        //clientHandler = new SocketClientHandler(clientSocket);//per ogni connessione creata viene creato un nuovo thread per gestire connessione con clienti
+                        //per ogni connessione creata viene creato un nuovo thread per gestire connessione con clients
+                        HandleClientSocket handleClientSocket = new HandleClientSocket(clientSocket, controller);
+
+                        executor.submit(handleClientSocket);
+                        clients.add(handleClientSocket);
                     } catch (IOException e) {
-                        e.printStackTrace();//stampa errore poi metterlo a posto meglio nel caso
+                        e.printStackTrace(); //stampa errore poi metterlo a posto meglio nel caso
                     }
                 }
             });

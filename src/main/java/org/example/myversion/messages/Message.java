@@ -230,6 +230,10 @@ public class Message implements Serializable {
         return Json.createReader(new StringReader(messageString)).readObject();
     }
 
+    public JsonObject getJson() {
+        return json;
+    }
+
     /**
      * Retrieves the identifier of the message.
      *

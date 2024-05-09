@@ -11,6 +11,8 @@ public interface GameView {
 
     void setClient(Client client);
 
+    void showMessage(String message);
+
     void startView() throws IOException;
 
     void clientLogin() throws IOException;
