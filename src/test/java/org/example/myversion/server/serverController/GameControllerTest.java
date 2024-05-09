@@ -1,5 +1,6 @@
 package org.example.myversion.server.serverController;
 
+import org.example.myversion.server.model.Player;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,12 +14,18 @@ class GameControllerTest {
     @BeforeEach
     void setUp() {
         gameController = new GameController();
+
+        gameController.addPlayer("Pippo");
+        gameController.addPlayer("Giulio");
+        gameController.addPlayer("Claudio");
+
         gameController.newGame(); // Inizializza un nuovo gioco
 
     }
 
     @Test
     void addPlayer() {
+
         gameController.addPlayer("Player1");
         assertEquals(1, gameController.getGame().getPlayers().size());
     }
@@ -90,6 +97,18 @@ class GameControllerTest {
 
     @Test
     void changeTurn() {
+        Player firstPlayer = gameController.getFirstPlayer();
+        Player currentPlayer = gameController.getCurrentPlayer();
+        assertNotNull(firstPlayer);
+        assertNotNull(currentPlayer);
+        assertEquals(firstPlayer, currentPlayer, "Il primo giocatore dovrebbe essere il giocatore corrente iniziale");
+
+        // Esecuzione
+        gameController.changeTurn();
+
+        // Assert
+        assertNotEquals(firstPlayer, gameController.getCurrentPlayer(), "Il turno dovrebbe essere cambiato dopo chiamata a changeTurn()");
+
     }
 
     @Test
