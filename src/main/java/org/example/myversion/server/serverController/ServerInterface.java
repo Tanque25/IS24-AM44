@@ -21,8 +21,6 @@ public interface ServerInterface {
     ;
 
     public default void receiveMessageTCP(Message message) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, ExtraRoundException {
-    }
 
-    //public default void receiveMessageRMI(Message message) throws IllegalAccessException {
-    //}
+    }
 }

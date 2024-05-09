@@ -2,9 +2,7 @@ package org.example.myversion.client;
 
 import org.example.myversion.messages.Message;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
+import jakarta.json.*;
 import java.io.*;
 import java.net.Socket;
 

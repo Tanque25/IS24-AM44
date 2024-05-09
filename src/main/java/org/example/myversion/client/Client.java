@@ -100,5 +100,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
         System.exit(0);
     }
 
-
+    public void setGameView(GameView gameView) {
+        this.gameView = gameView;
+    }
 }

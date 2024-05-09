@@ -1,5 +1,7 @@
 package org.example.myversion.client.view;
 
+import org.example.myversion.client.Client;
+
 import java.io.IOException;
 
 /**
@@ -7,8 +9,9 @@ import java.io.IOException;
  */
 public interface GameView {
 
+    void setClient(Client client);
+
     void startView() throws IOException;
 
     void clientLogin() throws IOException;
-
 }

@@ -5,7 +5,7 @@ import org.example.myversion.server.model.decks.GoldDeck;
 import org.example.myversion.server.model.decks.cards.*;
 import org.example.myversion.server.model.enumerations.*;
 
-import javax.json.*;
+import jakarta.json.*;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -219,6 +219,16 @@ public class Message implements Serializable {
     }
 
 ///////////////////////////////////////////////////////GETTERS////////////////////////////////////////////////////////
+
+    /**
+     * Parses a JSON string representation of a Message object into a JsonObject.
+     *
+     * @param messageString A string containing JSON representation of a Message object.
+     * @return A JsonObject representing the parsed Message object.
+     */
+    public JsonObject parseMessageString(String messageString) {
+        return Json.createReader(new StringReader(messageString)).readObject();
+    }
 
     /**
      * Retrieves the identifier of the message.

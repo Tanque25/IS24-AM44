@@ -5,4 +5,5 @@ package org.example.myversion.server.model.enumerations;
  * The parameter can be empty, the number of covered corners or a special object.
  */
 public interface PointsParameter {
+    public String getShortName();
 }
