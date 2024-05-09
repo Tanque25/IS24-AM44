@@ -154,12 +154,12 @@ public class HandleClientSocket implements ServerInterface, Runnable {
     }
 
     private void sendMessageToClient(Message message) {
-        try (JsonWriter writer = Json.createWriter(writer)) {
+       /* try (JsonWriter writer = Json.createWriter(writer)) {
             //JsonObject messageJson = message.getJsonObject();
             //writer.writeObject(messageJson);
         } catch (IOException e) {
             System.err.println("Error sending response to client: " + e.getMessage());
-        }
+        }*/
     }
 }
 
