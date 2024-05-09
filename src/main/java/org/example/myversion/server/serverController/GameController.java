@@ -51,7 +51,7 @@ public class GameController {
 
 
     public GameController() {
-        //this.game = game;
+        this.game = new Game();
         this.disconnectedPlayers = new ArrayList<>();
         this.pongLost = new HashMap<>();
         this.pongReceived = new ArrayList<>();
@@ -172,7 +172,7 @@ public class GameController {
      * If isGameSaved is false this method starts a new game, resetting the game state.
      */
     public void newGame() {
-        game = new Game();
+        //game = new Game();
         game.getBoard().initializePlayerScores(game.getPlayers());
         initializeRoundMap();
         roundsPlayed = 0;
