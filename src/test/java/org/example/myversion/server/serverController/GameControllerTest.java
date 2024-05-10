@@ -14,7 +14,6 @@ class GameControllerTest {
     void setUp() {
         controller = new GameController();
     }
-
     @Test
     void addPlayer() {
         assertEquals(0, controller.getGame().getPlayers().size());
@@ -26,16 +25,6 @@ class GameControllerTest {
         controller.addPlayer("diegoMilito");
         assertEquals(2, controller.getGame().getPlayers().size());
         assertEquals("diegoMilito", controller.getGame().getPlayers().get(1).getNickname());
-    }
-
-    @Test
-    void checkNickname() {
-    }
-
-
-
-    @Test
-    void chooseNumberPlayer() {
     }
 
     @Test
@@ -53,16 +42,28 @@ class GameControllerTest {
     }
 
     @Test
-    void gameIsStarted() {
-    }
-
-    @Test
     void playCard() {
         controller.addPlayer("rodrigoPalacio");
         controller.addPlayer("julioCesar");
         controller.addPlayer("Maicon");
         controller.newGame();
     }
+
+    @Test
+    void checkNickname() {
+    }
+
+
+
+    @Test
+    void chooseNumberPlayer() {
+    }
+
+
+    @Test
+    void gameIsStarted() {
+    }
+
 
     @Test
     void drawCard() {
