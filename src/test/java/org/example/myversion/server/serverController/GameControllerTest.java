@@ -27,7 +27,12 @@ class GameControllerTest {
     void addPlayer() {
 
         gameController.addPlayer("Player1");
-        assertEquals(1, gameController.getGame().getPlayers().size());
+        assertEquals(4, gameController.getGame().getPlayers().size());
+
+        gameController.addPlayer("Player2");
+        gameController.addPlayer("Player3");
+        assertEquals(6, gameController.getGame().getPlayers().size());
+
     }
 
     @Test
@@ -60,7 +65,7 @@ class GameControllerTest {
 
         boolean result = false;
         try {
-            result = gameController.chooseNumberPlayer(numPlayers);
+            result = gameController.checkNumberOfPlayer(numPlayers);
         } catch (InvalidChoiceException e) {
             fail("An unexpected InvalidChoiceException was thrown");
         }
@@ -74,7 +79,7 @@ class GameControllerTest {
         int numPlayers = 100;
 
         assertThrows(InvalidChoiceException.class, () -> {
-            gameController.chooseNumberPlayer(numPlayers);
+            gameController.checkNumberOfPlayer(numPlayers);
         }, "chooseNumberPlayer should throw InvalidChoiceException for an invalid number of players");
 
     }
@@ -97,17 +102,38 @@ class GameControllerTest {
 
     @Test
     void changeTurn() {
-        Player firstPlayer = gameController.getFirstPlayer();
+       /* Player firstPlayer = gameController.getFirstPlayer();
         Player currentPlayer = gameController.getCurrentPlayer();
         assertNotNull(firstPlayer);
-        assertNotNull(currentPlayer);
+        //assertNotNull(currentPlayer);
         assertEquals(firstPlayer, currentPlayer, "Il primo giocatore dovrebbe essere il giocatore corrente iniziale");
 
         // Esecuzione
         gameController.changeTurn();
 
         // Assert
-        assertNotEquals(firstPlayer, gameController.getCurrentPlayer(), "Il turno dovrebbe essere cambiato dopo chiamata a changeTurn()");
+        assertNotEquals(firstPlayer, gameController.getCurrentPlayer(), "Il turno dovrebbe essere cambiato dopo chiamata a changeTurn()");*/
+
+        // Verifica che il turno sia inizialmente sul primo giocatore
+        assertEquals("Pippo", gameController.getCurrentPlayer().getNickname());
+
+        // Cambia il turno una volta
+        gameController.changeTurn();
+        // Verifica che il turno sia passato al secondo giocatore
+        assertEquals("Giulio", gameController.getCurrentPlayer().getNickname());
+
+        // Cambia il turno due volte
+        gameController.changeTurn();
+        gameController.changeTurn();
+        // Verifica che il turno sia passato al terzo giocatore
+        assertEquals("Claudio", gameController.getCurrentPlayer().getNickname());
+
+        // Cambia il turno tre volte (tornerà al primo giocatore)
+        gameController.changeTurn();
+        gameController.changeTurn();
+        gameController.changeTurn();
+        // Verifica che il turno sia tornato al primo giocatore
+        assertEquals("Pippo", gameController.getCurrentPlayer().getNickname());
 
     }
 

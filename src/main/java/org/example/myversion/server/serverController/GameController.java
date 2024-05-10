@@ -80,6 +80,7 @@ public class GameController {
             numCurrentPlayers++;
             isFirstPlayer = false;
             firstPlayer = game.getPlayers().getFirst();
+            //settare la lista
         }
         else {
             if(checkNickname(nickname)==1 && numCurrentPlayers<=maxPlayerNumber){
