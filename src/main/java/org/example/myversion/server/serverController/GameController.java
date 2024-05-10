@@ -4,11 +4,10 @@ import org.example.myversion.server.Server;
 import org.example.myversion.server.model.Coordinates;
 import org.example.myversion.server.model.Game;
 import org.example.myversion.server.model.Player;
-import org.example.myversion.server.model.decks.StarterDeck;
 import org.example.myversion.server.model.decks.cards.ObjectiveCard;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
 import org.example.myversion.server.model.decks.cards.StarterCard;
-import org.example.myversion.server.model.exceptions.ExtraRoundException;
+import org.example.myversion.server.model.exceptions.InvalidGameStateException;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
 import org.example.myversion.server.model.exceptions.InvalidNicknameException;
@@ -23,6 +22,7 @@ import java.util.*;
 public class GameController {
     private Server server;
     private Game game;
+    private GameState gameState;
     public List<String> disconnectedPlayers;
     public HashMap<String, Integer> pongLost;
     public List<String> pongReceived;
@@ -36,9 +36,7 @@ public class GameController {
     private HashMap <Player, Integer> playerRoundsPlayed;
     private boolean lastTurn;
     private boolean roundOver;
-    private GameState gameState;
-
-    private int numberOfPlayer=0;
+    private int numberOfPlayer;
 
     //private final HashMap<String, ClientCommunicationInterface> rmiClients;
     //private final HashMap<String, SocketClientHandler> tcpClients;
@@ -60,10 +58,11 @@ public class GameController {
         this.gameOver = false;
         this.isFirstPlayer = true;
         this.maxPlayerNumber = 4;
+        this.numberOfPlayer = 0;
         this.lastTurn=false;
         this.roundOver=false;
         this.playerRoundsPlayed= new HashMap<>();
-        this.gameState = GameState.INITIALIZATION;
+        this.gameState = GameState.LOGIN;
     }
 
     /**
@@ -73,23 +72,26 @@ public class GameController {
      * @param nickname the name of the player who wants to enter the game
      */
     public void addPlayer(String nickname){
-        gameState = GameState.LOGIN;
-        int numCurrentPlayers = 0;
-        if (isFirstPlayer){
-            game.newPlayer(nickname);
-            numCurrentPlayers++;
-            isFirstPlayer = false;
-            firstPlayer = game.getPlayers().getFirst();
-            //settare la lista
-        }
-        else {
-            if(checkNickname(nickname)==1 && numCurrentPlayers<=maxPlayerNumber){
+        if(gameState == GameState.LOGIN) {
+            int numCurrentPlayers = 0;
+            if (isFirstPlayer) {
                 game.newPlayer(nickname);
                 numCurrentPlayers++;
+                isFirstPlayer = false;
+                firstPlayer = game.getPlayers().getFirst();
+            } else {
+                if (checkNickname(nickname) == 1 && numCurrentPlayers <= maxPlayerNumber) {
+                    game.newPlayer(nickname);
+                    numCurrentPlayers++;
+                }
             }
         }
+        //eccezione
     }
 
+    /**
+     * This method initializes the map that keeps track of the number of rounds played by each player
+     */
     private void initializeRoundMap (){
         for (Player player : game.getPlayers())
             playerRoundsPlayed.put(player, 0);
@@ -162,6 +164,32 @@ public class GameController {
     }
 
     /**
+     * Sets the number of players in the game lobby
+     * @param numberOfPlayer
+     */
+    public void setNumberOfPlayer(int numberOfPlayer) {
+        this.numberOfPlayer = numberOfPlayer;
+    }
+
+    /**
+     * Checks if the lobby is full and starts a new game if it is.
+     * @return {@code true} if the lobby is full and a new game is started; {@code false} otherwise.
+     */
+    public boolean checkLobby() {
+        if(gameState == GameState.LOGIN) {
+            // Se il numero di giocatori nella lobby è uguale al massimo consentito
+            // Se la lobby non è ancora piena
+            if(game.getPlayers().size() == numberOfPlayer){
+                gameState = GameState.INITIALIZATION;
+                return true;
+            }
+        } else
+            //eccezione
+            return false;
+        return false;
+    }
+
+    /**
      * Checks if the game state is saved.
      * @return True if the game state is saved, false otherwise.
      */
@@ -173,22 +201,24 @@ public class GameController {
      * If isGameSaved is false this method starts a new game, resetting the game state.
      */
     public void newGame() {
-        //game = new Game();
-        game.getBoard().initializePlayerScores(game.getPlayers());
-        initializeRoundMap();
-        roundsPlayed = 0;
+        if (gameState == GameState.INITIALIZATION) {
+            //game = new Game();
+            game.initializeGame();
+            initializeRoundMap();
+            roundsPlayed = 0;
 
-        for (Player player : game.getPlayers()) {
-            List<ObjectiveCard> secretObjectives = game.drawSecretObjectives();
-            //draw secret obj -> set secret obj
+            for (Player player : game.getPlayers()) {
+                List<ObjectiveCard> secretObjectives = game.drawSecretObjectives();
+                //draw secret obj -> set secret obj
                 game.setPlayerSecretObjective(player, secretObjectives.getFirst());
                 game.setPlayerSecretObjective(player, secretObjectives.get(1));
                 //choose starter card - > place starter card (initialize play area)
                 StarterCard starterCard = game.drawStarterCard();
                 game.placeStarterCard(player, starterCard);
-        }
-        gameIsStarted = true;
-        gameState = GameState.IN_GAME;
+            }
+            gameIsStarted = true;
+            gameState = GameState.IN_GAME;
+        } //ECCEZIONE
     }
 
     /**
@@ -247,6 +277,7 @@ public class GameController {
 
             if (actualPlayer == game.getPlayers().getFirst() && roundOver)
                 roundOver = false;
+                //potrei fare direttametne playExtraRound
         }
 
     }
@@ -260,7 +291,7 @@ public class GameController {
      * @param nickname the name of the player who is drawing the card.
      * @param chosenCard The card chosen by the player.
      */
-    public void drawCard(String nickname, PlayableCard chosenCard) throws InvalidNicknameException, ExtraRoundException, InvalidChoiceException {
+    public void drawCard(String nickname, PlayableCard chosenCard) throws InvalidNicknameException, InvalidGameStateException, InvalidChoiceException {
         Player actualPlayer = null;
 
         if(gameState == GameState.IN_GAME) {
@@ -278,45 +309,28 @@ public class GameController {
 
                     // Check se è l'ultimo turno
                     lastTurn = checkLastTurn();
+
                 }
             }
         }
         else
-            throw new ExtraRoundException("You can't draw new cards, you must play only the cards you have.");
+            throw new InvalidGameStateException("You can't draw new cards, you must play only the cards you have.");
     }
 
     /**
      * Changes the turn to the next player in the game.
      * This method will be called to switch the turn to the next player.
      */
-    public void changeTurn() {
+    public void changeTurn() throws InvalidGameStateException{
 
         if (gameState == GameState.IN_GAME || gameState == GameState.LAST_ROUND) {
-            int currentIndex = game.getPlayers().indexOf(game.getCurrentPlayer());
-            int nextIndex = (currentIndex + 1) % game.getPlayers().size();
-            game.setCurrentPlayer(game.getPlayers().get(nextIndex));
+            game.updateCurrentPlayer();
         }
-    }
-
-    /**
-     * Checks if the lobby is full and starts a new game if it is.
-     *
-     * @return {@code true} if the lobby is full and a new game is started; {@code false} otherwise.
-     */
-    public boolean checkLobby() {
-        // Se il numero di giocatori nella lobby è uguale al massimo consentito
-        // Se la lobby non è ancora piena
-        return game.getPlayers().size() == numberOfPlayer;
+        else
+            throw new InvalidGameStateException("You can't change the turn, the game is not started yet.");
     }
 
 
-    /**
-     * Checks if it is the last turn of the game.
-     * @return true if it is the last turn, false otherwise.
-     */
-    public boolean isLastTurn() {
-        return isLastTurn();
-    }
 
     /**
      * Handles the disconnection of a player.
@@ -355,9 +369,7 @@ public class GameController {
         }
     }
 
-    public void setNumberOfPlayer(int numberOfPlayer) {
-        this.numberOfPlayer = numberOfPlayer;
-    }
+
 
     /**
      * Checks whether it is the last turn of the game.
@@ -403,15 +415,35 @@ public class GameController {
         return gameOver;
     }
 
+    /**
+     * Returns the game object.
+     * @return the game object.
+     */
     public Game getGame() {
         return game;
     }
 
+    /**
+     * Returns the first player of the game.
+     * @return the first player of the game.
+     */
     public Player getFirstPlayer() {
         return firstPlayer;
     }
 
+    /**
+     * Returns the current player of the game.
+     * @return the current player of the game.
+     */
     public Player getCurrentPlayer() {
         return game.getCurrentPlayer();
+    }
+
+    /**
+     * Returns the game state.
+     * @return the game state.
+     */
+    public void setGameState(GameState state) {
+        this.gameState = state;
     }
 }

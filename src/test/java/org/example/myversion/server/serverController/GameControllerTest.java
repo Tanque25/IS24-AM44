@@ -2,6 +2,7 @@ package org.example.myversion.server.serverController;
 
 import org.example.myversion.server.model.Player;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
+import org.example.myversion.server.model.exceptions.InvalidGameStateException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -57,6 +58,7 @@ class GameControllerTest {
 
     @Test
     void isFirstPlayer() {
+
     }
 
     @Test
@@ -86,10 +88,12 @@ class GameControllerTest {
 
     @Test
     void newGame() {
+
     }
 
     @Test
     void gameIsStarted() {
+
     }
 
     @Test
@@ -101,39 +105,29 @@ class GameControllerTest {
     }
 
     @Test
-    void changeTurn() {
-       /* Player firstPlayer = gameController.getFirstPlayer();
-        Player currentPlayer = gameController.getCurrentPlayer();
-        assertNotNull(firstPlayer);
-        //assertNotNull(currentPlayer);
-        assertEquals(firstPlayer, currentPlayer, "Il primo giocatore dovrebbe essere il giocatore corrente iniziale");
+    void changeTurn() throws InvalidGameStateException {
 
-        // Esecuzione
-        gameController.changeTurn();
-
-        // Assert
-        assertNotEquals(firstPlayer, gameController.getCurrentPlayer(), "Il turno dovrebbe essere cambiato dopo chiamata a changeTurn()");*/
-
+        gameController.setGameState(GameState.IN_GAME);
         // Verifica che il turno sia inizialmente sul primo giocatore
         assertEquals("Pippo", gameController.getCurrentPlayer().getNickname());
 
-        // Cambia il turno una volta
         gameController.changeTurn();
-        // Verifica che il turno sia passato al secondo giocatore
         assertEquals("Giulio", gameController.getCurrentPlayer().getNickname());
 
-        // Cambia il turno due volte
         gameController.changeTurn();
-        gameController.changeTurn();
-        // Verifica che il turno sia passato al terzo giocatore
         assertEquals("Claudio", gameController.getCurrentPlayer().getNickname());
 
-        // Cambia il turno tre volte (tornerà al primo giocatore)
         gameController.changeTurn();
-        gameController.changeTurn();
-        gameController.changeTurn();
-        // Verifica che il turno sia tornato al primo giocatore
         assertEquals("Pippo", gameController.getCurrentPlayer().getNickname());
+
+    }
+    @Test
+    void changeTurnException() {
+        gameController.setGameState(GameState.LOGIN);
+        // Verifica che il turno sia inizialmente sul primo giocatore
+        assertEquals("Pippo", gameController.getCurrentPlayer().getNickname());
+        // Verifica che venga lanciata un'eccezione quando si tenta di cambiare il turno
+        assertThrows(InvalidGameStateException.class, () -> gameController.changeTurn());
 
     }
 
