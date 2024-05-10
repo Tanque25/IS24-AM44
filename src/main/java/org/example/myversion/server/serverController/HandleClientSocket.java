@@ -41,6 +41,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
     }
 
     public void run() {
+
         try {
             String clientString;
             while ((clientString = reader.readLine()) != null) {
