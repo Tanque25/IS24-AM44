@@ -74,8 +74,9 @@ public class TCPClient extends Client {
      */
     @Override
     public void sendMessage(Message message) throws IOException {
-        String jsonString = message.toString(); // Convert message to JSON string
-        dataOutputStream.writeUTF(jsonString); // Send the JSON string over the network
+        String jsonString = message.getJson().toString(); // Convert message to JSON string
+        System.out.println("Sending message: " + jsonString);
+        dataOutputStream.writeBytes(jsonString + "\n"); // Send the JSON string over the network
         dataOutputStream.flush(); // Flush to ensure the message is sent immediately
     }
 

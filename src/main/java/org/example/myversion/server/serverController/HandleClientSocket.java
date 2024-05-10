@@ -23,9 +23,11 @@ public class HandleClientSocket implements ServerInterface, Runnable {
     private BufferedReader reader;
     private BufferedWriter writer;
     private Server server;
-    /*
-    private PrintWriter writer;
-    private Scanner reader;*/
+
+    // private PrintWriter writer;
+    // private Scanner reader;
+
+    public Thread listenThread;
 
 
     public HandleClientSocket(Socket clientSocket, GameController controller) {
@@ -38,11 +40,47 @@ public class HandleClientSocket implements ServerInterface, Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // EDO'S VERSION
+        // Listen for messages coming from the client
+        listenThread = new Thread(() -> {
+            String clientMessageString;
+            while (true) {
+                try {
+                    synchronized (reader) {
+                        clientMessageString = reader.readLine();
+                        JsonObject jsonObject = null;
+                        try (JsonReader jsonReader = Json.createReader(new StringReader(clientMessageString))) {
+                            jsonObject = jsonReader.readObject();
+                        } catch (Exception e) {
+                            System.out.println("Error parsing JSON: " + clientMessageString);
+                        }
+
+                        Message message = new Message(jsonObject);
+
+                        receiveMessageTCP(message);
+                    }
+                } catch (IOException | IllegalAccessException | InvalidNicknameException | InvalidMoveException |
+                         InvalidChoiceException | ExtraRoundException e) {
+                    System.err.println("Error while reading from client. IO");
+                    break;
+                }
+
+            }
+        });
+
     }
 
     public void run() {
+<<<<<<< HEAD
 
         try {
+=======
+        listenThread.start();
+
+        // RICHI'S VERSION
+        /*try {
+>>>>>>> origin/main
             String clientString;
             while ((clientString = reader.readLine()) != null) {
                 JsonObject jsonObject = parseJsonObject(clientString);
@@ -62,7 +100,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 
     /**
@@ -100,6 +138,12 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                     sendMessageToClient(new Message("Pong", "Nickname is  already in use by a disconnected player"));
                 }
 
+            }
+
+            case "Login" -> {
+                String nickname = message.getArgument();
+                // TODO check nickname
+                controller.addPlayer(nickname);
             }
 
             case "NumberOfPlayer" -> {
@@ -155,7 +199,15 @@ public class HandleClientSocket implements ServerInterface, Runnable {
     }
 
     private void sendMessageToClient(Message message) {
-       /* try (JsonWriter writer = Json.createWriter(writer)) {
+        try {
+            String jsonString = message.getJson().toString();
+            writer.write(jsonString);
+        } catch (IOException e) {
+            System.err.println("Error sending message to client: " + e.getMessage());
+        }
+
+        // RICHI'S VERSION
+        /*try (JsonWriter writer = Json.createWriter(writer)) {
             //JsonObject messageJson = message.getJsonObject();
             //writer.writeObject(messageJson);
         } catch (IOException e) {
