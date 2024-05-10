@@ -72,15 +72,10 @@ public class HandleClientSocket implements ServerInterface, Runnable {
     }
 
     public void run() {
-<<<<<<< HEAD
-
-        try {
-=======
         listenThread.start();
 
         // RICHI'S VERSION
         /*try {
->>>>>>> origin/main
             String clientString;
             while ((clientString = reader.readLine()) != null) {
                 JsonObject jsonObject = parseJsonObject(clientString);
