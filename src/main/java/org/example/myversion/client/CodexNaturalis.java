@@ -5,6 +5,8 @@ import org.example.myversion.client.view.GameView;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CodexNaturalis {
     public static Client client;
@@ -45,5 +47,20 @@ public class CodexNaturalis {
 
         client.setGameView(gameView);
         gameView.setClient(client);
+    }
+
+    /**
+     * Checks if the given IP address is valid.
+     *
+     * @param ip the IP address to check.
+     * @return true if the IP address is valid, false otherwise.
+     */
+    public static boolean isIpValid(String ip) {
+        if (ip.equals("localhost"))
+            return true;
+        String regex = "^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(ip);
+        return matcher.matches();
     }
 }
