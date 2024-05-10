@@ -2,7 +2,7 @@ package org.example.myversion.server.serverController;
 
 import org.example.myversion.messages.Message;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
-import org.example.myversion.server.model.exceptions.ExtraRoundException;
+import org.example.myversion.server.model.exceptions.InvalidGameStateException;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
 import org.example.myversion.server.model.exceptions.InvalidNicknameException;
@@ -11,8 +11,6 @@ import org.example.myversion.server.Server;
 import java.io.*;
 import java.net.Socket;
 import jakarta.json.*;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class HandleClientSocket implements ServerInterface, Runnable {
@@ -61,7 +59,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                         receiveMessageTCP(message);
                     }
                 } catch (IOException | IllegalAccessException | InvalidNicknameException | InvalidMoveException |
-                         InvalidChoiceException | ExtraRoundException e) {
+                         InvalidChoiceException | InvalidGameStateException e) {
                     System.err.println("Error while reading from client. IO");
                     break;
                 }
@@ -106,11 +104,11 @@ public class HandleClientSocket implements ServerInterface, Runnable {
      * @throws InvalidNicknameException If the nickname provided is invalid.
      * @throws InvalidMoveException     If the move performed is invalid.
      * @throws InvalidChoiceException   If the choice made is invalid.
-     * @throws ExtraRoundException      If an extra round condition is encountered.
+     * @throws InvalidGameStateException      If an extra round condition is encountered.
      */
     //ha senso gestire questi tipi di eccezioni qui?
     @Override
-    public void receiveMessageTCP(Message message) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, ExtraRoundException {
+    public void receiveMessageTCP(Message message) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, InvalidGameStateException {
         String messageType = message.getMessageCode();
 
         switch (messageType) {
