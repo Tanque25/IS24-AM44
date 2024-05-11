@@ -8,7 +8,6 @@ import org.example.myversion.server.model.decks.StarterDeck;
 import org.example.myversion.server.model.decks.cards.ObjectiveCard;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
 import org.example.myversion.server.model.decks.cards.StarterCard;
-import org.example.myversion.server.model.exceptions.ExtraRoundException;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
 import org.example.myversion.server.model.exceptions.InvalidNicknameException;
@@ -22,7 +21,9 @@ import java.util.*;
  */
 public class GameController {
     private Server server;
-    private Game game;
+    public Game game;
+
+    private GameState gamePhase;
     public List<String> disconnectedPlayers;
     public HashMap<String, Integer> pongLost;
     public List<String> pongReceived;
@@ -259,7 +260,7 @@ public class GameController {
      * @param nickname the name of the player who is drawing the card.
      * @param chosenCard The card chosen by the player.
      */
-    public void drawCard(String nickname, PlayableCard chosenCard) throws InvalidNicknameException, ExtraRoundException, InvalidChoiceException {
+    public void drawCard(String nickname, PlayableCard chosenCard) throws InvalidNicknameException, InvalidChoiceException {
         Player actualPlayer = null;
 
         if(gameState == GameState.IN_GAME) {
@@ -280,8 +281,6 @@ public class GameController {
                 }
             }
         }
-        else
-            throw new ExtraRoundException("You can't draw new cards, you must play only the cards you have.");
     }
 
     /**
@@ -400,6 +399,10 @@ public class GameController {
                 }
         }
         return gameOver;
+    }
+
+    public GameState GamePhase (){
+        return gamePhase;
     }
 
 }

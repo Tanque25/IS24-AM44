@@ -2,7 +2,6 @@ package org.example.myversion.server.serverController;
 
 import org.example.myversion.messages.Message;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
-import org.example.myversion.server.model.exceptions.ExtraRoundException;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
 import org.example.myversion.server.model.exceptions.InvalidNicknameException;
@@ -65,7 +64,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                         receiveMessageTCP(message,this);
                     }
                 } catch (IOException | IllegalAccessException | InvalidNicknameException | InvalidMoveException |
-                         InvalidChoiceException | ExtraRoundException e) {
+                         InvalidChoiceException e) {
                     System.err.println("Error while reading from client. IO");
                     break;
                 }
@@ -87,11 +86,10 @@ public class HandleClientSocket implements ServerInterface, Runnable {
      * @throws InvalidNicknameException If the nickname provided is invalid.
      * @throws InvalidMoveException     If the move performed is invalid.
      * @throws InvalidChoiceException   If the choice made is invalid.
-     * @throws ExtraRoundException      If an extra round condition is encountered.
      */
     //ha senso gestire questi tipi di eccezioni qui?
     @Override
-    public void receiveMessageTCP(Message message, HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, ExtraRoundException, RemoteException {
+    public void receiveMessageTCP(Message message, HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException {
         String messageType = message.getMessageCode();
 
         switch (messageType) {

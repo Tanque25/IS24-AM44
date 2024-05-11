@@ -5,6 +5,7 @@ import org.example.myversion.server.model.decks.cards.*;
 import org.example.myversion.server.model.exceptions.EmptyDeckException;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
+import org.example.myversion.server.serverController.GameState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -330,5 +331,6 @@ public class Game {
             lastTurn = true;
 
         return lastTurn;
+
     }
 }
