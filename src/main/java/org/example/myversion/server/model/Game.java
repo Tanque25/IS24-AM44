@@ -40,13 +40,12 @@ public class Game {
         this.visibleResourceCards = new ArrayList<>();
         this.players = new ArrayList<>();
         this.lastTurn = false;
-        initializeGame();
     }
 
     /**
      * Initializes the common objectives and visible cards at the beginning of the game.
      */
-    private void initializeGame() {
+    public void initializeGame() {
         // drawing the common objectives
         commonObjectives.add(objectiveDeck.drawCard());
         commonObjectives.add(objectiveDeck.drawCard());
@@ -57,6 +56,8 @@ public class Game {
         visibleGoldCards.add(goldDeck.drawCard());
         visibleGoldCards.add(goldDeck.drawCard());
 
+        //initialize the player scores
+        board.initializePlayerScores(getPlayers());
     }
 
     /**
@@ -67,11 +68,10 @@ public class Game {
     public void newPlayer(String nickname){
         Player tmp = new Player(nickname);
         players.add(tmp);
-        board.addPlayer(tmp);
 
-        //se player non è vuoto allora prendo il primo ???
-        if (players.isEmpty()) {
-            currentPlayer = players.getFirst();
+        // If the player is the first one to join the game, set them as the current player
+        if (players.size() == 1) {
+            currentPlayer = tmp;
         }
     }
 
@@ -84,6 +84,7 @@ public class Game {
         return players;
     }
 
+
     /**
      * Retrieves the current player whose turn it is.
      *
@@ -93,6 +94,11 @@ public class Game {
         return currentPlayer;
     }
 
+    /**
+     * Retrieves the board of the game.
+     *
+     * @return The board of the game.
+     */
     public Board getBoard() {
         return board;
     }
@@ -301,10 +307,24 @@ public class Game {
         return board.findWinner();
     }
 
+    /**
+     * Sets the current player to the specified player.
+     *
+     * @param player The player to set as the current player.
+     */
     public void setCurrentPlayer(Player player) {
         this.currentPlayer = player;
     }
 
+    /**
+     * Checks if it is the last turn of the game.
+     * The game is considered to be in the last turn if any of the following conditions are met:
+     * - A player has reached 20 points.
+     * - The gold deck is empty.
+     * - The resource deck is empty.
+     *
+     * @return true if it is the last turn, false otherwise.
+     */
     public boolean checkLastTurn(){
         if(getBoard().getScore(getCurrentPlayer())>= 20 || goldDeck.getGoldDeck().empty() || resourceDeck.getResourceDeck().empty())
             lastTurn = true;
