@@ -22,7 +22,7 @@ import java.util.*;
  */
 public class GameController {
     private Server server;
-    private Game game;
+    public Game game;
     public List<String> disconnectedPlayers;
     public HashMap<String, Integer> pongLost;
     public List<String> pongReceived;
@@ -37,6 +37,7 @@ public class GameController {
     private boolean lastTurn;
     private boolean roundOver;
     private GameState gameState;
+
 
     private int numberOfPlayer=0;
 
@@ -105,12 +106,12 @@ public class GameController {
                 if (player.getNickname().equals(nickname)) {
                     if (disconnectedPlayers.contains(nickname)) {
                         disconnectedPlayers.remove(nickname);
-                        return -1;
+                        return -1; //disconnesso ...?
                     }
-                    return 0;
+                    return 0; //nickname gia in uso
                 }
             }
-            return 1;
+            return 1;//nickname libero
     }
 
 
@@ -401,5 +402,13 @@ public class GameController {
         }
         return gameOver;
     }
+
+    public GameState GamePhase(){
+        return gameState;
+    }
+
+    //public void addCheckThread(Thread checkThread) {
+      //  checkThreads.add(checkThread);
+    //}
 
 }
