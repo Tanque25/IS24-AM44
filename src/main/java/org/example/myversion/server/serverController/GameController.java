@@ -446,5 +446,9 @@ public class GameController {
      */
     public void setGameState(GameState state) {
         this.gameState = state;
-        }
+    }
+
+    public Game getGame() {
+        return game;
+    }
 }
