@@ -185,6 +185,7 @@ public class GameController {
             }
         } else
            throw new InvalidGameStateException("The lobby is not full yet.");
+        return false;
     }
 
     /**
