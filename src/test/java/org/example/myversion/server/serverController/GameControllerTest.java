@@ -8,12 +8,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class GameControllerTest {
+class GameControllerTest{
 
     private GameController gameController;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws InvalidGameStateException {
         gameController = new GameController();
 
         gameController.addPlayer("Pippo");
@@ -58,6 +58,7 @@ class GameControllerTest {
 
     @Test
     void isFirstPlayer() {
+
 
     }
 

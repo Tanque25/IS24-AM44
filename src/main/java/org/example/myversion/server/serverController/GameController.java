@@ -175,7 +175,7 @@ public class GameController {
      * Checks if the lobby is full and starts a new game if it is.
      * @return {@code true} if the lobby is full and a new game is started; {@code false} otherwise.
      */
-    public boolean checkLobby() {
+    public boolean checkLobby() throws InvalidGameStateException {
         if(gameState == GameState.LOGIN) {
             // Se il numero di giocatori nella lobby è uguale al massimo consentito
             // Se la lobby non è ancora piena
@@ -184,9 +184,7 @@ public class GameController {
                 return true;
             }
         } else
-            //eccezione
-            return false;
-        return false;
+           throw new InvalidGameStateException("The lobby is not full yet.");
     }
 
     /**
@@ -199,8 +197,9 @@ public class GameController {
 
     /**
      * If isGameSaved is false this method starts a new game, resetting the game state.
+     * throws InvalidGameStateException if the game state is not valid for initialization.
      */
-    public void newGame() {
+    public void newGame() throws InvalidGameStateException{
         if (gameState == GameState.INITIALIZATION) {
             //game = new Game();
             game.initializeGame();
@@ -218,7 +217,8 @@ public class GameController {
             }
             gameIsStarted = true;
             gameState = GameState.IN_GAME;
-        } //ECCEZIONE
+        }
+        throw new InvalidGameStateException("Unable to start a new game: the game state is not valid for initialization.");
     }
 
     /**
@@ -249,7 +249,7 @@ public class GameController {
      * @param card the card to be played.
      * @param coordinates the coordinates on the board where the card will be placed.
      */
-    public void playCard(String nickname, PlayableCard card, Coordinates coordinates) throws InvalidNicknameException, InvalidMoveException {
+    public void playCard(String nickname, PlayableCard card, Coordinates coordinates) throws InvalidNicknameException, InvalidMoveException, InvalidGameStateException {
         Player actualPlayer = null;
 
         if (gameState == GameState.IN_GAME || gameState == GameState.LAST_ROUND) {
@@ -265,9 +265,7 @@ public class GameController {
                     } catch (InvalidMoveException e) {
                         throw new InvalidMoveException("Invalid move: " + e.getMessage());
                     }
-                    return; // Esci dal metodo dopo aver giocato la carta, non so se ha senso
                 }
-
             }
 
             // Se actualPlayer è ancora null, il nickname non è stato trovato
@@ -277,8 +275,10 @@ public class GameController {
 
             if (actualPlayer == game.getPlayers().getFirst() && roundOver)
                 roundOver = false;
-                //potrei fare direttametne playExtraRound
+
         }
+        else
+            throw new InvalidGameStateException("You can't play new cards.");
 
     }
 
@@ -363,10 +363,12 @@ public class GameController {
      * Sets the winner of the game.
      * This method will be called to set the winner of the game.
      */
-    public void setWinner() {
+    public void setWinner() throws InvalidGameStateException {
         if (gameState == GameState.LAST_ROUND) {
             game.winner();
         }
+        else
+            throw new InvalidGameStateException("You can't set the winner, the game is not over yet.");
     }
 
 
