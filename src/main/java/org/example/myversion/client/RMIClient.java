@@ -7,6 +7,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
 public class RMIClient extends Client {
+
+    private String nickname;
     public RMIClient() throws RemoteException {
     }
 
@@ -30,5 +32,9 @@ public class RMIClient extends Client {
     @Override
     public void sendMessage(Message message) throws IOException {
 
+    }
+
+    public String getNickname() throws RemoteException {
+        return nickname;
     }
 }

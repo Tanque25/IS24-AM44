@@ -4,6 +4,7 @@ import org.example.myversion.server.Server;
 import org.example.myversion.server.model.Coordinates;
 import org.example.myversion.server.model.Game;
 import org.example.myversion.server.model.Player;
+import org.example.myversion.server.model.decks.StarterDeck;
 import org.example.myversion.server.model.decks.cards.ObjectiveCard;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
 import org.example.myversion.server.model.decks.cards.StarterCard;
@@ -21,8 +22,9 @@ import java.util.*;
  */
 public class GameController {
     private Server server;
-    private Game game;
-    private GameState gameState;
+    public Game game;
+
+    private GameState gamePhase;
     public List<String> disconnectedPlayers;
     public HashMap<String, Integer> pongLost;
     public List<String> pongReceived;
@@ -36,7 +38,9 @@ public class GameController {
     private HashMap <Player, Integer> playerRoundsPlayed;
     private boolean lastTurn;
     private boolean roundOver;
-    private int numberOfPlayer;
+    private GameState gameState;
+
+    private int numberOfPlayer=0;
 
     //private final HashMap<String, ClientCommunicationInterface> rmiClients;
     //private final HashMap<String, SocketClientHandler> tcpClients;
@@ -86,7 +90,6 @@ public class GameController {
                 }
             }
         }
-        //eccezione
     }
 
     /**
@@ -207,9 +210,9 @@ public class GameController {
             initializeRoundMap();
             roundsPlayed = 0;
 
-            for (Player player : game.getPlayers()) {
-                List<ObjectiveCard> secretObjectives = game.drawSecretObjectives();
-                //draw secret obj -> set secret obj
+        for (Player player : game.getPlayers()) {
+            List<ObjectiveCard> secretObjectives = game.drawSecretObjectives();
+            //draw secret obj -> set secret obj
                 game.setPlayerSecretObjective(player, secretObjectives.getFirst());
                 game.setPlayerSecretObjective(player, secretObjectives.get(1));
                 //choose starter card - > place starter card (initialize play area)
@@ -292,7 +295,7 @@ public class GameController {
      * @param nickname the name of the player who is drawing the card.
      * @param chosenCard The card chosen by the player.
      */
-    public void drawCard(String nickname, PlayableCard chosenCard) throws InvalidNicknameException, InvalidGameStateException, InvalidChoiceException {
+    public void drawCard(String nickname, PlayableCard chosenCard) throws InvalidNicknameException, InvalidChoiceException, InvalidGameStateException{
         Player actualPlayer = null;
 
         if(gameState == GameState.IN_GAME) {
@@ -333,6 +336,15 @@ public class GameController {
 
 
 
+
+    /**
+     * Checks if it is the last turn of the game.
+     * @return true if it is the last turn, false otherwise.
+     */
+    public boolean isLastTurn() {
+        return isLastTurn();
+    }
+
     /**
      * Handles the disconnection of a player.
      * This method will be called when a player disconnects from the game.
@@ -371,7 +383,6 @@ public class GameController {
         else
             throw new InvalidGameStateException("You can't set the winner, the game is not over yet.");
     }
-
 
 
     /**
@@ -418,22 +429,9 @@ public class GameController {
         return gameOver;
     }
 
-    /**
-     * Returns the game object.
-     * @return the game object.
-     */
-    public Game getGame() {
-        return game;
+    public GameState GamePhase (){
+        return gamePhase;
     }
-
-    /**
-     * Returns the first player of the game.
-     * @return the first player of the game.
-     */
-    public Player getFirstPlayer() {
-        return firstPlayer;
-    }
-
     /**
      * Returns the current player of the game.
      * @return the current player of the game.
@@ -448,5 +446,5 @@ public class GameController {
      */
     public void setGameState(GameState state) {
         this.gameState = state;
-    }
+        }
 }
