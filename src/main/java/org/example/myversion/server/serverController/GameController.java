@@ -22,7 +22,7 @@ public class GameController {
 
 
 
-    private Game game;
+    public Game game;
     public List<String> disconnectedPlayers;
     public HashMap<String, Integer> pongLost;
     public List<String> pongReceived;

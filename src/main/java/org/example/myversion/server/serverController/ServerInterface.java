@@ -4,7 +4,6 @@ import org.example.myversion.client.RMIClient;
 import org.example.myversion.messages.Message;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import org.example.myversion.server.model.exceptions.ExtraRoundException;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
 import org.example.myversion.server.model.exceptions.InvalidNicknameException;
