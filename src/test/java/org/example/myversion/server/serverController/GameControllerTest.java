@@ -8,31 +8,35 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class GameControllerTest {
+class GameControllerTest{
 
     private GameController gameController;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws InvalidGameStateException {
         gameController = new GameController();
-
-        gameController.addPlayer("Pippo");
-        gameController.addPlayer("Giulio");
-        gameController.addPlayer("Claudio");
-
-        gameController.newGame(); // Inizializza un nuovo gioco
-
     }
 
     @Test
     void addPlayer() {
 
-        gameController.addPlayer("Player1");
+        gameController.setMaxPlayerNumber(4);
+        gameController.addPlayer("Palacio");
+        assertEquals(1, gameController.getGame().getPlayers().size());
+        assertEquals(gameController.getGame().getPlayers().getFirst(), gameController.getFirstPlayer());
+        assertEquals("Palacio", gameController.getFirstPlayer().getNickname());
+        gameController.addPlayer("Milito");
+        assertEquals(2, gameController.getGame().getPlayers().size());
+        assertEquals(gameController.getGame().getPlayers().get(1).getNickname(), "Milito");
+        gameController.addPlayer("Cambiasso");
+        assertEquals(3, gameController.getGame().getPlayers().size());
+        assertEquals(gameController.getGame().getPlayers().get(2).getNickname(), "Cambiasso");
+        gameController.addPlayer("Stankovic");
         assertEquals(4, gameController.getGame().getPlayers().size());
-
-        gameController.addPlayer("Player2");
-        gameController.addPlayer("Player3");
-        assertEquals(6, gameController.getGame().getPlayers().size());
+        assertEquals(gameController.getGame().getPlayers().getLast(), gameController.getLastPlayer());
+        assertEquals("Stankovic", gameController.getLastPlayer().getNickname());
+        gameController.addPlayer("Mancini");
+        assertEquals(4, gameController.getGame().getPlayers().size());
 
     }
 
@@ -54,11 +58,6 @@ class GameControllerTest {
 
         assertEquals(0, result, "checkNickname should return 0 when the nickname is already used by a player");
         assertNotEquals(1, result);
-    }
-
-    @Test
-    void isFirstPlayer() {
-
     }
 
     @Test
@@ -106,26 +105,17 @@ class GameControllerTest {
 
     @Test
     void changeTurn() throws InvalidGameStateException {
-
-        gameController.setGameState(GameState.IN_GAME);
-        // Verifica che il turno sia inizialmente sul primo giocatore
-        assertEquals("Pippo", gameController.getCurrentPlayer().getNickname());
-
+        gameController.setMaxPlayerNumber(2);
+        gameController.addPlayer("Lautaro");
+        gameController.addPlayer("Handanovic");
         gameController.changeTurn();
-        assertEquals("Giulio", gameController.getCurrentPlayer().getNickname());
-
-        gameController.changeTurn();
-        assertEquals("Claudio", gameController.getCurrentPlayer().getNickname());
-
-        gameController.changeTurn();
-        assertEquals("Pippo", gameController.getCurrentPlayer().getNickname());
-
+        assertEquals(gameController.getGame().getCurrentPlayer().getNickname(), "Handanovic");
     }
     @Test
     void changeTurnException() {
         gameController.setGameState(GameState.LOGIN);
         // Verifica che il turno sia inizialmente sul primo giocatore
-        assertEquals("Pippo", gameController.getCurrentPlayer().getNickname());
+        assertEquals("Pippo", gameController.getGame().getCurrentPlayer().getNickname());
         // Verifica che venga lanciata un'eccezione quando si tenta di cambiare il turno
         assertThrows(InvalidGameStateException.class, () -> gameController.changeTurn());
 
@@ -133,22 +123,22 @@ class GameControllerTest {
 
     @Test
     void isLastTurn() {
+        gameController.setGameState(GameState.LAST_ROUND);
+        assertTrue(gameController.isLastTurn());
+        gameController.setGameState(GameState.END);
+        assertFalse(gameController.isLastTurn());
     }
 
     @Test
-    void gameOver() {
+    void isGameOver() {
+        gameController.setGameState(GameState.END);
+        assertTrue(gameController.isGameOver());
+        gameController.setGameState(GameState.LAST_ROUND);
+        assertFalse(gameController.isLastTurn());
     }
 
     @Test
     void setWinner() {
-    }
-
-    @Test
-    void checkLastTurn() {
-    }
-
-    @Test
-    void playExtraRound() {
     }
 
     @Test
