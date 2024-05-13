@@ -327,10 +327,7 @@ public class Game {
      * @return true if it is the last turn, false otherwise.
      */
     public boolean checkLastTurn(){
-        if(getBoard().getScore(getCurrentPlayer())>= 20 || goldDeck.getGoldDeck().empty() || resourceDeck.getResourceDeck().empty())
-            lastTurn = true;
-
-        return lastTurn;
+        return goldDeck.getGoldDeck().empty() || resourceDeck.getResourceDeck().empty();
 
     }
 }
