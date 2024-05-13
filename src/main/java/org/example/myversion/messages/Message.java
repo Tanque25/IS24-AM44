@@ -59,12 +59,12 @@ public class Message implements Serializable {
      * Constructs a Message object representing a player number message with the given message code and maximum number of players.
      *
      * @param messageCode the identifier of the message.
-     * @param maxPlayers  the maximum number of players.
+     * @param playersNumber  the maximum number of players.
      */
-    public Message(String messageCode, int maxPlayers) {
+    public Message(String messageCode, int playersNumber) {
         json = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
-                .add("maxPlayers", maxPlayers)
+                .add("PlayersNumber", playersNumber)
                 .build();
     }
 

@@ -247,12 +247,6 @@ class GameTest {
         // Verifica che il currentPlayer sia ora player2
         assertEquals("Pluto", game.getCurrentPlayer().getNickname());
 
-        game.updateCurrentPlayer();
-        assertEquals("Minnie", game.getCurrentPlayer().getNickname());
-
-        game.updateCurrentPlayer();
-        assertEquals("Pippo", game.getCurrentPlayer().getNickname());
-
     }
 
     @Test

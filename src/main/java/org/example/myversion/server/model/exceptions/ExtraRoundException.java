@@ -1,6 +1,6 @@
 package org.example.myversion.server.model.exceptions;
 
-public class InvalidGameStateException extends Exception{
+public class ExtraRoundException extends Exception{
     /**
      * Constructs a new exception with the specified detail message.  The
      * cause is not initialized, and may subsequently be initialized by
@@ -9,7 +9,7 @@ public class InvalidGameStateException extends Exception{
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public InvalidGameStateException(String message){
+    public ExtraRoundException (String message){
         super(message);
     }
 }

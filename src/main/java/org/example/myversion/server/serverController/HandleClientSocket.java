@@ -2,8 +2,8 @@ package org.example.myversion.server.serverController;
 
 import org.example.myversion.messages.Message;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
+import org.example.myversion.server.model.exceptions.ExtraRoundException;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
-import org.example.myversion.server.model.exceptions.InvalidGameStateException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
 import org.example.myversion.server.model.exceptions.InvalidNicknameException;
 import org.example.myversion.server.Server;
@@ -11,8 +11,6 @@ import org.example.myversion.server.Server;
 import java.io.*;
 import java.net.Socket;
 import jakarta.json.*;
-
-import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,8 +23,6 @@ public class HandleClientSocket implements ServerInterface, Runnable {
     private BufferedReader reader;
     private BufferedWriter writer;
     private Server server;
-
-    private String Nickname;
 
     // private PrintWriter writer;
     // private Scanner reader;
@@ -62,10 +58,10 @@ public class HandleClientSocket implements ServerInterface, Runnable {
 
                         Message message = new Message(jsonObject);
 
-                        receiveMessageTCP(message,this);
+                        receiveMessageTCP(message);
                     }
                 } catch (IOException | IllegalAccessException | InvalidNicknameException | InvalidMoveException |
-                         InvalidChoiceException | InvalidGameStateException e) {
+                         InvalidChoiceException | ExtraRoundException e) {
                     System.err.println("Error while reading from client. IO");
                     break;
                 }
@@ -77,6 +73,29 @@ public class HandleClientSocket implements ServerInterface, Runnable {
 
     public void run() {
         listenThread.start();
+
+        // RICHI'S VERSION
+        /*try {
+            String clientString;
+            while ((clientString = reader.readLine()) != null) {
+                JsonObject jsonObject = parseJsonObject(clientString);
+
+                if (jsonObject != null) {
+                    Message message = new Message(jsonObject);
+                    //receiveMessageTCP(message); devo mettere aposto
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading from client: " + e.getMessage());
+        } finally {
+            // chiudi-->rivedere????
+            try {
+                reader.close();
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }*/
     }
 
     /**
@@ -87,74 +106,36 @@ public class HandleClientSocket implements ServerInterface, Runnable {
      * @throws InvalidNicknameException If the nickname provided is invalid.
      * @throws InvalidMoveException     If the move performed is invalid.
      * @throws InvalidChoiceException   If the choice made is invalid.
+     * @throws ExtraRoundException      If an extra round condition is encountered.
      */
     //ha senso gestire questi tipi di eccezioni qui?
     @Override
-    public void receiveMessageTCP(Message message, HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException, InvalidGameStateException {
+    public void receiveMessageTCP(Message message) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, ExtraRoundException {
         String messageType = message.getMessageCode();
 
         switch (messageType) {
 
-            case "Login" -> {
+            case "Ping" -> {
                 System.out.println("Received ping from " /*+ client.getUsername()*/); //per CLI
                 String nickname = message.getArgument(); //nel ping c'è anche nickname
                 //controller.pong(nickname);
-                if (controller.checkNickname(nickname) == 1) { // nickname non usato
-                    if (controller.GamePhase()!=GameState.LOGIN){ //se il gioco non è iniziato
-                        sendMessageToClient(new Message("Pong", "The Game is already started"));
+                if (controller.checkNickname(nickname) == 1) {
+                    sendMessageToClient(new Message("Pong", "Nickname is valid"));
+                    controller.addPlayer(nickname);//aggiungo il player
+                    //se la lobby ha il numero di giocatori = maxnumberOfplayer, se non
+                    if (controller.checkLobby()) {
+                        controller.newGame();
                     }
-                    else{
-                        if (controller.isFirstPlayer(nickname)){ //se è il rpimo giocatore
-                            sendMessageToClient(new Message("Pong", "Nickname is valid"));
-                            controller.addPlayer(nickname);//aggiungo il player
-                            setNickname(nickname);
-                            startPingThread(client); //thread che ogni 20 sec controlla se il giocatore è connesso
-                            //se la lobby ha il numero di giocatori = maxnumberOfplayer, se non
-                            if (controller.checkLobby()) { //se la lobby è piena inizia il gioco
-                                controller.newGame();
-                            }
-                        }
-                        else{
-                            //if(controller.i)se la lobby non è piena, lo aggiungo
-                            //altrimenti mando messaggio che è piena
-                            //modificare add player, meglio gestire qui
-                        }
-
-                    }
-                    //non controllo che sia il primo giocatore, ma il server si aspetterà numero di giocatori
 
                 } else if (controller.checkNickname(nickname) == 0) {
                     sendMessageToClient(new Message("Pong", "Nickname is  already in use"));
-                    try {//percheèè??
-                        Thread.sleep(60000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    if ( controller.checkNickname(nickname) == 0) {
-                        System.out.println(nickname + " requested login, but the username is already taken.");
-                        //client.sendMessageToClient(new Message("UsernameRetry"));
-                    } else {
-                        System.out.println(nickname + " reconnected.");
-                        //controller.addClient(nickname, client);
-                        //resendGameToReconnectedClient(client);
-                    }
                 } else {
                     sendMessageToClient(new Message("Pong", "Nickname is  already in use by a disconnected player"));
-                    System.out.println(nickname + " reconnected.");
-                    //client.sendMessageToClient(new Message("username", username));
-                    //setUsername(username);
-                    //controller.addClient(username, client);
-                    /*if (!controller.isGameLoaded) {
-                        //resendGameToReconnectedClient(client);
-                    } else {
-                        resendToReconnectAfterServerDown(client);
-                    }*/
                 }
 
             }
 
-            case "p?" -> {
+            case "Login" -> {
                 String nickname = message.getArgument();
                 // TODO check nickname
                 controller.addPlayer(nickname);
@@ -219,44 +200,14 @@ public class HandleClientSocket implements ServerInterface, Runnable {
         } catch (IOException e) {
             System.err.println("Error sending message to client: " + e.getMessage());
         }
-    }
 
-    /*public void checkNickname(HandleClientSocket client, String username, boolean firstGame, int checkStatus) throws RemoteException {
-
-    }*/
-
-    public void setNickname(String nickname) {
-        Nickname = nickname;
-    }
-
-    public String getNickname() {
-        return Nickname;
-    }
-
-    public void startPingThread(HandleClientSocket client) throws RemoteException {
-        String finalUsername = client.getNickname();
-
-        Thread checkThread = new Thread(() -> {
-            while (true) {
-                try {
-                    Thread.sleep(20000);
-                    if (!controller.pongReceived.contains(finalUsername) && !controller.disconnectedPlayers.contains(finalUsername)) {
-                        System.err.println("Ping not received from " + finalUsername + ". Disconnecting.");
-                        Thread.sleep(10000);
-                        if (!controller.pongReceived.contains(finalUsername)) {
-                            //disconnect(finalUsername);
-                            break;
-                        }
-                    } else {
-                        controller.pongReceived.remove(finalUsername);
-                    }
-                } catch (InterruptedException ignored) {
-                    System.out.println("Ping thread interrupted.");
-                }
-            }
-        });
-        //controller.addCheckThread(checkThread);
-        checkThread.start();
+        // RICHI'S VERSION
+        /*try (JsonWriter writer = Json.createWriter(writer)) {
+            //JsonObject messageJson = message.getJsonObject();
+            //writer.writeObject(messageJson);
+        } catch (IOException e) {
+            System.err.println("Error sending response to client: " + e.getMessage());
+        }*/
     }
 }
 
