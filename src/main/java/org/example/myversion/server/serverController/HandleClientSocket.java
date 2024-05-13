@@ -126,7 +126,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
 
                 } else if (controller.checkNickname(nickname) == 0) {
                     sendMessageToClient(new Message("Pong", "Nickname is  already in use"));
-                    try {//percheè??
+                    try {//perchè??
                         Thread.sleep(60000);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);

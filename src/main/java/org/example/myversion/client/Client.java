@@ -113,4 +113,8 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
     public void setGameView(GameView gameView) {
         this.gameView = gameView;
     }
+
+    public String getNickname() throws RemoteException {
+        return nickname;
+    }
 }
