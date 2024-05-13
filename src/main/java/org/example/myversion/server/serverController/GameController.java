@@ -118,7 +118,7 @@ public class GameController {
     public void newGame() {
         //game = new Game();
         gameState = GameState.INITIALIZATION;
-        game.getBoard().initializePlayerScores(game.getPlayers());
+        game.initializeGame();
         initializeRoundMap();
         roundsPlayed = 0;
     }
@@ -150,7 +150,7 @@ public class GameController {
      * @param card the card to be played.
      * @param coordinates the coordinates on the board where the card will be placed.
      */
-    public void playCard(String nickname, PlayableCard card, Coordinates coordinates) throws InvalidNicknameException, InvalidMoveException {
+    public void playCard(String nickname, PlayableCard card, Coordinates coordinates) throws InvalidNicknameException, InvalidMoveException, InvalidGameStateException {
 
         if (gameState == GameState.IN_GAME || gameState == GameState.LAST_ROUND) {
             if(game.getCurrentPlayer().getNickname().equals(nickname)){
@@ -170,7 +170,7 @@ public class GameController {
             else {
                 throw new InvalidNicknameException("Invalid nickname");
             }
-        }
+        } else throw new InvalidGameStateException("Invalid game state");
 
     }
 
@@ -181,7 +181,7 @@ public class GameController {
      * @param nickname the name of the player who is drawing the card.
      * @param chosenCard The card chosen by the player.
      */
-    public void drawCard(String nickname, PlayableCard chosenCard) throws InvalidNicknameException, InvalidChoiceException {
+    public void drawCard(String nickname, PlayableCard chosenCard) throws InvalidNicknameException, InvalidChoiceException, InvalidGameStateException {
 
         if(gameState == GameState.IN_GAME) {
             if(game.getCurrentPlayer().getNickname().equals(nickname)){
@@ -197,6 +197,8 @@ public class GameController {
             }else{
                 throw new InvalidNicknameException("Invalid nickname");
             }
+        } else {
+            throw new InvalidGameStateException("Invalid game state");
         }
     }
 
@@ -320,9 +322,7 @@ public class GameController {
     public void changeTurn() {
 
         if (isGameStarted()){
-            int currentIndex = game.getPlayers().indexOf(game.getCurrentPlayer());
-            int nextIndex = (currentIndex + 1) % game.getPlayers().size();
-            game.setCurrentPlayer(game.getPlayers().get(nextIndex));
+            game.updateCurrentPlayer();
         }
     }
 
@@ -346,6 +346,15 @@ public class GameController {
             }
         }
         return false;
+    }
+
+    /**
+     * Checks if the deck is empty.
+     * This method will be called to check if the deck is empty.
+     * @return True if the deck is empty, false otherwise.
+     */
+    public boolean checkEmptyDeck() {
+        return game.checkLastTurn();
     }
 
     /**
