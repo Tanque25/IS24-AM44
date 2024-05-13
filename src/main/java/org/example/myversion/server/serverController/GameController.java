@@ -29,13 +29,20 @@ public class GameController {
 
 
     public int roundsPlayed;
+
+
     private int maxPlayerNumber;
     private boolean isGameLoaded;
 
+
     private Player firstPlayer;
+
+
     private Player lastPlayer;
 
     private HashMap <Player, Integer> playerRoundsPlayed;
+
+
     private GameState gameState;
 
     private int numberOfPlayer;
@@ -68,8 +75,13 @@ public class GameController {
     public Game getGame() {
         return game;
     }
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
 
-
+    public void setMaxPlayerNumber(int maxPlayerNumber) {
+        this.maxPlayerNumber = maxPlayerNumber;
+    }
     public HashMap<Player, Integer> getPlayerRoundsPlayed() {
         return playerRoundsPlayed;
     }
@@ -78,13 +90,16 @@ public class GameController {
         return roundsPlayed;
     }
 
+    public Player getLastPlayer() {
+        return lastPlayer;
+    }
 
-    /**
-     * This method add a Player in the game,
-     * if isFirstPlayer is true the player chooses maxPlayerNumber (then isFirstPlayer became false), otherwise, each player's nickname will be checked,
-     * there will be an update of the player's list
-     * @param nickname the name of the player who wants to enter the game
-     */
+    public Player getFirstPlayer() {
+        return firstPlayer;
+    }
+
+
+
     public void addPlayer(String nickname){
             if (gameIsEmpty()) {
                 game.newPlayer(nickname);
@@ -142,6 +157,12 @@ public class GameController {
                 try {
                     game.playCard(game.getCurrentPlayer(), card, coordinates);
                     // gameOver = endGame(); cos'è gameOver?
+                    if(isLastTurn() && game.getCurrentPlayer().equals(lastPlayer)){
+                        roundsPlayed++;
+                        gameState = GameState.END;
+                        // Da capire cosa farsene del winner, se mettere un attributo o se pensa a tutto il server
+                        Player winner = game.winner();
+                    }
                 } catch (InvalidMoveException e) {
                     throw new InvalidMoveException("Invalid move: " + e.getMessage());
                 }
@@ -168,11 +189,6 @@ public class GameController {
                 playerRoundsPlayed.put(game.getCurrentPlayer(), playerRoundsPlayed.get(game.getCurrentPlayer()) + 1);
                 if (game.getCurrentPlayer().equals(lastPlayer)) {
                     roundsPlayed++;
-                    if(isLastTurn()){
-                        gameState = GameState.END;
-                        // Da capire cosa farsene del winner, se mettere un attributo o se pensa a tutto il server
-                        Player winner = game.winner();
-                    }
                     if(checkScores()){
                         gameState = GameState.LAST_ROUND;
                     }
@@ -185,7 +201,7 @@ public class GameController {
     }
 
     public boolean gameIsFull(){
-        if(game.getPlayers().size() >= maxPlayerNumber){
+        if(game.getPlayers().size() == maxPlayerNumber){
             return true;
         }
         return false;
@@ -322,16 +338,7 @@ public class GameController {
     }
 
 
-    /**
-     * Checks if it is the last turn of the game.
-     * @return true if it is the last turn, false otherwise.
-     */
-    public boolean isLastTurn() {
-        if(gameState.equals(GameState.LAST_ROUND)){
-            return true;
-        }
-        return false;
-    }
+
     public boolean checkScores() {
         for(Player player : game.getPlayers()){
             if(game.getBoard().getScore(player)>=20){
@@ -376,7 +383,7 @@ public class GameController {
      * This method will be called to set the winner of the game.
      */
     public void setWinner() {
-        if (gameState == GameState.LAST_ROUND) {
+        if (gameState == GameState.END) {
             game.winner();
         }
     }
@@ -393,7 +400,7 @@ public class GameController {
      *
      * @return  true if it is the last turn,  false otherwise.
      */
-    public boolean checkLastTurn(){
+    public boolean isLastTurn() {
         if(gameState.equals(GameState.LAST_ROUND)){
             return true;
         }
