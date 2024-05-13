@@ -7,7 +7,6 @@ import org.example.myversion.messages.Message;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.Buffer;
 
 public class CLIView implements GameView {
     private Client client;
@@ -81,6 +80,11 @@ public class CLIView implements GameView {
         }
 
         return nickname;
+    }
+
+    public void showGameAlreadyStartedMessage() {
+        showMessage("Game already started! You have to wait for the next one :(\n");
+        client.stop();
     }
 
     public void playersNumberChoice() throws IOException {

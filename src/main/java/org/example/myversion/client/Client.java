@@ -79,9 +79,11 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
             case "Nickname" ->
                 setNickname(message.getArgument());
                 // TODO might have to add a checkServerConnection method
+            case "GameAlreadyStarted" ->
+                gameView.showGameAlreadyStartedMessage();
             case "PlayersNumber" ->
                 gameView.playersNumberChoice();
-            case "waitForOtherPlayers" ->
+            case "WaitForOtherPlayers" ->
                 gameView.waitForOtherPlayers();
             default -> throw new IllegalArgumentException("Invalid messageCode: " + messageCode);
         }
