@@ -17,6 +17,8 @@ public interface GameView {
 
     void clientLogin() throws IOException;
 
+    void showGameAlreadyStartedMessage();
+
     void playersNumberChoice() throws IOException;
 
     void waitForOtherPlayers();

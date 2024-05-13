@@ -1,13 +1,14 @@
 package org.example.myversion.messages;
 
 import org.example.myversion.server.model.Coordinates;
-import org.example.myversion.server.model.decks.GoldDeck;
 import org.example.myversion.server.model.decks.cards.*;
 import org.example.myversion.server.model.enumerations.*;
 
 import jakarta.json.*;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -97,6 +98,25 @@ public class Message implements Serializable {
                 .add("messageCode", messageCode)
                 .add("objective", createObjectiveObject(objectiveCard.getObjective()))
                 .add("cardPoints", objectiveCard.getCardPoints())
+                .build();
+    }
+
+    /**
+     * Constructs a Message object representing a message containing information about two objective cards.
+     * The objective card information includes its objective and card points.
+     * Used both for sending common objectives and secret objectives options.
+     *
+     * @param messageCode the identifier of the message: "CommonObjectives", "SecretObjectives"
+     * @param objectiveCard1 the first objective card.
+     * @param objectiveCard2 the second objective card.
+     */
+    public Message(String messageCode, ObjectiveCard objectiveCard1, ObjectiveCard objectiveCard2) {
+        json = Json.createObjectBuilder()
+                .add("messageCode", messageCode)
+                .add("objective1", createObjectiveObject(objectiveCard1.getObjective()))
+                .add("cardPoints1", objectiveCard1.getCardPoints())
+                .add("objective2", createObjectiveObject(objectiveCard2.getObjective()))
+                .add("cardPoints2", objectiveCard2.getCardPoints())
                 .build();
     }
 
@@ -303,6 +323,63 @@ public class Message implements Serializable {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Retrieves the Objective Cards contained in the message.
+     *
+     * @return The ObjectiveCard included in the message.
+     */
+    public List<ObjectiveCard> getObjectiveCards() {
+        List<ObjectiveCard> objectiveCards = new ArrayList<>();
+
+        // Get the JSON object representing the objective1
+        JsonObject objectiveJson1 = json.getJsonObject("objective1");
+
+        // Determine the type of objective card based on the structure of the JSON object
+        if (objectiveJson1.containsKey("resources")) {
+            // If it's a ResourceObjectiveCard, parse the objective from the JSON object
+            Resource[] objective = getResourceArray(objectiveJson1.getJsonArray("resources"));
+            int cardPoints = json.getInt("cardPoints1");
+            objectiveCards.add(new ResourceObjectiveCard(cardPoints, objective));
+        } else if (objectiveJson1.containsKey("specialObjects")) {
+            // If it's a SpecialObjectiveCard, parse the objective from the JSON object
+            SpecialObject[] objective = getSpecialObjectArray(objectiveJson1.getJsonArray("specialObjects"));
+            int cardPoints = json.getInt("cardPoints1");
+            objectiveCards.add(new SpecialObjectiveCard(cardPoints, objective));
+        } else if (objectiveJson1.containsKey("pattern")) {
+            // If it's a PatternObjectiveCard, parse the objective from the JSON object
+            Resource[][] objective = getResourceMatrix(objectiveJson1.getJsonArray("pattern"));
+            int cardPoints = json.getInt("cardPoints1");
+            objectiveCards.add(new PatternObjectiveCard(cardPoints, objective));
+        } else {
+            return null;
+        }
+
+        // Get the JSON object representing the objective1
+        JsonObject objectiveJson2 = json.getJsonObject("objective2");
+
+        // Determine the type of objective card based on the structure of the JSON object
+        if (objectiveJson2.containsKey("resources")) {
+            // If it's a ResourceObjectiveCard, parse the objective from the JSON object
+            Resource[] objective = getResourceArray(objectiveJson2.getJsonArray("resources"));
+            int cardPoints = json.getInt("cardPoints2");
+            objectiveCards.add(new ResourceObjectiveCard(cardPoints, objective));
+        } else if (objectiveJson2.containsKey("specialObjects")) {
+            // If it's a SpecialObjectiveCard, parse the objective from the JSON object
+            SpecialObject[] objective = getSpecialObjectArray(objectiveJson2.getJsonArray("specialObjects"));
+            int cardPoints = json.getInt("cardPoints2");
+            objectiveCards.add(new SpecialObjectiveCard(cardPoints, objective));
+        } else if (objectiveJson2.containsKey("pattern")) {
+            // If it's a PatternObjectiveCard, parse the objective from the JSON object
+            Resource[][] objective = getResourceMatrix(objectiveJson2.getJsonArray("pattern"));
+            int cardPoints = json.getInt("cardPoints2");
+            objectiveCards.add(new PatternObjectiveCard(cardPoints, objective));
+        } else {
+            return null;
+        }
+
+        return objectiveCards;
     }
 
     /**

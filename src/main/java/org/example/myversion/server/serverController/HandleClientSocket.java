@@ -29,9 +29,6 @@ public class HandleClientSocket implements ServerInterface, Runnable {
 
     private String Nickname;
 
-    // private PrintWriter writer;
-    // private Scanner reader;
-
     public Thread listenThread;
 
 
@@ -46,8 +43,6 @@ public class HandleClientSocket implements ServerInterface, Runnable {
             e.printStackTrace();
         }
 
-        // EDO'S VERSION
-        // Listen for messages coming from the client
         listenThread = new Thread(() -> {
             String clientMessageString;
             while (true) {
@@ -89,14 +84,20 @@ public class HandleClientSocket implements ServerInterface, Runnable {
      * @throws InvalidMoveException     If the move performed is invalid.
      * @throws InvalidChoiceException   If the choice made is invalid.
      */
-    //ha senso gestire questi tipi di eccezioni qui?
     @Override
     public void receiveMessageTCP(Message message, HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException, InvalidGameStateException {
         String messageType = message.getMessageCode();
 
         switch (messageType) {
 
+            // This case verifies the selected nickname and handles the different cases
             case "Login" -> {
+                String nickname = message.getArgument();
+                int checkNicknameStatus = controller.checkNickname(nickname);
+                checkNickname(client, nickname, checkNicknameStatus);
+            }
+
+            case "Ping" -> {
                 System.out.println("Received ping from " /*+ client.getUsername()*/); //per CLI
                 String nickname = message.getArgument(); //nel ping c'è anche nickname
                 //controller.pong(nickname);
@@ -109,9 +110,10 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                             sendMessageToClient(new Message("Pong", "Nickname is valid"));
                             controller.addPlayer(nickname);//aggiungo il player
                             setNickname(nickname);
+                            System.out.println("Starting ping thread\n");
                             startPingThread(client); //thread che ogni 20 sec controlla se il giocatore è connesso
                             //se la lobby ha il numero di giocatori = maxnumberOfplayer, se non
-                            if (controller.checkLobby()) { //se la lobby è piena inizia il gioco
+                            if (controller.gameIsFull()) { //se la lobby è piena inizia il gioco
                                 controller.newGame();
                             }
                         }
@@ -153,12 +155,6 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                     }*/
                 }
 
-            }
-
-            case "p?" -> {
-                String nickname = message.getArgument();
-                // TODO check nickname
-                controller.addPlayer(nickname);
             }
 
             case "NumberOfPlayer" -> {
@@ -204,15 +200,6 @@ public class HandleClientSocket implements ServerInterface, Runnable {
         }
     }
 
-    private JsonObject parseJsonObject(String jsonString) {
-        try (JsonReader reader = Json.createReader(new StringReader(jsonString))) {
-            return reader.readObject();
-        } catch (Exception e) {
-            System.err.println("Error parsing JSON: " + e.getMessage());
-            return null;
-        }
-    }
-
     private void sendMessageToClient(Message message) {
         try {
             String jsonString = message.getJson().toString();
@@ -222,9 +209,36 @@ public class HandleClientSocket implements ServerInterface, Runnable {
         }
     }
 
-    /*public void checkNickname(HandleClientSocket client, String username, boolean firstGame, int checkStatus) throws RemoteException {
+    public void checkNickname(HandleClientSocket client, String nickname, int checkNicknameStatus) throws RemoteException {
+        switch (checkNicknameStatus) {
+            case 1 -> {
+                if(controller.getGameState().equals(GameState.IN_GAME)) {
+                    client.sendMessageToClient(new Message("GameAlreadyStarted"));
+                } else {
+                    client.sendMessageToClient(new Message("Nickname", nickname));
 
-    }*/
+                    controller.addPlayer(nickname);
+                    System.out.println(nickname + " logged in.");
+
+                    setNickname(nickname);
+                    controller.addClient(nickname, client);
+                    startPingThread(client);
+
+                    if (controller.getFirstPlayer() == null) {
+                        client.sendMessageToClient(new Message("PlayersNumber"));
+                    } else {
+                        client.sendMessageToClient(new Message("WaitForOtherPlayers"));
+                        // If this is the last player to reach the max player number, the game starts
+                        if (controller.getMaxPlayerNumber() != 0 && controller.gameIsFull()) {
+                            startGame();
+                            System.out.println("Game started.");
+                        }
+                    }
+
+                }
+            }
+        }
+    }
 
     public void setNickname(String nickname) {
         Nickname = nickname;
