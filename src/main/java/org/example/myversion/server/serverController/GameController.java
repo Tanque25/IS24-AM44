@@ -160,7 +160,7 @@ public class GameController {
      * @param nickname the name of the player who is drawing the card.
      * @param chosenCard The card chosen by the player.
      */
-    public void drawCard(String nickname, PlayableCard chosenCard) throws InvalidNicknameException, ExtraRoundException, InvalidChoiceException {
+    public void drawCard(String nickname, PlayableCard chosenCard) throws InvalidNicknameException, InvalidChoiceException {
 
         if(gameState == GameState.IN_GAME) {
             if(game.getCurrentPlayer().getNickname().equals(nickname)){
@@ -182,8 +182,6 @@ public class GameController {
                 throw new InvalidNicknameException("Invalid nickname");
             }
         }
-        else
-            throw new ExtraRoundException("You can't draw new cards, you must play only the cards you have.");
     }
 
     public boolean gameIsFull(){
