@@ -15,6 +15,7 @@ import jakarta.json.*;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class HandleClientSocket implements ServerInterface, Runnable {
@@ -65,7 +66,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                         receiveMessageTCP(message,this);
                     }
                 } catch (IOException | IllegalAccessException | InvalidNicknameException | InvalidMoveException |
-                         InvalidChoiceException | InvalidGameStateException e) {
+                         InvalidChoiceException e) {
                     System.err.println("Error while reading from client. IO");
                     break;
                 }
@@ -90,7 +91,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
      */
     //ha senso gestire questi tipi di eccezioni qui?
     @Override
-    public void receiveMessageTCP(Message message, HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException, InvalidGameStateException {
+    public void receiveMessageTCP(Message message, HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException {
         String messageType = message.getMessageCode();
 
         switch (messageType) {
@@ -100,11 +101,11 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                 String nickname = message.getArgument(); //nel ping c'è anche nickname
                 //controller.pong(nickname);
                 if (controller.checkNickname(nickname) == 1) { // nickname non usato
-                    if (controller.GamePhase()!=GameState.LOGIN){ //se il gioco non è iniziato
+                    if (controller.getGameState()!=GameState.LOGIN){ //se il gioco non è iniziato
                         sendMessageToClient(new Message("Pong", "The Game is already started"));
                     }
                     else{
-                        if (controller.isFirstPlayer(nickname)){ //se è il rpimo giocatore
+                        if (!Objects.equals(controller.getFirstPlayer().getNickname(), nickname)){ //se è il primo giocatore
                             sendMessageToClient(new Message("Pong", "Nickname is valid"));
                             controller.addPlayer(nickname);//aggiungo il player
                             setNickname(nickname);
@@ -125,7 +126,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
 
                 } else if (controller.checkNickname(nickname) == 0) {
                     sendMessageToClient(new Message("Pong", "Nickname is  already in use"));
-                    try {//percheèè??
+                    try {//percheè??
                         Thread.sleep(60000);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);

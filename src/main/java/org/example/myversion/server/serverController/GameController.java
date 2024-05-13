@@ -25,7 +25,7 @@ public class GameController {
     public HashMap<String, Integer> pongLost;
     public List<String> pongReceived;
 
-
+    private GameState gameState;
     public int roundsPlayed;
 
 
@@ -40,8 +40,6 @@ public class GameController {
 
     private HashMap <Player, Integer> playerRoundsPlayed;
 
-
-    private GameState gameState;
 
     private int numberOfPlayer;
 
