@@ -21,6 +21,7 @@ import java.util.*;
  */
 public class GameController {
     private Server server;
+
     public Game game;
 
     private GameState gamePhase;

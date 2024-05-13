@@ -23,7 +23,7 @@ public interface ServerInterface extends Remote{
 
     ;
 
-    public default void receiveMessageTCP(Message message,HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, ExtraRoundException, RemoteException {
+    public default void receiveMessageTCP(Message message,HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException {
     }
 
     default void receiveMessage(Message message, ServerInterface client) throws RemoteException {
