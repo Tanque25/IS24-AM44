@@ -118,7 +118,7 @@ public class GameController {
     public void newGame() {
         //game = new Game();
         gameState = GameState.INITIALIZATION;
-        game.getBoard().initializePlayerScores(game.getPlayers());
+        game.initializeGame();
         initializeRoundMap();
         roundsPlayed = 0;
     }
