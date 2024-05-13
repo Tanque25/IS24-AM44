@@ -20,8 +20,6 @@ import java.util.*;
 public class GameController {
     private Server server;
 
-
-
     public Game game;
     public List<String> disconnectedPlayers;
     public HashMap<String, Integer> pongLost;
