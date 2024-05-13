@@ -11,6 +11,7 @@ import java.util.Map;
  */
 public abstract class Card {
     private final Map<CornerPosition, Corner> corners;
+
     private boolean playedBack;
 
     /**
@@ -21,6 +22,10 @@ public abstract class Card {
     public Card(Map<CornerPosition, Corner> corners) {
         this.corners = corners;
         this.playedBack = false;
+    }
+
+    public void setPlayedBack(boolean playedBack) {
+        this.playedBack = playedBack;
     }
 
     /**
