@@ -66,7 +66,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                         receiveMessageTCP(message,this);
                     }
                 } catch (IOException | IllegalAccessException | InvalidNicknameException | InvalidMoveException |
-                         InvalidChoiceException e) {
+                         InvalidChoiceException | InvalidGameStateException e) {
                     System.err.println("Error while reading from client. IO");
                     break;
                 }
@@ -91,7 +91,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
      */
     //ha senso gestire questi tipi di eccezioni qui?
     @Override
-    public void receiveMessageTCP(Message message, HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException {
+    public void receiveMessageTCP(Message message, HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException, InvalidGameStateException {
         String messageType = message.getMessageCode();
 
         switch (messageType) {

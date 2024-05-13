@@ -5,6 +5,7 @@ import org.example.myversion.messages.Message;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
+import org.example.myversion.server.model.exceptions.InvalidGameStateException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
 import org.example.myversion.server.model.exceptions.InvalidNicknameException;
 
@@ -22,7 +23,7 @@ public interface ServerInterface extends Remote{
 
     ;
 
-    public default void receiveMessageTCP(Message message,HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException {
+    public default void receiveMessageTCP(Message message,HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException, InvalidGameStateException {
     }
 
     default void receiveMessage(Message message, ServerInterface client) throws RemoteException {

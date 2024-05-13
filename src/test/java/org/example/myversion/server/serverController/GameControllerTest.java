@@ -1,6 +1,11 @@
 package org.example.myversion.server.serverController;
 
 import org.example.myversion.server.model.Player;
+import org.example.myversion.server.model.decks.GoldDeck;
+import org.example.myversion.server.model.decks.ObjectiveDeck;
+import org.example.myversion.server.model.decks.ResourceDeck;
+import org.example.myversion.server.model.decks.cards.GoldCard;
+import org.example.myversion.server.model.decks.cards.ObjectiveCard;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidGameStateException;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +20,16 @@ class GameControllerTest{
     @BeforeEach
     void setUp() throws InvalidGameStateException {
         gameController = new GameController();
+        // Simulate the game environment
+        ObjectiveDeck objectiveDeck = new ObjectiveDeck();
+        ResourceDeck resourceDeck = new ResourceDeck();
+        GoldDeck goldDeck = new GoldDeck();
+
+        // Create the decks
+        //List<ObjectiveCard> commonObjectives = new ArrayList<>();
+        //List<ResourceCard> visibleResourceCards = new ArrayList<>();
+        //List<GoldCard> visibleGoldCards = new ArrayList<>();
+
     }
 
     @Test
@@ -87,6 +102,25 @@ class GameControllerTest{
 
     @Test
     void newGame() {
+        gameController.setGameState(GameState.LOGIN);
+
+        gameController.newGame();
+
+        // Verify that the game state is properly initialized
+        assertEquals(GameState.INITIALIZATION, gameController.getGameState());
+
+        // Verify that the rounds played counter is reset to 0
+        assertEquals(0, gameController.getRoundsPlayed());
+
+        // Verify that the game has been initialized
+        for (Player player : gameController.getGame().getPlayers()) {
+            assertEquals(0, gameController.game.getBoard().getScore(player));
+        }
+
+        // Verify that the round map is properly initialized
+        for (Player player : gameController.getGame().getPlayers()) {
+            assertEquals(0, gameController.getPlayerRoundsPlayed().get(player));
+        }
 
     }
 
@@ -143,5 +177,13 @@ class GameControllerTest{
 
     @Test
     void endGame() {
+    }
+
+    @Test
+    void choseOjectiveCard() {
+    }
+
+    @Test
+    void playStarterCard() {
     }
 }
