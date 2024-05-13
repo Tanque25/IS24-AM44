@@ -20,14 +20,12 @@ import java.util.*;
 public class GameController {
     private Server server;
 
-
-
-    private Game game;
+    public Game game;
     public List<String> disconnectedPlayers;
     public HashMap<String, Integer> pongLost;
     public List<String> pongReceived;
 
-
+    private GameState gameState;
     public int roundsPlayed;
 
 
@@ -42,8 +40,6 @@ public class GameController {
 
     private HashMap <Player, Integer> playerRoundsPlayed;
 
-
-    private GameState gameState;
 
     private int numberOfPlayer;
 

@@ -70,7 +70,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
      *
      * @param message the message received from the server.
      */
-    public void handleMessage(Message message) {
+    public void handleMessage(Message message) throws IOException {
         String messageCode = message.getMessageCode();
 
         switch (messageCode) {
@@ -79,6 +79,10 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
             case "Nickname" ->
                 setNickname(message.getArgument());
                 // TODO might have to add a checkServerConnection method
+            case "PlayersNumber" ->
+                gameView.playersNumberChoice();
+            case "waitForOtherPlayers" ->
+                gameView.waitForOtherPlayers();
             default -> throw new IllegalArgumentException("Invalid messageCode: " + messageCode);
         }
     }
