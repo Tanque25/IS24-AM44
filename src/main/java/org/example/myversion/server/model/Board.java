@@ -26,7 +26,6 @@ public class Board {
     }
     /**
      * Update the score for the given player.
-     *
      * @param player The player whose score needs to be updated.
      * @param points The points to add to the player's score.
      */
@@ -72,10 +71,5 @@ public class Board {
         }
 
         return winner;
-    }
-
-    public void addPlayer(Player player){
-        this.scores.put(player, 0);
-
     }
 }
