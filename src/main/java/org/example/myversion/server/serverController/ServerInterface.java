@@ -16,15 +16,13 @@ public interface ServerInterface extends Remote{
 
     GameController controller = new GameController();
 
+    int RMI_PORT = 70;
+
     public default void start() {
     }
 
-    ;
-
     public default void stop() {
     }
-
-    ;
 
     public default void receiveMessageTCP(Message message,HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException {
     }
@@ -35,10 +33,11 @@ public interface ServerInterface extends Remote{
         switch (messageType) {
 
             case "Login" -> {
-                System.out.println("Received ping from " /*+ client.getUsername()*/); //per CLI
+                System.out.println("Received Login request from " + client.getNickname()); //per CLI, debug
                 String nickname = message.getArgument(); // nickname
 
-                if (controller.checkNickname(nickname) == 1) { // nickname non usato
+                //CASO 1: nickname libero
+                if (controller.checkNickname(nickname) == 1) {
 
                     if(!controller.isGameStarted()){//se gioco non iniziato ancora
                         try {//gestisco eccezione Remote
@@ -70,18 +69,20 @@ public interface ServerInterface extends Remote{
                                 throw new RemoteException();
                             }
                         }
-                        else{//se è piena si parte con la partita
-                            if (controller.checkLobby()) {
-                                controller.newGame();//si occupa questo di tutto?
+                        else{//se la lobby è piena si parte con la partita
+                            if (controller.gameIsFull()) {
+                                controller.newGame();//si occupa questo di tutto? startGame()
                                 System.out.println("Game started.");
-                            } else if (!controller.checkLobby()) {
+
+                            } else if (!controller.gameIsFull()) {//altrimenti:
 
                                 System.err.println("Aspettando altri giocatori..." );
-                                //qui devo fare qulcosa??
+                                //qui devo fare qualcosa??
                             }
                         }
                     }
-                //nel caso in cui il Nickname sia gia in uso
+
+                //CASO 2: nel caso in cui il Nickname sia gia in uso
                 } else if (controller.checkNickname(nickname) == 0) {
 
                     try {
@@ -104,14 +105,16 @@ public interface ServerInterface extends Remote{
                         //controller.addClient(nickname, client);
                         //resendGameToReconnectedClient(client);
                     }
+
+                    //CASO 3: l'username è gia utilizzato, ma il giocatore era disconnesso e prova a riconnettersi
                 } else {
-                    client.handleMessage(new Message("Pong", "Nickname is  already in use by a disconnected player"));
+
                     System.out.println(nickname + " reconnected.");
-                    //client.sendMessageToClient(new Message("username", username));
-                    //setUsername(username);
-                    //controller.addClient(username, client);
+                    client.setNickname(nickname);
+                    controller.addClient(nickname, client);
+                    //gestione della PERSISTENZA:
                     /*if (!controller.isGameLoaded) {
-                        //resendGameToReconnectedClient(client);
+                        resendGameToReconnectedClient(client);
                     } else {
                         resendToReconnectAfterServerDown(client);
                     }*/
@@ -125,20 +128,35 @@ public interface ServerInterface extends Remote{
                 controller.addPlayer(nickname);
             }
 
-            case "NumberOfPlayer" -> {
-                int numberOfPlayer = message.getMaxPlayers();
-                //controllo sia valido
-                if (controller.checkNumberOfPlayer(numberOfPlayer)) {
-                    sendMessageToClient(new Message("Valid Number of Player"));
-                    //setto numero giocatori del controller
-                    controller.setNumberOfPlayer(numberOfPlayer);
+            case "numOfPlayersMessage" -> {
+                int numberOfPlayers = message.getMaxPlayers();//numero di giocatori
+                boolean isValidNumberOfPlayers = controller.checkNumberOfPlayer(numberOfPlayers);
 
+                //numero di giocatori NON è valido:
+                if(isValidNumberOfPlayers){
+                    try {
+                        client.handleMessage(new Message("numOfPlayersNotOK"));
+                    } catch (RemoteException e) {
+                        System.err.println("Error while sending numOfPlayersNotOK to client.");
+                    }
+
+                //se il numero di giocatori è valido:
                 } else {
-                    sendMessageToClient(new Message("Invalid number of Player"));
+                    controller.setNumberOfPlayer(numberOfPlayers);//setta il numero di giocatori
+                    if (controller.gameIsFull()) {
+                        controller.newGame();
+                        //startGame();????
+                    } else {
+                        try {
+                            client.handleMessage(new Message("Lobby...in attesa di altri giocatori..."));
+                        } catch (RemoteException e) {
+                            System.err.println("Error while sending waitingRoom to client.");
+                        }
+                    }
                 }
             }
-
-            case "DrawCard" -> {//ne faccio un caso diverso a seconda della carta che vuole prendere? (da che mazzo)
+            /*
+            case "DrawCard" -> {
                 //non ci vuole una checkDraw di sicurezza !!!! controllare
                 PlayableCard chosenCard = message.getPlayableCard();
                 String nickname = message.getArgument(); //get del nickname ? tolgo nickname da draw
@@ -163,7 +181,7 @@ public interface ServerInterface extends Remote{
                         sendMessageToClient(new Message("Coordinates not valid"));
                     }
                 }
-            }
+            }*/
         }
     }
 

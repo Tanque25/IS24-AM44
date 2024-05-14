@@ -1,14 +1,19 @@
 package org.example.myversion.client;
 
 import org.example.myversion.messages.Message;
-
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
+import org.example.myversion.server.serverController.ServerInterface;
 
 public class RMIClient extends Client {
 
     private String nickname;
+    private Registry registry;
+    private ServerInterface server;
     public RMIClient() throws RemoteException {
     }
 
@@ -20,7 +25,8 @@ public class RMIClient extends Client {
      */
     @Override
     public void connect() throws IOException, NotBoundException {
-
+        registry = LocateRegistry.getRegistry("127.0.0.1", ServerInterface.RMI_PORT);
+        server = (ServerInterface) registry.lookup("ServerInterface");
     }
 
     /**
@@ -31,10 +37,16 @@ public class RMIClient extends Client {
      */
     @Override
     public void sendMessage(Message message) throws IOException {
-
+        try {
+            server.receiveMessage(message, this);
+        } catch (RemoteException e) {
+            // Don't do anything: if the server is down, the client will
+            // notice itself and will exit.
+        }
     }
 
     public String getNickname() throws RemoteException {
         return nickname;
     }
+
 }

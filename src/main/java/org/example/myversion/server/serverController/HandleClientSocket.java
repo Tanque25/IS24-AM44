@@ -174,7 +174,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                 //non ci vuole una checkDraw di sicurezza !!!! controllare
                 PlayableCard chosenCard = message.getPlayableCard();
                 String nickname = message.getArgument(); //get del nickname ? tolgo nickname da draw
-                controller.drawCard(nickname, chosenCard); //la pesco
+                //controller.drawCard(nickname, chosenCard); //la pesco
 
                 sendMessageToClient(new Message("Card drew successfully"));//pescata
 
@@ -186,7 +186,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                 if (controller.isValidMove()) {//ho aggiunto isValidMove --> implementarla
                     System.out.println("la mossa è valida");//per debug
                     //la gestione dell'eccezioni l'ho messa nel controller (in PlayCard) ha senso?
-                    controller.playCard(nickname, chosenCard, message.getCoordinates());
+                    //controller.playCard(nickname, chosenCard, message.getCoordinates());
                     sendMessageToClient(new Message("Move executed successfully"));//posizionata
                 } else {
                     //è da mettere qui ?
@@ -230,7 +230,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                         client.sendMessageToClient(new Message("WaitForOtherPlayers"));
                         // If this is the last player to reach the max player number, the game starts
                         if (controller.getMaxPlayerNumber() != 0 && controller.gameIsFull()) {
-                            startGame();
+                            //startGame();
                             System.out.println("Game started.");
                         }
                     }

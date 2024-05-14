@@ -8,7 +8,6 @@ import java.rmi.RemoteException;
 
 
 import org.example.myversion.server.serverController.RMIInterface;
-import org.example.myversion.server.serverController.ServerInterface;
 
 public class RMIServer extends RMIInterface implements ServerInterface {
     private int port;
@@ -18,6 +17,7 @@ public class RMIServer extends RMIInterface implements ServerInterface {
 
 
     public RMIServer(int port) {
+        super();
         this.port = port;
     }
 
