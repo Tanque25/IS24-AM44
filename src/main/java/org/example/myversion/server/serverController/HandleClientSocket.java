@@ -89,7 +89,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
         String messageType = message.getMessageCode();
 
         if(!messageType.equals("Ping"))
-            System.out.println("Received TCP message: with messageCode" + messageType);
+            System.out.println("Received TCP message: with messageCode " + messageType);
 
         switch (messageType) {
 
@@ -176,7 +176,10 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                     sendMessageToClient(new Message("InvalidNumberOfPlayers"));
                 else
                     controller.setMaxPlayerNumber(numberOfPlayer);
+            }
 
+            case "StarterCard" -> {
+                System.out.println("Starter card side received\n");
             }
 
             case "DrawCard" -> {//ne faccio un caso diverso a seconda della carta che vuole prendere? (da che mazzo)

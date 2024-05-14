@@ -31,4 +31,6 @@ public interface GameView {
     void showObjectives(List<ObjectiveCard> objectiveCards);
 
     void showStarterCard(StarterCard starterCard);
+
+    void starterCardSideChoice(StarterCard starterCard) throws IOException;
 }

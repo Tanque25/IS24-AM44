@@ -31,5 +31,6 @@ public abstract class ObjectiveCard {
     public abstract Resource[][] getObjective();
 
     protected abstract CornerContent[] getCardKey();
-    public abstract int findObjectiveCard(Map<CornerContent, Integer> stock, Card[][] playArea,ObjectiveCard commonObjective);
+
+    public abstract int findObjectiveCard(Map<CornerContent, Integer> stock, Card[][] playArea, ObjectiveCard commonObjective);
 }

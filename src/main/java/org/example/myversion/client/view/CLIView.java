@@ -108,7 +108,7 @@ public class CLIView implements GameView {
         playersNumber = readNumber();
 
         while (playersNumber<2 || playersNumber>4) {
-            System.err.println("Please enter a number between 2 and 4.");
+            System.err.println("Please enter a number between 2 and 4: ");
             playersNumber = readNumber();
         }
 
@@ -148,6 +148,31 @@ public class CLIView implements GameView {
         CardView cardView = new CardView();
 
         showMessage("This is your starter card:\n");
+        showMessage("Card front:\n");
         cardView.displayCardFront(starterCard);
+        showMessage("Card back:\n");
+        cardView.displayCardBack(starterCard);
+    }
+
+    public void starterCardSideChoice(StarterCard starterCard) throws IOException {
+        int sideChoice = askForSideChoice();
+
+        if (sideChoice == 1) {
+           starterCard.setPlayedBack(true);
+        }
+
+        client.sendMessage(new Message("StarterCard", starterCard));
+    }
+
+    public int askForSideChoice() {
+        showMessage("Please enter '0' for the front side, '1' for the back side: ");
+        int sideChoice = readNumber();
+
+        while (sideChoice!=0 && sideChoice!=1){
+            System.err.println("Please enter '0' or '1': ");
+            sideChoice = readNumber();
+        }
+
+        return sideChoice;
     }
 }

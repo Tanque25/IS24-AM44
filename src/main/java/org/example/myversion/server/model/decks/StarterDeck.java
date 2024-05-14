@@ -100,8 +100,8 @@ public class StarterDeck {
                 Map.of(
                         CornerPosition.UP_LEFT, new Corner(CornerVisibility.EMPTY),
                         CornerPosition.UP_RIGHT, new Corner(CornerVisibility.EMPTY),
-                        CornerPosition.BOTTOM_LEFT, new Corner(CornerVisibility.EMPTY),
-                        CornerPosition.BOTTOM_RIGHT, new Corner(CornerVisibility.EMPTY)
+                        CornerPosition.BOTTOM_LEFT, new Corner(CornerVisibility.FULL),
+                        CornerPosition.BOTTOM_RIGHT, new Corner(CornerVisibility.FULL)
                 ),
                 Map.of(
                         CornerPosition.UP_LEFT, new Corner(Resource.INSECT_KINGDOM),
@@ -116,8 +116,8 @@ public class StarterDeck {
                 Map.of(
                         CornerPosition.UP_LEFT, new Corner(CornerVisibility.EMPTY),
                         CornerPosition.UP_RIGHT, new Corner(CornerVisibility.EMPTY),
-                        CornerPosition.BOTTOM_LEFT, new Corner(CornerVisibility.EMPTY),
-                        CornerPosition.BOTTOM_RIGHT, new Corner(CornerVisibility.EMPTY)
+                        CornerPosition.BOTTOM_LEFT, new Corner(CornerVisibility.FULL),
+                        CornerPosition.BOTTOM_RIGHT, new Corner(CornerVisibility.FULL)
                 ),
                 Map.of(
                         CornerPosition.UP_LEFT, new Corner(Resource.FUNGI_KINGDOM),

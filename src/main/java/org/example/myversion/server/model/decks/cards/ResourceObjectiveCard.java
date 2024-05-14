@@ -36,7 +36,6 @@ public class ResourceObjectiveCard extends ObjectiveCard{
 
     @Override
     public Resource[][] getObjective() {
-
         return null;
     }
 

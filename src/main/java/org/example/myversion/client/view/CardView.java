@@ -9,39 +9,41 @@ import org.example.myversion.server.model.enumerations.Resource;
 
 public class CardView {
 
-    public static void main(String[] args) {
-        StarterDeck starterDeck = new StarterDeck();
-        ResourceDeck resourceDeck = new ResourceDeck();
-        GoldDeck goldDeck = new GoldDeck();
+//    public static void main(String[] args) {
+//        StarterDeck starterDeck = new StarterDeck();
+//        ResourceDeck resourceDeck = new ResourceDeck();
+//        GoldDeck goldDeck = new GoldDeck();
+//
+//        for (StarterCard starterCard : starterDeck.getStarterDeck()) {
+//            displayCardFrontTopLine(starterCard);
+//            displayCardFrontMiddleLine(starterCard);
+//            displayCardFrontBottomLine(starterCard);
+//            displayCardBackTopLine(starterCard);
+//            displayCardBackMiddleLine(starterCard);
+//            displayCardBackBottomLine(starterCard);
+//        }
+//
+//        for(PlayableCard playableCard : resourceDeck.getResourceDeck()) {
+//            displayCardFrontTopLine(playableCard);
+//            displayCardFrontMiddleLine(playableCard);
+//            displayCardFrontBottomLine(playableCard);
+//            displayCardBackTopLine(playableCard);
+//            displayCardBackMiddleLine(playableCard);
+//            displayCardBackBottomLine(playableCard);
+//        }
+//
+//        for(GoldCard goldCard : goldDeck.getGoldDeck()) {
+//            displayCardFrontTopLine(goldCard);
+//            displayCardFrontMiddleLine(goldCard);
+//            displayCardFrontBottomLine(goldCard);
+//            displayCardBackTopLine(goldCard);
+//            displayCardBackMiddleLine(goldCard);
+//            displayCardBackBottomLine(goldCard);
+//        }
+//
+//    }
 
-        for (StarterCard starterCard : starterDeck.getStarterDeck()) {
-            displayCardFrontTopLine(starterCard);
-            displayCardFrontMiddleLine(starterCard);
-            displayCardFrontBottomLine(starterCard);
-            displayCardBackTopLine(starterCard);
-            displayCardBackMiddleLine(starterCard);
-            displayCardBackBottomLine(starterCard);
-        }
-
-        for(PlayableCard playableCard : resourceDeck.getResourceDeck()) {
-            displayCardFrontTopLine(playableCard);
-            displayCardFrontMiddleLine(playableCard);
-            displayCardFrontBottomLine(playableCard);
-            displayCardBackTopLine(playableCard);
-            displayCardBackMiddleLine(playableCard);
-            displayCardBackBottomLine(playableCard);
-        }
-
-        for(GoldCard goldCard : goldDeck.getGoldDeck()) {
-            displayCardFrontTopLine(goldCard);
-            displayCardFrontMiddleLine(goldCard);
-            displayCardFrontBottomLine(goldCard);
-            displayCardBackTopLine(goldCard);
-            displayCardBackMiddleLine(goldCard);
-            displayCardBackBottomLine(goldCard);
-        }
-
-    }
+    ///////////////////////////////////////////////////////STARTER CARD////////////////////////////////////////////////////////
 
     public static void displayCardFront(StarterCard starterCard) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -87,7 +89,7 @@ public class CardView {
         stringBuilder.append(starterCard.getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().getShortName());
         stringBuilder.append("\n");
 
-        System.out.println(stringBuilder);
+        System.out.print(stringBuilder);
     }
 
     public static void displayCardFrontTopLine(StarterCard starterCard) {
@@ -143,6 +145,27 @@ public class CardView {
         stringBuilder.append(starterCard.getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().getShortName());
         stringBuilder.append("-------");
         stringBuilder.append(starterCard.getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().getShortName());
+
+        System.out.print(stringBuilder);
+    }
+
+    public static void displayCardBack(StarterCard starterCard) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        // Top line of the card
+        stringBuilder.append(starterCard.getBackCorner().get(CornerPosition.UP_LEFT).getCornerContent().getShortName());
+        stringBuilder.append("-------");
+        stringBuilder.append(starterCard.getBackCorner().get(CornerPosition.UP_RIGHT).getCornerContent().getShortName());
+        stringBuilder.append("\n");
+
+        // Middle line of the card
+        stringBuilder.append("|       |\n");
+
+        // Bottom line of the card
+        stringBuilder.append(starterCard.getBackCorner().get(CornerPosition.BOTTOM_LEFT).getCornerContent().getShortName());
+        stringBuilder.append("-------");
+        stringBuilder.append(starterCard.getBackCorner().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().getShortName());
+        stringBuilder.append("\n");
 
         System.out.print(stringBuilder);
     }
@@ -365,27 +388,6 @@ public class CardView {
         stringBuilder.append(goldCard.getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().getShortName());
 
         System.out.print(stringBuilder);
-    }
-
-    public static void displayCardBack(StarterCard starterCard) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        // Top line of the card
-        stringBuilder.append(starterCard.getCorners().get(CornerPosition.UP_LEFT).getCornerContent().getShortName());
-        stringBuilder.append("-------");
-        stringBuilder.append(starterCard.getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().getShortName());
-        stringBuilder.append("\n");
-
-        // Middle line of the card
-        stringBuilder.append("|       |\n");
-
-        // Bottom line of the card
-        stringBuilder.append(starterCard.getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().getShortName());
-        stringBuilder.append("-------");
-        stringBuilder.append(starterCard.getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().getShortName());
-        stringBuilder.append("\n");
-
-        System.out.println(stringBuilder);
     }
 
     public static void displayCardBackTopLine(StarterCard starterCard) {

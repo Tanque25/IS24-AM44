@@ -73,9 +73,9 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
     public void handleMessage(Message message)throws RemoteException {
         String messageCode = message.getMessageCode();
 
-        if(!messageCode.equals("Ping") && !messageCode.equals("Pong")) {
-            System.out.println(messageCode);
-        }
+//        if(!messageCode.equals("Ping") && !messageCode.equals("Pong")) {
+//            System.out.println(messageCode);
+//        }
 
         switch (messageCode) {
             case "Ping", "Pong" ->
@@ -93,23 +93,26 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                     throw new RuntimeException(e);
                 }
             }
-
             case "InvalidNumberOfPlayers" ->{
                 try{
                     gameView.invalidPlayersNumberChoice();
-                }catch(IOException e){
+                }catch (IOException e){
                     throw new RuntimeException(e);
                 }
             }
-
-
             case "WaitForOtherPlayers" ->
                 gameView.waitForOtherPlayers();
             case "CommonObjectiveCards" ->
                 gameView.showObjectives(message.getObjectiveCards());
-            case "StarterCard" ->
+            case "StarterCard" -> {
+                try {
+                    gameView.showStarterCard(message.getStarterCard());
+                    gameView.starterCardSideChoice(message.getStarterCard());
+                } catch (IOException e){
+                    throw new RuntimeException(e);
+                }
 
-                gameView.showStarterCard(message.getStarterCard());
+            }
             default -> throw new IllegalArgumentException("Invalid messageCode: " + messageCode);
         }
     }
