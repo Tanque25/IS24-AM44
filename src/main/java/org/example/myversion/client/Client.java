@@ -70,7 +70,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
      *
      * @param message the message received from the server.
      */
-    public void handleMessage(Message message) throws IOException {
+    public void handleMessage(Message message)throws RemoteException {
         String messageCode = message.getMessageCode();
 
         if(!messageCode.equals("Ping") && !messageCode.equals("Pong")) {
@@ -94,8 +94,15 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 }
             }
 
-            case "InvalidNumberOfPlayers" ->
-                gameView.invalidPlayersNumberChoice();
+            case "InvalidNumberOfPlayers" ->{
+                try{
+                    gameView.invalidPlayersNumberChoice();
+                }catch(IOException e){
+                    throw new RuntimeException(e);
+                }
+            }
+
+
             case "WaitForOtherPlayers" ->
                 gameView.waitForOtherPlayers();
             case "CommonObjectiveCards" ->
