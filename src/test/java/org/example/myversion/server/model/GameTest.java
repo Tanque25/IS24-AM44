@@ -170,10 +170,16 @@ class GameTest {
         game.newPlayer("Pluto");
         game.newPlayer("Minnie");
 
+        player1 = game.getPlayers().get(0);
+        player2 = game.getPlayers().get(1);
+        player3 = game.getPlayers().get(2);
+
         // Place the starter card for each player
         game.placeStarterCard(player1, SC_002);
         game.placeStarterCard(player2, SC_003);
         game.placeStarterCard(player3, SC_004);
+
+
 
         // Check if the starter card is placed correctly for each player
         assertEquals(SC_002, player1.getPlayArea()[41][41]);
@@ -216,11 +222,6 @@ class GameTest {
 
     @Test
     void playCard() {
-    }
-
-
-    @Test
-    void getDrawOptions() {
     }
 
     @Test
@@ -357,5 +358,30 @@ class GameTest {
 
         // Verifica che non ci sia un vincitore
         assertNull(game.winner());
+    }
+
+    @Test
+    void initializeGame() {
+        assertTrue(game.getCommonObjectives().isEmpty());
+        assertTrue(game.getVisibleResourceCards().isEmpty());
+        assertTrue(game.getVisibleGoldCards().isEmpty());
+
+        // Initialize the game
+        game.initializeGame();
+
+        // Verify that the game has been initialized
+        for (Player player : game.getPlayers()) {
+            assertEquals(0, game.getBoard().getScore(player));
+        }
+
+        // Verify that the round map is properly initialized
+        for (Player player : game.getPlayers()) {
+            assertEquals(0, game.getBoard().getScore(player));
+        }
+
+        // Assert that the lists have been populated
+        assertEquals(2, game.getCommonObjectives().size());
+        assertEquals(2, game.getVisibleGoldCards().size());
+        assertEquals(2, game.getVisibleResourceCards().size());
     }
 }
