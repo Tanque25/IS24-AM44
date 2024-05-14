@@ -73,18 +73,30 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
     public void handleMessage(Message message) throws IOException {
         String messageCode = message.getMessageCode();
 
+        if(!messageCode.equals("Ping") && !messageCode.equals("Pong")) {
+            System.out.println(messageCode);
+        }
+
         switch (messageCode) {
-            case "Ping" ->
+            case "Ping", "Pong" ->
                 serverConnection = true;
-            case "Nickname" ->
+            case "Nickname" -> {
                 setNickname(message.getArgument());
-                // TODO might have to add a checkServerConnection method
+                checkServerConnection();
+            }
             case "GameAlreadyStarted" ->
                 gameView.showGameAlreadyStartedMessage();
             case "PlayersNumber" ->
                 gameView.playersNumberChoice();
+            case "InvalidNumberOfPlayers" ->
+                gameView.invalidPlayersNumberChoice();
             case "WaitForOtherPlayers" ->
                 gameView.waitForOtherPlayers();
+            case "CommonObjectiveCards" ->
+                gameView.showObjectives(message.getObjectiveCards());
+            case "StarterCard" ->
+
+                gameView.showStarterCard(message.getStarterCard());
             default -> throw new IllegalArgumentException("Invalid messageCode: " + messageCode);
         }
     }
@@ -108,11 +120,37 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
         System.exit(0);
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    /**
+     * Checks if the server is still connected.
+     * If it's not, exits the game.
+     */
+    public void checkServerConnection() {
+        new Thread(() -> {
+            while (true) {
+                try {
+                    sendMessage(new Message("Ping"));
+                    synchronized (lock) {
+                        Thread.sleep(20000);
+                        if (!serverConnection) {
+                            System.err.println("Server is down. Exiting...");
+                            System.exit(0);
+                        }
+                        serverConnection = false;
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
     }
 
     public void setGameView(GameView gameView) {
         this.gameView = gameView;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 }

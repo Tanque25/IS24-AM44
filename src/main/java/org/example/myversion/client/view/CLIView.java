@@ -3,10 +3,13 @@ package org.example.myversion.client.view;
 import org.example.myversion.client.Client;
 import org.example.myversion.client.CodexNaturalis;
 import org.example.myversion.messages.Message;
+import org.example.myversion.server.model.decks.cards.ObjectiveCard;
+import org.example.myversion.server.model.decks.cards.StarterCard;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 
 public class CLIView implements GameView {
     private Client client;
@@ -89,12 +92,20 @@ public class CLIView implements GameView {
 
     public void playersNumberChoice() throws IOException {
         int playersNumber = askForPlayersNumber();
-        client.sendMessage(new Message("PlayersNumber", playersNumber));
+        client.sendMessage(new Message("NumberOfPlayers", playersNumber));
+    }
+
+    public void invalidPlayersNumberChoice() throws IOException {
+        showMessage("Invalid player number! Please try again: ");
+        int playersNumber = askForPlayersNumber();
+        client.sendMessage(new Message("NumberOfPlayers", playersNumber));
     }
 
     public int askForPlayersNumber() {
         showMessage("Please enter the number of players you would like to play: ");
         int playersNumber = 0;
+
+        playersNumber = readNumber();
 
         while (playersNumber<2 || playersNumber>4) {
             System.err.println("Please enter a number between 2 and 4.");
@@ -121,4 +132,22 @@ public class CLIView implements GameView {
         showMessage("Waiting for other players to join...\n");
     }
 
+    @Override
+    public void showObjectives(List<ObjectiveCard> objectiveCards) {
+        ObjectiveCardView objectiveCardView = new ObjectiveCardView();
+        showMessage("These are the common objectives:\n");
+        for (ObjectiveCard objectiveCard : objectiveCards) {
+            objectiveCardView.displayObjectiveCardTopBottomLine(objectiveCard);
+            objectiveCardView.displayObjectiveCardMiddleLine(objectiveCard);
+            objectiveCardView.displayObjectiveCardTopBottomLine(objectiveCard);
+        }
+    }
+
+    @Override
+    public void showStarterCard(StarterCard starterCard) {
+        CardView cardView = new CardView();
+
+        showMessage("This is your starter card:\n");
+        cardView.displayCardFront(starterCard);
+    }
 }

@@ -75,7 +75,6 @@ public class TCPClient extends Client {
     @Override
     public void sendMessage(Message message) throws IOException {
         String jsonString = message.getJson().toString(); // Convert message to JSON string
-        System.out.println("Sending message: " + jsonString);
         dataOutputStream.writeBytes(jsonString + "\n"); // Send the JSON string over the network
         dataOutputStream.flush(); // Flush to ensure the message is sent immediately
     }
@@ -90,7 +89,6 @@ public class TCPClient extends Client {
      */
     public Message receiveMessage() throws IOException {
         String serverMessageString = serverBufferedReader.readLine();
-
         if (serverMessageString == null) {
             return null; // Stream has ended, possibly because the server has closed the connection
         }

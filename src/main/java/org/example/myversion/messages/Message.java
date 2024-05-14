@@ -231,7 +231,11 @@ public class Message implements Serializable {
         for (Resource[] row : objective) {
             JsonArrayBuilder rowArrayBuilder = Json.createArrayBuilder();
             for (Resource resource : row) {
-                rowArrayBuilder.add(resource.toString());
+                if (resource != null) {
+                    rowArrayBuilder.add(resource.toString());  // Add the resource to the JSON array only if it's not null
+                } else {
+                    rowArrayBuilder.add(JsonValue.NULL);  // Use JsonValue.NULL for null resources
+                }
             }
             objectiveObjectBuilder.add(rowArrayBuilder);
         }
@@ -278,7 +282,7 @@ public class Message implements Serializable {
      * @return The maximum number of players.
      */
     public int getMaxPlayers() {
-        return json.getInt("maxPlayers", -1);
+        return json.getInt("PlayersNumber", -1);
     }
 
     /**

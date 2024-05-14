@@ -88,16 +88,12 @@ public class HandleClientSocket implements ServerInterface, Runnable {
     public void receiveMessageTCP(Message message, HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException {
         String messageType = message.getMessageCode();
 
+        if(!messageType.equals("Ping"))
+            System.out.println("Received TCP message: with messageCode" + messageType);
+
         switch (messageType) {
 
-            // This case verifies the selected nickname and handles the different cases
-            case "Login" -> {
-                String nickname = message.getArgument();
-                int checkNicknameStatus = controller.checkNickname(nickname);
-                checkNickname(client, nickname, checkNicknameStatus);
-            }
-
-            case "Ping" -> {
+            case "ToDo" -> {
                 System.out.println("Received ping from " /*+ client.getUsername()*/); //per CLI
                 String nickname = message.getArgument(); //nel ping c'è anche nickname
                 //controller.pong(nickname);
@@ -157,24 +153,37 @@ public class HandleClientSocket implements ServerInterface, Runnable {
 
             }
 
-            case "NumberOfPlayer" -> {
-                int numberOfPlayer = message.getMaxPlayers();
-                //controllo sia valido
-                if (controller.checkNumberOfPlayer(numberOfPlayer)) {
-                    sendMessageToClient(new Message("Valid Number of Player"));
-                    //setto numero giocatori del controller
-                    controller.setNumberOfPlayer(numberOfPlayer);
+            case "Ping" -> {
+                // System.out.println("Received ping from " + client.getNickname());
+                controller.pong(client.getNickname());
+                controller.addPongLost(client.getNickname());
+                client.sendMessageToClient(new Message("Pong"));
+            }
 
-                } else {
-                    sendMessageToClient(new Message("Invalid number of Player"));
-                }
+            // This case verifies the selected nickname and handles the different cases
+            case "Login" -> {
+                String nickname = message.getArgument();
+                int checkNicknameStatus = controller.checkNickname(nickname);
+                checkNickname(client, nickname, checkNicknameStatus);
+            }
+
+            case "NumberOfPlayers" -> {
+                int numberOfPlayer = message.getMaxPlayers();
+                System.out.println("Number of players: " + numberOfPlayer);
+
+                // check the validity of the players' number
+                if (!controller.checkNumberOfPlayer(numberOfPlayer))
+                    sendMessageToClient(new Message("InvalidNumberOfPlayers"));
+                else
+                    controller.setMaxPlayerNumber(numberOfPlayer);
+
             }
 
             case "DrawCard" -> {//ne faccio un caso diverso a seconda della carta che vuole prendere? (da che mazzo)
                 //non ci vuole una checkDraw di sicurezza !!!! controllare
                 PlayableCard chosenCard = message.getPlayableCard();
                 String nickname = message.getArgument(); //get del nickname ? tolgo nickname da draw
-                controller.drawCard(nickname, chosenCard); //la pesco
+                // controller.drawCard(nickname, chosenCard); //la pesco
 
                 sendMessageToClient(new Message("Card drew successfully"));//pescata
 
@@ -186,7 +195,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                 if (controller.isValidMove()) {//ho aggiunto isValidMove --> implementarla
                     System.out.println("la mossa è valida");//per debug
                     //la gestione dell'eccezioni l'ho messa nel controller (in PlayCard) ha senso?
-                    controller.playCard(nickname, chosenCard, message.getCoordinates());
+                    // controller.playCard(nickname, chosenCard, message.getCoordinates());
                     sendMessageToClient(new Message("Move executed successfully"));//posizionata
                 } else {
                     //è da mettere qui ?
@@ -200,10 +209,11 @@ public class HandleClientSocket implements ServerInterface, Runnable {
         }
     }
 
-    private void sendMessageToClient(Message message) {
+    public void sendMessageToClient(Message message) {
         try {
-            String jsonString = message.getJson().toString();
+            String jsonString = message.getJson().toString() + "\n";
             writer.write(jsonString);
+            writer.flush();
         } catch (IOException e) {
             System.err.println("Error sending message to client: " + e.getMessage());
         }
@@ -226,10 +236,16 @@ public class HandleClientSocket implements ServerInterface, Runnable {
 
                     if (controller.getFirstPlayer() == null) {
                         client.sendMessageToClient(new Message("PlayersNumber"));
+                        controller.setFirstPlayer();
+                        client.sendMessageToClient(new Message("WaitForOtherPlayers"));
                     } else {
                         client.sendMessageToClient(new Message("WaitForOtherPlayers"));
+                        System.out.println("Checking if game is full");
+                        System.out.println("Max number of players: " + controller.getMaxPlayerNumber());
+                        System.out.println("Game is full: " + controller.gameIsFull());
                         // If this is the last player to reach the max player number, the game starts
                         if (controller.getMaxPlayerNumber() != 0 && controller.gameIsFull()) {
+                            System.out.println("Game is full\n");
                             startGame();
                             System.out.println("Game started.");
                         }
@@ -250,6 +266,8 @@ public class HandleClientSocket implements ServerInterface, Runnable {
 
     public void startPingThread(HandleClientSocket client) throws RemoteException {
         String finalUsername = client.getNickname();
+
+        System.out.println("Starting ping thread for " + client.getNickname());
 
         Thread checkThread = new Thread(() -> {
             while (true) {

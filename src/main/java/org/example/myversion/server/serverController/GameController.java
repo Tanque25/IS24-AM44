@@ -33,7 +33,6 @@ public class GameController {
     private Player firstPlayer;
     private Player lastPlayer;
     private HashMap <Player, Integer> playerRoundsPlayed;
-    private int numberOfPlayer;
 
     //private final List<Thread> checkThreads;
     //public static final String BACKUP_FILE = "backUp.json";
@@ -81,7 +80,6 @@ public class GameController {
     public void addPlayer(String nickname){
         if (gameIsEmpty()) {
             game.newPlayer(nickname);
-            firstPlayer = game.getPlayers().getFirst();
         } else {
             if (!gameIsFull()) {
                 game.newPlayer(nickname);
@@ -141,6 +139,10 @@ public class GameController {
 
     public Player getLastPlayer() {
         return lastPlayer;
+    }
+
+    public void setFirstPlayer() {
+        this.firstPlayer = game.getPlayers().getFirst();;
     }
 
     public Player getFirstPlayer() {
@@ -287,7 +289,11 @@ public class GameController {
      * @param nickname the name of the client that sent the pong.
      */
     public void pong(String nickname){
-        //dentro il pong chiamo checkNickaname ?
+        if(!pongReceived.contains(nickname)) {
+            pongReceived.add(nickname);
+        }
+        pongLost.remove(nickname);
+        pongLost.put(nickname, 0);
     }
 
     /**
@@ -297,7 +303,9 @@ public class GameController {
      *
      */
     public void addPongLost(String nickname){
-
+        int currentPongLost = pongLost.get(nickname);
+        pongLost.remove(nickname);
+        pongLost.put(nickname, currentPongLost + 1);
     }
 
     /**
@@ -425,10 +433,6 @@ public class GameController {
         if (gameState == GameState.END) {
             game.winner();
         }
-    }
-
-    public void setNumberOfPlayer(int numberOfPlayer) {
-        this.numberOfPlayer = numberOfPlayer;
     }
 
     /**

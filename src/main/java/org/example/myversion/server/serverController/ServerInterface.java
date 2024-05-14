@@ -5,6 +5,7 @@ import org.example.myversion.client.RMIClient;
 import org.example.myversion.messages.Message;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -77,14 +78,22 @@ public interface ServerInterface extends Remote{
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
         HashMap<String, Client> rmiClients = controller.getRmiClients();
 
-        List<ObjectiveCard> commonObjectiveCards = controller.getCommonObjectiveCards();
+        // TODO having trouble with the objective cards' getObjective methods
 
-        for (HandleClientSocket client : tcpClients.values()) {
-            Message commmonObjectiveCardsMessage = new Message("CommonObjectiveCards", commonObjectiveCards.get(0), commonObjectiveCards.get(1));
+//        List<ObjectiveCard> commonObjectiveCards = controller.getCommonObjectiveCards();
+//        System.out.println(Arrays.deepToString(commonObjectiveCards.get(0).getObjective()));
+//        System.out.println(Arrays.deepToString(commonObjectiveCards.get(1).getObjective()));
 
+        for (String nickname : tcpClients.keySet()) {
+            // Message commmonObjectiveCardsMessage = new Message("CommonObjectiveCards", commonObjectiveCards.get(0), commonObjectiveCards.get(1));
+            // tcpClients.get(nickname).sendMessageToClient(commmonObjectiveCardsMessage);
 
-            List<ObjectiveCard> secretObjectiveCardsOptions = controller.getSecretObjectiveCardsOptions();
-            Message secretObjectiveCardsOptionsMessage = new Message("SecretObjectiveCardsOptions", secretObjectiveCardsOptions.get(0), secretObjectiveCardsOptions.get(1));
+            // List<ObjectiveCard> secretObjectiveCardsOptions = controller.getSecretObjectiveCardsOptions();
+            // Message secretObjectiveCardsOptionsMessage = new Message("SecretObjectiveCardsOptions", secretObjectiveCardsOptions.get(0), secretObjectiveCardsOptions.get(1));
+
+            // Sending the starter card to the client
+            Message starterCardMessage = new Message("StarterCard", controller.getStarterCard());
+            tcpClients.get(nickname).sendMessageToClient(starterCardMessage);
         }
 
 
