@@ -162,6 +162,14 @@ public class Game {
         return commonObjectives;
     }
 
+    public List<GoldCard> getVisibleGoldCards() {
+        return visibleGoldCards;
+    }
+
+    public List<PlayableCard> getVisibleResourceCards() {
+        return visibleResourceCards;
+    }
+
     /**
      * The played card is placed on the player's play area at the specified coordinates.
      * It is then removed from the player's hand.
