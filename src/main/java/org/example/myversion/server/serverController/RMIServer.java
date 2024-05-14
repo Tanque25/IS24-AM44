@@ -24,7 +24,7 @@ public class RMIServer extends RMIInterface implements ServerInterface {
     @Override
     public void start() {
         try {
-             //interfaccia non puo essere inizializzata??
+            //interfaccia non puo essere inizializzata??
             serverInterface=new RMIServer(70);// Esporto l'oggetto remoto e ottieni il riferimento allo stub
 
             RMIInterface stub = (RMIInterface) UnicastRemoteObject.exportObject(serverInterface, 0);

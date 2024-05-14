@@ -61,7 +61,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                         receiveMessageTCP(message,this);
                     }
                 } catch (IOException | IllegalAccessException | InvalidNicknameException | InvalidMoveException |
-                         InvalidChoiceException | InvalidGameStateException e) {
+                         InvalidChoiceException  e) {
                     System.err.println("Error while reading from client. IO");
                     break;
                 }
@@ -85,7 +85,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
      * @throws InvalidChoiceException   If the choice made is invalid.
      */
     @Override
-    public void receiveMessageTCP(Message message, HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException, InvalidGameStateException {
+    public void receiveMessageTCP(Message message, HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException {
         String messageType = message.getMessageCode();
 
         if(!messageType.equals("Ping"))

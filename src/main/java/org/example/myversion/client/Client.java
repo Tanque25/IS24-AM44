@@ -86,8 +86,14 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
             }
             case "GameAlreadyStarted" ->
                 gameView.showGameAlreadyStartedMessage();
-            case "PlayersNumber" ->
-                gameView.playersNumberChoice();
+            case "PlayersNumber" ->{
+                try{
+                    gameView.playersNumberChoice();
+                }catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
             case "InvalidNumberOfPlayers" ->
                 gameView.invalidPlayersNumberChoice();
             case "WaitForOtherPlayers" ->
@@ -152,5 +158,9 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public String getNickname() throws RemoteException {
+        return this.nickname;
     }
 }
