@@ -201,13 +201,17 @@ public class GameController {
         game.setPlayerSecretObjective(player, card);
     }
 
-    public void playStarterCard(Player player, StarterCard card, int side){
-        if(side == 0){
-            card.setPlayedBack(true);
-        }
-        game.placeStarterCard(player, card);
-        if(player.equals(lastPlayer)){
-            gameState = GameState.IN_GAME;
+    public void playStarterCard(Player player, StarterCard card, int side) throws InvalidGameStateException {
+        if(gameState == GameState.INITIALIZATION) {
+            if (side == 0) {
+                card.setPlayedBack(true);
+            }
+            game.placeStarterCard(player, card);
+            if (player.equals(lastPlayer)) {
+                gameState = GameState.IN_GAME;
+            }
+        } else {
+            throw new InvalidGameStateException("Invalid game state");
         }
     }
 
@@ -362,7 +366,7 @@ public class GameController {
      */
     public void changeTurn() {
 
-        if (isGameStarted()){
+        if (isGameStarted() || gameState == GameState.INITIALIZATION){
             game.updateCurrentPlayer();
         }
     }
