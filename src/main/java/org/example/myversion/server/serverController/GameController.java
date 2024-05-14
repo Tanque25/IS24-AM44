@@ -101,6 +101,10 @@ public class GameController {
         tcpClients.put(nickname, client);
     }
 
+    public void addClient(String nickname, Client client) {
+        rmiClients.put(nickname, client);
+    }
+
     public HashMap<String, Client> getRmiClients() {
         return rmiClients;
     }
@@ -324,15 +328,9 @@ public class GameController {
     /**
      * It checks if the player's number chosen by the first player is correct
      * @return true if the player's number chosen by the first player is correct
-     * @throws InvalidChoiceException if the number of players is not within the valid range
      */
-    public boolean checkNumberOfPlayer(int numPlayer) throws InvalidChoiceException{
-        if(numPlayer>=2 && numPlayer<=4) {
-            return true;
-        }
-        else {
-            throw new InvalidChoiceException("Invalid number of players. Please change the number.");
-        }
+    public boolean checkNumberOfPlayer(int numPlayer){
+        return numPlayer >= 2 && numPlayer <= 4;//ritorna true se compreso
     }
 
     /**

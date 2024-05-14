@@ -13,7 +13,7 @@ public class Server {
 
     private RMIServer serverrmi;
 
-    private static final int RMI_PORT = 1000;
+    private static final int RMI_PORT = 70;
     private static final int SOCKET_PORT = 8080;
 
     /**
