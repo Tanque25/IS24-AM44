@@ -19,7 +19,6 @@ import java.util.*;
  */
 public class GameController {
     private Server server;
-
     public static Game game;
     public List<String> disconnectedPlayers;
     public HashMap<String, Integer> pongLost;
@@ -28,7 +27,7 @@ public class GameController {
     private HashMap<String, Client> rmiClients;
     private GameState gameState;
     public int roundsPlayed;
-    private int maxPlayerNumber;
+    private int playersNumber;
     private boolean isGameLoaded;
     private Player firstPlayer;
     private Player lastPlayer;
@@ -47,7 +46,7 @@ public class GameController {
         this.pongReceived = new ArrayList<>();
         this.tcpClients = new HashMap<>();
         this.rmiClients = new HashMap<>();
-        this.maxPlayerNumber = 0;
+        this.playersNumber = 0;
         this.isGameLoaded = false;
         this.playerRoundsPlayed= new HashMap<>();
         this.gameState = GameState.LOGIN;
@@ -83,27 +82,56 @@ public class GameController {
         } else {
             if (!gameIsFull()) {
                 game.newPlayer(nickname);
-                if(game.getPlayers().size()==maxPlayerNumber){
-                    lastPlayer = game.getPlayers().get(maxPlayerNumber-1);
+                if(game.getPlayers().size()== playersNumber){
+                    lastPlayer = game.getPlayers().get(playersNumber -1);
                     newGame();
                 }
             }
         }
     }
 
+    public void newGame() {
+        //game = new Game();
+        gameState = GameState.INITIALIZATION;
+        game.initializeGame();
+        initializeRoundMap();
+        roundsPlayed = 0;
+    }
+
+    private void initializeRoundMap (){
+        for (Player player : game.getPlayers())
+            playerRoundsPlayed.put(player, 0);
+    }
+
     /**
-     * Method to add a client to the game controller
+     * Method to add a TCP client to the game controller
      *
      * @param nickname the nickname of the player
      * @param client   the client associated to the player
      */
-    public void addClient(String nickname, HandleClientSocket client) {
+    public void addClientTCP(String nickname, HandleClientSocket client) {
         tcpClients.put(nickname, client);
     }
 
-    public void addClient(String nickname, Client client) {
+    /**
+     * Method to add an RMI client to the game controller
+     *
+     * @param nickname the nickname of the player
+     * @param client   the client associated to the player
+     */
+    public void addClientRMI(String nickname, Client client) {
         rmiClients.put(nickname, client);
     }
+
+    // TODO: remove int side from method signature
+    public void playStarterCard(Player player, StarterCard starterCard, int side) {
+        game.placeStarterCard(player, starterCard);
+        if (player.equals(lastPlayer)) {
+            gameState = GameState.IN_GAME;
+        }
+    }
+
+    ///////////////////////////////////////////////////////GETTERS AND SETTERS////////////////////////////////////////////////////////
 
     public HashMap<String, Client> getRmiClients() {
         return rmiClients;
@@ -125,12 +153,12 @@ public class GameController {
         this.gameState = gameState;
     }
 
-    public void setMaxPlayerNumber(int maxPlayerNumber) {
-        this.maxPlayerNumber = maxPlayerNumber;
+    public void setPlayersNumber(int playersNumber) {
+        this.playersNumber = playersNumber;
     }
 
-    public int getMaxPlayerNumber() {
-        return maxPlayerNumber;
+    public int getPlayersNumber() {
+        return playersNumber;
     }
 
     public HashMap<Player, Integer> getPlayerRoundsPlayed() {
@@ -151,19 +179,6 @@ public class GameController {
 
     public Player getFirstPlayer() {
         return firstPlayer;
-    }
-
-    public void newGame() {
-        //game = new Game();
-        gameState = GameState.INITIALIZATION;
-        game.initializeGame();
-        initializeRoundMap();
-        roundsPlayed = 0;
-    }
-
-    private void initializeRoundMap (){
-        for (Player player : game.getPlayers())
-            playerRoundsPlayed.put(player, 0);
     }
 
     /**
@@ -201,20 +216,6 @@ public class GameController {
      */
     public void chooseObjectiveCard(Player player, ObjectiveCard card){
         game.setPlayerSecretObjective(player, card);
-    }
-
-    public void playStarterCard(Player player, StarterCard card, int side) throws InvalidGameStateException {
-        if(gameState == GameState.INITIALIZATION) {
-            if (side == 0) {
-                card.setPlayedBack(true);
-            }
-            game.placeStarterCard(player, card);
-            if (player.equals(lastPlayer)) {
-                gameState = GameState.IN_GAME;
-            }
-        } else {
-            throw new InvalidGameStateException("Invalid game state");
-        }
     }
 
     /**
@@ -278,7 +279,7 @@ public class GameController {
     }
 
     public boolean gameIsFull(){
-        if(game.getPlayers().size() == maxPlayerNumber){
+        if(game.getPlayers().size() == playersNumber){
             return true;
         }
         return false;

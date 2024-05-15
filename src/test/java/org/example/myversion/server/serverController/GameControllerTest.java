@@ -1,9 +1,6 @@
 package org.example.myversion.server.serverController;
 
 import org.example.myversion.server.model.Player;
-import org.example.myversion.server.model.decks.GoldDeck;
-import org.example.myversion.server.model.decks.ObjectiveDeck;
-import org.example.myversion.server.model.decks.ResourceDeck;
 import org.example.myversion.server.model.decks.cards.*;
 import org.example.myversion.server.model.enumerations.CornerPosition;
 import org.example.myversion.server.model.enumerations.Resource;
@@ -12,8 +9,6 @@ import org.example.myversion.server.model.exceptions.InvalidGameStateException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -103,7 +98,7 @@ class GameControllerTest{
     @Test
     void addPlayer() {
 
-        gameController.setMaxPlayerNumber(4);
+        gameController.setPlayersNumber(4);
         gameController.addPlayer("Palacio");
         assertEquals(1, gameController.getGame().getPlayers().size());
         assertEquals(gameController.getGame().getPlayers().getFirst(), gameController.getFirstPlayer());
@@ -148,11 +143,7 @@ class GameControllerTest{
         int numPlayers = 4; // Un numero valido di giocatori
 
         boolean result = false;
-        try {
-            result = gameController.checkNumberOfPlayer(numPlayers);
-        } catch (InvalidChoiceException e) {
-            fail("An unexpected InvalidChoiceException was thrown");
-        }
+        result = gameController.checkNumberOfPlayer(numPlayers);
         // Assert
         assertTrue(result, "chooseNumberPlayer should return true for a valid number of players");
 
@@ -226,7 +217,7 @@ class GameControllerTest{
 
     @Test
     void changeTurn() throws InvalidGameStateException {
-        gameController.setMaxPlayerNumber(2);
+        gameController.setPlayersNumber(2);
         gameController.addPlayer("Lautaro");
         gameController.addPlayer("Handanovic");
         gameController.setGameState(GameState.IN_GAME);
@@ -283,7 +274,7 @@ class GameControllerTest{
 
     @Test
     void playStarterCard() throws InvalidGameStateException { //con il currentPlayer dà problemi
-        gameController.setMaxPlayerNumber(3);
+        gameController.setPlayersNumber(3);
         gameController.addPlayer("Giulio");
         gameController.addPlayer("Pippo");
         gameController.addPlayer("Lucia");
@@ -322,7 +313,7 @@ class GameControllerTest{
 
     @Test
     void getLastPlayer() {
-        gameController.setMaxPlayerNumber(4);
+        gameController.setPlayersNumber(4);
         gameController.addPlayer("Palacio");
         gameController.addPlayer("Milito");
         gameController.addPlayer("Cambiasso");
@@ -334,7 +325,7 @@ class GameControllerTest{
 
     @Test
     void getFirstPlayer() {
-        gameController.setMaxPlayerNumber(4);
+        gameController.setPlayersNumber(4);
         gameController.addPlayer("Palacio");
         gameController.addPlayer("Milito");
         gameController.addPlayer("Cambiasso");
@@ -345,7 +336,7 @@ class GameControllerTest{
 
     @Test
     void gameIsFull() {
-        gameController.setMaxPlayerNumber(4);
+        gameController.setPlayersNumber(4);
         gameController.addPlayer("Palacio");
         gameController.addPlayer("Milito");
         gameController.addPlayer("Cambiasso");
@@ -363,7 +354,7 @@ class GameControllerTest{
 
     @Test
     void checkScores() {
-        gameController.setMaxPlayerNumber(3);
+        gameController.setPlayersNumber(3);
         gameController.addPlayer("Palacio");
         gameController.addPlayer("Milito");
         gameController.addPlayer("Cambiasso");
@@ -383,7 +374,7 @@ class GameControllerTest{
 
     @Test
     void checkEmptyDeck() {
-        gameController.setMaxPlayerNumber(3);
+        gameController.setPlayersNumber(3);
         gameController.addPlayer("Palacio");
         gameController.addPlayer("Milito");
         gameController.addPlayer("Cambiasso");

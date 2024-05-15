@@ -1,13 +1,12 @@
 package org.example.myversion.server.serverController;
 
-import org.example.myversion.client.RMIClient;
 import org.example.myversion.client.Client;
 import org.example.myversion.messages.Message;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Objects;
 import java.util.HashMap;
-import org.example.myversion.server.model.decks.cards.PlayableCard;
+
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
 import org.example.myversion.server.model.exceptions.InvalidNicknameException;
@@ -57,7 +56,7 @@ public interface ServerInterface extends Remote{
                         controller.addPlayer(nickname);//aggiungo player
                         System.out.println(nickname + " logged in."); //per debug
 
-                        //controller.addClient(username, client);
+                        //controller.addClientRMI(username, client);
 
                         startPingThread(client);
 
@@ -102,7 +101,7 @@ public interface ServerInterface extends Remote{
                         //client.sendMessageToClient(new Message("UsernameRetry"));
                     } else {
                         System.out.println(nickname + " reconnected.");
-                        //controller.addClient(nickname, client);
+                        //controller.addClientRMI(nickname, client);
                         //resendGameToReconnectedClient(client);
                     }
 
@@ -111,7 +110,7 @@ public interface ServerInterface extends Remote{
 
                     System.out.println(nickname + " reconnected.");
                     client.setNickname(nickname);
-                    controller.addClient(nickname, client);
+                    controller.addClientRMI(nickname, client);
                     //gestione della PERSISTENZA:
                     /*if (!controller.isGameLoaded) {
                         resendGameToReconnectedClient(client);
@@ -142,7 +141,7 @@ public interface ServerInterface extends Remote{
 
                     //se il numero di giocatori è valido:
                 } else {
-                    controller.setMaxPlayerNumber(numberOfPlayers);//setta il numero di giocatori
+                    controller.setPlayersNumber(numberOfPlayers);//setta il numero di giocatori
                     if (controller.gameIsFull()) {
                         controller.newGame();
                         //startGame();????
@@ -219,7 +218,7 @@ public interface ServerInterface extends Remote{
         checkThread.start();
     }
     /**
-     * It is going to start the game so that each player gets to choose his objective card
+     * It is going to start the game so that each player receives the common objective cards and gets to choose his secret objective card.
      */
     default void startGame() {
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();

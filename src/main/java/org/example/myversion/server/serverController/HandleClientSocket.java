@@ -132,7 +132,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                         //client.sendMessageToClient(new Message("UsernameRetry"));
                     } else {
                         System.out.println(nickname + " reconnected.");
-                        //controller.addClient(nickname, client);
+                        //controller.addClientRMI(nickname, client);
                         //resendGameToReconnectedClient(client);
                     }
                 } else {
@@ -140,7 +140,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                     System.out.println(nickname + " reconnected.");
                     //client.sendMessageToClient(new Message("username", username));
                     //setUsername(username);
-                    //controller.addClient(username, client);
+                    //controller.addClientRMI(username, client);
                     /*if (!controller.isGameLoaded) {
                         //resendGameToReconnectedClient(client);
                     } else {
@@ -172,11 +172,20 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                 if (!controller.checkNumberOfPlayer(numberOfPlayers))
                     sendMessageToClient(new Message("InvalidNumberOfPlayers"));
                 else
-                    controller.setMaxPlayerNumber(numberOfPlayers);
+                    controller.setPlayersNumber(numberOfPlayers);
+            }
+
+            case "ObjectiveCardChoice" -> {
+                // When the server receives the chosen objective card
+                // TODO: update game model with selected objective card
+                // The server sends the client its starter card
+                Message starterCardMessage = new Message("StarterCard", controller.getStarterCard());
+                sendMessageToClient(starterCardMessage);
             }
 
             case "StarterCard" -> {
                 System.out.println("Starter card side received from " + Nickname);
+                // TODO: turn() start
             }
 
             case "DrawCard" -> {//ne faccio un caso diverso a seconda della carta che vuole prendere? (da che mazzo)
@@ -232,7 +241,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                     System.out.println(nickname + " logged in.");
 
                     setNickname(nickname);
-                    controller.addClient(nickname, client);
+                    controller.addClientTCP(nickname, client);
                     // TODO: Implement the connection check on a different channel
                     // startPingThread(client);
 
@@ -242,9 +251,9 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                         client.sendMessageToClient(new Message("WaitForOtherPlayers"));
                     } else {
                         client.sendMessageToClient(new Message("WaitForOtherPlayers"));
-                        System.out.println("Max number of players set to: " + controller.getMaxPlayerNumber());
+                        System.out.println("Max number of players set to: " + controller.getPlayersNumber());
                         // If this is the last player to reach the max player number, the game starts
-                        if (controller.getMaxPlayerNumber() != 0 && controller.gameIsFull()) {
+                        if (controller.getPlayersNumber() != 0 && controller.gameIsFull()) {
                             System.out.println("Game is full.");
                             startGame();
                             System.out.println("Game started.");
