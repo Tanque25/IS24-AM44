@@ -380,4 +380,11 @@ class GameControllerTest{
         gameController.setPlayersNumber(3);
         gameController.addPlayer("Palacio");
         gameController.addPlayer("Milito");
-        gameCo
+        gameController.addPlayer("Cambiasso");
+
+        gameController.newGame();
+
+        assertFalse(gameController.checkEmptyDeck());
+
+    }
+}
