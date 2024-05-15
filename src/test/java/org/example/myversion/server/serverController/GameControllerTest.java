@@ -282,7 +282,7 @@ class GameControllerTest{
         Player CurrentPlayer = gameController.getGame().getCurrentPlayer();
         gameController.setGameState(GameState.INITIALIZATION);
 
-        gameController.playStarterCard(CurrentPlayer,SC_002, 0);
+        gameController.playStarterCard(CurrentPlayer,SC_002);
         assertEquals("Giulio", gameController.getFirstPlayer().getNickname());
         assertEquals(SC_002, gameController.getGame().getCurrentPlayer().getPlayArea()[41][41]);
         assertTrue(SC_002.isPlayedBack());
@@ -291,7 +291,7 @@ class GameControllerTest{
         assertEquals("Pippo", gameController.getGame().getCurrentPlayer().getNickname());
         assertEquals(gameController.getGame().getPlayers().get(1), gameController.getGame().getCurrentPlayer());
         //gameController.playStarterCard(CurrentPlayer,SC_003, 1);
-        gameController.playStarterCard(gameController.getGame().getPlayers().get(1),SC_003, 1);
+        gameController.playStarterCard(gameController.getGame().getPlayers().get(1),SC_003);
         //assertEquals(SC_003, gameController.getGame().getPlayers().getFirst().getPlayArea()[41][41]);
         assertEquals(SC_003, gameController.getGame().getPlayers().get(1).getPlayArea()[41][41]);
         assertFalse(SC_003.isPlayedBack());
@@ -300,7 +300,7 @@ class GameControllerTest{
         //gameController.playStarterCard(CurrentPlayer,SC_004, 0);
         assertEquals("Lucia", gameController.getGame().getCurrentPlayer().getNickname());
         //assertEquals(SC_004, gameController.getGame().getCurrentPlayer().getPlayArea()[41][41]);
-        gameController.playStarterCard(gameController.getGame().getPlayers().get(2),SC_004, 1);
+        gameController.playStarterCard(gameController.getGame().getPlayers().get(2),SC_004);
         //assertEquals(SC_003, gameController.getGame().getCurrentPlayer().getPlayArea()[41][41]);
         assertEquals(SC_004, gameController.getGame().getPlayers().get(2).getPlayArea()[41][41]);
         assertFalse(SC_004.isPlayedBack());
