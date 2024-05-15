@@ -60,7 +60,7 @@ public interface ServerInterface extends Remote{
 
                         startPingThread(client);
 
-                        if(!Objects.equals(controller.getFirstPlayer().getNickname(), nickname)){//se è il primo giocatore
+                        if(controller.isFirst()){//se è il primo giocatore
                             try {//chiedo numeri giocatori e gestisco eccezione
                                 client.handleMessage(new Message("ChooseNumOfPlayer"));
                             } catch (RemoteException e) {

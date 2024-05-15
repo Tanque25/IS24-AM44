@@ -34,9 +34,9 @@ public class ResourceObjectiveCard extends ObjectiveCard{
         return objective;//devo fare un altro tipo che restituisca
     }
 
-    @Override
-    public Resource[][] getObjective() {
-        return null;
+
+    public Resource[] getObjective() {
+        return objective;
     }
 
     @Override

@@ -10,7 +10,7 @@ import java.util.Map;
  * It specifies the pattern that the player has to recreate in his play area to get the points.
  */
 public class PatternObjectiveCard extends ObjectiveCard{
-    private final Resource[][] objective;
+    private final Resource[][] objectives;
 
     /**
      * Constructs a PatternObjectiveCard with specified points and objective.
@@ -20,7 +20,7 @@ public class PatternObjectiveCard extends ObjectiveCard{
      */
     public PatternObjectiveCard(int cardPoints, Resource[][] objective) {
         super(cardPoints);
-        this.objective = objective;
+        this.objectives = objective;
     }
 
     /**
@@ -29,13 +29,13 @@ public class PatternObjectiveCard extends ObjectiveCard{
      * @return The pattern that the player has to recreate in their play area.
      */
     public Resource[][] getObjective() {
-        return objective;
+        return objectives;
     }
 
     //solo di prova
     @Override
     public CornerContent[] getCardKey(){
-        return objective[0];//devo fare un altro tipo che restituisca
+        return objectives[0];//devo fare un altro tipo che restituisca
     }
 
     /**
@@ -51,8 +51,8 @@ public class PatternObjectiveCard extends ObjectiveCard{
         int count=0;//contatore di volte in cui trovi la sotto matrice nella matrice
         int rows = playArea.length;
         int cols = playArea[0].length;
-        int subRows = objective.getObjective().length;
-        int subCols = objective.getObjective()[0].length;
+        int subRows = objectives.length;
+        int subCols = objectives.length;
 
 
         for (int i = 0; i <= rows - subRows; i++) {
@@ -60,7 +60,7 @@ public class PatternObjectiveCard extends ObjectiveCard{
                 //per ogni elemento della matrice:
                 System.out.println("riga: "+i);
                 System.out.println("colonna: "+j);
-                if (isSubMatrix(playArea, objective.getObjective(), i, j)) {
+                if (isSubMatrix(playArea, objectives, i, j)) {
                     //contatore aumenta ogni volta che trova la sotto-matrice nella play area
                     count++;
                 }
@@ -68,7 +68,7 @@ public class PatternObjectiveCard extends ObjectiveCard{
         }
 
         // nel caso sia una PatternObjectiveCard da 2 punti (quelle in diagonale):
-        if(objective.getObjective()[0][2]!=null && objective.getObjective()[1][1]!=null && objective.getObjective()[2][0]!=null){
+        if(objectives[0][2]!=null && objectives[1][1]!=null && objectives[2][0]!=null){
             return count*2;
         }
         //altrimenti in tutti gli altri casi restituisco count*3
