@@ -28,7 +28,6 @@ public abstract class ObjectiveCard {
         return cardPoints;
     }
 
-    public abstract Resource[][] getObjective();
 
     protected abstract CornerContent[] getCardKey();
 

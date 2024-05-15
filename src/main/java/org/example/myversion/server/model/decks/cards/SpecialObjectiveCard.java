@@ -31,9 +31,8 @@ public class SpecialObjectiveCard extends ObjectiveCard{
      * @return The array specifying which and how many special objects the player needs to have in their play area.
      */
 
-    @Override
-    public Resource[][] getObjective() {
-        return null;
+    public SpecialObject[] getObjective() {
+        return objective;
     }
 
     //Restituisce objective della carta con override

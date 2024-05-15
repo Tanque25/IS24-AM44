@@ -96,7 +96,7 @@ public class Message implements Serializable {
     public Message(String messageCode, ObjectiveCard objectiveCard) {
         json = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
-                .add("objective", createObjectiveObject(objectiveCard.getObjective()))
+                // .add("objective", createObjectiveObject(objectiveCard.getObjective()))
                 .add("cardPoints", objectiveCard.getCardPoints())
                 .build();
     }
@@ -113,9 +113,9 @@ public class Message implements Serializable {
     public Message(String messageCode, ObjectiveCard objectiveCard1, ObjectiveCard objectiveCard2) {
         json = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
-                .add("objective1", createObjectiveObject(objectiveCard1.getObjective()))
+                // .add("objective1", createObjectiveObject(objectiveCard1.getObjective()))
                 .add("cardPoints1", objectiveCard1.getCardPoints())
-                .add("objective2", createObjectiveObject(objectiveCard2.getObjective()))
+                // .add("objective2", createObjectiveObject(objectiveCard2.getObjective()))
                 .add("cardPoints2", objectiveCard2.getCardPoints())
                 .build();
     }
