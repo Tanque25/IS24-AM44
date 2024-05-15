@@ -2,12 +2,16 @@ package org.example.myversion.client;
 
 import org.example.myversion.client.view.GameView;
 import org.example.myversion.messages.Message;
+import org.example.myversion.server.model.decks.ObjectiveDeck;
+import org.example.myversion.server.model.decks.cards.Card;
+import org.example.myversion.server.model.decks.cards.PlayableCard;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -20,6 +24,9 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
     private GameView gameView;
     private boolean serverConnection;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+    private Map<String, PlayableCard[]> handsMap;
+    private Map<String, Card> playAreasMap;
 
     private final Object lock;
 
@@ -47,13 +54,12 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
     public void handleMessage(Message message)throws RemoteException {
         String messageCode = message.getMessageCode();
 
-        if(!messageCode.equals("Pong")) {
-            System.out.println("Received TCP message: with messageCode " + messageCode);
-        }
+//        if(!messageCode.equals("Pong")) {
+//            System.out.println("Received TCP message: with messageCode " + messageCode);
+//        }
 
         switch (messageCode) {
             case "Pong" -> {
-                System.out.println("Received 'Pong' message");
                 serverConnection = true;
             }
             case "Nickname" -> {
@@ -79,10 +85,6 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
             }
             case "WaitForOtherPlayers" ->
                 gameView.waitForOtherPlayers();
-            case "CommonObjectiveCards" ->
-                gameView.showCommonObjectives(message.getObjectiveCards());
-            case "SecretObjectiveCards" ->
-                gameView.showSecretObjectives(message.getObjectiveCards());
             case "StarterCard" -> {
                 try {
                     gameView.showStarterCard(message.getStarterCard());
@@ -90,7 +92,16 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 } catch (IOException e){
                     throw new RuntimeException(e);
                 }
-
+            }
+            case "CommonObjectiveCards" ->
+                gameView.showCommonObjectives(message.getObjectiveCards());
+            case "SecretObjectiveCardsOptions" -> {
+                try {
+                    gameView.showSecretObjectives(message.getObjectiveCards());
+                    gameView.secretObjectiveCardChoice(message.getObjectiveCards());
+                } catch (IOException e){
+                    throw new RuntimeException(e);
+                }
             }
             default -> throw new IllegalArgumentException("Invalid messageCode: " + messageCode);
         }

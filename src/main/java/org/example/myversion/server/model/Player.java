@@ -103,7 +103,6 @@ public class Player {
         if(starterCard.getCorners() != null) {
             // updating the player stock with the corner contents
             for (CornerPosition cornerPosition : starterCard.getCorners().keySet()) {
-                System.out.println("Corner position: "+cornerPosition);
                 CornerContent cornerContent = starterCard.getCorners().get(cornerPosition).getCornerContent();
 
                 if (cornerContent!=null) {//messo io

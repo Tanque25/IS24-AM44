@@ -3,8 +3,7 @@ package org.example.myversion.client.view;
 import org.example.myversion.client.Client;
 import org.example.myversion.client.CodexNaturalis;
 import org.example.myversion.messages.Message;
-import org.example.myversion.server.model.decks.cards.ObjectiveCard;
-import org.example.myversion.server.model.decks.cards.StarterCard;
+import org.example.myversion.server.model.decks.cards.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -132,40 +131,10 @@ public class CLIView implements GameView {
     }
 
     @Override
-    public void showCommonObjectives(List<ObjectiveCard> objectiveCards) {
-        showMessage("These are the common objectives:\n");
-        showObjectives(objectiveCards);
-    }
-
-    public void showSecretObjectives(List<ObjectiveCard> objectiveCards) {
-        showMessage("These are your secret objective cards options:\n");
-        showObjectives(objectiveCards);
-        showMessage("|   0   ||   1   |\n");
-    }
-
-    private void showObjectives(List<ObjectiveCard> objectiveCards) {
-        ObjectiveCardView objectiveCardView = new ObjectiveCardView();
-
-        objectiveCardView.displayObjectiveCardTopBottomLine(objectiveCards.getFirst());
-        objectiveCardView.displayObjectiveCardTopBottomLine(objectiveCards.getLast());
-        System.out.print("\n");
-        objectiveCardView.displayObjectiveCardMiddleLine(objectiveCards.getFirst());
-        objectiveCardView.displayObjectiveCardMiddleLine(objectiveCards.getLast());
-        System.out.print("\n");
-        objectiveCardView.displayObjectiveCardTopBottomLine(objectiveCards.getFirst());
-        objectiveCardView.displayObjectiveCardTopBottomLine(objectiveCards.getLast());
-        System.out.print("\n");
-    }
-
-    public void secretObjectiveCardChoice() {
-        // TODO: implement objective card choice
-    }
-
-    @Override
     public void showStarterCard(StarterCard starterCard) {
         CardView cardView = new CardView();
 
-        showMessage("This is your starter card:\n");
+        showMessage("\nThis is your starter card:\n");
         showMessage("Card front:\n");
         cardView.displayCardFront(starterCard);
         showMessage("Card back:\n");
@@ -176,7 +145,7 @@ public class CLIView implements GameView {
         int sideChoice = askForSideChoice();
 
         if (sideChoice == 1) {
-           starterCard.setPlayedBack(true);
+            starterCard.setPlayedBack(true);
         }
 
         client.sendMessage(new Message("StarterCard", starterCard));
@@ -192,5 +161,81 @@ public class CLIView implements GameView {
         }
 
         return sideChoice;
+    }
+
+    @Override
+    public void showCommonObjectives(List<ObjectiveCard> objectiveCards) {
+        showMessage("\nThese are the common objectives:\n");
+        showObjectives(objectiveCards);
+    }
+
+    public void showSecretObjectives(List<ObjectiveCard> objectiveCards) {
+        showMessage("\nThese are your secret objective cards options:\n");
+        showObjectives(objectiveCards);
+        showMessage("|   0   |  |   1   |\n");
+    }
+
+    private void showObjectives(List<ObjectiveCard> objectiveCards) {
+        ObjectiveCardView objectiveCardView = new ObjectiveCardView();
+
+        for (ObjectiveCard objectiveCard : objectiveCards) {
+            if (objectiveCard instanceof ResourceObjectiveCard) {
+                objectiveCardView.displayObjectiveCardTopLine((ResourceObjectiveCard) objectiveCard);
+            } else if (objectiveCard instanceof SpecialObjectiveCard) {
+                objectiveCardView.displayObjectiveCardTopLine((SpecialObjectiveCard) objectiveCard);
+            } else if (objectiveCard instanceof PatternObjectiveCard) {
+                objectiveCardView.displayObjectiveCardTopLine((PatternObjectiveCard) objectiveCard);
+            } else {
+                System.out.println("Objective card error");
+            }
+            System.out.print("  ");
+        }
+        System.out.print("\n");
+
+        for (ObjectiveCard objectiveCard : objectiveCards) {
+            if (objectiveCard instanceof ResourceObjectiveCard) {
+                objectiveCardView.displayObjectiveCardMiddleLine((ResourceObjectiveCard) objectiveCard);
+            } else if (objectiveCard instanceof SpecialObjectiveCard) {
+                objectiveCardView.displayObjectiveCardMiddleLine((SpecialObjectiveCard) objectiveCard);
+            } else if (objectiveCard instanceof PatternObjectiveCard) {
+                objectiveCardView.displayObjectiveCardMiddleLine((PatternObjectiveCard) objectiveCard);
+            } else {
+                System.out.println("Objective card error");
+            }
+            System.out.print("  ");
+        }
+        System.out.print("\n");
+
+        for (ObjectiveCard objectiveCard : objectiveCards) {
+            if (objectiveCard instanceof ResourceObjectiveCard) {
+                objectiveCardView.displayObjectiveCardBottomLine((ResourceObjectiveCard) objectiveCard);
+            } else if (objectiveCard instanceof SpecialObjectiveCard) {
+                objectiveCardView.displayObjectiveCardBottomLine((SpecialObjectiveCard) objectiveCard);
+            } else if (objectiveCard instanceof PatternObjectiveCard) {
+                objectiveCardView.displayObjectiveCardBottomLine((PatternObjectiveCard) objectiveCard);
+            } else {
+                System.out.println("Objective card error");
+            }
+            System.out.print("  ");
+        }
+        System.out.print("\n");
+    }
+
+    public void secretObjectiveCardChoice(List<ObjectiveCard> objectiveCards) throws IOException {
+        int objectiveCardChoice = askForObjectiveCardNumber();
+
+        client.sendMessage(new Message("ObjectiveCardChoice", objectiveCards.get(objectiveCardChoice)));
+    }
+
+    public int askForObjectiveCardNumber() {
+        showMessage("Please enter '0' for objective card 0, '1' for objective card 1: ");
+        int objectiveCardChoice = readNumber();
+
+        while (objectiveCardChoice!=0 && objectiveCardChoice!=1) {
+            System.err.println("Please enter '0' or '1': ");
+            objectiveCardChoice = readNumber();
+        }
+
+        return objectiveCardChoice;
     }
 }

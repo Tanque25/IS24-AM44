@@ -5,6 +5,7 @@ import org.example.myversion.server.Server;
 import org.example.myversion.server.model.Coordinates;
 import org.example.myversion.server.model.Game;
 import org.example.myversion.server.model.Player;
+import org.example.myversion.server.model.decks.cards.Card;
 import org.example.myversion.server.model.decks.cards.ObjectiveCard;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
 import org.example.myversion.server.model.decks.cards.StarterCard;
@@ -28,6 +29,7 @@ public class GameController {
     private GameState gameState;
     public int roundsPlayed;
     private int playersNumber;
+    private static int readyPlayersNumber = 0;
     private boolean isGameLoaded;
     private Player lastPlayer;
     private HashMap <Player, Integer> playerRoundsPlayed;
@@ -156,6 +158,10 @@ public class GameController {
         return player;
     }
 
+    public void updateReadyPlayersNumber() {
+        readyPlayersNumber = readyPlayersNumber + 1;
+    }
+
     ///////////////////////////////////////////////////////GETTERS AND SETTERS////////////////////////////////////////////////////////
 
     public HashMap<String, Client> getRmiClients() {
@@ -223,6 +229,31 @@ public class GameController {
      */
     public StarterCard getStarterCard() {
         return game.drawStarterCard();
+    }
+
+    public int getReadyPlayersNumber() {
+        return readyPlayersNumber;
+    }
+
+    public Map<String, StarterCard> getStarterCardsMap() {
+        Map<String, StarterCard> starterCardsMap = new HashMap<>();
+
+        for(Player player : game.getPlayers()) {
+            Card[][] playArea = player.getPlayArea();
+            starterCardsMap.put(player.getNickname(), (StarterCard) playArea[41][41]);
+        }
+
+        return starterCardsMap;
+    }
+
+    public Map<String, List<PlayableCard>> getPlayersHandsMap() {
+        Map<String, List<PlayableCard>> playersHandsMap = new HashMap<>();
+
+        for(Player player : game.getPlayers()) {
+            playersHandsMap.put(player.getNickname(), player.getHand());
+        }
+
+        return playersHandsMap;
     }
 
     /**

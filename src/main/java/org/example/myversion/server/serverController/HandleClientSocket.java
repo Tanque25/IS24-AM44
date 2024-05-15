@@ -116,21 +116,27 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                     controller.setPlayersNumber(numberOfPlayers);
             }
 
+            // This case is used to place the starter card in the Player's playArea on the selected side
+            case "StarterCard" -> {
+                System.out.println("Starter card side received from " + Nickname);
+                controller.playStarterCard(controller.getPlayerFromNickname(Nickname), message.getStarterCard());
+            }
+
             // This case is used to set the secret objective card in the game model
             case "ObjectiveCardChoice" -> {
                 System.out.println("Secret objective card received from " + Nickname);
                 controller.chooseObjectiveCard(controller.getPlayerFromNickname(Nickname), message.getObjectiveCard());
 
-                // The server sends the client its starter card
-                Message starterCardMessage = new Message("StarterCard", controller.getStarterCard());
-                sendMessageToClient(starterCardMessage);
-            }
+                // When the server receives the player's secret objective choice, the readyPlayersNumber is updated
+                controller.updateReadyPlayersNumber();
 
-            // This case is used to place the starter card in the Player's playArea on the selected side
-            case "StarterCard" -> {
-                System.out.println("Starter card side received from " + Nickname);
-                controller.playStarterCard(controller.getPlayerFromNickname(Nickname), message.getStarterCard());
-                // TODO: turn() start
+                // When all the players are ready, the servers sends every player the other players' hands and play areas and starts the turns cycle
+                if(controller.getReadyPlayersNumber() == controller.getPlayersNumber()){
+                    // TODO send all players hands and starter cards
+                    // I've implemented the message constructor to send the hands and the starter cards
+                    // I've implemented the controller's methods to get the necessary information from the game model
+                    // TODO the turns start
+                }
             }
 
         }

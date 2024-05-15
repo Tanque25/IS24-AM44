@@ -32,7 +32,7 @@ public interface GameView {
 
     void showSecretObjectives(List<ObjectiveCard> objectiveCards);
 
-    void secretObjectiveCardChoice();
+    void secretObjectiveCardChoice(List<ObjectiveCard> objectiveCards) throws IOException;
 
     void showStarterCard(StarterCard starterCard);
 

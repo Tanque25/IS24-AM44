@@ -4,9 +4,11 @@ import org.example.myversion.client.Client;
 import org.example.myversion.messages.Message;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.Objects;
 import java.util.HashMap;
 
+import org.example.myversion.server.model.decks.cards.ObjectiveCard;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
 import org.example.myversion.server.model.exceptions.InvalidNicknameException;
@@ -224,25 +226,26 @@ public interface ServerInterface extends Remote{
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
         HashMap<String, Client> rmiClients = controller.getRmiClients();
 
-        // TODO having trouble with the objective cards' getObjective methods
-
-//        List<ObjectiveCard> commonObjectiveCards = controller.getCommonObjectiveCards();
-//        System.out.println(Arrays.deepToString(commonObjectiveCards.get(0).getObjective()));
-//        System.out.println(Arrays.deepToString(commonObjectiveCards.get(1).getObjective()));
+        List<ObjectiveCard> commonObjectiveCards = controller.getCommonObjectiveCards();
 
         for (String nickname : tcpClients.keySet()) {
-            // Message commmonObjectiveCardsMessage = new Message("CommonObjectiveCards", commonObjectiveCards.get(0), commonObjectiveCards.get(1));
-            // tcpClients.get(nickname).sendMessageToClient(commmonObjectiveCardsMessage);
-
-            // List<ObjectiveCard> secretObjectiveCardsOptions = controller.getSecretObjectiveCardsOptions();
-            // Message secretObjectiveCardsOptionsMessage = new Message("SecretObjectiveCardsOptions", secretObjectiveCardsOptions.get(0), secretObjectiveCardsOptions.get(1));
-
-            // Sending the starter card to the client
             Message starterCardMessage = new Message("StarterCard", controller.getStarterCard());
             tcpClients.get(nickname).sendMessageToClient(starterCardMessage);
+
+            Message commmonObjectiveCardsMessage = new Message("CommonObjectiveCards", commonObjectiveCards.get(0), commonObjectiveCards.get(1));
+            tcpClients.get(nickname).sendMessageToClient(commmonObjectiveCardsMessage);
+
+            List<ObjectiveCard> secretObjectiveCardsOptions = controller.getSecretObjectiveCardsOptions();
+            Message secretObjectiveCardsOptionsMessage = new Message("SecretObjectiveCardsOptions", secretObjectiveCardsOptions.get(0), secretObjectiveCardsOptions.get(1));
+            tcpClients.get(nickname).sendMessageToClient(secretObjectiveCardsOptionsMessage);
         }
 
+        // TODO: do the same for the RMI clients
+    }
 
+    default void sendStartCondition() {
+        HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
+        HashMap<String, Client> rmiClients = controller.getRmiClients();
     }
 
 
