@@ -29,7 +29,6 @@ public class GameController {
     public int roundsPlayed;
     private int playersNumber;
     private boolean isGameLoaded;
-    private Player firstPlayer;
     private Player lastPlayer;
     private HashMap <Player, Integer> playerRoundsPlayed;
 
@@ -50,7 +49,6 @@ public class GameController {
         this.isGameLoaded = false;
         this.playerRoundsPlayed= new HashMap<>();
         this.gameState = GameState.LOGIN;
-        this.firstPlayer = null;
         this.lastPlayer = null;
     }
 
@@ -88,6 +86,13 @@ public class GameController {
                 }
             }
         }
+    }
+
+    /**
+     * @return true if the player is the first player, false otherwise
+     */
+    public boolean isFirst() {
+        return tcpClients.size() + rmiClients.size() == 1;
     }
 
     public void newGame() {
@@ -170,14 +175,6 @@ public class GameController {
 
     public Player getLastPlayer() {
         return lastPlayer;
-    }
-
-    public void setFirstPlayer() {
-        this.firstPlayer = game.getPlayers().getFirst();;
-    }
-
-    public Player getFirstPlayer() {
-        return firstPlayer;
     }
 
     /**
