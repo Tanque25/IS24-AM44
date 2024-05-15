@@ -41,31 +41,6 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
     public abstract void connect() throws IOException, NotBoundException;
 
     /**
-     * Initiates a periodic check for server connectivity every 20 seconds using a scheduled task.
-     * If no ping response is received, the client proceeds to a clean shutdown by calling {@link #stop}.
-     */
-    public void startConnectionCheck() {
-        // Define the task to send a ping message and check for server response
-        final Runnable connectionCheck = () -> {
-            try {
-                sendMessage(new Message("ping"));  // Send ping message to server
-                synchronized (lock) {
-                    if (!serverConnection) {  // Check if server responded to the last ping
-                        System.err.println("Server is down. Exiting...");  // Log if server is down
-                        stop();  // Stop the client
-                    }
-                    serverConnection = false;  // Reset server connection status
-                }
-            } catch (IOException e) {
-                System.err.println("Failed to send ping: " + e.getMessage());  // Log errors if ping fails
-            }
-        };
-
-        // Schedule the connection check task to run periodically every 20 seconds
-        scheduler.scheduleAtFixedRate(connectionCheck, 0, 20, TimeUnit.SECONDS);
-    }
-
-    /**
      * Parses and handles messages received from the server.
      *
      * @param message the message received from the server.
@@ -73,16 +48,19 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
     public void handleMessage(Message message)throws RemoteException {
         String messageCode = message.getMessageCode();
 
-//        if(!messageCode.equals("Ping") && !messageCode.equals("Pong")) {
-//            System.out.println(messageCode);
-//        }
+        if(!messageCode.equals("Pong")) {
+            System.out.println("Received TCP message: with messageCode " + messageCode);
+        }
 
         switch (messageCode) {
-            case "Ping", "Pong" ->
+            case "Pong" -> {
+                System.out.println("Received 'Pong' message");
                 serverConnection = true;
+            }
             case "Nickname" -> {
                 setNickname(message.getArgument());
-                checkServerConnection();
+                // TODO: Implement the connection check on a different channel on the server side
+                // checkServerConnection();
             }
             case "GameAlreadyStarted" ->
                 gameView.showGameAlreadyStartedMessage();
@@ -141,6 +119,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
      * If it's not, exits the game.
      */
     public void checkServerConnection() {
+        System.out.println("Starting server connection check");
         new Thread(() -> {
             while (true) {
                 try {

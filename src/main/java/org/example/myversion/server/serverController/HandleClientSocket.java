@@ -3,7 +3,6 @@ package org.example.myversion.server.serverController;
 import org.example.myversion.messages.Message;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
-import org.example.myversion.server.model.exceptions.InvalidGameStateException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
 import org.example.myversion.server.model.exceptions.InvalidNicknameException;
 import org.example.myversion.server.Server;
@@ -13,24 +12,22 @@ import java.net.Socket;
 import jakarta.json.*;
 
 import java.rmi.RemoteException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 
 public class HandleClientSocket implements ServerInterface, Runnable {
 
-    private Socket clientSocket;
+    private final Socket clientSocket;
     private GameController controller;
-
-    private BufferedReader reader;
-    private BufferedWriter writer;
-    private Server server;
-
-    private String Nickname;
 
     public Thread listenThread;
 
+    public final BufferedReader reader;
+    public BufferedWriter writer;
+
+    private Server server;
+
+    private String Nickname;
 
     public HandleClientSocket(Socket clientSocket, GameController controller) {
         this.clientSocket = clientSocket;
@@ -40,7 +37,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
             reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         listenThread = new Thread(() -> {
@@ -86,12 +83,12 @@ public class HandleClientSocket implements ServerInterface, Runnable {
      */
     @Override
     public void receiveMessageTCP(Message message, HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException {
-        String messageType = message.getMessageCode();
+        String messageCode = message.getMessageCode();
 
-        if(!messageType.equals("Ping"))
-            System.out.println("Received TCP message: with messageCode " + messageType);
+        if(!messageCode.equals("Ping"))
+            System.out.println("Received TCP message: with messageCode " + messageCode);
 
-        switch (messageType) {
+        switch (messageCode) {
 
             case "ToDo" -> {
                 System.out.println("Received ping from " /*+ client.getUsername()*/); //per CLI
@@ -154,7 +151,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
             }
 
             case "Ping" -> {
-                // System.out.println("Received ping from " + client.getNickname());
+                System.out.println("Received Ping from " + client.getNickname());
                 controller.pong(client.getNickname());
                 controller.addPongLost(client.getNickname());
                 client.sendMessageToClient(new Message("Pong"));
@@ -168,18 +165,18 @@ public class HandleClientSocket implements ServerInterface, Runnable {
             }
 
             case "NumberOfPlayers" -> {
-                int numberOfPlayer = message.getMaxPlayers();
-                System.out.println("Number of players: " + numberOfPlayer);
+                int numberOfPlayers = message.getMaxPlayers();
+                System.out.println("Number of players: " + numberOfPlayers);
 
                 // check the validity of the players' number
-                if (!controller.checkNumberOfPlayer(numberOfPlayer))
+                if (!controller.checkNumberOfPlayer(numberOfPlayers))
                     sendMessageToClient(new Message("InvalidNumberOfPlayers"));
                 else
-                    controller.setMaxPlayerNumber(numberOfPlayer);
+                    controller.setMaxPlayerNumber(numberOfPlayers);
             }
 
             case "StarterCard" -> {
-                System.out.println("Starter card side received\n");
+                System.out.println("Starter card side received from " + Nickname);
             }
 
             case "DrawCard" -> {//ne faccio un caso diverso a seconda della carta che vuole prendere? (da che mazzo)
@@ -214,6 +211,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
 
     public void sendMessageToClient(Message message) {
         try {
+            System.out.println("Sending " + message.getMessageCode() + " " + Nickname);
             String jsonString = message.getJson().toString() + "\n";
             writer.write(jsonString);
             writer.flush();
@@ -235,7 +233,8 @@ public class HandleClientSocket implements ServerInterface, Runnable {
 
                     setNickname(nickname);
                     controller.addClient(nickname, client);
-                    startPingThread(client);
+                    // TODO: Implement the connection check on a different channel
+                    // startPingThread(client);
 
                     if (controller.getFirstPlayer() == null) {
                         client.sendMessageToClient(new Message("PlayersNumber"));
@@ -243,12 +242,10 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                         client.sendMessageToClient(new Message("WaitForOtherPlayers"));
                     } else {
                         client.sendMessageToClient(new Message("WaitForOtherPlayers"));
-                        System.out.println("Checking if game is full");
-                        System.out.println("Max number of players: " + controller.getMaxPlayerNumber());
-                        System.out.println("Game is full: " + controller.gameIsFull());
+                        System.out.println("Max number of players set to: " + controller.getMaxPlayerNumber());
                         // If this is the last player to reach the max player number, the game starts
                         if (controller.getMaxPlayerNumber() != 0 && controller.gameIsFull()) {
-                            System.out.println("Game is full\n");
+                            System.out.println("Game is full.");
                             startGame();
                             System.out.println("Game started.");
                         }

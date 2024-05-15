@@ -9,11 +9,11 @@ import java.util.concurrent.Executors;
 
 public class TCPServer implements ServerInterface{
 
-    private ServerSocket serverSocket;//server
+    private final ServerSocket serverSocket;//server
 
     private boolean running; //booleano per sapere se sta runnando
 
-    private Thread acceptThread;
+    public Thread acceptThread;
 
     private List<HandleClientSocket> clients;
 
@@ -29,10 +29,10 @@ public class TCPServer implements ServerInterface{
         executor = Executors.newCachedThreadPool();
 
         try {
-            serverSocket = new ServerSocket(port);//port è la porta della connessione che li passeremo
-            running = true;//
+            serverSocket = new ServerSocket(port);
+            running = true; // the TSP Server starts running
 
-            // Avvio un thread per accettare connessioni in ingresso
+            // Starting a thread that accepts incoming connections
             acceptThread = new Thread(() -> {
                 while (running) {
                     try {
@@ -50,7 +50,7 @@ public class TCPServer implements ServerInterface{
             });
 
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
     }
@@ -72,7 +72,7 @@ public class TCPServer implements ServerInterface{
      */
     @Override
     public void stop() {
-        running = false;//non runna piu
+        running = false; // the TSP Server stops running
 
         try {
             serverSocket.close();//chiude server
