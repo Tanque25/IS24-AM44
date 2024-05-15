@@ -128,11 +128,32 @@ public class GameController {
         rmiClients.put(nickname, client);
     }
 
+    /**
+     * Sets the secret objective card for the selected player.
+     *
+     * @param player who chose the objective card.
+     * @param objectiveCard chosen objective card.
+     */
+    public void chooseObjectiveCard(Player player, ObjectiveCard objectiveCard){
+        game.setPlayerSecretObjective(player, objectiveCard);
+    }
+
     public void playStarterCard(Player player, StarterCard starterCard) {
         game.placeStarterCard(player, starterCard);
         if (player.equals(lastPlayer)) {
             gameState = GameState.IN_GAME;
         }
+    }
+
+    public Player getPlayerFromNickname(String nickname) {
+        Player player = null;
+
+        for(Player p : game.getPlayers()) {
+            if (p.getNickname().equals(nickname))
+                player = p;
+        }
+
+        return player;
     }
 
     ///////////////////////////////////////////////////////GETTERS AND SETTERS////////////////////////////////////////////////////////
@@ -202,16 +223,6 @@ public class GameController {
      */
     public StarterCard getStarterCard() {
         return game.drawStarterCard();
-    }
-
-    /**
-     * Sets the secret objective card for the selected player.
-     *
-     * @param player who chose the objective card.
-     * @param card chosen objective card.
-     */
-    public void chooseObjectiveCard(Player player, ObjectiveCard card){
-        game.setPlayerSecretObjective(player, card);
     }
 
     /**

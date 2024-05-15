@@ -132,14 +132,33 @@ public class CLIView implements GameView {
     }
 
     @Override
-    public void showObjectives(List<ObjectiveCard> objectiveCards) {
-        ObjectiveCardView objectiveCardView = new ObjectiveCardView();
+    public void showCommonObjectives(List<ObjectiveCard> objectiveCards) {
         showMessage("These are the common objectives:\n");
-        for (ObjectiveCard objectiveCard : objectiveCards) {
-            objectiveCardView.displayObjectiveCardTopBottomLine(objectiveCard);
-            objectiveCardView.displayObjectiveCardMiddleLine(objectiveCard);
-            objectiveCardView.displayObjectiveCardTopBottomLine(objectiveCard);
-        }
+        showObjectives(objectiveCards);
+    }
+
+    public void showSecretObjectives(List<ObjectiveCard> objectiveCards) {
+        showMessage("These are your secret objective cards options:\n");
+        showObjectives(objectiveCards);
+        showMessage("|   0   ||   1   |\n");
+    }
+
+    private void showObjectives(List<ObjectiveCard> objectiveCards) {
+        ObjectiveCardView objectiveCardView = new ObjectiveCardView();
+
+        objectiveCardView.displayObjectiveCardTopBottomLine(objectiveCards.getFirst());
+        objectiveCardView.displayObjectiveCardTopBottomLine(objectiveCards.getLast());
+        System.out.print("\n");
+        objectiveCardView.displayObjectiveCardMiddleLine(objectiveCards.getFirst());
+        objectiveCardView.displayObjectiveCardMiddleLine(objectiveCards.getLast());
+        System.out.print("\n");
+        objectiveCardView.displayObjectiveCardTopBottomLine(objectiveCards.getFirst());
+        objectiveCardView.displayObjectiveCardTopBottomLine(objectiveCards.getLast());
+        System.out.print("\n");
+    }
+
+    public void secretObjectiveCardChoice() {
+        // TODO: implement objective card choice
     }
 
     @Override

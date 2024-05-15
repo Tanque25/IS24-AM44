@@ -10,7 +10,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This class represents the client.
@@ -81,7 +80,9 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
             case "WaitForOtherPlayers" ->
                 gameView.waitForOtherPlayers();
             case "CommonObjectiveCards" ->
-                gameView.showObjectives(message.getObjectiveCards());
+                gameView.showCommonObjectives(message.getObjectiveCards());
+            case "SecretObjectiveCards" ->
+                gameView.showSecretObjectives(message.getObjectiveCards());
             case "StarterCard" -> {
                 try {
                     gameView.showStarterCard(message.getStarterCard());

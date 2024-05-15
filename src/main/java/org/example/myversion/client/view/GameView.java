@@ -28,7 +28,11 @@ public interface GameView {
 
     void waitForOtherPlayers();
 
-    void showObjectives(List<ObjectiveCard> objectiveCards);
+    void showCommonObjectives(List<ObjectiveCard> objectiveCards);
+
+    void showSecretObjectives(List<ObjectiveCard> objectiveCards);
+
+    void secretObjectiveCardChoice();
 
     void showStarterCard(StarterCard starterCard);
 
