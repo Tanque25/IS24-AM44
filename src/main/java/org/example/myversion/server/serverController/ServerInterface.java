@@ -23,10 +23,10 @@ public interface ServerInterface extends Remote{
     public default void stop() {
     }
 
-    public default void receiveMessageTCP(Message message,HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException {
+    default void receiveMessageTCP(Message message,HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException {
     }
 
-    default void receiveMessage(Message message, Client client) throws RemoteException {
+    default void receiveMessageRMI(Message message, Client client) throws RemoteException {
         String messageType = message.getMessageCode();
 
         switch (messageType) {

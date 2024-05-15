@@ -42,8 +42,8 @@ public class TCPClient extends Client {
     /**
      * Starts a thread named "Server Listener Thread" to continuously listen for messages from the server.
      * The method employs a loop that:
-     * - Retrieves messages via {@code receiveMessage}.
-     * - Exits if {@code receiveMessage} returns null (server closure).
+     * - Retrieves messages via {@code receiveMessageRMI}.
+     * - Exits if {@code receiveMessageRMI} returns null (server closure).
      * - Passes any received messages to {@code handleMessage} for processing.
      */
     private void startListenerThread() {

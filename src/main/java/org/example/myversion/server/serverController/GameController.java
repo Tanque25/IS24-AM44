@@ -123,8 +123,7 @@ public class GameController {
         rmiClients.put(nickname, client);
     }
 
-    // TODO: remove int side from method signature
-    public void playStarterCard(Player player, StarterCard starterCard, int side) {
+    public void playStarterCard(Player player, StarterCard starterCard) {
         game.placeStarterCard(player, starterCard);
         if (player.equals(lastPlayer)) {
             gameState = GameState.IN_GAME;
