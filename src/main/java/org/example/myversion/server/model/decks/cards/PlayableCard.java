@@ -20,8 +20,8 @@ public class PlayableCard extends Card{
      * @param corners    The map containing corners and their positions on the card.
      * @param cardPoints The points awarded to the player upon playing the card.
      */
-    public PlayableCard(Resource resource, Map<CornerPosition, Corner> corners, Integer cardPoints) {
-        super(corners);
+    public PlayableCard(Resource resource, Map<CornerPosition, Corner> corners, Integer cardPoints, int id) {
+        super(corners, id);
         this.resource = resource;
         this.cardPoints = cardPoints;
     }
