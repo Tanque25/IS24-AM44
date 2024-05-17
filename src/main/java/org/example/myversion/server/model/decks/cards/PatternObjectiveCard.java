@@ -18,8 +18,8 @@ public class PatternObjectiveCard extends ObjectiveCard{
      * @param cardPoints specifies the points awarded to the player upon accomplishing its objective.
      * @param objective specifies the pattern that the player has to recreate in his play area.
      */
-    public PatternObjectiveCard(int cardPoints, Resource[][] objective) {
-        super(cardPoints);
+    public PatternObjectiveCard(int cardPoints, Resource[][] objective, int id) {
+        super(cardPoints, id);
         this.objectives = objective;
     }
 
