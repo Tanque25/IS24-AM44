@@ -136,6 +136,10 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                 }
             }
 
+            case "CardToPlayChoice" -> {
+                // TODO
+            }
+
         }
     }
 

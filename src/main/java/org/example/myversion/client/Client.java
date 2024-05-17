@@ -105,13 +105,17 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
             }
             case "StartCondition" -> {
                 gameView.setHandsMap(message.getPlayersHandsMap());
+                gameView.initializePlayAreas(message.getStarterCardsMap());
 
                 gameView.showOthersHandsAndPlayAreas();
                 gameView.showMyHand();
-
-
-                Map<String, StarterCard> starterCardsMap = message.getStarterCardsMap();
-                // TODO: place the starter cards in the corresponding player's play area
+                gameView.showMyPlayArea();
+            }
+            case "MyTurn" -> {
+                System.out.println("My turn");
+            }
+            case "OtherTurn" -> {
+                gameView.showMessage("\nIt's " + message.getArgument() + "'s turn.\n");
             }
             default -> throw new IllegalArgumentException("Invalid messageCode: " + messageCode);
         }
@@ -123,7 +127,13 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
      * @param message the message to send.
      * @throws IOException if the message send fails.
      */
-    public abstract void sendMessage(Message message) throws IOException;;
+    public abstract void sendMessage(Message message) throws IOException;
+
+    public void myTurn() {
+        gameView.showMessage("\nIt's your turn.\n");
+
+        // TODO: implement myTurn thread launch
+    }
 
     /**
      * Shuts down the client application and stops all scheduled tasks.
@@ -162,6 +172,8 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
             }
         }).start();
     }
+
+    ///////////////////////////////////////////////////////GETTERS AND SETTERS////////////////////////////////////////////////////////
 
     public void setGameView(GameView gameView) {
         this.gameView = gameView;

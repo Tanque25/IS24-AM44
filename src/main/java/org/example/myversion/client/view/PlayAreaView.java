@@ -1,12 +1,6 @@
 package org.example.myversion.client.view;
 
 import org.example.myversion.server.model.decks.cards.*;
-import org.example.myversion.server.model.enumerations.CornerPosition;
-import org.example.myversion.server.model.enumerations.CornerVisibility;
-import org.example.myversion.server.model.enumerations.Resource;
-import org.example.myversion.server.model.enumerations.SpecialObject;
-
-import java.util.Map;
 
 public class PlayAreaView {
 
@@ -53,11 +47,11 @@ public class PlayAreaView {
 //                0
 //        );
 //
-//        displayPlayArea(playArea);
+//        displayMyPlayArea(playArea);
 //
 //    }
 
-    public static void displayPlayArea(Card[][] playArea) {
+    public static void displayMyPlayArea(Card[][] playArea) {
         int[] boundaries = findBoundaries(playArea);
 
         int minRow = boundaries[0];
@@ -109,7 +103,70 @@ public class PlayAreaView {
                 } else if (playArea[row][col] instanceof PlayableCard) {
                     CardView.displayCardFrontBottomLine((PlayableCard) playArea[row][col]);
                 } else if ((row % 2 == 0 && col % 2 == 0) || (row % 2 == 1 && col % 2 == 1)) {
+                    // TODO: display option slot only if the player can place the card in that slot
                     CardView.displayOptionSlotTopBottomLine();
+                } else {
+                    CardView.displayEmptySlotLine();
+                }
+            }
+
+            System.out.println(); // Move to the next line
+        }
+    }
+
+    public static void displayOtherPlayArea(Card[][] playArea) {
+        int[] boundaries = findBoundaries(playArea);
+
+        int minRow = boundaries[0];
+        int maxRow = boundaries[1];
+        int minCol = boundaries[2];
+        int maxCol = boundaries[3];
+
+        for(int row = minRow; row <= maxRow; row++) {
+            // Print top line of the cards in the current row
+            for(int col = minCol; col <= maxCol; col++) {
+                if(playArea[row][col] instanceof StarterCard) {
+                    if(!playArea[row][col].isPlayedBack())
+                        CardView.displayCardFrontTopLine((StarterCard) playArea[row][col]);
+                    else CardView.displayCardBackTopLine((StarterCard) playArea[row][col]);
+                } else if (playArea[row][col] instanceof GoldCard) {
+                    CardView.displayCardFrontTopLine((GoldCard) playArea[row][col]);
+                } else if (playArea[row][col] instanceof PlayableCard) {
+                    CardView.displayCardFrontTopLine((PlayableCard) playArea[row][col]);
+                } else {
+                    CardView.displayEmptySlotLine();
+                }
+            }
+
+            System.out.println(); // Move to the next line
+
+            // Print middle line of the cards in the current row
+            for(int col = minCol; col <= maxCol; col++) {
+                if(playArea[row][col] instanceof StarterCard) {
+                    if(!playArea[row][col].isPlayedBack())
+                        CardView.displayCardFrontMiddleLine((StarterCard) playArea[row][col]);
+                    else CardView.displayCardBackMiddleLine((StarterCard) playArea[row][col]);
+                } else if (playArea[row][col] instanceof GoldCard) {
+                    CardView.displayCardFrontMiddleLine((GoldCard) playArea[row][col]);
+                } else if (playArea[row][col] instanceof PlayableCard) {
+                    CardView.displayCardFrontMiddleLine((PlayableCard) playArea[row][col]);
+                } else {
+                    CardView.displayEmptySlotLine();
+                }
+            }
+
+            System.out.println(); // Move to the next line
+
+            // Print bottom line of the cards in the current row
+            for(int col = minCol; col <= maxCol; col++) {
+                if(playArea[row][col] instanceof StarterCard) {
+                    if(!playArea[row][col].isPlayedBack())
+                        CardView.displayCardFrontBottomLine((StarterCard) playArea[row][col]);
+                    else CardView.displayCardBackBottomLine((StarterCard) playArea[row][col]);
+                } else if (playArea[row][col] instanceof GoldCard) {
+                    CardView.displayCardFrontBottomLine((GoldCard) playArea[row][col]);
+                } else if (playArea[row][col] instanceof PlayableCard) {
+                    CardView.displayCardFrontBottomLine((PlayableCard) playArea[row][col]);
                 } else {
                     CardView.displayEmptySlotLine();
                 }

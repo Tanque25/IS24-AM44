@@ -250,7 +250,34 @@ public interface ServerInterface extends Remote{
 
         // TODO: do the same for the RMI clients
 
-        // TODO: the turns start
+        startTurn();
+    }
+
+    default void startTurn() {
+        String nickname = controller.getCurrentPlayer().getNickname();
+
+        Message myTurn = new Message("MyTurn");
+
+        if (controller.isTCP(nickname))
+            controller.getTcpClients().get(nickname).sendMessageToClient(myTurn);
+
+        // TODO: handle RMI client's turn
+
+        Message otherTurn = new Message("OtherTurn", nickname);
+        sendMessageToAllExcept(nickname, otherTurn);
+    }
+
+    default void sendMessageToAllExcept(String currentPlayerNickname, Message message) {
+        HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
+        HashMap<String, Client> rmiClients = controller.getRmiClients();
+
+        for (String nickname : tcpClients.keySet()) {
+            if(!nickname.equals(currentPlayerNickname)) {
+                tcpClients.get(nickname).sendMessageToClient(message);
+            }
+        }
+
+        // TODO: do the same for the RMI clients
     }
 
 

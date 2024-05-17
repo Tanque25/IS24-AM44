@@ -128,6 +128,15 @@ public class Message implements Serializable {
                 .build();
     }
 
+    public Message(String messageCode, PlayableCard playableCard, Coordinates coordinates) {
+        json = Json.createObjectBuilder()
+                .add("messageCode", messageCode)
+                .add("playableCard", createPlayableCardJson(playableCard))
+                .add("xCoordinate", coordinates.getX())
+                .add("yCoordinate", coordinates.getY())
+                .build();
+    }
+
     /**
      * Constructs a Message object representing a message containing a GoldCard.
      * This constructor is used to send information about a GoldCard.
@@ -139,6 +148,15 @@ public class Message implements Serializable {
         json = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
                 .add("goldCard", createGoldCardJson(goldCard))
+                .build();
+    }
+
+    public Message(String messageCode, GoldCard goldCard, Coordinates coordinates) {
+        json = Json.createObjectBuilder()
+                .add("messageCode", messageCode)
+                .add("goldCard", createGoldCardJson(goldCard))
+                .add("xCoordinate", coordinates.getX())
+                .add("yCoordinate", coordinates.getY())
                 .build();
     }
 
