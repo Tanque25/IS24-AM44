@@ -46,38 +46,38 @@ class PatternObjectiveCardTest {
                 {null, null, Resource.FUNGI_KINGDOM},
                 {null, Resource.FUNGI_KINGDOM, null},
                 {Resource.FUNGI_KINGDOM, null, null}
-        });
+        }, 87);
 
         OC_088 = new PatternObjectiveCard(2, new Resource[][]{
                 {Resource.PLANT_KINGDOM, null, null},
                 {null, Resource.PLANT_KINGDOM, null},
                 {null, null, Resource.PLANT_KINGDOM}
-        });
+        }, 88);
 
         OC_091 = new PatternObjectiveCard(3, new Resource[][]{
                 {null, Resource.FUNGI_KINGDOM, null},
                 {null,null,null},
                 {null, Resource.FUNGI_KINGDOM, null},
                 { null, null, Resource.PLANT_KINGDOM}
-        });
+        }, 91);
 
         OC_092 = new PatternObjectiveCard(3, new Resource[][]{
                 {null, Resource.PLANT_KINGDOM, null},
                 {null, Resource.PLANT_KINGDOM, null},
                 {Resource.INSECT_KINGDOM, null, null}
-        });
+        }, 92);
 
         OC_093 = new PatternObjectiveCard(3, new Resource[][]{
                 { null, Resource.FUNGI_KINGDOM, null},
                 {Resource.ANIMAL_KINGDOM, null, null},
                 {Resource.ANIMAL_KINGDOM, null, null}
-        });
+        }, 93);
 
         OC_094 = new PatternObjectiveCard(3, new Resource[][]{
                 {Resource.ANIMAL_KINGDOM, null, null},
                 {null, Resource.INSECT_KINGDOM, null},
                 {null, Resource.ANIMAL_KINGDOM, null}
-        });
+        }, 94);
 
         RC_001 = new PlayableCard(
                 Resource.FUNGI_KINGDOM,
@@ -87,7 +87,7 @@ class PatternObjectiveCardTest {
                         CornerPosition.BOTTOM_LEFT,new Corner(Resource.FUNGI_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT,new Corner(CornerVisibility.EMPTY)
                 ),
-                0
+                0, 001
         );
 
         RC_002 = new PlayableCard(
@@ -98,7 +98,7 @@ class PatternObjectiveCardTest {
                         CornerPosition.BOTTOM_LEFT,new Corner(CornerVisibility.EMPTY),
                         CornerPosition.BOTTOM_RIGHT,new Corner(CornerVisibility.EMPTY)
                 ),
-                0
+                0, 002
         );
 
         RC_003 = new PlayableCard(
@@ -109,7 +109,7 @@ class PatternObjectiveCardTest {
                         CornerPosition.BOTTOM_LEFT,new Corner(Resource.FUNGI_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT,new Corner(Resource.FUNGI_KINGDOM)
                 ),
-                0
+                0, 003
         );
 
         GC_051 = new GoldCard(Resource.PLANT_KINGDOM,
@@ -121,7 +121,7 @@ class PatternObjectiveCardTest {
                 ),
                 0,
                 new Resource[]{Resource.PLANT_KINGDOM, Resource.PLANT_KINGDOM, Resource.INSECT_KINGDOM},
-                SpecialObject.QUILL
+                SpecialObject.QUILL, 051
         );
 
         playArea1 = new Card[][]{

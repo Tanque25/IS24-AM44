@@ -14,14 +14,17 @@ public abstract class Card {
 
     private boolean playedBack;
 
+    private final Integer id;
+
     /**
      * Constructs a card with the specified corners.
      *
      * @param corners    the map containing corners and their positions on the card.
      */
-    public Card(Map<CornerPosition, Corner> corners) {
+    public Card(Map<CornerPosition, Corner> corners, Integer id) {
         this.corners = corners;
         this.playedBack = false;
+        this.id = id;
     }
 
     public void setPlayedBack(boolean playedBack) {
@@ -45,6 +48,10 @@ public abstract class Card {
     public boolean isPlayedBack() {
         return playedBack;
     }
+    public int getId() {
+        return id;
+    }
+
 
     public abstract Resource getPlayableResource();
 }

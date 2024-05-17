@@ -23,8 +23,8 @@ public class GoldCard extends PlayableCard{
      * @param cost            the array of resources required to play the gold card.
      * @param pointsParameter the parameter indicating how the gold card provides additional points.
      */
-    public GoldCard(Resource resource, Map<CornerPosition, Corner> corners, int cardPoints, Resource[] cost, PointsParameter pointsParameter) {
-        super(resource, corners, cardPoints);
+    public GoldCard(Resource resource, Map<CornerPosition, Corner> corners, int cardPoints, Resource[] cost, PointsParameter pointsParameter, Integer id) {
+        super(resource, corners, cardPoints, id);
         this.cost = cost;
         this.pointsParameter = pointsParameter;
     }

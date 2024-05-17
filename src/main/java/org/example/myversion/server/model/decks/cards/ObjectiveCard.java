@@ -12,12 +12,16 @@ import java.util.Map;
 public abstract class ObjectiveCard {
     private final int cardPoints;
 
+
+    private final int id;
+
     /**
      * ObjectiveCard's constructor.
      * @param cardPoints specifies the points awarded to the player upon accomplishing its objective.
      */
-    public ObjectiveCard(int cardPoints) {
+    public ObjectiveCard(int cardPoints, int id) {
         this.cardPoints = cardPoints;
+        this.id = id;
     }
 
     /**
@@ -26,6 +30,10 @@ public abstract class ObjectiveCard {
      */
     public int getCardPoints() {
         return cardPoints;
+    }
+
+    public int getId() {
+        return id;
     }
 
     protected abstract CornerContent[] getCardKey();

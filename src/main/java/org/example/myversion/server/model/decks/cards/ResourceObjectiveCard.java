@@ -18,8 +18,8 @@ public class ResourceObjectiveCard extends ObjectiveCard{
      * @param cardPoints specifies the points awarded to the player upon accomplishing its objective.
      * @param objective specifies which and how many resources the player needs to have in his play area.
      */
-    public ResourceObjectiveCard(int cardPoints, Resource[] objective) {
-        super(cardPoints);
+    public ResourceObjectiveCard(int cardPoints, Resource[] objective, int id) {
+        super(cardPoints, id);
         this.objective = objective;
     }
 
