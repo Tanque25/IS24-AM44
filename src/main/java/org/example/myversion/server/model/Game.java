@@ -5,7 +5,6 @@ import org.example.myversion.server.model.decks.cards.*;
 import org.example.myversion.server.model.exceptions.EmptyDeckException;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
-import org.example.myversion.server.serverController.GameState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,13 +66,28 @@ public class Game {
      * @param nickname The nickname of the new player.
      */
     public void newPlayer(String nickname){
-        Player tmp = new Player(nickname);
-        players.add(tmp);
+        Player player = new Player(nickname);
+
+        // Initializing the player's hand before adding it to the players list
+        player.initializeHand(generatePlayerHand());
+
+        // Adding the player to the player list
+        players.add(player);
 
         // If the player is the first one to join the game, set them as the current player
         if (players.size() == 1) {
-            currentPlayer = tmp;
+            currentPlayer = player;
         }
+    }
+
+    private List<PlayableCard> generatePlayerHand() {
+        List<PlayableCard> hand = new ArrayList<>();
+
+        hand.add(resourceDeck.drawCard());
+        hand.add(resourceDeck.drawCard());
+        hand.add(goldDeck.drawCard());
+
+        return hand;
     }
 
     /**

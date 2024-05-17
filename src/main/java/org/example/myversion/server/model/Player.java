@@ -34,6 +34,7 @@ public class Player {
     public Player(String nickname) {
         this.nickname = nickname;
         this.connected = true;
+        this.hand = new ArrayList<>();
         this.playArea = new Card[81][81];
         initializeStock();
     }
@@ -103,7 +104,6 @@ public class Player {
         if(starterCard.getCorners() != null) {
             // updating the player stock with the corner contents
             for (CornerPosition cornerPosition : starterCard.getCorners().keySet()) {
-                System.out.println("Corner position: "+cornerPosition);
                 CornerContent cornerContent = starterCard.getCorners().get(cornerPosition).getCornerContent();
 
                 if (cornerContent!=null) {//messo io
@@ -172,6 +172,7 @@ public class Player {
      * @param coordinates The x-coordinate and y-coordinate position.
      */
     public void placeCard(PlayableCard placedCard, Coordinates coordinates) {
+        // TODO: I think that this has been added for a test but shouldn't be here
         if (hand==null)
             hand=new ArrayList<>();
 

@@ -90,66 +90,6 @@ public class HandleClientSocket implements ServerInterface, Runnable {
 
         switch (messageCode) {
 
-            case "ToDo" -> {
-                System.out.println("Received ping from " /*+ client.getUsername()*/); //per CLI
-                String nickname = message.getArgument(); //nel ping c'è anche nickname
-                //controller.pong(nickname);
-                if (controller.checkNickname(nickname) == 1) { // nickname non usato
-                    if (controller.getGameState()!=GameState.LOGIN){ //se il gioco non è iniziato
-                        sendMessageToClient(new Message("Pong", "The Game is already started"));
-                    }
-                    else{
-                        if (!Objects.equals(controller.getFirstPlayer().getNickname(), nickname)){ //se è il primo giocatore
-                            sendMessageToClient(new Message("Pong", "Nickname is valid"));
-                            controller.addPlayer(nickname);//aggiungo il player
-                            setNickname(nickname);
-                            System.out.println("Starting ping thread\n");
-                            startPingThread(client); //thread che ogni 20 sec controlla se il giocatore è connesso
-                            //se la lobby ha il numero di giocatori = maxnumberOfplayer, se non
-                            if (controller.gameIsFull()) { //se la lobby è piena inizia il gioco
-                                controller.newGame();
-                            }
-                        }
-                        else{
-                            //if(controller.i)se la lobby non è piena, lo aggiungo
-                            //altrimenti mando messaggio che è piena
-                            //modificare add player, meglio gestire qui
-                        }
-
-                    }
-                    //non controllo che sia il primo giocatore, ma il server si aspetterà numero di giocatori
-
-                } else if (controller.checkNickname(nickname) == 0) {
-                    sendMessageToClient(new Message("Pong", "Nickname is  already in use"));
-                    try {//percheè??
-                        Thread.sleep(60000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    if ( controller.checkNickname(nickname) == 0) {
-                        System.out.println(nickname + " requested login, but the username is already taken.");
-                        //client.sendMessageToClient(new Message("UsernameRetry"));
-                    } else {
-                        System.out.println(nickname + " reconnected.");
-                        //controller.addClient(nickname, client);
-                        //resendGameToReconnectedClient(client);
-                    }
-                } else {
-                    sendMessageToClient(new Message("Pong", "Nickname is  already in use by a disconnected player"));
-                    System.out.println(nickname + " reconnected.");
-                    //client.sendMessageToClient(new Message("username", username));
-                    //setUsername(username);
-                    //controller.addClient(username, client);
-                    /*if (!controller.isGameLoaded) {
-                        //resendGameToReconnectedClient(client);
-                    } else {
-                        resendToReconnectAfterServerDown(client);
-                    }*/
-                }
-
-            }
-
             case "Ping" -> {
                 System.out.println("Received Ping from " + client.getNickname());
                 controller.pong(client.getNickname());
@@ -164,6 +104,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                 checkNickname(client, nickname, checkNicknameStatus);
             }
 
+            // This case verify the selected number of players and ank it again if necessary
             case "NumberOfPlayers" -> {
                 int numberOfPlayers = message.getMaxPlayers();
                 System.out.println("Number of players: " + numberOfPlayers);
@@ -172,37 +113,26 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                 if (!controller.checkNumberOfPlayer(numberOfPlayers))
                     sendMessageToClient(new Message("InvalidNumberOfPlayers"));
                 else
-                    controller.setMaxPlayerNumber(numberOfPlayers);
+                    controller.setPlayersNumber(numberOfPlayers);
             }
 
+            // This case is used to place the starter card in the Player's playArea on the selected side
             case "StarterCard" -> {
                 System.out.println("Starter card side received from " + Nickname);
+                controller.playStarterCard(controller.getPlayerFromNickname(Nickname), message.getStarterCard());
             }
 
-            case "DrawCard" -> {//ne faccio un caso diverso a seconda della carta che vuole prendere? (da che mazzo)
-                //non ci vuole una checkDraw di sicurezza !!!! controllare
-                PlayableCard chosenCard = message.getPlayableCard();
-                String nickname = message.getArgument(); //get del nickname ? tolgo nickname da draw
-                // controller.drawCard(nickname, chosenCard); //la pesco
+            // This case is used to set the secret objective card in the game model
+            case "ObjectiveCardChoice" -> {
+                System.out.println("Secret objective card received from " + Nickname);
+                controller.chooseObjectiveCard(controller.getPlayerFromNickname(Nickname), message.getObjectiveCard());
 
-                sendMessageToClient(new Message("Card drew successfully"));//pescata
+                // When the server receives the player's secret objective choice, the readyPlayersNumber is updated
+                controller.updateReadyPlayersNumber();
 
-            }
-
-            case "PlayCard" -> {
-                String nickname = message.getArgument();
-                PlayableCard chosenCard = message.getPlayableCard();
-                if (controller.isValidMove()) {//ho aggiunto isValidMove --> implementarla
-                    System.out.println("la mossa è valida");//per debug
-                    //la gestione dell'eccezioni l'ho messa nel controller (in PlayCard) ha senso?
-                    // controller.playCard(nickname, chosenCard, message.getCoordinates());
-                    sendMessageToClient(new Message("Move executed successfully"));//posizionata
-                } else {
-                    //è da mettere qui ?
-                    while (!controller.isValidMove()) {
-                        //ha senso ? ricontrollare
-                        sendMessageToClient(new Message("Coordinates not valid"));
-                    }
+                // When all the players are ready, the servers sends every player the other players' hands and play areas and starts the turns cycle
+                if(controller.getReadyPlayersNumber() == controller.getPlayersNumber()){
+                    sendStartCondition();
                 }
             }
 
@@ -232,19 +162,18 @@ public class HandleClientSocket implements ServerInterface, Runnable {
                     System.out.println(nickname + " logged in.");
 
                     setNickname(nickname);
-                    controller.addClient(nickname, client);
+                    controller.addClientTCP(nickname, client);
                     // TODO: Implement the connection check on a different channel
                     // startPingThread(client);
 
-                    if (controller.getFirstPlayer() == null) {
+                    if (controller.isFirst()) {
                         client.sendMessageToClient(new Message("PlayersNumber"));
-                        controller.setFirstPlayer();
                         client.sendMessageToClient(new Message("WaitForOtherPlayers"));
                     } else {
                         client.sendMessageToClient(new Message("WaitForOtherPlayers"));
-                        System.out.println("Max number of players set to: " + controller.getMaxPlayerNumber());
+                        System.out.println("Max number of players set to: " + controller.getPlayersNumber());
                         // If this is the last player to reach the max player number, the game starts
-                        if (controller.getMaxPlayerNumber() != 0 && controller.gameIsFull()) {
+                        if (controller.getPlayersNumber() != 0 && controller.gameIsFull()) {
                             System.out.println("Game is full.");
                             startGame();
                             System.out.println("Game started.");

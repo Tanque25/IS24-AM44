@@ -38,14 +38,14 @@ public class RMIClient extends Client {
     @Override
     public void sendMessage(Message message) throws IOException {
         try {
-            server.receiveMessage(message, this);
+            server.receiveMessageRMI(message, this);
         } catch (RemoteException e) {
             // Don't do anything: if the server is down, the client will
             // notice itself and will exit.
         }
     }
 
-    public String getNickname() throws RemoteException {
+    public String getNickname() {
         return nickname;
     }
 

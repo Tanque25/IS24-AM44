@@ -28,8 +28,6 @@ public abstract class ObjectiveCard {
         return cardPoints;
     }
 
-    public abstract Resource[][] getObjective();
-
     protected abstract CornerContent[] getCardKey();
 
     public abstract int findObjectiveCard(Map<CornerContent, Integer> stock, Card[][] playArea, ObjectiveCard commonObjective);

@@ -74,7 +74,7 @@ public class ObjectiveDeck {
         addPatternObjectiveCard(3, new Resource[][]{
                 {Resource.ANIMAL_KINGDOM, null, null},
                 {null, Resource.INSECT_KINGDOM, null},
-                {null, Resource.ANIMAL_KINGDOM, null}
+                {null, Resource.INSECT_KINGDOM, null}
         }); // 94
 
         addResourceObjectiveCard(2, new Resource[]{

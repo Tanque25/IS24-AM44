@@ -1,13 +1,14 @@
 package org.example.myversion.server.serverController;
 
-import org.example.myversion.client.RMIClient;
 import org.example.myversion.client.Client;
 import org.example.myversion.messages.Message;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.Objects;
 import java.util.HashMap;
-import org.example.myversion.server.model.decks.cards.PlayableCard;
+
+import org.example.myversion.server.model.decks.cards.ObjectiveCard;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
 import org.example.myversion.server.model.exceptions.InvalidNicknameException;
@@ -24,10 +25,10 @@ public interface ServerInterface extends Remote{
     public default void stop() {
     }
 
-    public default void receiveMessageTCP(Message message,HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException {
+    default void receiveMessageTCP(Message message,HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException {
     }
 
-    default void receiveMessage(Message message, Client client) throws RemoteException {
+    default void receiveMessageRMI(Message message, Client client) throws RemoteException {
         String messageType = message.getMessageCode();
 
         switch (messageType) {
@@ -57,11 +58,11 @@ public interface ServerInterface extends Remote{
                         controller.addPlayer(nickname);//aggiungo player
                         System.out.println(nickname + " logged in."); //per debug
 
-                        //controller.addClient(username, client);
+                        //controller.addClientRMI(username, client);
 
                         startPingThread(client);
 
-                        if(!Objects.equals(controller.getFirstPlayer().getNickname(), nickname)){//se è il primo giocatore
+                        if(controller.isFirst()){//se è il primo giocatore
                             try {//chiedo numeri giocatori e gestisco eccezione
                                 client.handleMessage(new Message("ChooseNumOfPlayer"));
                             } catch (RemoteException e) {
@@ -102,7 +103,7 @@ public interface ServerInterface extends Remote{
                         //client.sendMessageToClient(new Message("UsernameRetry"));
                     } else {
                         System.out.println(nickname + " reconnected.");
-                        //controller.addClient(nickname, client);
+                        //controller.addClientRMI(nickname, client);
                         //resendGameToReconnectedClient(client);
                     }
 
@@ -111,7 +112,7 @@ public interface ServerInterface extends Remote{
 
                     System.out.println(nickname + " reconnected.");
                     client.setNickname(nickname);
-                    controller.addClient(nickname, client);
+                    controller.addClientRMI(nickname, client);
                     //gestione della PERSISTENZA:
                     /*if (!controller.isGameLoaded) {
                         resendGameToReconnectedClient(client);
@@ -142,7 +143,7 @@ public interface ServerInterface extends Remote{
 
                     //se il numero di giocatori è valido:
                 } else {
-                    controller.setMaxPlayerNumber(numberOfPlayers);//setta il numero di giocatori
+                    controller.setPlayersNumber(numberOfPlayers);//setta il numero di giocatori
                     if (controller.gameIsFull()) {
                         controller.newGame();
                         //startGame();????
@@ -186,11 +187,7 @@ public interface ServerInterface extends Remote{
     }
     default void startPingThread(Client client) throws RemoteException {
         String username = null;
-        try {
-            username = client.getNickname();
-        } catch (RemoteException e) {
-            System.err.println("Error while getting username from client.");
-        }
+        username = client.getNickname();
         String finalUsername = username;
 
         Thread checkThread = new Thread(() -> {
@@ -219,31 +216,41 @@ public interface ServerInterface extends Remote{
         checkThread.start();
     }
     /**
-     * It is going to start the game so that each player gets to choose his objective card
+     * It is going to start the game so that each player receives the common objective cards and gets to choose his secret objective card.
      */
     default void startGame() {
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
         HashMap<String, Client> rmiClients = controller.getRmiClients();
 
-        // TODO having trouble with the objective cards' getObjective methods
-
-//        List<ObjectiveCard> commonObjectiveCards = controller.getCommonObjectiveCards();
-//        System.out.println(Arrays.deepToString(commonObjectiveCards.get(0).getObjective()));
-//        System.out.println(Arrays.deepToString(commonObjectiveCards.get(1).getObjective()));
+        List<ObjectiveCard> commonObjectiveCards = controller.getCommonObjectiveCards();
 
         for (String nickname : tcpClients.keySet()) {
-            // Message commmonObjectiveCardsMessage = new Message("CommonObjectiveCards", commonObjectiveCards.get(0), commonObjectiveCards.get(1));
-            // tcpClients.get(nickname).sendMessageToClient(commmonObjectiveCardsMessage);
-
-            // List<ObjectiveCard> secretObjectiveCardsOptions = controller.getSecretObjectiveCardsOptions();
-            // Message secretObjectiveCardsOptionsMessage = new Message("SecretObjectiveCardsOptions", secretObjectiveCardsOptions.get(0), secretObjectiveCardsOptions.get(1));
-
-            // Sending the starter card to the client
             Message starterCardMessage = new Message("StarterCard", controller.getStarterCard());
             tcpClients.get(nickname).sendMessageToClient(starterCardMessage);
+
+            Message commmonObjectiveCardsMessage = new Message("CommonObjectiveCards", commonObjectiveCards.get(0), commonObjectiveCards.get(1));
+            tcpClients.get(nickname).sendMessageToClient(commmonObjectiveCardsMessage);
+
+            List<ObjectiveCard> secretObjectiveCardsOptions = controller.getSecretObjectiveCardsOptions();
+            Message secretObjectiveCardsOptionsMessage = new Message("SecretObjectiveCardsOptions", secretObjectiveCardsOptions.get(0), secretObjectiveCardsOptions.get(1));
+            tcpClients.get(nickname).sendMessageToClient(secretObjectiveCardsOptionsMessage);
         }
 
+        // TODO: do the same for the RMI clients
+    }
 
+    default void sendStartCondition() {
+        HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
+        HashMap<String, Client> rmiClients = controller.getRmiClients();
+
+        for (String nickname : tcpClients.keySet()) {
+            Message startConditionMessage = new Message("StartCondition", controller.getStarterCardsMap(), controller.getPlayersHandsMap());
+            tcpClients.get(nickname).sendMessageToClient(startConditionMessage);
+        }
+
+        // TODO: do the same for the RMI clients
+
+        // TODO: the turns start
     }
 
 

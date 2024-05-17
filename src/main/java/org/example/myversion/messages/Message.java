@@ -79,10 +79,7 @@ public class Message implements Serializable {
     public Message(String messageCode, StarterCard starterCard) {
         json = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
-                .add("resources", createObjectiveObject(starterCard.getResource()))
-                .add("corners", createCornerObject(starterCard.getCorners()))
-                .add("backCorners", createCornerObject(starterCard.getBackCorner()))
-                .add("playedBack", starterCard.isPlayedBack())
+                .add("starterCard", createStarterCardJson(starterCard))
                 .build();
     }
 
@@ -96,8 +93,7 @@ public class Message implements Serializable {
     public Message(String messageCode, ObjectiveCard objectiveCard) {
         json = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
-                .add("objective", createObjectiveObject(objectiveCard.getObjective()))
-                .add("cardPoints", objectiveCard.getCardPoints())
+                .add("objectiveCard", createObjectiveCardJson(objectiveCard))
                 .build();
     }
 
@@ -113,10 +109,8 @@ public class Message implements Serializable {
     public Message(String messageCode, ObjectiveCard objectiveCard1, ObjectiveCard objectiveCard2) {
         json = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
-                .add("objective1", createObjectiveObject(objectiveCard1.getObjective()))
-                .add("cardPoints1", objectiveCard1.getCardPoints())
-                .add("objective2", createObjectiveObject(objectiveCard2.getObjective()))
-                .add("cardPoints2", objectiveCard2.getCardPoints())
+                .add("objectiveCard1", createObjectiveCardJson(objectiveCard1))
+                .add("objectiveCard2", createObjectiveCardJson(objectiveCard2))
                 .build();
     }
 
@@ -130,10 +124,7 @@ public class Message implements Serializable {
     public Message(String messageCode, PlayableCard playableCard) {
         json = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
-                .add("resource", playableCard.getResource().toString())
-                .add("corners", createCornerObject(playableCard.getCorners()))
-                .add("cardPoints", playableCard.getCardPoints())
-                .add("playedBack", playableCard.isPlayedBack())
+                .add("playableCard", createPlayableCardJson(playableCard))
                 .build();
     }
 
@@ -147,13 +138,32 @@ public class Message implements Serializable {
     public Message(String messageCode, GoldCard goldCard) {
         json = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
-                .add("resource", goldCard.getResource().toString())
-                .add("corners", createCornerObject(goldCard.getCorners()))
-                .add("cardPoints", goldCard.getCardPoints())
-                .add("pointsParameter", goldCard.getPointsParameter().toString())
-                .add("cost", createObjectiveObject(goldCard.getCost()))
+                .add("goldCard", createGoldCardJson(goldCard))
                 .build();
     }
+
+    public Message(String messageCode, Map<String, StarterCard> starterCards, Map<String, List<PlayableCard>> playersHands) {
+        JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
+        jsonBuilder.add("messageCode", messageCode);
+
+        // Serialize the starterCards map
+        JsonObjectBuilder starterCardsJson = Json.createObjectBuilder();
+        for (Map.Entry<String, StarterCard> entry : starterCards.entrySet()) {
+            starterCardsJson.add(entry.getKey(), createStarterCardJson(entry.getValue()));
+        }
+        jsonBuilder.add("starterCards", starterCardsJson);
+
+        // Serialize the playersHands map
+        JsonObjectBuilder playersHandsJson = Json.createObjectBuilder();
+        for (Map.Entry<String, List<PlayableCard>> entry : playersHands.entrySet()) {
+            playersHandsJson.add(entry.getKey(), createPlayableCardsJson(entry.getValue()));
+        }
+        jsonBuilder.add("playersHands", playersHandsJson);
+
+        // Build the final JSON object
+        json = jsonBuilder.build();
+    }
+
 
     /**
      * Constructs a Message object representing a message containing coordinates.
@@ -187,6 +197,42 @@ public class Message implements Serializable {
             cornerBuilder.add(position.toString(), corner.getCornerContent().toString());
         }
         return cornerBuilder.build();
+    }
+
+    private JsonObject createStarterCardJson(StarterCard starterCard) {
+        return Json.createObjectBuilder()
+                .add("resources", createObjectiveObject(starterCard.getResource()))
+                .add("corners", createCornerObject(starterCard.getCorners()))
+                .add("backCorners", createCornerObject(starterCard.getBackCorner()))
+                .add("playedBack", starterCard.isPlayedBack())
+                .build();
+    }
+
+    private JsonObject createObjectiveCardJson(ObjectiveCard objectiveCard) {
+        String objectiveType;
+        JsonArray objectiveJsonArray;
+
+        switch (objectiveCard) {
+            case ResourceObjectiveCard resourceObjectiveCard -> {
+                objectiveType = "ResourceObjective";
+                objectiveJsonArray = createObjectiveObject(resourceObjectiveCard.getObjective()).build();
+            }
+            case SpecialObjectiveCard specialObjectiveCard -> {
+                objectiveType = "SpecialObjective";
+                objectiveJsonArray = createObjectiveObject(specialObjectiveCard.getObjective()).build();
+            }
+            case PatternObjectiveCard patternObjectiveCard -> {
+                objectiveType = "PatternObjective";
+                objectiveJsonArray = createObjectiveObject(patternObjectiveCard.getObjective()).build();
+            }
+            case null, default -> throw new IllegalArgumentException("Unsupported type of ObjectiveCard");
+        }
+
+        return Json.createObjectBuilder()
+                .add("objectiveType", objectiveType)
+                .add("objective", objectiveJsonArray)
+                .add("cardPoints", objectiveCard.getCardPoints())
+                .build();
     }
 
     /**
@@ -242,6 +288,34 @@ public class Message implements Serializable {
         return objectiveObjectBuilder;
     }
 
+    private JsonObject createPlayableCardJson(PlayableCard playableCard) {
+        return Json.createObjectBuilder()
+                .add("resource", playableCard.getResource().toString())
+                .add("corners", createCornerObject(playableCard.getCorners()))
+                .add("cardPoints", playableCard.getCardPoints())
+                .add("playedBack", playableCard.isPlayedBack())
+                .build();
+    }
+
+    private JsonArray createPlayableCardsJson(List<PlayableCard> playableCards) {
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        for (PlayableCard card : playableCards) {
+            arrayBuilder.add(createPlayableCardJson(card));
+        }
+        return arrayBuilder.build();
+    }
+
+    private JsonObject createGoldCardJson(GoldCard goldCard) {
+        return Json.createObjectBuilder()
+                .add("resource", goldCard.getResource().toString())
+                .add("corners", createCornerObject(goldCard.getCorners()))
+                .add("cardPoints", goldCard.getCardPoints())
+                .add("pointsParameter", goldCard.getPointsParameter().toString())
+                .add("cost", createObjectiveObject(goldCard.getCost()))
+                .add("playedBack", goldCard.isPlayedBack())
+                .build();
+    }
+
 ///////////////////////////////////////////////////////GETTERS////////////////////////////////////////////////////////
 
     /**
@@ -291,99 +365,88 @@ public class Message implements Serializable {
      * @return The StarterCard.
      */
     public StarterCard getStarterCard() {
-        Resource[] resources = getResourceArray(json.getJsonArray("resources"));
-        Map<CornerPosition, Corner> corners = getCornerMap(json.getJsonObject("corners"));
-        Map<CornerPosition, Corner> backCorners = getCornerMap(json.getJsonObject("backCorners"));
-
-        // Construct and return the StarterCard
-        return new StarterCard(resources, corners, backCorners);
+        JsonObject starterCardJson = json.getJsonObject("starterCard");
+        return createStarterCardFromJson(starterCardJson);
     }
 
-    /**
-     * Retrieves the ObjectiveCard contained in the message.
-     *
-     * @return The ObjectiveCard included in the message.
-     */
-    public ObjectiveCard getObjectiveCard() {
-        // Get the JSON object representing the objective
-        JsonObject objectiveJson = json.getJsonObject("objective");
-
-        // Determine the type of objective card based on the structure of the JSON object
-        if (objectiveJson.containsKey("resources")) {
-            // If it's a ResourceObjectiveCard, parse the objective from the JSON object
-            Resource[] objective = getResourceArray(objectiveJson.getJsonArray("resources"));
-            int cardPoints = json.getInt("cardPoints");
-            return new ResourceObjectiveCard(cardPoints, objective);
-        } else if (objectiveJson.containsKey("specialObjects")) {
-            // If it's a SpecialObjectiveCard, parse the objective from the JSON object
-            SpecialObject[] objective = getSpecialObjectArray(objectiveJson.getJsonArray("specialObjects"));
-            int cardPoints = json.getInt("cardPoints");
-            return new SpecialObjectiveCard(cardPoints, objective);
-        } else if (objectiveJson.containsKey("pattern")) {
-            // If it's a PatternObjectiveCard, parse the objective from the JSON object
-            Resource[][] objective = getResourceMatrix(objectiveJson.getJsonArray("pattern"));
-            int cardPoints = json.getInt("cardPoints");
-            return new PatternObjectiveCard(cardPoints, objective);
-        } else {
-            return null;
+    public Map<String, StarterCard> getStarterCardsMap() {
+        Map<String, StarterCard> starterCards = new HashMap<>();
+        JsonObject starterCardsJson = json.getJsonObject("starterCards");
+        if (starterCardsJson == null) {
+            throw new IllegalStateException("Starter cards data is missing in the JSON object");
         }
+
+        for (String key : starterCardsJson.keySet()) {
+            JsonObject cardJson = starterCardsJson.getJsonObject(key);
+            if (cardJson != null) {
+                StarterCard card = createStarterCardFromJson(cardJson);
+                starterCards.put(key, card);
+            } else {
+                throw new IllegalStateException("Starter card data is corrupted or missing for key: " + key);
+            }
+        }
+
+        return starterCards;
     }
 
-    /**
-     * Retrieves the Objective Cards contained in the message.
-     *
-     * @return The ObjectiveCard included in the message.
-     */
+    private StarterCard createStarterCardFromJson(JsonObject starterCardJson) {
+        if (starterCardJson == null) {
+            throw new IllegalArgumentException("Starter card data is missing in the JSON object");
+        }
+
+        Resource[] resources = getResourceArray(starterCardJson.getJsonArray("resources"));
+        Map<CornerPosition, Corner> corners = getCornerMap(starterCardJson.getJsonObject("corners"));
+        Map<CornerPosition, Corner> backCorners = getCornerMap(starterCardJson.getJsonObject("backCorners"));
+        boolean playedBack = starterCardJson.getBoolean("playedBack", false);  // Handling optional boolean
+
+        // Construct and return the StarterCard with all properties
+        StarterCard starterCard = new StarterCard(resources, corners, backCorners);
+        starterCard.setPlayedBack(playedBack);
+
+        return starterCard;
+    }
+
+
+    public ObjectiveCard getObjectiveCard() {
+        JsonObject objectiveCard1 = json.getJsonObject("objectiveCard");
+        return createObjectiveCardFromJson(objectiveCard1);
+    }
+
     public List<ObjectiveCard> getObjectiveCards() {
         List<ObjectiveCard> objectiveCards = new ArrayList<>();
 
-        // Get the JSON object representing the objective1
-        JsonObject objectiveJson1 = json.getJsonObject("objective1");
+        // Process the first card
+        JsonObject objectiveCard1 = json.getJsonObject("objectiveCard1");
+        ObjectiveCard card1 = createObjectiveCardFromJson(objectiveCard1);
+        objectiveCards.add(card1);
 
-        // Determine the type of objective card based on the structure of the JSON object
-        if (objectiveJson1.containsKey("resources")) {
-            // If it's a ResourceObjectiveCard, parse the objective from the JSON object
-            Resource[] objective = getResourceArray(objectiveJson1.getJsonArray("resources"));
-            int cardPoints = json.getInt("cardPoints1");
-            objectiveCards.add(new ResourceObjectiveCard(cardPoints, objective));
-        } else if (objectiveJson1.containsKey("specialObjects")) {
-            // If it's a SpecialObjectiveCard, parse the objective from the JSON object
-            SpecialObject[] objective = getSpecialObjectArray(objectiveJson1.getJsonArray("specialObjects"));
-            int cardPoints = json.getInt("cardPoints1");
-            objectiveCards.add(new SpecialObjectiveCard(cardPoints, objective));
-        } else if (objectiveJson1.containsKey("pattern")) {
-            // If it's a PatternObjectiveCard, parse the objective from the JSON object
-            Resource[][] objective = getResourceMatrix(objectiveJson1.getJsonArray("pattern"));
-            int cardPoints = json.getInt("cardPoints1");
-            objectiveCards.add(new PatternObjectiveCard(cardPoints, objective));
-        } else {
-            return null;
-        }
-
-        // Get the JSON object representing the objective1
-        JsonObject objectiveJson2 = json.getJsonObject("objective2");
-
-        // Determine the type of objective card based on the structure of the JSON object
-        if (objectiveJson2.containsKey("resources")) {
-            // If it's a ResourceObjectiveCard, parse the objective from the JSON object
-            Resource[] objective = getResourceArray(objectiveJson2.getJsonArray("resources"));
-            int cardPoints = json.getInt("cardPoints2");
-            objectiveCards.add(new ResourceObjectiveCard(cardPoints, objective));
-        } else if (objectiveJson2.containsKey("specialObjects")) {
-            // If it's a SpecialObjectiveCard, parse the objective from the JSON object
-            SpecialObject[] objective = getSpecialObjectArray(objectiveJson2.getJsonArray("specialObjects"));
-            int cardPoints = json.getInt("cardPoints2");
-            objectiveCards.add(new SpecialObjectiveCard(cardPoints, objective));
-        } else if (objectiveJson2.containsKey("pattern")) {
-            // If it's a PatternObjectiveCard, parse the objective from the JSON object
-            Resource[][] objective = getResourceMatrix(objectiveJson2.getJsonArray("pattern"));
-            int cardPoints = json.getInt("cardPoints2");
-            objectiveCards.add(new PatternObjectiveCard(cardPoints, objective));
-        } else {
-            return null;
-        }
+        // Process the second card
+        JsonObject objectiveCard2 = json.getJsonObject("objectiveCard2");
+        ObjectiveCard card2 = createObjectiveCardFromJson(objectiveCard2);
+        objectiveCards.add(card2);
 
         return objectiveCards;
+    }
+
+    private ObjectiveCard createObjectiveCardFromJson(JsonObject objectiveCardJson) {
+        if (objectiveCardJson == null) {
+            throw new IllegalArgumentException("Card JSON object is missing");
+        }
+
+        JsonString typeJsonString = objectiveCardJson.getJsonString("objectiveType");
+        if (typeJsonString == null) {
+            throw new IllegalArgumentException("Objective type is missing or null in JSON");
+        }
+        String objectiveType = typeJsonString.getString();
+        int cardPoints = objectiveCardJson.getInt("cardPoints");
+        JsonArray objectiveData = objectiveCardJson.getJsonArray("objective");
+
+        return switch (objectiveType) {
+            case "ResourceObjective" -> new ResourceObjectiveCard(cardPoints, getResourceArray(objectiveData));
+            case "SpecialObjective" -> new SpecialObjectiveCard(cardPoints, getSpecialObjectArray(objectiveData));
+            case "PatternObjective" -> new PatternObjectiveCard(cardPoints, getResourceMatrix(objectiveData));
+            default -> throw new IllegalArgumentException("Unsupported objective type: " + objectiveType);
+        };
     }
 
     /**
@@ -392,12 +455,56 @@ public class Message implements Serializable {
      * @return The PlayableCard object contained in the Message.
      */
     public PlayableCard getPlayableCard() {
-        Resource resource = Resource.valueOf(json.getString("resource"));
-        Map<CornerPosition, Corner> corners = getCornerMap(json.getJsonObject("corners"));
-        int cardPoints = json.getInt("cardPoints");
+        JsonObject playableCardJson = json.getJsonObject("playableCard");
+        return createPlayableCardFromJson(playableCardJson);
+    }
 
-        // Create and return the PlayableCard object
-        return new PlayableCard(resource, corners, cardPoints);
+    public Map<String, List<PlayableCard>> getPlayersHandsMap() {
+        Map<String, List<PlayableCard>> playersHands = new HashMap<>();
+        JsonObject playersHandsJson = json.getJsonObject("playersHands");
+        if (playersHandsJson == null) {
+            throw new IllegalStateException("Player hands data is missing in the JSON object");
+        }
+
+        for (String key : playersHandsJson.keySet()) {
+            JsonArray handArray = playersHandsJson.getJsonArray(key);
+            if (handArray != null) {
+                List<PlayableCard> cards = createPlayableCardsFromJson(handArray);
+                playersHands.put(key, cards);
+            } else {
+                throw new IllegalStateException("Playable cards data is corrupted or missing for key: " + key);
+            }
+        }
+
+        return playersHands;
+    }
+
+    private List<PlayableCard> createPlayableCardsFromJson(JsonArray jsonArray) {
+        List<PlayableCard> cards = new ArrayList<>();
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JsonObject cardJson = jsonArray.getJsonObject(i);
+            PlayableCard card = createPlayableCardFromJson(cardJson);
+            cards.add(card);
+        }
+        return cards;
+    }
+
+    private PlayableCard createPlayableCardFromJson(JsonObject playableCardJson) {
+        if (playableCardJson == null) {
+            throw new IllegalArgumentException("Playable card data is missing in the JSON object");
+        }
+
+        // Extract the Resource, corners, and card points from the playableCardJson
+        Resource resource = Resource.valueOf(playableCardJson.getString("resource"));
+        Map<CornerPosition, Corner> corners = getCornerMap(playableCardJson.getJsonObject("corners"));
+        int cardPoints = playableCardJson.getInt("cardPoints");
+        boolean playedBack = playableCardJson.getBoolean("playedBack", false);
+
+        // Create and return the PlayableCard object with all properties
+        PlayableCard playableCard = new PlayableCard(resource, corners, cardPoints);
+        playableCard.setPlayedBack(playedBack);
+
+        return playableCard;
     }
 
     /**
@@ -406,14 +513,28 @@ public class Message implements Serializable {
      * @return The GoldCard object contained in the Message.
      */
     public GoldCard getGoldCard() {
-        Resource resource = Resource.valueOf(json.getString("resource"));
-        Map<CornerPosition, Corner> corners = getCornerMap(json.getJsonObject("corners"));
-        int cardPoints = json.getInt("cardPoints");
-        PointsParameter pointsParameter = SpecialObject.valueOf(json.getString("pointsParameter"));
-        Resource[] cost = getResourceArray(json.getJsonArray("cost"));
+        JsonObject goldCardJson = json.getJsonObject("goldCard");
+        return createGoldCardFromJson(goldCardJson);
+    }
 
-        // Create and return the GoldCard object
-        return new GoldCard(resource, corners, cardPoints, cost, pointsParameter);
+    public GoldCard createGoldCardFromJson(JsonObject goldCardJson) {
+        if (goldCardJson == null) {
+            throw new IllegalArgumentException("Gold card data is missing in the JSON object");
+        }
+
+        // Extract the properties of the GoldCard from the nested JSON object
+        Resource resource = Resource.valueOf(goldCardJson.getString("resource"));
+        Map<CornerPosition, Corner> corners = getCornerMap(goldCardJson.getJsonObject("corners"));
+        int cardPoints = goldCardJson.getInt("cardPoints");
+        PointsParameter pointsParameter = SpecialObject.valueOf(goldCardJson.getString("pointsParameter"));
+        Resource[] cost = getResourceArray(goldCardJson.getJsonArray("cost"));
+        boolean playedBack = goldCardJson.getBoolean("playedBack", false);
+
+        // Construct and return the GoldCard with all properties
+        GoldCard goldCard = new GoldCard(resource, corners, cardPoints, cost, pointsParameter);
+        goldCard.setPlayedBack(playedBack);
+
+        return goldCard;
     }
 
     /**
@@ -453,13 +574,24 @@ public class Message implements Serializable {
      * @return A matrix of Resource enum values parsed from the JsonArray.
      */
     private Resource[][] getResourceMatrix(JsonArray jsonArray) {
-        // Convert JsonArray to matrix of Resource enum values
         Resource[][] resourceMatrix = new Resource[jsonArray.size()][];
         for (int i = 0; i < jsonArray.size(); i++) {
             JsonArray rowArray = jsonArray.getJsonArray(i);
             resourceMatrix[i] = new Resource[rowArray.size()];
             for (int j = 0; j < rowArray.size(); j++) {
-                resourceMatrix[i][j] = Resource.valueOf(rowArray.getString(j));
+                JsonValue value = rowArray.get(j);
+                // Check if the value is a string and convert it to the appropriate enum
+                if (value.getValueType() == JsonValue.ValueType.STRING) {
+                    String resourceString = ((JsonString) value).getString();
+                    resourceMatrix[i][j] = Resource.valueOf(resourceString);
+                } else if (value.getValueType() == JsonValue.ValueType.NULL) {
+                    // Handle null values explicitly
+                    resourceMatrix[i][j] = null;
+                } else {
+                    // Optional: Log or handle unexpected value types
+                    throw new IllegalArgumentException("Invalid resource type in JSON array at position [" + i + "][" + j +
+                            "], expected a string or null.");
+                }
             }
         }
         return resourceMatrix;

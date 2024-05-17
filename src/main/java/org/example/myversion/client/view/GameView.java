@@ -1,36 +1,66 @@
 package org.example.myversion.client.view;
 
 import org.example.myversion.client.Client;
+import org.example.myversion.server.model.decks.cards.Card;
 import org.example.myversion.server.model.decks.cards.ObjectiveCard;
+import org.example.myversion.server.model.decks.cards.PlayableCard;
 import org.example.myversion.server.model.decks.cards.StarterCard;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This is the interface used for the view (cli or gui)
  */
-public interface GameView {
+public abstract class GameView {
+    private Map<String, List<PlayableCard>> handsMap = new HashMap<>();
+    private Map<String, Card> playAreasMap = new HashMap<>();
 
-    void setClient(Client client);
+    protected Map<String, List<PlayableCard>> getHandsMap() {
+        return handsMap;
+    }
 
-    void showMessage(String message);
+    public void setHandsMap(Map<String, List<PlayableCard>> handsMap) {
+        this.handsMap = handsMap;
+    }
 
-    void startView() throws IOException;
+    protected Map<String, Card> getPlayAreasMap() {
+        return playAreasMap;
+    }
 
-    void clientLogin() throws IOException;
+    public void setPlayAreasMap(Map<String, Card> playAreasMap) {
+        this.playAreasMap = playAreasMap;
+    }
 
-    void showGameAlreadyStartedMessage();
+    public abstract void setClient(Client client);
 
-    void playersNumberChoice() throws IOException;
+    public abstract void showMessage(String message);
 
-    void invalidPlayersNumberChoice() throws IOException;
+    public abstract void startView() throws IOException;
 
-    void waitForOtherPlayers();
+    public abstract void clientLogin() throws IOException;
 
-    void showObjectives(List<ObjectiveCard> objectiveCards);
+    public abstract void showGameAlreadyStartedMessage();
 
-    void showStarterCard(StarterCard starterCard);
+    public abstract void playersNumberChoice() throws IOException;
 
-    void starterCardSideChoice(StarterCard starterCard) throws IOException;
+    public abstract void invalidPlayersNumberChoice() throws IOException;
+
+    public abstract void waitForOtherPlayers();
+
+    public abstract void showCommonObjectives(List<ObjectiveCard> objectiveCards);
+
+    public abstract void showSecretObjectives(List<ObjectiveCard> objectiveCards);
+
+    public abstract void secretObjectiveCardChoice(List<ObjectiveCard> objectiveCards) throws IOException;
+
+    public abstract void showStarterCard(StarterCard starterCard);
+
+    public abstract void starterCardSideChoice(StarterCard starterCard) throws IOException;
+
+    public abstract void showMyHand();
+
+    public abstract void showOthersHandsAndPlayAreas();
 }

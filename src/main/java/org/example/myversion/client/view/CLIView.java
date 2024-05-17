@@ -3,16 +3,19 @@ package org.example.myversion.client.view;
 import org.example.myversion.client.Client;
 import org.example.myversion.client.CodexNaturalis;
 import org.example.myversion.messages.Message;
-import org.example.myversion.server.model.decks.cards.ObjectiveCard;
-import org.example.myversion.server.model.decks.cards.StarterCard;
+import org.example.myversion.server.model.decks.cards.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Map;
 
-public class CLIView implements GameView {
+public class CLIView extends GameView {
     private Client client;
+
+    // private Map<String, List<PlayableCard>> handsMap;
+    private Map<String, Card> playAreasMap;
 
     public CLIView() {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -101,7 +104,7 @@ public class CLIView implements GameView {
     }
 
     public int askForPlayersNumber() {
-        showMessage("Please enter the number of players you would like to play: ");
+        showMessage("Please enter the number of players: ");
         int playersNumber = 0;
 
         playersNumber = readNumber();
@@ -132,32 +135,34 @@ public class CLIView implements GameView {
     }
 
     @Override
-    public void showObjectives(List<ObjectiveCard> objectiveCards) {
-        ObjectiveCardView objectiveCardView = new ObjectiveCardView();
-        showMessage("These are the common objectives:\n");
-        for (ObjectiveCard objectiveCard : objectiveCards) {
-            objectiveCardView.displayObjectiveCardTopBottomLine(objectiveCard);
-            objectiveCardView.displayObjectiveCardMiddleLine(objectiveCard);
-            objectiveCardView.displayObjectiveCardTopBottomLine(objectiveCard);
-        }
-    }
-
-    @Override
     public void showStarterCard(StarterCard starterCard) {
         CardView cardView = new CardView();
 
-        showMessage("This is your starter card:\n");
-        showMessage("Card front:\n");
-        cardView.displayCardFront(starterCard);
-        showMessage("Card back:\n");
-        cardView.displayCardBack(starterCard);
+        showMessage("\nThis is your starter card:\n");
+
+        cardView.displayCardFrontTopLine(starterCard);
+        System.out.print("  ");
+        cardView.displayCardBackTopLine(starterCard);
+        System.out.print("\n");
+
+        cardView.displayCardFrontMiddleLine(starterCard);
+        System.out.print("  ");
+        cardView.displayCardBackMiddleLine(starterCard);
+        System.out.print("\n");
+
+        cardView.displayCardFrontBottomLine(starterCard);
+        System.out.print("  ");
+        cardView.displayCardBackBottomLine(starterCard);
+        System.out.print("\n");
+
+        showMessage("[   0   ]  [   1   ]\n");
     }
 
     public void starterCardSideChoice(StarterCard starterCard) throws IOException {
         int sideChoice = askForSideChoice();
 
         if (sideChoice == 1) {
-           starterCard.setPlayedBack(true);
+            starterCard.setPlayedBack(true);
         }
 
         client.sendMessage(new Message("StarterCard", starterCard));
@@ -174,4 +179,102 @@ public class CLIView implements GameView {
 
         return sideChoice;
     }
+
+    @Override
+    public void showCommonObjectives(List<ObjectiveCard> objectiveCards) {
+        showMessage("\nThese are the common objectives:\n");
+        showObjectives(objectiveCards);
+    }
+
+    public void showSecretObjectives(List<ObjectiveCard> objectiveCards) {
+        showMessage("\nThese are your secret objective cards options:\n");
+        showObjectives(objectiveCards);
+        showMessage("[   0   ]  [   1   ]\n");
+    }
+
+    private void showObjectives(List<ObjectiveCard> objectiveCards) {
+        ObjectiveCardView objectiveCardView = new ObjectiveCardView();
+
+        for (ObjectiveCard objectiveCard : objectiveCards) {
+            if (objectiveCard instanceof ResourceObjectiveCard) {
+                objectiveCardView.displayObjectiveCardTopLine((ResourceObjectiveCard) objectiveCard);
+            } else if (objectiveCard instanceof SpecialObjectiveCard) {
+                objectiveCardView.displayObjectiveCardTopLine((SpecialObjectiveCard) objectiveCard);
+            } else if (objectiveCard instanceof PatternObjectiveCard) {
+                objectiveCardView.displayObjectiveCardTopLine((PatternObjectiveCard) objectiveCard);
+            } else {
+                System.out.println("Objective card error");
+            }
+            System.out.print("  ");
+        }
+        System.out.print("\n");
+
+        for (ObjectiveCard objectiveCard : objectiveCards) {
+            if (objectiveCard instanceof ResourceObjectiveCard) {
+                objectiveCardView.displayObjectiveCardMiddleLine((ResourceObjectiveCard) objectiveCard);
+            } else if (objectiveCard instanceof SpecialObjectiveCard) {
+                objectiveCardView.displayObjectiveCardMiddleLine((SpecialObjectiveCard) objectiveCard);
+            } else if (objectiveCard instanceof PatternObjectiveCard) {
+                objectiveCardView.displayObjectiveCardMiddleLine((PatternObjectiveCard) objectiveCard);
+            } else {
+                System.out.println("Objective card error");
+            }
+            System.out.print("  ");
+        }
+        System.out.print("\n");
+
+        for (ObjectiveCard objectiveCard : objectiveCards) {
+            if (objectiveCard instanceof ResourceObjectiveCard) {
+                objectiveCardView.displayObjectiveCardBottomLine((ResourceObjectiveCard) objectiveCard);
+            } else if (objectiveCard instanceof SpecialObjectiveCard) {
+                objectiveCardView.displayObjectiveCardBottomLine((SpecialObjectiveCard) objectiveCard);
+            } else if (objectiveCard instanceof PatternObjectiveCard) {
+                objectiveCardView.displayObjectiveCardBottomLine((PatternObjectiveCard) objectiveCard);
+            } else {
+                System.out.println("Objective card error");
+            }
+            System.out.print("  ");
+        }
+        System.out.print("\n");
+    }
+
+    public void secretObjectiveCardChoice(List<ObjectiveCard> objectiveCards) throws IOException {
+        int objectiveCardChoice = askForObjectiveCardNumber();
+
+        client.sendMessage(new Message("ObjectiveCardChoice", objectiveCards.get(objectiveCardChoice)));
+    }
+
+    public int askForObjectiveCardNumber() {
+        showMessage("Please enter '0' for objective card 0, '1' for objective card 1: ");
+        int objectiveCardChoice = readNumber();
+
+        while (objectiveCardChoice!=0 && objectiveCardChoice!=1) {
+            System.err.println("Please enter '0' or '1': ");
+            objectiveCardChoice = readNumber();
+        }
+
+        return objectiveCardChoice;
+    }
+
+    public void showMyHand() {
+        showMessage("\nHere is your hand:\n");
+        showPlayerHand(getHandsMap().get(client.getNickname()));
+        showMessage("[   1   ]  [   2   ]  [   3   ]\n");
+    }
+
+    public void showOthersHandsAndPlayAreas() {
+        for (String nickname : getHandsMap().keySet()) {
+            if (!(nickname.equals(client.getNickname()))) {
+                showMessage("\nHere is " + nickname + "'s hand:\n");
+                showPlayerHand(getHandsMap().get(nickname));
+            }
+        }
+    }
+
+    public void showPlayerHand(List<PlayableCard> playerHand) {
+        HandView handView = new HandView();
+
+        handView.displayHand(playerHand);
+    }
+
 }

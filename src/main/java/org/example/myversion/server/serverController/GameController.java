@@ -5,6 +5,7 @@ import org.example.myversion.server.Server;
 import org.example.myversion.server.model.Coordinates;
 import org.example.myversion.server.model.Game;
 import org.example.myversion.server.model.Player;
+import org.example.myversion.server.model.decks.cards.Card;
 import org.example.myversion.server.model.decks.cards.ObjectiveCard;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
 import org.example.myversion.server.model.decks.cards.StarterCard;
@@ -19,7 +20,6 @@ import java.util.*;
  */
 public class GameController {
     private Server server;
-
     public static Game game;
     public List<String> disconnectedPlayers;
     public HashMap<String, Integer> pongLost;
@@ -28,9 +28,9 @@ public class GameController {
     private HashMap<String, Client> rmiClients;
     private GameState gameState;
     public int roundsPlayed;
-    private int maxPlayerNumber;
+    private int playersNumber;
+    private static int readyPlayersNumber = 0;
     private boolean isGameLoaded;
-    private Player firstPlayer;
     private Player lastPlayer;
     private HashMap <Player, Integer> playerRoundsPlayed;
 
@@ -47,11 +47,10 @@ public class GameController {
         this.pongReceived = new ArrayList<>();
         this.tcpClients = new HashMap<>();
         this.rmiClients = new HashMap<>();
-        this.maxPlayerNumber = 0;
+        this.playersNumber = 0;
         this.isGameLoaded = false;
         this.playerRoundsPlayed= new HashMap<>();
         this.gameState = GameState.LOGIN;
-        this.firstPlayer = null;
         this.lastPlayer = null;
     }
 
@@ -83,8 +82,8 @@ public class GameController {
         } else {
             if (!gameIsFull()) {
                 game.newPlayer(nickname);
-                if(game.getPlayers().size()==maxPlayerNumber){
-                    lastPlayer = game.getPlayers().get(maxPlayerNumber-1);
+                if(game.getPlayers().size()== playersNumber){
+                    lastPlayer = game.getPlayers().get(playersNumber -1);
                     newGame();
                 }
             }
@@ -92,18 +91,78 @@ public class GameController {
     }
 
     /**
-     * Method to add a client to the game controller
+     * @return true if the player is the first player, false otherwise
+     */
+    public boolean isFirst() {
+        return tcpClients.size() + rmiClients.size() == 1;
+    }
+
+    public void newGame() {
+        //game = new Game();
+        gameState = GameState.INITIALIZATION;
+        game.initializeGame();
+        initializeRoundMap();
+        roundsPlayed = 0;
+    }
+
+    private void initializeRoundMap (){
+        for (Player player : game.getPlayers())
+            playerRoundsPlayed.put(player, 0);
+    }
+
+    /**
+     * Method to add a TCP client to the game controller
      *
      * @param nickname the nickname of the player
      * @param client   the client associated to the player
      */
-    public void addClient(String nickname, HandleClientSocket client) {
+    public void addClientTCP(String nickname, HandleClientSocket client) {
         tcpClients.put(nickname, client);
     }
 
-    public void addClient(String nickname, Client client) {
+    /**
+     * Method to add an RMI client to the game controller
+     *
+     * @param nickname the nickname of the player
+     * @param client   the client associated to the player
+     */
+    public void addClientRMI(String nickname, Client client) {
         rmiClients.put(nickname, client);
     }
+
+    /**
+     * Sets the secret objective card for the selected player.
+     *
+     * @param player who chose the objective card.
+     * @param objectiveCard chosen objective card.
+     */
+    public void chooseObjectiveCard(Player player, ObjectiveCard objectiveCard){
+        game.setPlayerSecretObjective(player, objectiveCard);
+    }
+
+    public void playStarterCard(Player player, StarterCard starterCard) {
+        game.placeStarterCard(player, starterCard);
+        if (player.equals(lastPlayer)) {
+            gameState = GameState.IN_GAME;
+        }
+    }
+
+    public Player getPlayerFromNickname(String nickname) {
+        Player player = null;
+
+        for(Player p : game.getPlayers()) {
+            if (p.getNickname().equals(nickname))
+                player = p;
+        }
+
+        return player;
+    }
+
+    public void updateReadyPlayersNumber() {
+        readyPlayersNumber = readyPlayersNumber + 1;
+    }
+
+    ///////////////////////////////////////////////////////GETTERS AND SETTERS////////////////////////////////////////////////////////
 
     public HashMap<String, Client> getRmiClients() {
         return rmiClients;
@@ -125,12 +184,12 @@ public class GameController {
         this.gameState = gameState;
     }
 
-    public void setMaxPlayerNumber(int maxPlayerNumber) {
-        this.maxPlayerNumber = maxPlayerNumber;
+    public void setPlayersNumber(int playersNumber) {
+        this.playersNumber = playersNumber;
     }
 
-    public int getMaxPlayerNumber() {
-        return maxPlayerNumber;
+    public int getPlayersNumber() {
+        return playersNumber;
     }
 
     public HashMap<Player, Integer> getPlayerRoundsPlayed() {
@@ -143,27 +202,6 @@ public class GameController {
 
     public Player getLastPlayer() {
         return lastPlayer;
-    }
-
-    public void setFirstPlayer() {
-        this.firstPlayer = game.getPlayers().getFirst();;
-    }
-
-    public Player getFirstPlayer() {
-        return firstPlayer;
-    }
-
-    public void newGame() {
-        //game = new Game();
-        gameState = GameState.INITIALIZATION;
-        game.initializeGame();
-        initializeRoundMap();
-        roundsPlayed = 0;
-    }
-
-    private void initializeRoundMap (){
-        for (Player player : game.getPlayers())
-            playerRoundsPlayed.put(player, 0);
     }
 
     /**
@@ -193,28 +231,29 @@ public class GameController {
         return game.drawStarterCard();
     }
 
-    /**
-     * Sets the secret objective card for the selected player.
-     *
-     * @param player who chose the objective card.
-     * @param card chosen objective card.
-     */
-    public void chooseObjectiveCard(Player player, ObjectiveCard card){
-        game.setPlayerSecretObjective(player, card);
+    public int getReadyPlayersNumber() {
+        return readyPlayersNumber;
     }
 
-    public void playStarterCard(Player player, StarterCard card, int side) throws InvalidGameStateException {
-        if(gameState == GameState.INITIALIZATION) {
-            if (side == 0) {
-                card.setPlayedBack(true);
-            }
-            game.placeStarterCard(player, card);
-            if (player.equals(lastPlayer)) {
-                gameState = GameState.IN_GAME;
-            }
-        } else {
-            throw new InvalidGameStateException("Invalid game state");
+    public Map<String, StarterCard> getStarterCardsMap() {
+        Map<String, StarterCard> starterCardsMap = new HashMap<>();
+
+        for(Player player : game.getPlayers()) {
+            Card[][] playArea = player.getPlayArea();
+            starterCardsMap.put(player.getNickname(), (StarterCard) playArea[41][41]);
         }
+
+        return starterCardsMap;
+    }
+
+    public Map<String, List<PlayableCard>> getPlayersHandsMap() {
+        Map<String, List<PlayableCard>> playersHandsMap = new HashMap<>();
+
+        for(Player player : game.getPlayers()) {
+            playersHandsMap.put(player.getNickname(), player.getHand());
+        }
+
+        return playersHandsMap;
     }
 
     /**
@@ -278,7 +317,7 @@ public class GameController {
     }
 
     public boolean gameIsFull(){
-        if(game.getPlayers().size() == maxPlayerNumber){
+        if(game.getPlayers().size() == playersNumber){
             return true;
         }
         return false;
