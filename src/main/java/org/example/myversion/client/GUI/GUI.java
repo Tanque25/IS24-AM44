@@ -1,5 +1,6 @@
 package org.example.myversion.client.GUI;
 
+import javafx.stage.Stage;
 import org.example.myversion.client.Client;
 import org.example.myversion.client.view.GameView;
 import org.example.myversion.server.model.decks.cards.ObjectiveCard;
@@ -9,6 +10,24 @@ import java.io.IOException;
 import java.util.List;
 
 public class GUI extends GameView {
+
+    Stage stage;
+    public static GUI INSTANCE;
+
+    public GUI() {
+    }
+
+    /**
+     * Singleton pattern
+     * @return the instance of the GUI
+     */
+    public static GUI getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new GUI();
+        }
+        return INSTANCE;
+    }
+
     @Override
     public void setClient(Client client) {
 
