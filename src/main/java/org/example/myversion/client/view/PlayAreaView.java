@@ -10,52 +10,52 @@ import java.util.Map;
 
 public class PlayAreaView {
 
-    public static void main(String[] args) {
-        Card[][] playArea = new Card[21][21];
-
-        playArea[10][10] = new StarterCard(
-                new Resource[]{Resource.INSECT_KINGDOM},
-                Map.of(
-                        CornerPosition.UP_LEFT, new Corner(CornerVisibility.EMPTY),
-                        CornerPosition.UP_RIGHT, new Corner(Resource.PLANT_KINGDOM),
-                        CornerPosition.BOTTOM_LEFT, new Corner(Resource.INSECT_KINGDOM),
-                        CornerPosition.BOTTOM_RIGHT, new Corner(CornerVisibility.EMPTY)
-                ),
-                Map.of(
-                        CornerPosition.UP_LEFT, new Corner(Resource.FUNGI_KINGDOM),
-                        CornerPosition.UP_RIGHT, new Corner(Resource.PLANT_KINGDOM),
-                        CornerPosition.BOTTOM_LEFT, new Corner(Resource.INSECT_KINGDOM),
-                        CornerPosition.BOTTOM_RIGHT, new Corner(Resource.ANIMAL_KINGDOM)
-                )
-        );
-
-        playArea[9][9] = new GoldCard(
-                Resource.FUNGI_KINGDOM,
-                Map.of(
-                        CornerPosition.UP_LEFT,new Corner(CornerVisibility.FULL),
-                        CornerPosition.UP_RIGHT,new Corner(CornerVisibility.EMPTY),
-                        CornerPosition.BOTTOM_LEFT,new Corner(CornerVisibility.EMPTY),
-                        CornerPosition.BOTTOM_RIGHT,new Corner(SpecialObject.QUILL)
-                ),
-                1,
-                new Resource[]{Resource.FUNGI_KINGDOM, Resource.FUNGI_KINGDOM, Resource.ANIMAL_KINGDOM},
-                SpecialObject.QUILL
-        );
-
-        playArea[9][11] = new PlayableCard(
-                Resource.FUNGI_KINGDOM,
-                Map.of(
-                        CornerPosition.UP_LEFT,new Corner(Resource.FUNGI_KINGDOM),
-                        CornerPosition.UP_RIGHT,new Corner(CornerVisibility.EMPTY),
-                        CornerPosition.BOTTOM_LEFT,new Corner(Resource.FUNGI_KINGDOM),
-                        CornerPosition.BOTTOM_RIGHT,new Corner(CornerVisibility.FULL)
-                ),
-                0
-        );
-
-        displayPlayArea(playArea);
-
-    }
+//    public static void main(String[] args) {
+//        Card[][] playArea = new Card[21][21];
+//
+//        playArea[10][10] = new StarterCard(
+//                new Resource[]{Resource.INSECT_KINGDOM},
+//                Map.of(
+//                        CornerPosition.UP_LEFT, new Corner(CornerVisibility.EMPTY),
+//                        CornerPosition.UP_RIGHT, new Corner(Resource.PLANT_KINGDOM),
+//                        CornerPosition.BOTTOM_LEFT, new Corner(Resource.INSECT_KINGDOM),
+//                        CornerPosition.BOTTOM_RIGHT, new Corner(CornerVisibility.EMPTY)
+//                ),
+//                Map.of(
+//                        CornerPosition.UP_LEFT, new Corner(Resource.FUNGI_KINGDOM),
+//                        CornerPosition.UP_RIGHT, new Corner(Resource.PLANT_KINGDOM),
+//                        CornerPosition.BOTTOM_LEFT, new Corner(Resource.INSECT_KINGDOM),
+//                        CornerPosition.BOTTOM_RIGHT, new Corner(Resource.ANIMAL_KINGDOM)
+//                )
+//        );
+//
+//        playArea[9][9] = new GoldCard(
+//                Resource.FUNGI_KINGDOM,
+//                Map.of(
+//                        CornerPosition.UP_LEFT,new Corner(CornerVisibility.FULL),
+//                        CornerPosition.UP_RIGHT,new Corner(CornerVisibility.EMPTY),
+//                        CornerPosition.BOTTOM_LEFT,new Corner(CornerVisibility.EMPTY),
+//                        CornerPosition.BOTTOM_RIGHT,new Corner(SpecialObject.QUILL)
+//                ),
+//                1,
+//                new Resource[]{Resource.FUNGI_KINGDOM, Resource.FUNGI_KINGDOM, Resource.ANIMAL_KINGDOM},
+//                SpecialObject.QUILL
+//        );
+//
+//        playArea[9][11] = new PlayableCard(
+//                Resource.FUNGI_KINGDOM,
+//                Map.of(
+//                        CornerPosition.UP_LEFT,new Corner(Resource.FUNGI_KINGDOM),
+//                        CornerPosition.UP_RIGHT,new Corner(CornerVisibility.EMPTY),
+//                        CornerPosition.BOTTOM_LEFT,new Corner(Resource.FUNGI_KINGDOM),
+//                        CornerPosition.BOTTOM_RIGHT,new Corner(CornerVisibility.FULL)
+//                ),
+//                0
+//        );
+//
+//        displayPlayArea(playArea);
+//
+//    }
 
     public static void displayPlayArea(Card[][] playArea) {
         int[] boundaries = findBoundaries(playArea);

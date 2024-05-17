@@ -2,15 +2,18 @@ package org.example.myversion.client;
 
 import org.example.myversion.client.view.GameView;
 import org.example.myversion.messages.Message;
+import org.example.myversion.server.model.Game;
 import org.example.myversion.server.model.decks.ObjectiveDeck;
 import org.example.myversion.server.model.decks.cards.Card;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
+import org.example.myversion.server.model.decks.cards.StarterCard;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -24,9 +27,6 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
     private GameView gameView;
     private boolean serverConnection;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
-    private Map<String, PlayableCard[]> handsMap;
-    private Map<String, Card> playAreasMap;
 
     private final Object lock;
 
@@ -103,6 +103,16 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                     throw new RuntimeException(e);
                 }
             }
+            case "StartCondition" -> {
+                gameView.setHandsMap(message.getPlayersHandsMap());
+
+                gameView.showOthersHandsAndPlayAreas();
+                gameView.showMyHand();
+
+
+                Map<String, StarterCard> starterCardsMap = message.getStarterCardsMap();
+                // TODO: place the starter cards in the corresponding player's play area
+            }
             default -> throw new IllegalArgumentException("Invalid messageCode: " + messageCode);
         }
     }
@@ -161,7 +171,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
         this.nickname = nickname;
     }
 
-    public String getNickname() throws RemoteException {
+    public String getNickname() {
         return this.nickname;
     }
 }

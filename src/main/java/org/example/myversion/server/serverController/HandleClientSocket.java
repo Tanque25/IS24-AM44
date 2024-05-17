@@ -132,10 +132,7 @@ public class HandleClientSocket implements ServerInterface, Runnable {
 
                 // When all the players are ready, the servers sends every player the other players' hands and play areas and starts the turns cycle
                 if(controller.getReadyPlayersNumber() == controller.getPlayersNumber()){
-                    // TODO send all players hands and starter cards
-                    // I've implemented the message constructor to send the hands and the starter cards
-                    // I've implemented the controller's methods to get the necessary information from the game model
-                    // TODO the turns start
+                    sendStartCondition();
                 }
             }
 

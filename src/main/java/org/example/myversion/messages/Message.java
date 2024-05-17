@@ -142,7 +142,7 @@ public class Message implements Serializable {
                 .build();
     }
 
-    public Message(String messageCode, Map<String, StarterCard> starterCards, Map<String, PlayableCard[]> playersHands) {
+    public Message(String messageCode, Map<String, StarterCard> starterCards, Map<String, List<PlayableCard>> playersHands) {
         JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
         jsonBuilder.add("messageCode", messageCode);
 
@@ -155,7 +155,7 @@ public class Message implements Serializable {
 
         // Serialize the playersHands map
         JsonObjectBuilder playersHandsJson = Json.createObjectBuilder();
-        for (Map.Entry<String, PlayableCard[]> entry : playersHands.entrySet()) {
+        for (Map.Entry<String, List<PlayableCard>> entry : playersHands.entrySet()) {
             playersHandsJson.add(entry.getKey(), createPlayableCardsJson(entry.getValue()));
         }
         jsonBuilder.add("playersHands", playersHandsJson);
@@ -163,6 +163,7 @@ public class Message implements Serializable {
         // Build the final JSON object
         json = jsonBuilder.build();
     }
+
 
     /**
      * Constructs a Message object representing a message containing coordinates.
@@ -296,7 +297,7 @@ public class Message implements Serializable {
                 .build();
     }
 
-    private JsonArray createPlayableCardsJson(PlayableCard[] playableCards) {
+    private JsonArray createPlayableCardsJson(List<PlayableCard> playableCards) {
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         for (PlayableCard card : playableCards) {
             arrayBuilder.add(createPlayableCardJson(card));

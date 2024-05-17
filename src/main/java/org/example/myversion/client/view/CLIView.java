@@ -9,9 +9,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Map;
 
-public class CLIView implements GameView {
+public class CLIView extends GameView {
     private Client client;
+
+    // private Map<String, List<PlayableCard>> handsMap;
+    private Map<String, Card> playAreasMap;
 
     public CLIView() {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -100,7 +104,7 @@ public class CLIView implements GameView {
     }
 
     public int askForPlayersNumber() {
-        showMessage("Please enter the number of players you would like to play: ");
+        showMessage("Please enter the number of players: ");
         int playersNumber = 0;
 
         playersNumber = readNumber();
@@ -135,10 +139,23 @@ public class CLIView implements GameView {
         CardView cardView = new CardView();
 
         showMessage("\nThis is your starter card:\n");
-        showMessage("Card front:\n");
-        cardView.displayCardFront(starterCard);
-        showMessage("Card back:\n");
-        cardView.displayCardBack(starterCard);
+
+        cardView.displayCardFrontTopLine(starterCard);
+        System.out.print("  ");
+        cardView.displayCardBackTopLine(starterCard);
+        System.out.print("\n");
+
+        cardView.displayCardFrontMiddleLine(starterCard);
+        System.out.print("  ");
+        cardView.displayCardBackMiddleLine(starterCard);
+        System.out.print("\n");
+
+        cardView.displayCardFrontBottomLine(starterCard);
+        System.out.print("  ");
+        cardView.displayCardBackBottomLine(starterCard);
+        System.out.print("\n");
+
+        showMessage("[   0   ]  [   1   ]\n");
     }
 
     public void starterCardSideChoice(StarterCard starterCard) throws IOException {
@@ -172,7 +189,7 @@ public class CLIView implements GameView {
     public void showSecretObjectives(List<ObjectiveCard> objectiveCards) {
         showMessage("\nThese are your secret objective cards options:\n");
         showObjectives(objectiveCards);
-        showMessage("|   0   |  |   1   |\n");
+        showMessage("[   0   ]  [   1   ]\n");
     }
 
     private void showObjectives(List<ObjectiveCard> objectiveCards) {
@@ -238,4 +255,26 @@ public class CLIView implements GameView {
 
         return objectiveCardChoice;
     }
+
+    public void showMyHand() {
+        showMessage("\nHere is your hand:\n");
+        showPlayerHand(getHandsMap().get(client.getNickname()));
+        showMessage("[   1   ]  [   2   ]  [   3   ]\n");
+    }
+
+    public void showOthersHandsAndPlayAreas() {
+        for (String nickname : getHandsMap().keySet()) {
+            if (!(nickname.equals(client.getNickname()))) {
+                showMessage("\nHere is " + nickname + "'s hand:\n");
+                showPlayerHand(getHandsMap().get(nickname));
+            }
+        }
+    }
+
+    public void showPlayerHand(List<PlayableCard> playerHand) {
+        HandView handView = new HandView();
+
+        handView.displayHand(playerHand);
+    }
+
 }

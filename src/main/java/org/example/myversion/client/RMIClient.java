@@ -45,7 +45,7 @@ public class RMIClient extends Client {
         }
     }
 
-    public String getNickname() throws RemoteException {
+    public String getNickname() {
         return nickname;
     }
 

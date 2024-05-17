@@ -187,11 +187,7 @@ public interface ServerInterface extends Remote{
     }
     default void startPingThread(Client client) throws RemoteException {
         String username = null;
-        try {
-            username = client.getNickname();
-        } catch (RemoteException e) {
-            System.err.println("Error while getting username from client.");
-        }
+        username = client.getNickname();
         String finalUsername = username;
 
         Thread checkThread = new Thread(() -> {
@@ -246,6 +242,15 @@ public interface ServerInterface extends Remote{
     default void sendStartCondition() {
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
         HashMap<String, Client> rmiClients = controller.getRmiClients();
+
+        for (String nickname : tcpClients.keySet()) {
+            Message startConditionMessage = new Message("StartCondition", controller.getStarterCardsMap(), controller.getPlayersHandsMap());
+            tcpClients.get(nickname).sendMessageToClient(startConditionMessage);
+        }
+
+        // TODO: do the same for the RMI clients
+
+        // TODO: the turns start
     }
 
 

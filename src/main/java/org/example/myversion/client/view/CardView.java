@@ -43,7 +43,7 @@ public class CardView {
 //
 //    }
 
-    ///////////////////////////////////////////////////////STARTER CARD////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////STARTER CARD FRONT////////////////////////////////////////////////////////
 
     public static void displayCardFront(StarterCard starterCard) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -149,6 +149,8 @@ public class CardView {
         System.out.print(stringBuilder);
     }
 
+    ///////////////////////////////////////////////////////STARTER CARD BACK////////////////////////////////////////////////////////
+
     public static void displayCardBack(StarterCard starterCard) {
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -169,6 +171,39 @@ public class CardView {
 
         System.out.print(stringBuilder);
     }
+
+    public static void displayCardBackTopLine(StarterCard starterCard) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        // Top line of the card
+        stringBuilder.append(starterCard.getBackCorner().get(CornerPosition.UP_LEFT).getCornerContent().getShortName());
+        stringBuilder.append("-------");
+        stringBuilder.append(starterCard.getBackCorner().get(CornerPosition.UP_RIGHT).getCornerContent().getShortName());
+
+        System.out.print(stringBuilder);
+    }
+
+    public static void displayCardBackMiddleLine(StarterCard starterCard) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        // Middle line of the card
+        stringBuilder.append("|       |");
+
+        System.out.print(stringBuilder);
+    }
+
+    public static void displayCardBackBottomLine(StarterCard starterCard) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        // Bottom line of the card
+        stringBuilder.append(starterCard.getBackCorner().get(CornerPosition.BOTTOM_LEFT).getCornerContent().getShortName());
+        stringBuilder.append("-------");
+        stringBuilder.append(starterCard.getBackCorner().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().getShortName());
+
+        System.out.print(stringBuilder);
+    }
+
+    ///////////////////////////////////////////////////////PLAYABLE CARD////////////////////////////////////////////////////////
 
     public static void displayCardFront(PlayableCard playableCard) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -229,6 +264,66 @@ public class CardView {
 
         System.out.print(stringBuilder);
     }
+
+    ///////////////////////////////////////////////////////PLAYABLE CARD BACK////////////////////////////////////////////////////////
+
+    public static void displayCardBack(PlayableCard playableCard) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        // Top line of the card
+        stringBuilder.append("E");
+        stringBuilder.append("-------");
+        stringBuilder.append("E");
+        stringBuilder.append("\n");
+
+        // Middle line of the card
+        stringBuilder.append("|   ");
+        stringBuilder.append(playableCard.getResource().getShortName());
+        stringBuilder.append("   |\n");
+
+        // Bottom line of the card
+        stringBuilder.append("E");
+        stringBuilder.append("-------");
+        stringBuilder.append("E");
+        stringBuilder.append("\n");
+
+        System.out.println(stringBuilder);
+    }
+
+    public static void displayCardBackTopLine(PlayableCard playableCard) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        // Top line of the card
+        stringBuilder.append("E");
+        stringBuilder.append("-------");
+        stringBuilder.append("E");
+
+        System.out.print(stringBuilder);
+    }
+
+    public static void displayCardBackMiddleLine(PlayableCard playableCard) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        // Middle line of the card
+        stringBuilder.append("|   ");
+        stringBuilder.append(playableCard.getResource().getShortName());
+        stringBuilder.append("   |");
+
+        System.out.print(stringBuilder);
+    }
+
+    public static void displayCardBackBottomLine(PlayableCard playableCard) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        // Bottom line of the card
+        stringBuilder.append("E");
+        stringBuilder.append("-------");
+        stringBuilder.append("E");
+
+        System.out.print(stringBuilder);
+    }
+
+    ///////////////////////////////////////////////////////GOLD CARD////////////////////////////////////////////////////////
 
     public static void displayCardFront(GoldCard goldCard) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -390,92 +485,7 @@ public class CardView {
         System.out.print(stringBuilder);
     }
 
-    public static void displayCardBackTopLine(StarterCard starterCard) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        // Top line of the card
-        stringBuilder.append(starterCard.getCorners().get(CornerPosition.UP_LEFT).getCornerContent().getShortName());
-        stringBuilder.append("-------");
-        stringBuilder.append(starterCard.getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().getShortName());
-
-        System.out.print(stringBuilder);
-    }
-
-    public static void displayCardBackMiddleLine(StarterCard starterCard) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        // Middle line of the card
-        stringBuilder.append("|       |");
-
-        System.out.print(stringBuilder);
-    }
-
-    public static void displayCardBackBottomLine(StarterCard starterCard) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        // Bottom line of the card
-        stringBuilder.append(starterCard.getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().getShortName());
-        stringBuilder.append("-------");
-        stringBuilder.append(starterCard.getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().getShortName());
-
-        System.out.print(stringBuilder);
-    }
-
-    public static void displayCardBack(PlayableCard playableCard) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        // Top line of the card
-        stringBuilder.append("E");
-        stringBuilder.append("-------");
-        stringBuilder.append("E");
-        stringBuilder.append("\n");
-
-        // Middle line of the card
-        stringBuilder.append("|   ");
-        stringBuilder.append(playableCard.getResource().getShortName());
-        stringBuilder.append("   |\n");
-
-        // Bottom line of the card
-        stringBuilder.append("E");
-        stringBuilder.append("-------");
-        stringBuilder.append("E");
-        stringBuilder.append("\n");
-
-        System.out.println(stringBuilder);
-    }
-
-    public static void displayCardBackTopLine(PlayableCard playableCard) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        // Top line of the card
-        stringBuilder.append("E");
-        stringBuilder.append("-------");
-        stringBuilder.append("E");
-
-        System.out.print(stringBuilder);
-    }
-
-    public static void displayCardBackMiddleLine(PlayableCard playableCard) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        // Middle line of the card
-        stringBuilder.append("|   ");
-        stringBuilder.append(playableCard.getResource().getShortName());
-        stringBuilder.append("   |");
-
-        System.out.print(stringBuilder);
-    }
-
-    public static void displayCardBackBottomLine(PlayableCard playableCard) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        // Bottom line of the card
-        stringBuilder.append("E");
-        stringBuilder.append("-------");
-        stringBuilder.append("E");
-
-        System.out.print(stringBuilder);
-    }
+    ///////////////////////////////////////////////////////EMPTY SLOT AND PLACE OPTION////////////////////////////////////////////////////////
 
     public static void displayEmptySlotLine() {
         // Line of the empty slot

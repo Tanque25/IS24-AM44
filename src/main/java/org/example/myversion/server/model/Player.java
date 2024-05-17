@@ -34,6 +34,7 @@ public class Player {
     public Player(String nickname) {
         this.nickname = nickname;
         this.connected = true;
+        this.hand = new ArrayList<>();
         this.playArea = new Card[81][81];
         initializeStock();
     }
@@ -171,6 +172,7 @@ public class Player {
      * @param coordinates The x-coordinate and y-coordinate position.
      */
     public void placeCard(PlayableCard placedCard, Coordinates coordinates) {
+        // TODO: I think that this has been added for a test but shouldn't be here
         if (hand==null)
             hand=new ArrayList<>();
 
