@@ -131,7 +131,7 @@ public class GoldDeck{
                 ),
                 3,
                 new Resource[]{Resource.FUNGI_KINGDOM, Resource.FUNGI_KINGDOM, Resource.FUNGI_KINGDOM},
-                ParameterType.EMPTY, 048
+                ParameterType.EMPTY, 48
         )); // 48
 
         goldDeck.push(new GoldCard(
@@ -144,7 +144,7 @@ public class GoldDeck{
                 ),
                 3,
                 new Resource[]{Resource.FUNGI_KINGDOM, Resource.FUNGI_KINGDOM, Resource.FUNGI_KINGDOM},
-                ParameterType.EMPTY, 049
+                ParameterType.EMPTY, 49
         )); // 49
 
         goldDeck.push(new GoldCard(
@@ -261,7 +261,7 @@ public class GoldDeck{
                 ),
                 3,
                 new Resource[]{Resource.PLANT_KINGDOM, Resource.PLANT_KINGDOM, Resource.PLANT_KINGDOM},
-                ParameterType.EMPTY, 058
+                ParameterType.EMPTY, 58
         )); // 58
 
         goldDeck.push(new GoldCard(
@@ -274,7 +274,7 @@ public class GoldDeck{
                 ),
                 3,
                 new Resource[]{Resource.PLANT_KINGDOM, Resource.PLANT_KINGDOM, Resource.PLANT_KINGDOM},
-                ParameterType.EMPTY, 059
+                ParameterType.EMPTY, 59
         )); // 59
 
         goldDeck.push(new GoldCard(
@@ -391,7 +391,7 @@ public class GoldDeck{
                 ),
                 3,
                 new Resource[]{Resource.ANIMAL_KINGDOM, Resource.ANIMAL_KINGDOM, Resource.ANIMAL_KINGDOM},
-                ParameterType.EMPTY, 068
+                ParameterType.EMPTY, 68
         )); // 68
 
         goldDeck.push(new GoldCard(
@@ -404,7 +404,7 @@ public class GoldDeck{
                 ),
                 3,
                 new Resource[]{Resource.ANIMAL_KINGDOM, Resource.ANIMAL_KINGDOM, Resource.ANIMAL_KINGDOM},
-                ParameterType.EMPTY, 069
+                ParameterType.EMPTY, 69
         )); // 69
 
         goldDeck.push(new GoldCard(
@@ -521,7 +521,7 @@ public class GoldDeck{
                 ),
                 3,
                 new Resource[]{Resource.INSECT_KINGDOM, Resource.INSECT_KINGDOM, Resource.INSECT_KINGDOM},
-                ParameterType.EMPTY, 078
+                ParameterType.EMPTY, 78
         )); // 78
 
         goldDeck.push(new GoldCard(
@@ -534,7 +534,7 @@ public class GoldDeck{
                 ),
                 3,
                 new Resource[]{Resource.INSECT_KINGDOM, Resource.INSECT_KINGDOM, Resource.INSECT_KINGDOM},
-                ParameterType.EMPTY, 079
+                ParameterType.EMPTY, 79
         )); // 79
 
         goldDeck.push(new GoldCard(
@@ -547,7 +547,7 @@ public class GoldDeck{
                 ),
                 5,
                 new Resource[]{Resource.INSECT_KINGDOM, Resource.INSECT_KINGDOM, Resource.INSECT_KINGDOM, Resource.INSECT_KINGDOM, Resource.INSECT_KINGDOM},
-                ParameterType.EMPTY, 080
+                ParameterType.EMPTY, 80
         )); // 80
 
         Collections.shuffle(goldDeck);

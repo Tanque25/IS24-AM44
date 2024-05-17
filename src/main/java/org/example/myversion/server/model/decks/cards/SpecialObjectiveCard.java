@@ -20,8 +20,8 @@ public class SpecialObjectiveCard extends ObjectiveCard{
      * @param cardPoints specifies the points awarded to the player upon accomplishing its objective.
      * @param objective specifies which and how many special objects the player needs to have in his play area.
      */
-    public SpecialObjectiveCard(int cardPoints, SpecialObject[] objective) {
-        super(cardPoints);
+    public SpecialObjectiveCard(int cardPoints, SpecialObject[] objective, int id) {
+        super(cardPoints, id);
         this.objective = objective;
     }
 
