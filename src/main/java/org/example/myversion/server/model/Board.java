@@ -9,6 +9,7 @@ import java.util.Map;
  * This class maintains a mapping between players and their respective scores.
  */
 public class Board {
+
     private HashMap<Player, Integer> scores;
 
 
@@ -17,6 +18,10 @@ public class Board {
      */
     public Board() {
         this.scores = new HashMap<Player, Integer>();
+    }
+
+    public HashMap<Player, Integer> getScores() {
+        return scores;
     }
 
     public void initializePlayerScores(List<Player> players) {

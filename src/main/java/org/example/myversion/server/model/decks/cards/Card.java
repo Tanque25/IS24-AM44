@@ -48,7 +48,7 @@ public abstract class Card {
     public boolean isPlayedBack() {
         return playedBack;
     }
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
