@@ -120,6 +120,10 @@ public class GameController {
         tcpClients.put(nickname, client);
     }
 
+    public boolean isTCP(String nickname) {
+        return tcpClients.containsKey(nickname);
+    }
+
     /**
      * Method to add an RMI client to the game controller
      *
@@ -128,6 +132,10 @@ public class GameController {
      */
     public void addClientRMI(String nickname, Client client) {
         rmiClients.put(nickname, client);
+    }
+
+    public boolean isRMI(String nickname) {
+        return rmiClients.containsKey(nickname);
     }
 
     /**
@@ -160,6 +168,10 @@ public class GameController {
 
     public void updateReadyPlayersNumber() {
         readyPlayersNumber = readyPlayersNumber + 1;
+    }
+
+    public Player getCurrentPlayer() {
+        return game.getCurrentPlayer();
     }
 
     ///////////////////////////////////////////////////////GETTERS AND SETTERS////////////////////////////////////////////////////////
@@ -401,10 +413,7 @@ public class GameController {
      * @return True if the game has started, false otherwise.
      */
     public boolean isGameStarted(){
-        if(gameState.equals(GameState.IN_GAME) || gameState.equals(GameState.LAST_ROUND)){
-            return true;
-        }
-        return false;
+        return gameState.equals(GameState.IN_GAME) || gameState.equals(GameState.LAST_ROUND);
     }
 
     /**
@@ -412,7 +421,6 @@ public class GameController {
      * This method will be called to switch the turn to the next player.
      */
     public void changeTurn() {
-
         if (isGameStarted() || gameState == GameState.INITIALIZATION){
             game.updateCurrentPlayer();
         }

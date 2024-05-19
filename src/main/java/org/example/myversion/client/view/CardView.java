@@ -176,9 +176,17 @@ public class CardView {
         StringBuilder stringBuilder = new StringBuilder();
 
         // Top line of the card
-        stringBuilder.append(starterCard.getBackCorner().get(CornerPosition.UP_LEFT).getCornerContent().getShortName());
+        if(starterCard.getBackCorner().get(CornerPosition.UP_LEFT).isCovered())
+            stringBuilder.append("X");
+        else
+            stringBuilder.append(starterCard.getBackCorner().get(CornerPosition.UP_LEFT).getCornerContent().getShortName());
+
         stringBuilder.append("-------");
-        stringBuilder.append(starterCard.getBackCorner().get(CornerPosition.UP_RIGHT).getCornerContent().getShortName());
+
+        if(starterCard.getBackCorner().get(CornerPosition.UP_RIGHT).isCovered())
+            stringBuilder.append("X");
+        else
+            stringBuilder.append(starterCard.getBackCorner().get(CornerPosition.UP_RIGHT).getCornerContent().getShortName());
 
         System.out.print(stringBuilder);
     }
@@ -196,9 +204,17 @@ public class CardView {
         StringBuilder stringBuilder = new StringBuilder();
 
         // Bottom line of the card
-        stringBuilder.append(starterCard.getBackCorner().get(CornerPosition.BOTTOM_LEFT).getCornerContent().getShortName());
+        if(starterCard.getBackCorner().get(CornerPosition.BOTTOM_LEFT).isCovered())
+            stringBuilder.append("X");
+        else
+            stringBuilder.append(starterCard.getBackCorner().get(CornerPosition.BOTTOM_LEFT).getCornerContent().getShortName());
+
         stringBuilder.append("-------");
-        stringBuilder.append(starterCard.getBackCorner().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().getShortName());
+
+        if(starterCard.getBackCorner().get(CornerPosition.BOTTOM_RIGHT).isCovered())
+            stringBuilder.append("X");
+        else
+            stringBuilder.append(starterCard.getBackCorner().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().getShortName());
 
         System.out.print(stringBuilder);
     }
@@ -209,11 +225,20 @@ public class CardView {
         StringBuilder stringBuilder = new StringBuilder();
 
         // Top line of the card
-        stringBuilder.append(playableCard.getCorners().get(CornerPosition.UP_LEFT).getCornerContent().getShortName());
+        if(playableCard.getCorners().get(CornerPosition.UP_LEFT).isCovered())
+            stringBuilder.append("X");
+        else
+            stringBuilder.append(playableCard.getCorners().get(CornerPosition.UP_LEFT).getCornerContent().getShortName());
+
         stringBuilder.append("---");
         stringBuilder.append(playableCard.getCardPoints());
         stringBuilder.append("---");
-        stringBuilder.append(playableCard.getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().getShortName());
+
+        if(playableCard.getCorners().get(CornerPosition.UP_RIGHT).isCovered())
+            stringBuilder.append("X");
+        else
+            stringBuilder.append(playableCard.getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().getShortName());
+
         stringBuilder.append("\n");
 
         // Middle line of the card
@@ -222,9 +247,17 @@ public class CardView {
         stringBuilder.append("   |\n");
 
         // Bottom line of the card
-        stringBuilder.append(playableCard.getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().getShortName());
+        if(playableCard.getCorners().get(CornerPosition.UP_LEFT).isCovered())
+            stringBuilder.append("X");
+        else
+            stringBuilder.append(playableCard.getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().getShortName());
+
         stringBuilder.append("-------");
-        stringBuilder.append(playableCard.getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().getShortName());
+        if(playableCard.getCorners().get(CornerPosition.UP_RIGHT).isCovered())
+            stringBuilder.append("X");
+        else
+            stringBuilder.append(playableCard.getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().getShortName());
+
         stringBuilder.append("\n");
 
         System.out.println(stringBuilder);
@@ -234,11 +267,19 @@ public class CardView {
         StringBuilder stringBuilder = new StringBuilder();
 
         // Top line of the card
-        stringBuilder.append(playableCard.getCorners().get(CornerPosition.UP_LEFT).getCornerContent().getShortName());
+        if(playableCard.getCorners().get(CornerPosition.UP_LEFT).isCovered())
+            stringBuilder.append("X");
+        else
+            stringBuilder.append(playableCard.getCorners().get(CornerPosition.UP_LEFT).getCornerContent().getShortName());
+
         stringBuilder.append("---");
         stringBuilder.append(playableCard.getCardPoints());
         stringBuilder.append("---");
-        stringBuilder.append(playableCard.getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().getShortName());
+
+        if(playableCard.getCorners().get(CornerPosition.UP_RIGHT).isCovered())
+            stringBuilder.append("X");
+        else
+            stringBuilder.append(playableCard.getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().getShortName());
 
         System.out.print(stringBuilder);
     }
@@ -258,9 +299,16 @@ public class CardView {
         StringBuilder stringBuilder = new StringBuilder();
 
         // Bottom line of the card
-        stringBuilder.append(playableCard.getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().getShortName());
+        if(playableCard.getCorners().get(CornerPosition.UP_LEFT).isCovered())
+            stringBuilder.append("X");
+        else
+            stringBuilder.append(playableCard.getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().getShortName());
+
         stringBuilder.append("-------");
-        stringBuilder.append(playableCard.getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().getShortName());
+        if(playableCard.getCorners().get(CornerPosition.UP_RIGHT).isCovered())
+            stringBuilder.append("X");
+        else
+            stringBuilder.append(playableCard.getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().getShortName());
 
         System.out.print(stringBuilder);
     }

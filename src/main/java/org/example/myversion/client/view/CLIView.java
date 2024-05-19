@@ -3,6 +3,7 @@ package org.example.myversion.client.view;
 import org.example.myversion.client.Client;
 import org.example.myversion.client.CodexNaturalis;
 import org.example.myversion.messages.Message;
+import org.example.myversion.server.model.Coordinates;
 import org.example.myversion.server.model.decks.cards.*;
 
 import java.io.BufferedReader;
@@ -245,7 +246,7 @@ public class CLIView extends GameView {
     }
 
     public int askForObjectiveCardNumber() {
-        showMessage("Please enter '0' for objective card 0, '1' for objective card 1: ");
+        showMessage("Please enter '0' or '1' to choose your secret objective card: ");
         int objectiveCardChoice = readNumber();
 
         while (objectiveCardChoice!=0 && objectiveCardChoice!=1) {
@@ -259,22 +260,65 @@ public class CLIView extends GameView {
     public void showMyHand() {
         showMessage("\nHere is your hand:\n");
         showPlayerHand(getHandsMap().get(client.getNickname()));
-        showMessage("[   1   ]  [   2   ]  [   3   ]\n");
+        // showMessage("[   1   ]  [   2   ]  [   3   ]\n");
+    }
+
+    public void showMyPlayArea() {
+        showMessage("\nHere is your play area:\n");
+        showPlayerPlayArea(getPlayAreasMap().get(client.getNickname()));
     }
 
     public void showOthersHandsAndPlayAreas() {
         for (String nickname : getHandsMap().keySet()) {
             if (!(nickname.equals(client.getNickname()))) {
+                showMessage("\nHere is " + nickname + "'s play area:\n");
+                showPlayerPlayArea(getPlayAreasMap().get(nickname));
+
                 showMessage("\nHere is " + nickname + "'s hand:\n");
                 showPlayerHand(getHandsMap().get(nickname));
             }
         }
     }
 
+    public void showPlayerPlayArea(Card[][] playArea) {
+        PlayAreaView playAreaView = new PlayAreaView();
+        playAreaView.displayOtherPlayArea(playArea);
+    }
+
     public void showPlayerHand(List<PlayableCard> playerHand) {
         HandView handView = new HandView();
-
         handView.displayHand(playerHand);
+    }
+
+    public void chooseCardToPlay() throws IOException {
+        int cardToPlayChoice = askForCardToPlayChoice();
+        Coordinates coordinates = askForCoordinatesChoice();
+
+        List<PlayableCard> hand = getHandsMap().get(client.getNickname());
+        PlayableCard chosenCard = hand.get(cardToPlayChoice);
+
+        client.sendMessage(new Message("CardToPlayChoice", chosenCard, coordinates));
+    }
+
+    public int askForCardToPlayChoice() {
+        showMessage("\nPlease enter '0', '1' or '2' to choose the card to play: ");
+        int cardToPlayChoice = readNumber();
+
+        while (cardToPlayChoice!=0 && cardToPlayChoice!=1 && cardToPlayChoice!=2) {
+            System.err.println("Please enter '0', '1' or '2': ");
+            cardToPlayChoice = readNumber();
+        }
+
+        return cardToPlayChoice;
+    }
+
+    public Coordinates askForCoordinatesChoice() {
+        showMessage("\nPlease enter the x coordinate where to place the card: ");
+        int xCoordinate = readNumber();
+        showMessage("\nPlease enter the y coordinate where to place the card: ");
+        int yCoordinate = readNumber();
+
+        return new Coordinates(xCoordinate, yCoordinate);
     }
 
 }

@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public abstract class GameView {
     private Map<String, List<PlayableCard>> handsMap = new HashMap<>();
-    private Map<String, Card> playAreasMap = new HashMap<>();
+    private Map<String, Card[][]> playAreasMap = new HashMap<>();
 
     protected Map<String, List<PlayableCard>> getHandsMap() {
         return handsMap;
@@ -26,12 +26,20 @@ public abstract class GameView {
         this.handsMap = handsMap;
     }
 
-    protected Map<String, Card> getPlayAreasMap() {
+    protected Map<String, Card[][]> getPlayAreasMap() {
         return playAreasMap;
     }
 
-    public void setPlayAreasMap(Map<String, Card> playAreasMap) {
+    public void setPlayAreasMap(Map<String, Card[][]> playAreasMap) {
         this.playAreasMap = playAreasMap;
+    }
+
+    public void initializePlayAreas(Map<String, StarterCard> starterCards) {
+        for (String nickname : starterCards.keySet()) {
+            Card[][] playArea = new Card[81][81];
+            playArea[41][41] = starterCards.get(nickname);
+            playAreasMap.put(nickname, playArea);
+        }
     }
 
     public abstract void setClient(Client client);
@@ -62,5 +70,9 @@ public abstract class GameView {
 
     public abstract void showMyHand();
 
+    public abstract void showMyPlayArea();
+
     public abstract void showOthersHandsAndPlayAreas();
+
+    public abstract void chooseCardToPlay() throws IOException;
 }
