@@ -99,7 +99,17 @@ public class GUI extends GameView {
     }
 
     @Override
+    public void showMyPlayArea() {
+
+    }
+
+    @Override
     public void showOthersHandsAndPlayAreas() {
+
+    }
+
+    @Override
+    public void chooseCardToPlay() throws IOException {
 
     }
 }
