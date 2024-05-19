@@ -48,10 +48,10 @@ public abstract class Card {
     public boolean isPlayedBack() {
         return playedBack;
     }
+
     public int getId() {
         return id;
     }
-
 
     public abstract Resource getPlayableResource();
 }
