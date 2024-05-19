@@ -1,7 +1,6 @@
 package org.example.myversion.server.serverController;
 
 import org.example.myversion.messages.Message;
-import org.example.myversion.server.model.decks.cards.PlayableCard;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
 import org.example.myversion.server.model.exceptions.InvalidNicknameException;
@@ -12,10 +11,9 @@ import java.net.Socket;
 import jakarta.json.*;
 
 import java.rmi.RemoteException;
-import java.util.Objects;
 
 
-public class HandleClientSocket implements ServerInterface, Runnable {
+public class HandleClientSocket implements CommunicationInterface, Runnable {
 
     private final Socket clientSocket;
     private GameController controller;
@@ -195,34 +193,6 @@ public class HandleClientSocket implements ServerInterface, Runnable {
 
     public String getNickname() {
         return Nickname;
-    }
-
-    public void startPingThread(HandleClientSocket client) throws RemoteException {
-        String finalUsername = client.getNickname();
-
-        System.out.println("Starting ping thread for " + client.getNickname());
-
-        Thread checkThread = new Thread(() -> {
-            while (true) {
-                try {
-                    Thread.sleep(20000);
-                    if (!controller.pongReceived.contains(finalUsername) && !controller.disconnectedPlayers.contains(finalUsername)) {
-                        System.err.println("Ping not received from " + finalUsername + ". Disconnecting.");
-                        Thread.sleep(10000);
-                        if (!controller.pongReceived.contains(finalUsername)) {
-                            //disconnect(finalUsername);
-                            break;
-                        }
-                    } else {
-                        controller.pongReceived.remove(finalUsername);
-                    }
-                } catch (InterruptedException ignored) {
-                    System.out.println("Ping thread interrupted.");
-                }
-            }
-        });
-        //controller.addCheckThread(checkThread);
-        checkThread.start();
     }
 }
 
