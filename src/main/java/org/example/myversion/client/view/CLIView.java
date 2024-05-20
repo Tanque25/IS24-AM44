@@ -56,6 +56,7 @@ public class CLIView extends GameView {
         showGameTitle();
         String nickname = showLogin();
         client.sendMessage(new Message("Login", nickname));
+        System.out.println("messaggio inviato, aspetta");
     }
 
     public void showGameTitle() {

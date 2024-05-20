@@ -15,6 +15,12 @@ public class RMIClient extends Client {
     private Registry registry;
     private CommunicationInterface server;
     public RMIClient() throws RemoteException {
+        super();
+        try {
+            connect();
+        } catch (IOException | NotBoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -26,7 +32,9 @@ public class RMIClient extends Client {
     @Override
     public void connect() throws IOException, NotBoundException {
         registry = LocateRegistry.getRegistry("127.0.0.1", CommunicationInterface.RMI_PORT);
+
         server = (CommunicationInterface) registry.lookup("CommunicationInterface");
+
     }
 
     /**

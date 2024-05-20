@@ -108,21 +108,26 @@ public class GUI extends GameView {
         VBox vbox = new VBox();
         HBox hbox = new HBox();
         Label label = new Label("Choose the side to play your starter card: ");
-        Image imgFront = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + starterCard.getId().toString() + ".png").toExternalForm());
-        ImageView imgViewFront = new ImageView(imgFront);
-        Image imgBack = new Image(getClass().getResource("org/example/myversion/cards_gold_back" + starterCard.getId().toString() + ".png").toExternalForm());
-        ImageView imgViewBack = new ImageView(imgBack);
-        hbox.getChildren().addAll(imgViewFront, imgViewBack);
-        vbox.getChildren().addAll(label, hbox);
+        //Image imgFront = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + starterCard.getId().toString() + ".png").toExternalForm());
+        //ImageView imgViewFront = new ImageView(imgFront);
+        //Image imgBack = new Image(getClass().getResource("org/example/myversion/cards_gold_back" + starterCard.getId().toString() + ".png").toExternalForm());
+        //ImageView imgViewBack = new ImageView(imgBack);
+        //hbox.getChildren().addAll(imgViewFront, imgViewBack);
+        //vbox.getChildren().addAll(label, hbox);
+    }
+
+    @Override
+    public void showMyHand() {
+
     }
 
 
     public HBox showMyHand(List<PlayableCard> hand) {
         HBox hbox = new HBox();
         for(PlayableCard card : hand){
-            Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + card.getId().toString() + ".png").toExternalForm());
-            ImageView imgView = new ImageView(img);
-            hbox.getChildren().add(imgView);
+            //Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + card.getId().toString() + ".png").toExternalForm());
+            //ImageView imgView = new ImageView(img);
+            //hbox.getChildren().add(imgView);
         }
         return hbox;
     }
@@ -130,9 +135,9 @@ public class GUI extends GameView {
     public HBox showMyHandBack(List<PlayableCard> hand) {
         HBox hbox = new HBox();
         for(PlayableCard card : hand){
-            Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_back" + card.getId().toString() + ".png").toExternalForm());
-            ImageView imgView = new ImageView(img);
-            hbox.getChildren().add(imgView);
+            //Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_back" + card.getId().toString() + ".png").toExternalForm());
+            //ImageView imgView = new ImageView(img);
+            //hbox.getChildren().add(imgView);
         }
         return hbox;
     }

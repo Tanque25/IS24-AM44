@@ -37,7 +37,7 @@ public class RMIServer implements ServerInterface, CommunicationInterface {
             registry = LocateRegistry.createRegistry(RMI_PORT);
 
             // Bind the stub in the registry with a unique name
-            registry.rebind("MyRemoteObject", stub);
+            registry.rebind("CommunicationInterface", stub);
 
             System.out.println("RMI Server started on port " + RMI_PORT + ".");
         } catch (RemoteException e) {
