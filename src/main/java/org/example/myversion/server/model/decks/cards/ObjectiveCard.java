@@ -13,13 +13,13 @@ public abstract class ObjectiveCard {
     private final int cardPoints;
 
 
-    private final int id;
+    private final Integer id;
 
     /**
      * ObjectiveCard's constructor.
      * @param cardPoints specifies the points awarded to the player upon accomplishing its objective.
      */
-    public ObjectiveCard(int cardPoints, int id) {
+    public ObjectiveCard(int cardPoints, Integer id) {
         this.cardPoints = cardPoints;
         this.id = id;
     }
@@ -32,7 +32,7 @@ public abstract class ObjectiveCard {
         return cardPoints;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
