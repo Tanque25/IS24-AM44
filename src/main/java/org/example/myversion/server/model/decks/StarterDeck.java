@@ -44,7 +44,8 @@ public class StarterDeck {
                         CornerPosition.UP_RIGHT, new Corner(Resource.PLANT_KINGDOM),
                         CornerPosition.BOTTOM_LEFT, new Corner(Resource.INSECT_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT, new Corner(Resource.ANIMAL_KINGDOM)
-                )
+                ),
+                81
         ));
 
         starterDeck.push(new StarterCard(
@@ -60,7 +61,8 @@ public class StarterDeck {
                         CornerPosition.UP_RIGHT, new Corner(Resource.ANIMAL_KINGDOM),
                         CornerPosition.BOTTOM_LEFT, new Corner(Resource.FUNGI_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT, new Corner(Resource.INSECT_KINGDOM)
-                )
+                ),
+                82
         ));
 
         starterDeck.push(new StarterCard(
@@ -76,7 +78,8 @@ public class StarterDeck {
                         CornerPosition.UP_RIGHT, new Corner(Resource.ANIMAL_KINGDOM),
                         CornerPosition.BOTTOM_LEFT, new Corner(Resource.FUNGI_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT, new Corner(Resource.PLANT_KINGDOM)
-                )
+                ),
+                83
         ));
 
         starterDeck.push(new StarterCard(
@@ -92,7 +95,8 @@ public class StarterDeck {
                         CornerPosition.UP_RIGHT, new Corner(Resource.INSECT_KINGDOM),
                         CornerPosition.BOTTOM_LEFT, new Corner(Resource.ANIMAL_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT, new Corner(Resource.FUNGI_KINGDOM)
-                )
+                ),
+                84
         ));
 
         starterDeck.push(new StarterCard(
@@ -108,7 +112,8 @@ public class StarterDeck {
                         CornerPosition.UP_RIGHT, new Corner(Resource.FUNGI_KINGDOM),
                         CornerPosition.BOTTOM_LEFT, new Corner(Resource.PLANT_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT, new Corner(Resource.ANIMAL_KINGDOM)
-                )
+                ),
+                85
         ));
 
         starterDeck.push(new StarterCard(
@@ -124,7 +129,8 @@ public class StarterDeck {
                         CornerPosition.UP_RIGHT, new Corner(Resource.ANIMAL_KINGDOM),
                         CornerPosition.BOTTOM_LEFT, new Corner(Resource.PLANT_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT, new Corner(Resource.INSECT_KINGDOM)
-                )
+                ),
+                86
         ));
 
         Collections.shuffle(starterDeck);

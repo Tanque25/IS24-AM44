@@ -21,8 +21,8 @@ public class StarterCard extends Card {
      * @param resource     the array of resources associated with the card, relevant if played on the front.
      * @param backCorners  the map containing corners and their positions on the back side of the card.
      */
-    public StarterCard(Resource[] resource, Map<CornerPosition, Corner> corners, Map<CornerPosition, Corner> backCorners) {
-        super(corners);
+    public StarterCard(Resource[] resource, Map<CornerPosition, Corner> corners, Map<CornerPosition, Corner> backCorners, int id) {
+        super(corners, id);
         this.resource = resource;
         this.backCorners = backCorners;
     }

@@ -219,6 +219,7 @@ public class Message implements Serializable {
 
     private JsonObject createStarterCardJson(StarterCard starterCard) {
         return Json.createObjectBuilder()
+                .add("id", starterCard.getId())
                 .add("resources", createObjectiveObject(starterCard.getResource()))
                 .add("corners", createCornerObject(starterCard.getCorners()))
                 .add("backCorners", createCornerObject(starterCard.getBackCorner()))
@@ -247,6 +248,7 @@ public class Message implements Serializable {
         }
 
         return Json.createObjectBuilder()
+                .add("id", objectiveCard.getId())
                 .add("objectiveType", objectiveType)
                 .add("objective", objectiveJsonArray)
                 .add("cardPoints", objectiveCard.getCardPoints())
@@ -308,6 +310,7 @@ public class Message implements Serializable {
 
     private JsonObject createPlayableCardJson(PlayableCard playableCard) {
         return Json.createObjectBuilder()
+                .add("id", playableCard.getId())
                 .add("resource", playableCard.getResource().toString())
                 .add("corners", createCornerObject(playableCard.getCorners()))
                 .add("cardPoints", playableCard.getCardPoints())
@@ -325,6 +328,7 @@ public class Message implements Serializable {
 
     private JsonObject createGoldCardJson(GoldCard goldCard) {
         return Json.createObjectBuilder()
+                .add("id", goldCard.getId())
                 .add("resource", goldCard.getResource().toString())
                 .add("corners", createCornerObject(goldCard.getCorners()))
                 .add("cardPoints", goldCard.getCardPoints())
@@ -412,13 +416,14 @@ public class Message implements Serializable {
             throw new IllegalArgumentException("Starter card data is missing in the JSON object");
         }
 
+        int id = starterCardJson.getInt("id");
         Resource[] resources = getResourceArray(starterCardJson.getJsonArray("resources"));
         Map<CornerPosition, Corner> corners = getCornerMap(starterCardJson.getJsonObject("corners"));
         Map<CornerPosition, Corner> backCorners = getCornerMap(starterCardJson.getJsonObject("backCorners"));
         boolean playedBack = starterCardJson.getBoolean("playedBack", false);  // Handling optional boolean
 
         // Construct and return the StarterCard with all properties
-        StarterCard starterCard = new StarterCard(resources, corners, backCorners);
+        StarterCard starterCard = new StarterCard(resources, corners, backCorners, id);
         starterCard.setPlayedBack(playedBack);
 
         return starterCard;
@@ -451,6 +456,7 @@ public class Message implements Serializable {
             throw new IllegalArgumentException("Card JSON object is missing");
         }
 
+        int id = objectiveCardJson.getInt("id");
         JsonString typeJsonString = objectiveCardJson.getJsonString("objectiveType");
         if (typeJsonString == null) {
             throw new IllegalArgumentException("Objective type is missing or null in JSON");
@@ -460,9 +466,9 @@ public class Message implements Serializable {
         JsonArray objectiveData = objectiveCardJson.getJsonArray("objective");
 
         return switch (objectiveType) {
-            case "ResourceObjective" -> new ResourceObjectiveCard(cardPoints, getResourceArray(objectiveData));
-            case "SpecialObjective" -> new SpecialObjectiveCard(cardPoints, getSpecialObjectArray(objectiveData));
-            case "PatternObjective" -> new PatternObjectiveCard(cardPoints, getResourceMatrix(objectiveData));
+            case "ResourceObjective" -> new ResourceObjectiveCard(cardPoints, getResourceArray(objectiveData), id);
+            case "SpecialObjective" -> new SpecialObjectiveCard(cardPoints, getSpecialObjectArray(objectiveData), id);
+            case "PatternObjective" -> new PatternObjectiveCard(cardPoints, getResourceMatrix(objectiveData), id);
             default -> throw new IllegalArgumentException("Unsupported objective type: " + objectiveType);
         };
     }
@@ -513,13 +519,14 @@ public class Message implements Serializable {
         }
 
         // Extract the Resource, corners, and card points from the playableCardJson
+        int id = playableCardJson.getInt("id");
         Resource resource = Resource.valueOf(playableCardJson.getString("resource"));
         Map<CornerPosition, Corner> corners = getCornerMap(playableCardJson.getJsonObject("corners"));
         int cardPoints = playableCardJson.getInt("cardPoints");
         boolean playedBack = playableCardJson.getBoolean("playedBack", false);
 
         // Create and return the PlayableCard object with all properties
-        PlayableCard playableCard = new PlayableCard(resource, corners, cardPoints);
+        PlayableCard playableCard = new PlayableCard(resource, corners, cardPoints, id);
         playableCard.setPlayedBack(playedBack);
 
         return playableCard;
@@ -541,6 +548,7 @@ public class Message implements Serializable {
         }
 
         // Extract the properties of the GoldCard from the nested JSON object
+        int id = goldCardJson.getInt("id");
         Resource resource = Resource.valueOf(goldCardJson.getString("resource"));
         Map<CornerPosition, Corner> corners = getCornerMap(goldCardJson.getJsonObject("corners"));
         int cardPoints = goldCardJson.getInt("cardPoints");
@@ -549,7 +557,7 @@ public class Message implements Serializable {
         boolean playedBack = goldCardJson.getBoolean("playedBack", false);
 
         // Construct and return the GoldCard with all properties
-        GoldCard goldCard = new GoldCard(resource, corners, cardPoints, cost, pointsParameter);
+        GoldCard goldCard = new GoldCard(resource, corners, cardPoints, cost, pointsParameter, id);
         goldCard.setPlayedBack(playedBack);
 
         return goldCard;

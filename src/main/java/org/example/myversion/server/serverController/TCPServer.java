@@ -7,44 +7,45 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class TCPServer implements ServerInterface{
+/**
+ * The TCPServer class implements a TCP server for handling client connections.
+ * It uses a ServerSocket to accept client connections and manages them using a thread pool.
+ */
+public class TCPServer implements ServerInterface, CommunicationInterface {
 
-    private final ServerSocket serverSocket;//server
-
-    private boolean running; //booleano per sapere se sta runnando
-
-    public Thread acceptThread;
-
-    private List<HandleClientSocket> clients;
-
-    public ExecutorService executor;
+    private final ServerSocket serverSocket; // Server socket to accept connections
+    private boolean running; // Flag to indicate if the server is running
+    public Thread acceptThread; // Thread to accept incoming connections
+    private List<HandleClientSocket> clients; // List of clients
+    public ExecutorService executor; // Executor service to manage client handler threads
 
     /**
      * Constructor, it initializes a TCP server on the specified port.
-     *
-     * @param port The port number on which the server will listen for incoming connections.
      */
-    public TCPServer(int port) {
+    public TCPServer() {
         clients = new ArrayList<>();
         executor = Executors.newCachedThreadPool();
 
         try {
-            serverSocket = new ServerSocket(port);
-            running = true; // the TSP Server starts running
+            // The TCP Server starts running
+            serverSocket = new ServerSocket(TCP_PORT);
+            running = true;
+            System.out.println("TCP server started on port " + serverSocket.getLocalPort() + ".");
 
             // Starting a thread that accepts incoming connections
             acceptThread = new Thread(() -> {
                 while (running) {
                     try {
-                        Socket clientSocket = serverSocket.accept(); //accept continua ad accettare nuova connesioni
+                        // Continuously accept new connections
+                        Socket clientSocket = serverSocket.accept();
 
-                        //per ogni connessione creata viene creato un nuovo thread per gestire connessione con clients
+                        // For each new connection, create a new thread to handle communication with the client
                         HandleClientSocket handleClientSocket = new HandleClientSocket(clientSocket, controller);
 
                         executor.submit(handleClientSocket);
                         clients.add(handleClientSocket);
                     } catch (IOException e) {
-                        e.printStackTrace(); //stampa errore poi metterlo a posto meglio nel caso
+                        e.printStackTrace();
                     }
                 }
             });
@@ -72,13 +73,16 @@ public class TCPServer implements ServerInterface{
      */
     @Override
     public void stop() {
-        running = false; // the TSP Server stops running
+        running = false;
 
         try {
-            serverSocket.close();//chiude server
-            acceptThread.interrupt();  // Ensure thread is interrupted if blocked on accept()
+            // Close the server socket
+            serverSocket.close();
+
+            // Ensure the thread is interrupted if blocked on accept()
+            acceptThread.interrupt();
         } catch (IOException e) {
-            e.printStackTrace();//da sostituire
+            e.printStackTrace();
         }
     }
 }

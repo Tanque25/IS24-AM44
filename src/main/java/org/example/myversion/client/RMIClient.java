@@ -7,13 +7,13 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-import org.example.myversion.server.serverController.ServerInterface;
+import org.example.myversion.server.serverController.CommunicationInterface;
 
 public class RMIClient extends Client {
 
     private String nickname;
     private Registry registry;
-    private ServerInterface server;
+    private CommunicationInterface server;
     public RMIClient() throws RemoteException {
     }
 
@@ -25,8 +25,8 @@ public class RMIClient extends Client {
      */
     @Override
     public void connect() throws IOException, NotBoundException {
-        registry = LocateRegistry.getRegistry("127.0.0.1", ServerInterface.RMI_PORT);
-        server = (ServerInterface) registry.lookup("ServerInterface");
+        registry = LocateRegistry.getRegistry("127.0.0.1", CommunicationInterface.RMI_PORT);
+        server = (CommunicationInterface) registry.lookup("CommunicationInterface");
     }
 
     /**
