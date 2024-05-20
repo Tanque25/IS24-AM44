@@ -88,11 +88,23 @@ public class GUI extends GameView {
 
     @Override
     public void secretObjectiveCardChoice(List<ObjectiveCard> objectiveCards) throws IOException {
-
+        VBox vbox = new VBox();
+        HBox hbox = new HBox();
+        Label label = new Label("Choose your secret objective card: ");
+        for(ObjectiveCard card : objectiveCards){
+            Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + card.getId().toString() + ".png").toExternalForm());
+            ImageView imgView = new ImageView(img);
+            hbox.getChildren().add(imgView);
+        }
+        vbox.getChildren().addAll(label, hbox);
     }
 
     @Override
     public void showStarterCard(StarterCard starterCard) {
+    }
+
+    @Override
+    public void starterCardSideChoice(StarterCard starterCard) throws IOException {
         VBox vbox = new VBox();
         HBox hbox = new HBox();
         Label label = new Label("Choose the side to play your starter card: ");
@@ -102,11 +114,6 @@ public class GUI extends GameView {
         ImageView imgViewBack = new ImageView(imgBack);
         hbox.getChildren().addAll(imgViewFront, imgViewBack);
         vbox.getChildren().addAll(label, hbox);
-    }
-
-    @Override
-    public void starterCardSideChoice(StarterCard starterCard) throws IOException {
-
     }
 
 
