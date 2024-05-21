@@ -7,6 +7,7 @@ import org.example.myversion.server.model.decks.cards.PlayableCard;
 import org.example.myversion.server.model.decks.cards.StarterCard;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -1,8 +1,12 @@
 package org.example.myversion.server.serverController;
 
+import jakarta.json.Json;
 import org.example.myversion.client.Client;
+import org.example.myversion.client.ClientCommunicationInterface;
+import org.example.myversion.client.RMIClient;
 import org.example.myversion.messages.Message;
 
+import java.io.StringReader;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -20,10 +24,25 @@ public interface CommunicationInterface extends Remote {
     int TCP_PORT = 8080;
     int RMI_PORT = 70;
 
-    default void receiveMessageTCP(Message message,HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException {
+    default void receiveMessageTCP(Message message, HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException {
     }
 
-    default void receiveMessageRMI(Message message, Client client) throws RemoteException {
+    default void receiveMessageRMI(String messageString, ClientCommunicationInterface client) throws RemoteException {
+        Message message = new Message(Json.createReader(new StringReader(messageString)).readObject());
+        String messageType = message.getMessageCode();
+
+        switch (messageType) {
+            case "Login" -> {
+                String nickname = message.getArgument();
+                int checkNicknameStatus = controller.checkNickname(nickname);
+                checkNickname(client, nickname, checkNicknameStatus);
+            }
+        }
+    }
+
+    default void receiveMessageRMIOld(String messageString, ClientCommunicationInterface client) throws RemoteException {
+        Message message = new Message(Json.createReader(new StringReader(messageString)).readObject());
+
         String messageType = message.getMessageCode();
 
         switch (messageType) {
@@ -107,7 +126,10 @@ public interface CommunicationInterface extends Remote {
 
                     System.out.println(nickname + " reconnected.");
                     client.setNickname(nickname);
-                    controller.addClientRMI(nickname, client);
+
+                    // TODO: Commentato perchè da problemi mentre provo la sendMessage dal client
+                    // controller.addClientRMI(nickname, client);
+
                     //gestione della PERSISTENZA:
                     /*if (!controller.isGameLoaded) {
                         resendGameToReconnectedClient(client);
@@ -150,6 +172,15 @@ public interface CommunicationInterface extends Remote {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    default void checkNickname(ClientCommunicationInterface client, String nickname, int checkNicknameStatus) throws RemoteException {
+        switch (checkNicknameStatus) {
+            case 1 -> {
+                // System.out.println("ciao");
+                // client.getGameView().showGameAlreadyStartedMessage();
             }
         }
     }

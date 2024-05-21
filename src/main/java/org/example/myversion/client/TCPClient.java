@@ -6,7 +6,7 @@ import jakarta.json.*;
 import java.io.*;
 import java.net.Socket;
 
-public class TCPClient extends Client {
+public class TCPClient extends Client implements ClientCommunicationInterface {
 
     // Used to send messages to the server.
     private DataOutputStream dataOutputStream;

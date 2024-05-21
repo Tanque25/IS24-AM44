@@ -11,6 +11,7 @@ import org.example.myversion.server.model.decks.cards.StarterCard;
 import java.io.IOException;
 import java.io.Serializable;
 import java.rmi.NotBoundException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.concurrent.ScheduledExecutorService;
  * This class represents the client.
  * It is abstract because each client will either be an RMI client or a Socket client.
  */
-public abstract class Client extends UnicastRemoteObject implements Serializable {
+public abstract class Client extends UnicastRemoteObject implements Serializable, ClientCommunicationInterface {
     private String nickname;
     private GameView gameView;
     private boolean serverConnection;

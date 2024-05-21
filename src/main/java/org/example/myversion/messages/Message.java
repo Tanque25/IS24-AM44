@@ -346,8 +346,8 @@ public class Message implements Serializable {
      * @param messageString A string containing JSON representation of a Message object.
      * @return A JsonObject representing the parsed Message object.
      */
-    public JsonObject parseMessageString(String messageString) {
-        return Json.createReader(new StringReader(messageString)).readObject();
+    public Message parseMessageString(String messageString) {
+        return new Message(Json.createReader(new StringReader(messageString)).readObject());
     }
 
     public JsonObject getJson() {

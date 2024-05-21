@@ -121,7 +121,6 @@ public class GUI extends GameView {
 
     }
 
-
     public HBox showMyHand(List<PlayableCard> hand) {
         HBox hbox = new HBox();
         for(PlayableCard card : hand){

@@ -2,6 +2,7 @@ package org.example.myversion.client;
 
 import org.example.myversion.messages.Message;
 import java.io.IOException;
+import java.io.Serializable;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -9,11 +10,11 @@ import java.rmi.registry.Registry;
 
 import org.example.myversion.server.serverController.CommunicationInterface;
 
-public class RMIClient extends Client {
+public class RMIClient extends Client implements ClientCommunicationInterface {
 
-    private String nickname;
     private Registry registry;
     private CommunicationInterface server;
+
     public RMIClient() throws RemoteException {
         super();
         try {
@@ -44,17 +45,15 @@ public class RMIClient extends Client {
      * @throws IOException if the message send fails.
      */
     @Override
-    public void sendMessage(Message message) throws IOException {
+    public void sendMessage(Message message) throws IOException, RemoteException {
         try {
-            server.receiveMessageRMI(message, this);
+            String jsonString = message.getJson().toString();
+            System.out.println(jsonString);
+            server.receiveMessageRMI(jsonString, this);
+            // server.receiveMessageRMI(jsonString, this);
         } catch (RemoteException e) {
-            // Don't do anything: if the server is down, the client will
-            // notice itself and will exit.
+            e.printStackTrace();
         }
-    }
-
-    public String getNickname() {
-        return nickname;
     }
 
 }
