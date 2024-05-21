@@ -76,4 +76,6 @@ public abstract class GameView {
     public abstract void showOthersHandsAndPlayAreas();
 
     public abstract void chooseCardToPlay() throws IOException;
+
+    public abstract void invalidMove() throws IOException;
 }

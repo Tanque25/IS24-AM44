@@ -113,10 +113,22 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 gameView.showMyPlayArea();
             }
             case "MyTurn" -> {
-                System.out.println("My turn");
+                gameView.showMessage("\nIt's your turn.\n");
+                myTurn();
             }
             case "OtherTurn" -> {
                 gameView.showMessage("\nIt's " + message.getArgument() + "'s turn.\n");
+            }
+            case "InvalidMove" -> {
+                try {
+                    // TODO: Remove the card from the play area first
+                    gameView.invalidMove();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            case "DrawCard" -> {
+                System.out.println("Choose the card to draw.");
             }
             default -> throw new IllegalArgumentException("Invalid messageCode: " + messageCode);
         }
@@ -131,9 +143,13 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
     public abstract void sendMessage(Message message) throws IOException;
 
     public void myTurn() {
-        gameView.showMessage("\nIt's your turn.\n");
-
         // TODO: implement myTurn thread launch
+        try {
+            gameView.chooseCardToPlay();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     /**

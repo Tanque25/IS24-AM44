@@ -1,55 +1,58 @@
 package org.example.myversion.client.view;
 
 import org.example.myversion.server.model.decks.cards.*;
+import org.example.myversion.server.model.enumerations.*;
+
+import java.util.Map;
 
 public class PlayAreaView {
 
-//    public static void main(String[] args) {
-//        Card[][] playArea = new Card[21][21];
-//
-//        playArea[10][10] = new StarterCard(
-//                new Resource[]{Resource.INSECT_KINGDOM},
-//                Map.of(
-//                        CornerPosition.UP_LEFT, new Corner(CornerVisibility.EMPTY),
-//                        CornerPosition.UP_RIGHT, new Corner(Resource.PLANT_KINGDOM),
-//                        CornerPosition.BOTTOM_LEFT, new Corner(Resource.INSECT_KINGDOM),
-//                        CornerPosition.BOTTOM_RIGHT, new Corner(CornerVisibility.EMPTY)
-//                ),
-//                Map.of(
-//                        CornerPosition.UP_LEFT, new Corner(Resource.FUNGI_KINGDOM),
-//                        CornerPosition.UP_RIGHT, new Corner(Resource.PLANT_KINGDOM),
-//                        CornerPosition.BOTTOM_LEFT, new Corner(Resource.INSECT_KINGDOM),
-//                        CornerPosition.BOTTOM_RIGHT, new Corner(Resource.ANIMAL_KINGDOM)
-//                )
-//        );
-//
-//        playArea[9][9] = new GoldCard(
-//                Resource.FUNGI_KINGDOM,
-//                Map.of(
-//                        CornerPosition.UP_LEFT,new Corner(CornerVisibility.FULL),
-//                        CornerPosition.UP_RIGHT,new Corner(CornerVisibility.EMPTY),
-//                        CornerPosition.BOTTOM_LEFT,new Corner(CornerVisibility.EMPTY),
-//                        CornerPosition.BOTTOM_RIGHT,new Corner(SpecialObject.QUILL)
-//                ),
-//                1,
-//                new Resource[]{Resource.FUNGI_KINGDOM, Resource.FUNGI_KINGDOM, Resource.ANIMAL_KINGDOM},
-//                SpecialObject.QUILL
-//        );
-//
-//        playArea[9][11] = new PlayableCard(
-//                Resource.FUNGI_KINGDOM,
-//                Map.of(
-//                        CornerPosition.UP_LEFT,new Corner(Resource.FUNGI_KINGDOM),
-//                        CornerPosition.UP_RIGHT,new Corner(CornerVisibility.EMPTY),
-//                        CornerPosition.BOTTOM_LEFT,new Corner(Resource.FUNGI_KINGDOM),
-//                        CornerPosition.BOTTOM_RIGHT,new Corner(CornerVisibility.FULL)
-//                ),
-//                0
-//        );
-//
-//        displayMyPlayArea(playArea);
-//
-//    }
+    public static void main(String[] args) {
+        Card[][] playArea = new Card[21][21];
+
+        playArea[10][10] = new StarterCard(
+                new Resource[]{Resource.INSECT_KINGDOM},
+                Map.of(
+                        CornerPosition.UP_LEFT, new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.UP_RIGHT, new Corner(Resource.PLANT_KINGDOM),
+                        CornerPosition.BOTTOM_LEFT, new Corner(Resource.INSECT_KINGDOM),
+                        CornerPosition.BOTTOM_RIGHT, new Corner(CornerVisibility.EMPTY)
+                ),
+                Map.of(
+                        CornerPosition.UP_LEFT, new Corner(Resource.FUNGI_KINGDOM),
+                        CornerPosition.UP_RIGHT, new Corner(Resource.PLANT_KINGDOM),
+                        CornerPosition.BOTTOM_LEFT, new Corner(Resource.INSECT_KINGDOM),
+                        CornerPosition.BOTTOM_RIGHT, new Corner(Resource.ANIMAL_KINGDOM)
+                ), 1
+        );
+
+        playArea[9][9] = new GoldCard(
+                Resource.FUNGI_KINGDOM,
+                Map.of(
+                        CornerPosition.UP_LEFT,new Corner(CornerVisibility.FULL),
+                        CornerPosition.UP_RIGHT,new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.BOTTOM_LEFT,new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.BOTTOM_RIGHT,new Corner(SpecialObject.QUILL)
+                ),
+                1,
+                new Resource[]{Resource.FUNGI_KINGDOM, Resource.FUNGI_KINGDOM, Resource.ANIMAL_KINGDOM},
+                SpecialObject.QUILL, 1
+        );
+
+        playArea[9][11] = new PlayableCard(
+                Resource.FUNGI_KINGDOM,
+                Map.of(
+                        CornerPosition.UP_LEFT,new Corner(Resource.FUNGI_KINGDOM),
+                        CornerPosition.UP_RIGHT,new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.BOTTOM_LEFT,new Corner(Resource.FUNGI_KINGDOM),
+                        CornerPosition.BOTTOM_RIGHT,new Corner(CornerVisibility.FULL)
+                ),
+                0, 1
+        );
+
+        displayMyPlayArea(playArea);
+
+    }
 
     public static void displayMyPlayArea(Card[][] playArea) {
         int[] boundaries = findBoundaries(playArea);
@@ -69,7 +72,13 @@ public class PlayAreaView {
                 } else if (playArea[row][col] instanceof PlayableCard) {
                     CardView.displayCardFrontTopLine((PlayableCard) playArea[row][col]);
                 } else if (row % 2 == 0 && col % 2 == 0 || (row % 2 == 1 && col % 2 == 1)) {
-                    CardView.displayOptionSlotTopBottomLine();
+                    // Check if the adjacent cards have full corners
+                    if (playArea[row-1][col-1] != null && !playArea[row-1][col-1].getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().equals(CornerVisibility.FULL) ||
+                            playArea[row-1][col+1] != null && !playArea[row-1][col+1].getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().equals(CornerVisibility.FULL) ||
+                            playArea[row+1][col-1] != null && !playArea[row+1][col-1].getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().equals(CornerVisibility.FULL) ||
+                            playArea[row+1][col+1] != null && !playArea[row+1][col+1].getCorners().get(CornerPosition.UP_LEFT).getCornerContent().equals(CornerVisibility.FULL))
+                        CardView.displayOptionSlotTopBottomLine();
+                    else CardView.displayEmptySlotLine();
                 } else {
                     CardView.displayEmptySlotLine();
                 }
@@ -86,7 +95,13 @@ public class PlayAreaView {
                 } else if (playArea[row][col] instanceof PlayableCard) {
                     CardView.displayCardFrontMiddleLine((PlayableCard) playArea[row][col]);
                 } else if (row % 2 == 0 && col % 2 == 0 || (row % 2 == 1 && col % 2 == 1)) {
-                    CardView.displayOptionSlotMiddleLine(row, col);
+                    // Check if the adjacent cards have full corners
+                    if (playArea[row-1][col-1] != null && !playArea[row-1][col-1].getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().equals(CornerVisibility.FULL) ||
+                            playArea[row-1][col+1] != null && !playArea[row-1][col+1].getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().equals(CornerVisibility.FULL) ||
+                            playArea[row+1][col-1] != null && !playArea[row+1][col-1].getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().equals(CornerVisibility.FULL) ||
+                            playArea[row+1][col+1] != null && !playArea[row+1][col+1].getCorners().get(CornerPosition.UP_LEFT).getCornerContent().equals(CornerVisibility.FULL))
+                        CardView.displayOptionSlotMiddleLine(row, col);
+                    else CardView.displayEmptySlotLine();
                 } else {
                     CardView.displayEmptySlotLine();
                 }
@@ -103,8 +118,13 @@ public class PlayAreaView {
                 } else if (playArea[row][col] instanceof PlayableCard) {
                     CardView.displayCardFrontBottomLine((PlayableCard) playArea[row][col]);
                 } else if ((row % 2 == 0 && col % 2 == 0) || (row % 2 == 1 && col % 2 == 1)) {
-                    // TODO: display option slot only if the player can place the card in that slot
-                    CardView.displayOptionSlotTopBottomLine();
+                    // Check if the adjacent cards have full corners
+                    if (playArea[row-1][col-1] != null && !playArea[row-1][col-1].getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().equals(CornerVisibility.FULL) ||
+                            playArea[row-1][col+1] != null && !playArea[row-1][col+1].getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().equals(CornerVisibility.FULL) ||
+                            playArea[row+1][col-1] != null && !playArea[row+1][col-1].getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().equals(CornerVisibility.FULL) ||
+                            playArea[row+1][col+1] != null && !playArea[row+1][col+1].getCorners().get(CornerPosition.UP_LEFT).getCornerContent().equals(CornerVisibility.FULL))
+                        CardView.displayOptionSlotTopBottomLine();
+                    else CardView.displayEmptySlotLine();
                 } else {
                     CardView.displayEmptySlotLine();
                 }

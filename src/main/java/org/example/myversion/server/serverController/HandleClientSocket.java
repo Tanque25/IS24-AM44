@@ -1,7 +1,9 @@
 package org.example.myversion.server.serverController;
 
+import org.example.myversion.client.view.PlayAreaView;
 import org.example.myversion.messages.Message;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
+import org.example.myversion.server.model.exceptions.InvalidGameStateException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
 import org.example.myversion.server.model.exceptions.InvalidNicknameException;
 import org.example.myversion.server.Server;
@@ -25,7 +27,7 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
 
     private Server server;
 
-    private String Nickname;
+    private String nickname;
 
     public HandleClientSocket(Socket clientSocket, GameController controller) {
         this.clientSocket = clientSocket;
@@ -116,14 +118,14 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
 
             // This case is used to place the starter card in the Player's playArea on the selected side
             case "StarterCard" -> {
-                System.out.println("Starter card side received from " + Nickname);
-                controller.playStarterCard(controller.getPlayerFromNickname(Nickname), message.getStarterCard());
+                System.out.println("Starter card side received from " + nickname);
+                controller.playStarterCard(controller.getPlayerFromNickname(nickname), message.getStarterCard());
             }
 
             // This case is used to set the secret objective card in the game model
             case "ObjectiveCardChoice" -> {
-                System.out.println("Secret objective card received from " + Nickname);
-                controller.chooseObjectiveCard(controller.getPlayerFromNickname(Nickname), message.getObjectiveCard());
+                System.out.println("Secret objective card received from " + nickname);
+                controller.chooseObjectiveCard(controller.getPlayerFromNickname(nickname), message.getObjectiveCard());
 
                 // When the server receives the player's secret objective choice, the readyPlayersNumber is updated
                 controller.updateReadyPlayersNumber();
@@ -135,7 +137,22 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
             }
 
             case "CardToPlayChoice" -> {
-                // TODO
+                try {
+                    controller.playCard(nickname, message.getPlayableCard(), message.getCoordinates());
+
+                    // Checking if the card has been actually placed - to remove
+                    PlayAreaView playAreaView = new PlayAreaView();
+                    playAreaView.displayMyPlayArea(controller.getPlayerFromNickname(nickname).getPlayArea());
+
+                    sendMessageToClient(new Message("DrawCard"));
+                } catch (InvalidMoveException e) {
+                    sendMessageToClient(new Message("InvalidMove"));
+                } catch (InvalidNicknameException | InvalidGameStateException e) {
+                    // The nickname will always be valid
+                    // The game state will always be valid
+                    // sendMessageToClient(new Message("InvalidMove"));
+                }
+
             }
 
         }
@@ -143,7 +160,7 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
 
     public void sendMessageToClient(Message message) {
         try {
-            System.out.println("Sending " + message.getMessageCode() + " " + Nickname);
+            System.out.println("Sending " + message.getMessageCode() + " " + nickname);
             String jsonString = message.getJson().toString() + "\n";
             writer.write(jsonString);
             writer.flush();
@@ -188,11 +205,11 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
     }
 
     public void setNickname(String nickname) {
-        Nickname = nickname;
+        this.nickname = nickname;
     }
 
     public String getNickname() {
-        return Nickname;
+        return nickname;
     }
 }
 

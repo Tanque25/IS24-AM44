@@ -155,4 +155,9 @@ public class GUI extends GameView {
     public void chooseCardToPlay() throws IOException {
 
     }
+
+    @Override
+    public void invalidMove() throws IOException {
+
+    }
 }

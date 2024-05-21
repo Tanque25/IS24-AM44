@@ -29,7 +29,7 @@ public class CLIView extends GameView {
 //            System.exit(1);
 //        }
 
-        CodexNaturalis.setParameters("127.0.0.1", "rmi", this);
+        CodexNaturalis.setParameters("127.0.0.1", "tcp", this);
 
     }
 
@@ -260,19 +260,18 @@ public class CLIView extends GameView {
     public void showMyHand() {
         showMessage("\nHere is your hand:\n");
         showPlayerHand(getHandsMap().get(client.getNickname()));
-        // showMessage("[   1   ]  [   2   ]  [   3   ]\n");
     }
 
     public void showMyPlayArea() {
         showMessage("\nHere is your play area:\n");
-        showPlayerPlayArea(getPlayAreasMap().get(client.getNickname()));
+        showOtherPlayerPlayArea(getPlayAreasMap().get(client.getNickname()));
     }
 
     public void showOthersHandsAndPlayAreas() {
         for (String nickname : getHandsMap().keySet()) {
             if (!(nickname.equals(client.getNickname()))) {
                 showMessage("\nHere is " + nickname + "'s play area:\n");
-                showPlayerPlayArea(getPlayAreasMap().get(nickname));
+                showOtherPlayerPlayArea(getPlayAreasMap().get(nickname));
 
                 showMessage("\nHere is " + nickname + "'s hand:\n");
                 showPlayerHand(getHandsMap().get(nickname));
@@ -281,6 +280,11 @@ public class CLIView extends GameView {
     }
 
     public void showPlayerPlayArea(Card[][] playArea) {
+        PlayAreaView playAreaView = new PlayAreaView();
+        playAreaView.displayMyPlayArea(playArea);
+    }
+
+    public void showOtherPlayerPlayArea(Card[][] playArea) {
         PlayAreaView playAreaView = new PlayAreaView();
         playAreaView.displayOtherPlayArea(playArea);
     }
@@ -291,13 +295,28 @@ public class CLIView extends GameView {
     }
 
     public void chooseCardToPlay() throws IOException {
+        showMyHand();
+        showMessage("[   0   ]  [   1   ]  [   2   ]\n");
+
+        showMessage("\nHere is your play area:\n");
+        showPlayerPlayArea(getPlayAreasMap().get(client.getNickname()));
+
         int cardToPlayChoice = askForCardToPlayChoice();
+
         Coordinates coordinates = askForCoordinatesChoice();
 
         List<PlayableCard> hand = getHandsMap().get(client.getNickname());
         PlayableCard chosenCard = hand.get(cardToPlayChoice);
 
+        // Place the card in the play area, will remove it if the choice is not valid.
+        getPlayAreasMap().get(client.getNickname())[coordinates.getX()][coordinates.getY()] = chosenCard;
+
         client.sendMessage(new Message("CardToPlayChoice", chosenCard, coordinates));
+    }
+
+    public void invalidMove() throws IOException {
+        showMessage("\nYou can't place that card in the selected position. Make another choice.\n");
+        chooseCardToPlay();
     }
 
     public int askForCardToPlayChoice() {
