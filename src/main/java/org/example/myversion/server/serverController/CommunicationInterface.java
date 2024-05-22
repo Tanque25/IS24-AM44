@@ -33,111 +33,30 @@ public interface CommunicationInterface extends Remote {
 
         switch (messageType) {
             case "Login" -> {
+                System.out.println("Received Login request from " + client.getNickname());
                 String nickname = message.getArgument();
                 int checkNicknameStatus = controller.checkNickname(nickname);
                 checkNickname(client, nickname, checkNicknameStatus);
+
             }
         }
+    }
+
+    default void rispostatest ()throws RemoteException{
+        System.out.println("bellaaa");
     }
 
     default void receiveMessageRMIOld(String messageString, ClientCommunicationInterface client) throws RemoteException {
         Message message = new Message(Json.createReader(new StringReader(messageString)).readObject());
 
         String messageType = message.getMessageCode();
-
         switch (messageType) {
 
             case "Login" -> {
                 System.out.println("Received Login request from " + client.getNickname()); //per CLI, debug
                 String nickname = message.getArgument(); // nickname
-
-                //CASO 1: nickname libero
-                if (controller.checkNickname(nickname) == 1) {
-
-                    if(!controller.isGameStarted()){//se gioco non iniziato ancora
-                        try {//gestisco eccezione Remote
-                            client.handleMessage(new Message("GameAlreadyStarted"));
-                        } catch (RemoteException e) {
-                            System.err.println("Error while sending message to " + nickname);
-                            throw new RemoteException();
-                        }
-                    }else{//gioco gia iniziato
-                        try {//gestisco eccezione Remote
-                            client.handleMessage(new Message("Nickname", nickname));
-                        } catch (RemoteException e) {
-                            System.err.println("Error while sending message to " + nickname);
-                            throw new RemoteException();
-                        }
-
-                        controller.addPlayer(nickname);//aggiungo player
-                        System.out.println(nickname + " logged in."); //per debug
-
-                        //controller.addClientRMI(username, client);
-
-                        // startPingThread(client);
-
-                        if(controller.isFirst()){//se è il primo giocatore
-                            try {//chiedo numeri giocatori e gestisco eccezione
-                                client.handleMessage(new Message("ChooseNumOfPlayer"));
-                            } catch (RemoteException e) {
-                                System.err.println("Error while sending message to " + nickname);
-                                throw new RemoteException();
-                            }
-                        }
-                        else{//se la lobby è piena si parte con la partita
-                            if (controller.gameIsFull()) {
-                                controller.newGame();//si occupa questo di tutto? startGame()
-                                System.out.println("Game started.");
-
-                            } else if (!controller.gameIsFull()) {//altrimenti:
-
-                                System.err.println("Aspettando altri giocatori..." );
-                                //qui devo fare qualcosa??
-                            }
-                        }
-                    }
-
-                    //CASO 2: nel caso in cui il Nickname sia gia in uso
-                } else if (controller.checkNickname(nickname) == 0) {
-
-                    try {
-                        client.handleMessage(new Message("CheckingDisconnection"));
-                    } catch (RemoteException e) {
-                        System.err.println("Error while sending message to " + nickname);
-                        throw new RemoteException();
-                    }
-                    try {//thread per fare cosa ??
-                        Thread.sleep(60000);
-                    } catch (InterruptedException e) {
-                        System.err.println("Error while sleeping.");
-                    }
-
-                    if ( controller.checkNickname(nickname) == 0) {
-                        System.out.println(nickname + " requested login, but the username is already taken.");
-                        //client.sendMessageToClient(new Message("UsernameRetry"));
-                    } else {
-                        System.out.println(nickname + " reconnected.");
-                        //controller.addClientRMI(nickname, client);
-                        //resendGameToReconnectedClient(client);
-                    }
-
-                    //CASO 3: l'username è gia utilizzato, ma il giocatore era disconnesso e prova a riconnettersi
-                } else {
-
-                    System.out.println(nickname + " reconnected.");
-                    client.setNickname(nickname);
-
-                    // TODO: Commentato perchè da problemi mentre provo la sendMessage dal client
-                    // controller.addClientRMI(nickname, client);
-
-                    //gestione della PERSISTENZA:
-                    /*if (!controller.isGameLoaded) {
-                        resendGameToReconnectedClient(client);
-                    } else {
-                        resendToReconnectAfterServerDown(client);
-                    }*/
-                }
-
+                int checkNicknameStatus = controller.checkNickname(nickname);
+                checkNickname(client, nickname, checkNicknameStatus);
             }
 
             case "p?" -> {
@@ -176,14 +95,7 @@ public interface CommunicationInterface extends Remote {
         }
     }
 
-    default void checkNickname(ClientCommunicationInterface client, String nickname, int checkNicknameStatus) throws RemoteException {
-        switch (checkNicknameStatus) {
-            case 1 -> {
-                // System.out.println("ciao");
-                // client.getGameView().showGameAlreadyStartedMessage();
-            }
-        }
-    }
+
 
     default void startGame() throws RemoteException {
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
@@ -245,5 +157,93 @@ public interface CommunicationInterface extends Remote {
         }
 
         // TODO: do the same for the RMI clients
+    }
+
+    default void checkNickname(ClientCommunicationInterface client, String nickname, int checkNicknameStatus) throws RemoteException {
+        switch (checkNicknameStatus) {
+            case 1 -> {
+                if(!controller.isGameStarted()){//se gioco non iniziato ancora
+                    try {//gestisco eccezione Remote
+                        client.handleMessage(new Message("GameAlreadyStarted"));
+                    } catch (RemoteException e) {
+                        System.err.println("Error while sending message to " + nickname);
+                        throw new RemoteException();
+                    }
+                }else{//gioco gia iniziato
+                    try {//gestisco eccezione Remote
+                        client.handleMessage(new Message("Nickname", nickname));
+                    } catch (RemoteException e) {
+                        System.err.println("Error while sending message to " + nickname);
+                        throw new RemoteException();
+                    }
+
+                    controller.addPlayer(nickname);//aggiungo player
+                    System.out.println(nickname + " logged in."); //per debug
+
+                    //controller.addClientRMI(username, client);
+
+                    // startPingThread(client);
+
+                    if(controller.isFirst()){//se è il primo giocatore
+                        try {//chiedo numeri giocatori e gestisco eccezione
+                            client.handleMessage(new Message("ChooseNumOfPlayer"));
+                        } catch (RemoteException e) {
+                            System.err.println("Error while sending message to " + nickname);
+                            throw new RemoteException();
+                        }
+                    }
+                    else{//se la lobby è piena si parte con la partita
+                        if (controller.gameIsFull()) {
+                            controller.newGame();//si occupa questo di tutto? startGame()
+                            System.out.println("Game started.");
+
+                        } else if (!controller.gameIsFull()) {//altrimenti:
+
+                            System.err.println("Aspettando altri giocatori..." );
+                            //qui devo fare qualcosa??
+                        }
+                    }
+                }
+            }
+            case 0 ->{//CASO 2: nel caso in cui il Nickname sia gia in uso
+
+                try {
+                    client.handleMessage(new Message("CheckingDisconnection"));
+                } catch (RemoteException e) {
+                    System.err.println("Error while sending message to " + nickname);
+                    throw new RemoteException();
+                }
+                try {//thread per fare cosa ??
+                    Thread.sleep(60000);
+                } catch (InterruptedException e) {
+                    System.err.println("Error while sleeping.");
+                }
+
+                if ( controller.checkNickname(nickname) == 0) {
+                    System.out.println(nickname + " requested login, but the username is already taken.");
+                    //client.sendMessageToClient(new Message("UsernameRetry"));
+                } else {
+                    System.out.println(nickname + " reconnected.");
+                    //controller.addClientRMI(nickname, client);
+                    //resendGameToReconnectedClient(client);
+                }
+            }
+            case -1 ->{
+                //CASO 3: l'username è gia utilizzato, ma il giocatore era disconnesso e prova a riconnettersi
+
+                System.out.println(nickname + " reconnected.");
+                client.setNickname(nickname);
+
+                // TODO: Commentato perchè da problemi mentre provo la sendMessage dal client
+                // controller.addClientRMI(nickname, client);
+
+                //gestione della PERSISTENZA:
+                    /*if (!controller.isGameLoaded) {
+                        resendGameToReconnectedClient(client);
+                    } else {
+                        resendToReconnectAfterServerDown(client);
+                    }*/
+            }
+        }
     }
 }
