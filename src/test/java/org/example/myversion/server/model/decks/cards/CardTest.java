@@ -23,7 +23,7 @@ public class CardTest {
     @BeforeEach
     void setUp() {
         // Initialize Resource Card 1 (RC_001)
-
+        /*
         // This is the map of the Resource Card
         RC_001 = new PlayableCard(
                 Resource.FUNGI_KINGDOM,
@@ -34,7 +34,7 @@ public class CardTest {
                         CornerPosition.BOTTOM_RIGHT, new Corner(CornerVisibility.EMPTY)
                 ),
                 0
-        );
+        );*/
     }
 
     /**

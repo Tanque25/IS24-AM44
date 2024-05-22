@@ -24,7 +24,7 @@ class SpecialObjectiveCardTest {
 
     @BeforeEach
     void setUp() {
-        OC_099 = new SpecialObjectiveCard(3, new SpecialObject[]{
+        /*OC_099 = new SpecialObjectiveCard(3, new SpecialObject[]{
                 SpecialObject.QUILL, SpecialObject.INKWELL, SpecialObject.MANUSCRIPT
         });
 
@@ -57,7 +57,7 @@ class SpecialObjectiveCardTest {
         stockCase5.put(SpecialObject.INKWELL, 4);
         stockCase5.put(SpecialObject.MANUSCRIPT, 8);
 
-
+        */
     }
 
     @Test

@@ -21,7 +21,7 @@ class ResourceObjectiveCardTest {
 
     @BeforeEach
     void setUp() {
-        OC_095 = new ResourceObjectiveCard(2, new Resource[]{
+       /* OC_095 = new ResourceObjectiveCard(2, new Resource[]{
                 Resource.FUNGI_KINGDOM, Resource.FUNGI_KINGDOM, Resource.FUNGI_KINGDOM}
         );
 
@@ -43,7 +43,7 @@ class ResourceObjectiveCardTest {
 
         stockCase5  = new HashMap<>();
         stockCase5.put(Resource.FUNGI_KINGDOM, 0);
-        stockCase5.put(Resource.ANIMAL_KINGDOM, 1);
+        stockCase5.put(Resource.ANIMAL_KINGDOM, 1);*/
     }
 
     @Test

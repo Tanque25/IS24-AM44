@@ -29,7 +29,7 @@ public class CLIView extends GameView {
 //            System.exit(1);
 //        }
 
-        CodexNaturalis.setParameters("127.0.0.1", "tcp", this);
+        CodexNaturalis.setParameters("127.0.0.1", "rmi", this);
 
     }
 

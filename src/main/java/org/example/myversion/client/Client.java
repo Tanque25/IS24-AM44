@@ -134,6 +134,87 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
         }
     }
 
+    public void handleMessageNew(String scelta)throws RemoteException {
+
+//        if(!messageCode.equals("Pong")) {
+//            System.out.println("Received TCP message: with messageCode " + messageCode);
+//        }
+
+        switch (scelta) {
+            case "Pong" -> {
+                serverConnection = true;
+            }
+            case "Nickname" -> {
+                //setNickname(message.getArgument());
+                // TODO: Implement the connection check on a different channel on the server side
+                // checkServerConnection();
+            }
+            case "GameAlreadyStarted" ->
+                    gameView.showGameAlreadyStartedMessage();
+            case "ChooseNumOfPlayer" ->{
+                try{
+                    gameView.playersNumberChoice();
+                }catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            case "InvalidNumberOfPlayers" ->{
+                try{
+                    gameView.invalidPlayersNumberChoice();
+                }catch (IOException e){
+                    throw new RuntimeException(e);
+                }
+            }
+            case "WaitForOtherPlayers" ->
+                    gameView.waitForOtherPlayers();
+            /*case "StarterCard" -> {
+                try {
+                    gameView.showStarterCard(message.getStarterCard());
+                    gameView.starterCardSideChoice(message.getStarterCard());
+                } catch (IOException e){
+                    throw new RuntimeException(e);
+                }
+            }
+            case "CommonObjectiveCards" ->
+                    gameView.showCommonObjectives(message.getObjectiveCards());
+            case "SecretObjectiveCardsOptions" -> {
+                try {
+                    gameView.showSecretObjectives(message.getObjectiveCards());
+                    gameView.secretObjectiveCardChoice(message.getObjectiveCards());
+                } catch (IOException e){
+                    throw new RuntimeException(e);
+                }
+            }
+            case "StartCondition" -> {
+                gameView.setHandsMap(message.getPlayersHandsMap());
+                gameView.initializePlayAreas(message.getStarterCardsMap());
+
+                gameView.showOthersHandsAndPlayAreas();
+                gameView.showMyHand();
+                gameView.showMyPlayArea();
+            }
+            case "MyTurn" -> {
+                gameView.showMessage("\nIt's your turn.\n");
+                myTurn();
+            }
+            case "OtherTurn" -> {
+                gameView.showMessage("\nIt's " + message.getArgument() + "'s turn.\n");
+            }
+            case "InvalidMove" -> {
+                try {
+                    // TODO: Remove the card from the play area first
+                    gameView.invalidMove();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }*/
+            case "DrawCard" -> {
+                System.out.println("Choose the card to draw.");
+            }
+            default -> throw new IllegalArgumentException("Invalid messageCode: ");
+        }
+    }
+
     /**
      * Sends a message to the server.
      *

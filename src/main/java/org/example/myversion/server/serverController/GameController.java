@@ -94,7 +94,9 @@ public class GameController {
      * @return true if the player is the first player, false otherwise
      */
     public boolean isFirst() {
-        return tcpClients.size() + rmiClients.size() == 1;
+        System.out.println("numero tcp: "+tcpClients.size());
+        System.out.println("numero tcp: "+rmiClients.size());
+        return tcpClients.size() + rmiClients.size() == 0;
     }
 
     public void newGame() {

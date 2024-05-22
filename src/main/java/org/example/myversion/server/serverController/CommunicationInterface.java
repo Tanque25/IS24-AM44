@@ -42,6 +42,22 @@ public interface CommunicationInterface extends Remote {
         }
     }
 
+    default void receiveMessageRMInew(String messageString,ClientCommunicationInterface client) throws RemoteException {
+        Message message = new Message(Json.createReader(new StringReader(messageString)).readObject());
+        String messageType = message.getMessageCode();
+
+        switch (messageType) {
+            case "Login" -> {
+                System.out.println("Received Login request from " + client.getNickname());
+                String nickname = message.getArgument();
+                int checkNicknameStatus = controller.checkNickname(nickname);
+                checkNicknameNew(client, nickname, checkNicknameStatus);
+
+            }
+        }
+    }
+
+
     default void rispostatest ()throws RemoteException{
         System.out.println("bellaaa");
     }
@@ -95,7 +111,48 @@ public interface CommunicationInterface extends Remote {
         }
     }
 
+    default void checkNicknameNew(ClientCommunicationInterface client, String nickname, int checkNicknameStatus) throws RemoteException {
+        switch (checkNicknameStatus) {
+            case 1 -> {
 
+                if(!controller.isGameStarted()){//se gioco non iniziato ancora
+                    if(controller.isFirst()){//controllo se è il primo
+                        //controller.addClientRMI(nickname, (Client) client);
+                        try {//chiedo numeri giocatori e gestisco eccezione
+                            client.handleMessageNew("ChooseNumOfPlayer");
+                        } catch (RemoteException e) {
+                            System.err.println("Error 3 while sending message to " + nickname);
+                            throw new RemoteException();
+                        }
+                    }else{
+
+                        if(controller.gameIsFull()){//partita piena
+                            controller.newGame();//si occupa questo di tutto? startGame()
+                            System.out.println("Game started.");
+                        }else{
+                            controller.addClientRMI(nickname, (Client) client);
+                            try {//gestisco eccezione Remote, setto nickname
+                                client.handleMessageNew("Nickname");
+                            } catch (RemoteException e) {
+                                System.err.println("Error 1 while sending message to " + nickname);
+                                throw new RemoteException();
+                            }
+                        }
+                    }
+                }else{//gioco gia iniziato
+                    try {//gestisco eccezione Remote
+                        client.handleMessageNew("GameAlreadyStarted");
+                    } catch (RemoteException e) {
+                        System.err.println("Error 2 while sending message to " + nickname);
+                        throw new RemoteException();
+                    }
+
+                    controller.addPlayer(nickname);//aggiungo player
+                    System.out.println(nickname + " logged in."); //per debug
+                }
+            }
+        }
+    }
 
     default void startGame() throws RemoteException {
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();

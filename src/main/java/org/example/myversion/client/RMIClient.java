@@ -49,11 +49,21 @@ public class RMIClient extends Client implements ClientCommunicationInterface {
         try {
             String jsonString = message.getJson().toString();
             System.out.println(jsonString);
-            server.receiveMessageRMI(jsonString, this);
+            server.receiveMessageRMInew(jsonString, this);
             // server.receiveMessageRMI(jsonString, this);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
+    /*public void sendMessage(Message message) throws IOException, RemoteException {
+        try {
+            String jsonString = message.getJson().toString();
+            System.out.println(jsonString);
+            server.receiveMessageRMI(jsonString, this);
+            // server.receiveMessageRMI(jsonString, this);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }*/
 
 }
