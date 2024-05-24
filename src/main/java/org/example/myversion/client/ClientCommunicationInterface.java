@@ -16,4 +16,8 @@ public interface ClientCommunicationInterface extends Remote {
 
     void setNickname(String nickname) throws RemoteException;
 
+    void startGame() throws RemoteException;
+
+    void receiveCard(String message) throws RemoteException;
+
 }

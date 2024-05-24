@@ -1,5 +1,6 @@
 package org.example.myversion.client;
 
+import jakarta.json.Json;
 import org.example.myversion.client.view.GameView;
 import org.example.myversion.messages.Message;
 import org.example.myversion.server.model.Game;
@@ -10,6 +11,7 @@ import org.example.myversion.server.model.decks.cards.StarterCard;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.io.StringReader;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -138,8 +140,12 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
 
 //        if(!messageCode.equals("Pong")) {
 //            System.out.println("Received TCP message: with messageCode " + messageCode);
-//        }
 
+//        }
+        //Message message = new Message(Json.createReader(new StringReader(scelta)).readObject());
+        //        String messageType = message.getMessageCode();
+        //        System.out.println("tipodelmessaggio: "+messageType);
+        //
         switch (scelta) {
             case "Pong" -> {
                 serverConnection = true;
@@ -165,18 +171,17 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                     throw new RuntimeException(e);
                 }
             }
+            case "LobbyNotFull" ->{
+                System.out.println("In attesa di altri giocatori...");
+            }
             case "WaitForOtherPlayers" ->
                     gameView.waitForOtherPlayers();
             /*case "StarterCard" -> {
-                try {
-                    gameView.showStarterCard(message.getStarterCard());
-                    gameView.starterCardSideChoice(message.getStarterCard());
-                } catch (IOException e){
-                    throw new RuntimeException(e);
-                }
+                receiveStarterCard();
             }
+
             case "CommonObjectiveCards" ->
-                    gameView.showCommonObjectives(message.getObjectiveCards());
+
             case "SecretObjectiveCardsOptions" -> {
                 try {
                     gameView.showSecretObjectives(message.getObjectiveCards());
@@ -229,6 +234,39 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
             gameView.chooseCardToPlay();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+
+    }
+
+    public void receiveCard(String messageString) throws RemoteException{
+        Message message = new Message(Json.createReader(new StringReader(messageString)).readObject());
+        String messageType = message.getMessageCode();
+        System.out.println("entra in receive card");
+        switch (messageType){
+            case "StarterCard"->{
+                try {
+                    gameView.showStarterCard(message.getStarterCard());
+                    gameView.starterCardSideChoice(message.getStarterCard());
+                } catch (IOException e){
+                    throw new RuntimeException(e);
+                }
+            }
+            case "CommonObjective" ->{
+
+                gameView.showCommonObjectives(message.getObjectiveCards());
+
+
+
+            }
+            case "SecretObjectiveCardsOptions" -> {
+                try {
+                    gameView.showSecretObjectives(message.getObjectiveCards());
+                    gameView.secretObjectiveCardChoice(message.getObjectiveCards());
+                } catch (IOException e){
+                    throw new RuntimeException(e);
+                }
+            }
+
         }
 
     }

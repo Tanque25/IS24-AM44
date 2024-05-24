@@ -1,7 +1,9 @@
 package org.example.myversion.server.serverController;
 
+import org.example.myversion.client.ClientCommunicationInterface;
 import org.example.myversion.client.view.PlayAreaView;
 import org.example.myversion.messages.Message;
+import org.example.myversion.server.model.decks.cards.ObjectiveCard;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidGameStateException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
@@ -13,6 +15,8 @@ import java.net.Socket;
 import jakarta.json.*;
 
 import java.rmi.RemoteException;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class HandleClientSocket implements CommunicationInterface, Runnable {
@@ -194,7 +198,7 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
                         // If this is the last player to reach the max player number, the game starts
                         if (controller.getPlayersNumber() != 0 && controller.gameIsFull()) {
                             System.out.println("Game is full.");
-                            startGame();
+                            startGamesTcp();
                             System.out.println("Game started.");
                         }
                     }
@@ -202,6 +206,27 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
                 }
             }
         }
+    }
+
+    public void startGamesTcp() throws RemoteException {
+        HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
+        //HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
+
+        List<ObjectiveCard> commonObjectiveCards = controller.getCommonObjectiveCards();
+
+        for (String nickname : tcpClients.keySet()) {
+            Message starterCardMessage = new Message("StarterCard", controller.getStarterCard());
+            tcpClients.get(nickname).sendMessageToClient(starterCardMessage);
+
+            Message commmonObjectiveCardsMessage = new Message("CommonObjectiveCards", commonObjectiveCards.get(0), commonObjectiveCards.get(1));
+            tcpClients.get(nickname).sendMessageToClient(commmonObjectiveCardsMessage);
+
+            List<ObjectiveCard> secretObjectiveCardsOptions = controller.getSecretObjectiveCardsOptions();
+            Message secretObjectiveCardsOptionsMessage = new Message("SecretObjectiveCardsOptions", secretObjectiveCardsOptions.get(0), secretObjectiveCardsOptions.get(1));
+            tcpClients.get(nickname).sendMessageToClient(secretObjectiveCardsOptionsMessage);
+        }
+
+        // TODO: do the same for the RMI clients
     }
 
     public void setNickname(String nickname) {

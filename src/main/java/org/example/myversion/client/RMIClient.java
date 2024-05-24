@@ -55,6 +55,14 @@ public class RMIClient extends Client implements ClientCommunicationInterface {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void startGame() throws RemoteException {
+
+    }
+
+    //@Override
+    //public void receiveCard(String message) throws RemoteException ;
     /*public void sendMessage(Message message) throws IOException, RemoteException {
         try {
             String jsonString = message.getJson().toString();
