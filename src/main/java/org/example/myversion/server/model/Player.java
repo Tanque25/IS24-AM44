@@ -22,7 +22,8 @@ public class Player {
     private ObjectiveCard secretObjective;
     private Map<CornerContent, Integer> stock;
 
-
+    // Variable used to save the played card and send it to each client with the update message
+    private Map<PlayableCard, Coordinates> lastPlayedCard;
 
     /**
      * Constructs a player with the specified nickname.
@@ -385,7 +386,7 @@ public class Player {
     /**
      * Search the Pattern in the play Area. This method will be called by the finalScoreCalculator
      *
-     * @param  objectiveCard is the Objective Card Pattern that we want to search in the play area
+     * // @param  objectiveCard is the Objective Card Pattern that we want to search in the play area
      */
     /*
     public boolean FindObjectiveCard(SpecialObjectiveCard objectiveCard){
@@ -398,4 +399,13 @@ public class Player {
         return false;
     }*/
 
+    public void setLastPlayedCard(PlayableCard lastPlayedCard, Coordinates coordinates) {
+        this.lastPlayedCard = new HashMap<>();
+
+        this.lastPlayedCard.put(lastPlayedCard, coordinates);
+    }
+
+    public Map<PlayableCard, Coordinates> getLastPlayedCard() {
+        return lastPlayedCard;
+    }
 }

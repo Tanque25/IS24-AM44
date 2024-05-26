@@ -6,6 +6,7 @@ import org.example.myversion.client.Client;
 import org.example.myversion.client.view.GameView;
 import org.example.myversion.server.model.Board;
 import org.example.myversion.server.model.Player;
+import org.example.myversion.server.model.decks.cards.GoldCard;
 import org.example.myversion.server.model.decks.cards.ObjectiveCard;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
 import org.example.myversion.server.model.decks.cards.StarterCard;
@@ -73,6 +74,11 @@ public class GUI extends GameView {
 
     @Override
     public void waitForOtherPlayers() {
+
+    }
+
+    @Override
+    public void showVisibleCards() {
 
     }
 
@@ -158,6 +164,11 @@ public class GUI extends GameView {
 
     @Override
     public void invalidMove() throws IOException {
+
+    }
+
+    @Override
+    public void chooseCardToDraw() {
 
     }
 }

@@ -205,6 +205,14 @@ public class Game {
             }
     }
 
+    public PlayableCard getResourceDeckPeek() {
+        return resourceDeck.getResourceDeck().peek();
+    }
+
+    public GoldCard getGoldDeckPeek() {
+        return goldDeck.getGoldDeck().peek();
+    }
+
     /**
      * Retrieves the list of cards that the player can choose from for drawing.
      * The list consists of the four visible cards and the top cards from both the resource deck and the gold deck.

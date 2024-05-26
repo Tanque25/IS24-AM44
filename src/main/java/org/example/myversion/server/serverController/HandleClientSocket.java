@@ -2,6 +2,8 @@ package org.example.myversion.server.serverController;
 
 import org.example.myversion.client.view.PlayAreaView;
 import org.example.myversion.messages.Message;
+import org.example.myversion.server.model.decks.cards.GoldCard;
+import org.example.myversion.server.model.decks.cards.PlayableCard;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidGameStateException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
@@ -106,7 +108,7 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
 
             // This case verify the selected number of players and ank it again if necessary
             case "NumberOfPlayers" -> {
-                int numberOfPlayers = message.getMaxPlayers();
+                int numberOfPlayers = message.getNumber();
                 System.out.println("Number of players: " + numberOfPlayers);
 
                 // check the validity of the players' number
@@ -138,11 +140,20 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
 
             case "CardToPlayChoice" -> {
                 try {
-                    controller.playCard(nickname, message.getPlayableCard(), message.getCoordinates());
+                    // If it's a PlayableCard call getPlayableCard(), otherwise call getGoldCard()
+                    if (message.getJson().containsKey("playableCard"))
+                        controller.playCard(nickname, message.getPlayableCard(), message.getCoordinates());
+                    else
+                        controller.playCard(nickname, message.getGoldCard(), message.getCoordinates());
 
                     // Checking if the card has been actually placed - to remove
                     PlayAreaView playAreaView = new PlayAreaView();
                     playAreaView.displayMyPlayArea(controller.getPlayerFromNickname(nickname).getPlayArea());
+
+                    // Saving the played card in the Player instance
+                    controller.getGame().getCurrentPlayer().setLastPlayedCard(message.getPlayableCard(), message.getCoordinates());
+
+                    sendMessageToClient(new Message("VisibleCards", controller.getVisibleResourceCards(), controller.getRsourceDeckPeek(), controller.getVisibleGoldCards(), controller.getGoldDeckPeek()));
 
                     sendMessageToClient(new Message("DrawCard"));
                 } catch (InvalidMoveException e) {
@@ -153,6 +164,43 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
                     // sendMessageToClient(new Message("InvalidMove"));
                 }
 
+            }
+
+            case "CardToDrawChoice" -> {
+                int cardToDrawChoice = message.getNumber();
+
+                switch (cardToDrawChoice) {
+                    case 0, 1 -> {
+                        try {
+                            PlayableCard chosenCard = controller.getVisibleResourceCards().get(cardToDrawChoice);
+                            controller.drawCard(client.nickname, chosenCard);
+                        } catch (InvalidGameStateException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    case 2, 3 -> {
+                        try {
+                            GoldCard chosenCard = controller.getVisibleGoldCards().get(cardToDrawChoice-2);
+                            controller.drawCard(client.nickname, chosenCard);
+                        } catch (InvalidGameStateException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    case 4 -> {
+                        try {
+                            controller.drawCard(client.nickname, controller.getRsourceDeckPeek());
+                        } catch (InvalidGameStateException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    case 5 -> {
+                        try {
+                            controller.drawCard(client.nickname, controller.getGoldDeckPeek());
+                        } catch (InvalidGameStateException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
             }
 
         }

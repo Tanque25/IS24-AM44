@@ -4,11 +4,13 @@ import org.example.myversion.client.Client;
 import org.example.myversion.client.CodexNaturalis;
 import org.example.myversion.messages.Message;
 import org.example.myversion.server.model.Coordinates;
+import org.example.myversion.server.model.Player;
 import org.example.myversion.server.model.decks.cards.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -111,7 +113,7 @@ public class CLIView extends GameView {
         playersNumber = readNumber();
 
         while (playersNumber<2 || playersNumber>4) {
-            System.err.println("Please enter a number between 2 and 4: ");
+            System.err.print("Please enter a number between 2 and 4: ");
             playersNumber = readNumber();
         }
 
@@ -133,6 +135,64 @@ public class CLIView extends GameView {
 
     public void waitForOtherPlayers() {
         showMessage("Waiting for other players to join...\n");
+    }
+
+    public void showVisibleCards() {
+        CardView cardView = new CardView();
+
+        List<PlayableCard> visiblePlayableCards = getVisibleResourceCards();
+        List<GoldCard> visibleGoldCards = getVisibleGoldCards();
+
+        showMessage("\nThese are the visible resource cards:\n");
+        for(PlayableCard resourceCard : visiblePlayableCards) {
+            cardView.displayCardFrontTopLine(resourceCard);
+            System.out.print("  ");
+        }
+        System.out.println();
+        for(PlayableCard resourceCard : visiblePlayableCards) {
+            cardView.displayCardFrontMiddleLine(resourceCard);
+            System.out.print("  ");
+        }
+        System.out.println();
+        for(PlayableCard resourceCard : visiblePlayableCards) {
+            cardView.displayCardFrontBottomLine(resourceCard);
+            System.out.print("  ");
+        }
+        System.out.println();
+        showMessage("[   0   ]  [   1   ]\n");
+
+        showMessage("\nThese are the visible gold cards:\n");
+        for(GoldCard goldCard : visibleGoldCards) {
+            cardView.displayCardFrontTopLine(goldCard);
+            System.out.print("  ");
+        }
+        System.out.println();
+        for(GoldCard goldCard : visibleGoldCards) {
+            cardView.displayCardFrontMiddleLine(goldCard);
+            System.out.print("  ");
+        }
+        System.out.println();
+        for(GoldCard goldCard : visibleGoldCards) {
+            cardView.displayCardFrontBottomLine(goldCard);
+            System.out.print("  ");
+        }
+        System.out.println();
+        showMessage("[   2   ]  [   3   ]\n");
+
+        showMessage("\nThese are the covered cards:\n");
+        cardView.displayCardBackTopLine(getCoveredResourceCard());
+        System.out.print("  ");
+        cardView.displayCardBackTopLine(getCoveredGoldCard());
+        System.out.println();
+        cardView.displayCardBackMiddleLine(getCoveredResourceCard());
+        System.out.print("  ");
+        cardView.displayCardBackMiddleLine(getCoveredGoldCard());
+        System.out.println();
+        cardView.displayCardBackBottomLine(getCoveredResourceCard());
+        System.out.print("  ");
+        cardView.displayCardBackBottomLine(getCoveredGoldCard());
+        System.out.println();
+        showMessage("[   4   ]  [   5   ]\n");
     }
 
     @Override
@@ -162,9 +222,7 @@ public class CLIView extends GameView {
     public void starterCardSideChoice(StarterCard starterCard) throws IOException {
         int sideChoice = askForSideChoice();
 
-        if (sideChoice == 1) {
-            starterCard.setPlayedBack(true);
-        }
+        if (sideChoice == 1) starterCard.setPlayedBack(true);
 
         client.sendMessage(new Message("StarterCard", starterCard));
     }
@@ -270,11 +328,11 @@ public class CLIView extends GameView {
     public void showOthersHandsAndPlayAreas() {
         for (String nickname : getHandsMap().keySet()) {
             if (!(nickname.equals(client.getNickname()))) {
-                showMessage("\nHere is " + nickname + "'s play area:\n");
-                showOtherPlayerPlayArea(getPlayAreasMap().get(nickname));
-
                 showMessage("\nHere is " + nickname + "'s hand:\n");
                 showPlayerHand(getHandsMap().get(nickname));
+
+                showMessage("\nHere is " + nickname + "'s play area:\n");
+                showOtherPlayerPlayArea(getPlayAreasMap().get(nickname));
             }
         }
     }
@@ -302,14 +360,12 @@ public class CLIView extends GameView {
         showPlayerPlayArea(getPlayAreasMap().get(client.getNickname()));
 
         int cardToPlayChoice = askForCardToPlayChoice();
-
+        int sideChoide = askForSideChoice();
         Coordinates coordinates = askForCoordinatesChoice();
 
         List<PlayableCard> hand = getHandsMap().get(client.getNickname());
         PlayableCard chosenCard = hand.get(cardToPlayChoice);
-
-        // Place the card in the play area, will remove it if the choice is not valid.
-        getPlayAreasMap().get(client.getNickname())[coordinates.getX()][coordinates.getY()] = chosenCard;
+        if (sideChoide == 1) chosenCard.setPlayedBack(true);
 
         client.sendMessage(new Message("CardToPlayChoice", chosenCard, coordinates));
     }
@@ -324,7 +380,7 @@ public class CLIView extends GameView {
         int cardToPlayChoice = readNumber();
 
         while (cardToPlayChoice!=0 && cardToPlayChoice!=1 && cardToPlayChoice!=2) {
-            System.err.println("Please enter '0', '1' or '2': ");
+            System.err.print("Please enter '0', '1' or '2': ");
             cardToPlayChoice = readNumber();
         }
 
@@ -332,12 +388,25 @@ public class CLIView extends GameView {
     }
 
     public Coordinates askForCoordinatesChoice() {
-        showMessage("\nPlease enter the x coordinate where to place the card: ");
+        showMessage("Please enter the x coordinate where to place the card: ");
         int xCoordinate = readNumber();
-        showMessage("\nPlease enter the y coordinate where to place the card: ");
+        showMessage("Please enter the y coordinate where to place the card: ");
         int yCoordinate = readNumber();
 
         return new Coordinates(xCoordinate, yCoordinate);
+    }
+
+    public void chooseCardToDraw() throws IOException {
+        showMessage("\nPlease enter '0', '1', '2', '3', '4' or '5' to choose the card to draw: ");
+        int cardToDrawChoice = readNumber();
+
+        while (cardToDrawChoice!=0 && cardToDrawChoice!=1 && cardToDrawChoice!=2 && cardToDrawChoice!=3 && cardToDrawChoice!=4 && cardToDrawChoice!=5) {
+            System.err.print("Please enter '0', '1', '2', '3', '4' or '5': ");
+            cardToDrawChoice = readNumber();
+        }
+
+        client.sendMessage(new Message("CardToDrawChoice", cardToDrawChoice));
+
     }
 
 }

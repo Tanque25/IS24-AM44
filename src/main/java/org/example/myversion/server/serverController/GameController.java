@@ -5,10 +5,7 @@ import org.example.myversion.server.Server;
 import org.example.myversion.server.model.Coordinates;
 import org.example.myversion.server.model.Game;
 import org.example.myversion.server.model.Player;
-import org.example.myversion.server.model.decks.cards.Card;
-import org.example.myversion.server.model.decks.cards.ObjectiveCard;
-import org.example.myversion.server.model.decks.cards.PlayableCard;
-import org.example.myversion.server.model.decks.cards.StarterCard;
+import org.example.myversion.server.model.decks.cards.*;
 import org.example.myversion.server.model.exceptions.*;
 
 import java.util.HashMap;
@@ -216,6 +213,22 @@ public class GameController {
         return lastPlayer;
     }
 
+    public PlayableCard getRsourceDeckPeek() {
+        return game.getResourceDeckPeek();
+    }
+
+    public GoldCard getGoldDeckPeek() {
+        return game.getGoldDeckPeek();
+    }
+
+    public List<PlayableCard> getVisibleResourceCards() {
+        return game.getVisibleResourceCards();
+    }
+
+    public List<GoldCard> getVisibleGoldCards() {
+        return game.getVisibleGoldCards();
+    }
+
     /**
      * Draws two secret objective cards form the objective deck to pass them to all the clients.
      *
@@ -297,7 +310,6 @@ public class GameController {
                 throw new InvalidNicknameException("Invalid nickname");
             }
         } else throw new InvalidGameStateException("Invalid game state");
-
     }
 
     /**

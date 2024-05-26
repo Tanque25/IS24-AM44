@@ -3,7 +3,7 @@ package org.example.myversion.server.serverController;
 import jakarta.json.Json;
 import org.example.myversion.client.Client;
 import org.example.myversion.client.ClientCommunicationInterface;
-import org.example.myversion.client.RMIClient;
+import org.example.myversion.client.view.HandView;
 import org.example.myversion.messages.Message;
 
 import java.io.StringReader;
@@ -11,8 +11,11 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Set;
 
+import org.example.myversion.server.model.decks.cards.GoldCard;
 import org.example.myversion.server.model.decks.cards.ObjectiveCard;
+import org.example.myversion.server.model.decks.cards.PlayableCard;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
 import org.example.myversion.server.model.exceptions.InvalidNicknameException;
@@ -147,7 +150,7 @@ public interface CommunicationInterface extends Remote {
             }
 
             case "numOfPlayersMessage" -> {
-                int numberOfPlayers = message.getMaxPlayers();//numero di giocatori
+                int numberOfPlayers = message.getNumber();//numero di giocatori
                 boolean isValidNumberOfPlayers = controller.checkNumberOfPlayer(numberOfPlayers);
 
                 //numero di giocatori NON è valido:
@@ -191,7 +194,16 @@ public interface CommunicationInterface extends Remote {
 
         List<ObjectiveCard> commonObjectiveCards = controller.getCommonObjectiveCards();
 
+        List<PlayableCard> visibleResourceCards = controller.getVisibleResourceCards();
+        PlayableCard coveredResourceCard = controller.getRsourceDeckPeek();
+        List<GoldCard> visibleGoldCards = controller.getVisibleGoldCards();
+        GoldCard coveredGoldCard = controller.getGoldDeckPeek();
+
+
         for (String nickname : tcpClients.keySet()) {
+            Message visibleCardsMessage = new Message("VisibleCards", visibleResourceCards, coveredResourceCard, visibleGoldCards, coveredGoldCard);
+            tcpClients.get(nickname).sendMessageToClient(visibleCardsMessage);
+
             Message starterCardMessage = new Message("StarterCard", controller.getStarterCard());
             tcpClients.get(nickname).sendMessageToClient(starterCardMessage);
 
@@ -211,6 +223,13 @@ public interface CommunicationInterface extends Remote {
         HashMap<String, Client> rmiClients = controller.getRmiClients();
 
         for (String nickname : tcpClients.keySet()) {
+
+            // To remove
+            HandView handView = new HandView();
+            Set<String> nicknames = controller.getPlayersHandsMap().keySet();
+            for (String nick : nicknames)
+                handView.displayHand(controller.getPlayersHandsMap().get(nick));
+
             Message startConditionMessage = new Message("StartCondition", controller.getStarterCardsMap(), controller.getPlayersHandsMap());
             tcpClients.get(nickname).sendMessageToClient(startConditionMessage);
         }

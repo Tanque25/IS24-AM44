@@ -1,6 +1,7 @@
 package org.example.myversion.client;
 
 import org.example.myversion.client.view.GameView;
+import org.example.myversion.client.view.HandView;
 import org.example.myversion.messages.Message;
 import org.example.myversion.server.model.Game;
 import org.example.myversion.server.model.decks.ObjectiveDeck;
@@ -16,6 +17,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -86,6 +88,14 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
             }
             case "WaitForOtherPlayers" ->
                 gameView.waitForOtherPlayers();
+            case "VisibleCards" ->{
+                gameView.setVisibleResourceCards(message.getResourceCards());
+                gameView.setCoveredResourceCard(message.getPlayableCard());
+                gameView.setVisibleGoldCards(message.getGoldCards());
+                gameView.setCoveredGoldCard(message.getGoldCard());
+
+                gameView.showVisibleCards();
+            }
             case "StarterCard" -> {
                 try {
                     gameView.showStarterCard(message.getStarterCard());
@@ -106,6 +116,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
             }
             case "StartCondition" -> {
                 gameView.setHandsMap(message.getPlayersHandsMap());
+
                 gameView.initializePlayAreas(message.getStarterCardsMap());
 
                 gameView.showOthersHandsAndPlayAreas();
@@ -121,14 +132,18 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
             }
             case "InvalidMove" -> {
                 try {
-                    // TODO: Remove the card from the play area first
                     gameView.invalidMove();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
             case "DrawCard" -> {
-                System.out.println("Choose the card to draw.");
+                try {
+                    gameView.chooseCardToDraw();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
             }
             default -> throw new IllegalArgumentException("Invalid messageCode: " + messageCode);
         }

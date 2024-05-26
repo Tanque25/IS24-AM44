@@ -60,12 +60,12 @@ public class Message implements Serializable {
      * Constructs a Message object representing a player number message with the given message code and maximum number of players.
      *
      * @param messageCode the identifier of the message.
-     * @param playersNumber  the maximum number of players.
+     * @param number the int value associated with the message.
      */
-    public Message(String messageCode, int playersNumber) {
+    public Message(String messageCode, int number) {
         json = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
-                .add("PlayersNumber", playersNumber)
+                .add("Number", number)
                 .build();
     }
 
@@ -174,14 +174,42 @@ public class Message implements Serializable {
         // Serialize the playersHands map
         JsonObjectBuilder playersHandsJson = Json.createObjectBuilder();
         for (Map.Entry<String, List<PlayableCard>> entry : playersHands.entrySet()) {
-            playersHandsJson.add(entry.getKey(), createPlayableCardsJson(entry.getValue()));
+            playersHandsJson.add(entry.getKey(), createHandJson(entry.getValue()));
         }
         jsonBuilder.add("playersHands", playersHandsJson);
+
+        // TODO: serialize the visible resource cards
+        // TODO: serialize the visible gold cards
 
         // Build the final JSON object
         json = jsonBuilder.build();
     }
 
+    /**
+     * Message used to send the draw options
+     *
+     * @param messageCode
+     * @param visibleResourceCards
+     * @param coveredResourceCard
+     * @param coveredGoldCard
+     * @param visibleGoldCards
+     */
+    public Message(String messageCode, List<PlayableCard> visibleResourceCards, PlayableCard coveredResourceCard, List<GoldCard> visibleGoldCards, GoldCard coveredGoldCard) {
+        JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
+        jsonBuilder.add("messageCode", messageCode);
+
+        // Serialize the visible resource cards
+        jsonBuilder.add("playableCard1", createPlayableCardJson(visibleResourceCards.getFirst()));
+        jsonBuilder.add("playableCard2", createPlayableCardJson(visibleResourceCards.getLast()));
+        jsonBuilder.add("playableCard", createPlayableCardJson(coveredResourceCard)); // Top card of the resource deck
+
+        // Serialize the visible gold cards
+        jsonBuilder.add("goldCard1", createGoldCardJson(visibleGoldCards.getFirst()));
+        jsonBuilder.add("goldCard2", createGoldCardJson(visibleGoldCards.getLast()));
+        jsonBuilder.add("goldCard", createGoldCardJson(coveredGoldCard)); // Top card of the gold deck
+
+        json = jsonBuilder.build();
+    }
 
     /**
      * Constructs a Message object representing a message containing coordinates.
@@ -320,8 +348,19 @@ public class Message implements Serializable {
 
     private JsonArray createPlayableCardsJson(List<PlayableCard> playableCards) {
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-        for (PlayableCard card : playableCards) {
-            arrayBuilder.add(createPlayableCardJson(card));
+        for (PlayableCard playableCard : playableCards) {
+                arrayBuilder.add(createPlayableCardJson(playableCard));
+        }
+        return arrayBuilder.build();
+    }
+
+    private JsonArray createHandJson(List<PlayableCard> cards) {
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        for (PlayableCard card : cards) {
+            if (card instanceof GoldCard)
+                arrayBuilder.add(createGoldCardJson((GoldCard) card));
+            else
+                arrayBuilder.add(createPlayableCardJson(card));
         }
         return arrayBuilder.build();
     }
@@ -336,6 +375,14 @@ public class Message implements Serializable {
                 .add("cost", createObjectiveObject(goldCard.getCost()))
                 .add("playedBack", goldCard.isPlayedBack())
                 .build();
+    }
+
+    private JsonArray createGoldCardsJson(List<GoldCard> goldCards) {
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        for (GoldCard goldCard : goldCards) {
+            arrayBuilder.add(createGoldCardJson(goldCard));
+        }
+        return arrayBuilder.build();
     }
 
 ///////////////////////////////////////////////////////GETTERS////////////////////////////////////////////////////////
@@ -377,8 +424,8 @@ public class Message implements Serializable {
      *
      * @return The maximum number of players.
      */
-    public int getMaxPlayers() {
-        return json.getInt("PlayersNumber", -1);
+    public int getNumber() {
+        return json.getInt("Number", -1);
     }
 
     /**
@@ -429,6 +476,37 @@ public class Message implements Serializable {
         return starterCard;
     }
 
+    public List<PlayableCard> getResourceCards() {
+        List<PlayableCard> resourceCards = new ArrayList<>();
+
+        // Process the first card
+        JsonObject resourceCard1 = json.getJsonObject("playableCard1");
+        PlayableCard card1 = createPlayableCardFromJson(resourceCard1);
+        resourceCards.add(card1);
+
+        // Process the second card
+        JsonObject resourceCard2 = json.getJsonObject("playableCard2");
+        PlayableCard card2 = createPlayableCardFromJson(resourceCard2);
+        resourceCards.add(card2);
+
+        return resourceCards;
+    }
+
+    public List<GoldCard> getGoldCards() {
+        List<GoldCard> goldCards = new ArrayList<>();
+
+        // Process the first card
+        JsonObject goldCard1 = json.getJsonObject("goldCard1");
+        GoldCard card1 = createGoldCardFromJson(goldCard1);
+        goldCards.add(card1);
+
+        // Process the second card
+        JsonObject resourceCard2 = json.getJsonObject("goldCard2");
+        GoldCard card2 = createGoldCardFromJson(resourceCard2);
+        goldCards.add(card2);
+
+        return goldCards;
+    }
 
     public ObjectiveCard getObjectiveCard() {
         JsonObject objectiveCard1 = json.getJsonObject("objectiveCard");
@@ -493,7 +571,7 @@ public class Message implements Serializable {
         for (String key : playersHandsJson.keySet()) {
             JsonArray handArray = playersHandsJson.getJsonArray(key);
             if (handArray != null) {
-                List<PlayableCard> cards = createPlayableCardsFromJson(handArray);
+                List<PlayableCard> cards = createHandFromJson(handArray);
                 playersHands.put(key, cards);
             } else {
                 throw new IllegalStateException("Playable cards data is corrupted or missing for key: " + key);
@@ -503,13 +581,16 @@ public class Message implements Serializable {
         return playersHands;
     }
 
-    private List<PlayableCard> createPlayableCardsFromJson(JsonArray jsonArray) {
+    private List<PlayableCard> createHandFromJson(JsonArray jsonArray) {
         List<PlayableCard> cards = new ArrayList<>();
+
         for (int i = 0; i < jsonArray.size(); i++) {
             JsonObject cardJson = jsonArray.getJsonObject(i);
-            PlayableCard card = createPlayableCardFromJson(cardJson);
-            cards.add(card);
+            if (cardJson.getInt("id") <= 40)
+                cards.add(createPlayableCardFromJson(cardJson));
+            else cards.add(createGoldCardFromJson(cardJson));
         }
+
         return cards;
     }
 
@@ -552,7 +633,7 @@ public class Message implements Serializable {
         Resource resource = Resource.valueOf(goldCardJson.getString("resource"));
         Map<CornerPosition, Corner> corners = getCornerMap(goldCardJson.getJsonObject("corners"));
         int cardPoints = goldCardJson.getInt("cardPoints");
-        PointsParameter pointsParameter = SpecialObject.valueOf(goldCardJson.getString("pointsParameter"));
+        PointsParameter pointsParameter = createPointsParameter(goldCardJson.getString("pointsParameter"));
         Resource[] cost = getResourceArray(goldCardJson.getJsonArray("cost"));
         boolean playedBack = goldCardJson.getBoolean("playedBack", false);
 
@@ -650,6 +731,14 @@ public class Message implements Serializable {
             case "PLANT_KINGDOM", "ANIMAL_KINGDOM", "FUNGI_KINGDOM", "INSECT_KINGDOM" ->
                     Resource.valueOf(cornerContent);
             case "QUILL", "INKWELL", "MANUSCRIPT" -> SpecialObject.valueOf(cornerContent);
+            default -> null;
+        };
+    }
+
+    private PointsParameter createPointsParameter(String pointsParameter) {
+        return switch (pointsParameter) {
+            case "CORNER", "EMPTY" -> ParameterType.valueOf(pointsParameter);
+            case "QUILL", "INKWELL", "MANUSCRIPT" -> SpecialObject.valueOf(pointsParameter);
             default -> null;
         };
     }
