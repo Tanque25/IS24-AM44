@@ -23,7 +23,8 @@ public class Player {
     private Map<CornerContent, Integer> stock;
 
     // Variable used to save the played card and send it to each client with the update message
-    private Map<PlayableCard, Coordinates> lastPlayedCard;
+    private PlayableCard lastPlayedCard;
+    private Coordinates lastPlayedCoordinates;
 
     /**
      * Constructs a player with the specified nickname.
@@ -399,13 +400,16 @@ public class Player {
         return false;
     }*/
 
-    public void setLastPlayedCard(PlayableCard lastPlayedCard, Coordinates coordinates) {
-        this.lastPlayedCard = new HashMap<>();
-
-        this.lastPlayedCard.put(lastPlayedCard, coordinates);
+    public void setLastPlayedCard(PlayableCard lastPlayedCard, Coordinates lastPlayedCoordinates) {
+        this.lastPlayedCard = lastPlayedCard;
+        this.lastPlayedCoordinates = lastPlayedCoordinates;
     }
 
-    public Map<PlayableCard, Coordinates> getLastPlayedCard() {
+    public PlayableCard getLastPlayedCard() {
         return lastPlayedCard;
+    }
+
+    public Coordinates getLastPlayedCoordinates() {
+        return  lastPlayedCoordinates;
     }
 }

@@ -92,9 +92,7 @@ public class GameController {
      * @return true if the player is the first player, false otherwise
      */
     public boolean isFirst() {
-        System.out.println("numero tcp: "+tcpClients.size());
-        System.out.println("numero tcp: "+rmiClients.size());
-        return tcpClients.size() + rmiClients.size() == 0;
+        return tcpClients.size() + rmiClients.size() == 1;
     }
 
     public void newGame() {
@@ -334,7 +332,8 @@ public class GameController {
                         gameState = GameState.LAST_ROUND;
                     }
                 }
-                changeTurn();
+                // Going to call changeTurn() in the updateClients() method
+                // changeTurn();
             }else{
                 throw new InvalidNicknameException("Invalid nickname");
             }
