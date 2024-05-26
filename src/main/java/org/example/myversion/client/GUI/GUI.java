@@ -6,22 +6,22 @@ import org.example.myversion.client.Client;
 import org.example.myversion.client.view.GameView;
 import org.example.myversion.server.model.Board;
 import org.example.myversion.server.model.Player;
-import org.example.myversion.server.model.decks.cards.GoldCard;
 import org.example.myversion.server.model.decks.cards.ObjectiveCard;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
 import org.example.myversion.server.model.decks.cards.StarterCard;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 public class GUI extends GameView {
+
+    //private static final String GOLD_BACK_PATH = "org/example/myversion/cards_gold_back/";
+    //private static final String GOLD_FRONT_PATH = "org/example/myversion/cards_gold_front";
     @Override
     public void setClient(Client client) {
 
@@ -105,7 +105,6 @@ public class GUI extends GameView {
         vbox.getChildren().addAll(label, hbox);
     }
 
-
     @Override
     public void showStarterCard(StarterCard starterCard) {
     }
@@ -115,12 +114,12 @@ public class GUI extends GameView {
         VBox vbox = new VBox();
         HBox hbox = new HBox();
         Label label = new Label("Choose the side to play your starter card: ");
-        //Image imgFront = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + starterCard.getId().toString() + ".png").toExternalForm());
-        //ImageView imgViewFront = new ImageView(imgFront);
-        //Image imgBack = new Image(getClass().getResource("org/example/myversion/cards_gold_back" + starterCard.getId().toString() + ".png").toExternalForm());
-        //ImageView imgViewBack = new ImageView(imgBack);
-        //hbox.getChildren().addAll(imgViewFront, imgViewBack);
-        //vbox.getChildren().addAll(label, hbox);
+        Image imgFront = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + Objects.toString(starterCard.getId()) + ".png").toExternalForm());
+        ImageView imgViewFront = new ImageView(imgFront);
+        Image imgBack = new Image(getClass().getResource("org/example/myversion/cards_gold_back" + Objects.toString(starterCard.getId()) + ".png").toExternalForm());
+        ImageView imgViewBack = new ImageView(imgBack);
+        hbox.getChildren().addAll(imgViewFront, imgViewBack);
+        vbox.getChildren().addAll(label, hbox);
     }
 
     @Override
@@ -130,20 +129,20 @@ public class GUI extends GameView {
 
     public HBox showMyHand(List<PlayableCard> hand) {
         HBox hbox = new HBox();
-        for(PlayableCard card : hand){
-            //Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + card.getId().toString() + ".png").toExternalForm());
-            //ImageView imgView = new ImageView(img);
-            //hbox.getChildren().add(imgView);
+        for (PlayableCard card : hand) {
+            Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + Objects.toString(card.getId()) + ".png").toExternalForm());
+            ImageView imgView = new ImageView(img);
+            hbox.getChildren().add(imgView);
         }
         return hbox;
     }
 
     public HBox showMyHandBack(List<PlayableCard> hand) {
         HBox hbox = new HBox();
-        for(PlayableCard card : hand){
-            //Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_back" + card.getId().toString() + ".png").toExternalForm());
-            //ImageView imgView = new ImageView(img);
-            //hbox.getChildren().add(imgView);
+        for (PlayableCard card : hand) {
+            Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_back" + Objects.toString(card.getId()) + ".png").toExternalForm());
+            ImageView imgView = new ImageView(img);
+            hbox.getChildren().add(imgView);
         }
         return hbox;
     }
