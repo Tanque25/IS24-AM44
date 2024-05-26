@@ -147,6 +147,12 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 }
 
             }
+            case "UpdatePlayedCard" -> {
+
+            }
+            case "UpdateDrawnCard" -> {
+
+            }
             default -> throw new IllegalArgumentException("Invalid messageCode: " + messageCode);
         }
     }

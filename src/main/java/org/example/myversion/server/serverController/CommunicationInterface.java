@@ -100,12 +100,13 @@ public interface CommunicationInterface extends Remote {
     default void checkNicknameNew(ClientCommunicationInterface client, String nickname, int checkNicknameStatus) throws RemoteException {
         switch (checkNicknameStatus) {
             case 1 -> {
-
                 if(!controller.isGameStarted()){//se gioco non iniziato ancora
+                    controller.addPlayer(nickname);//aggiungo player
+                    System.out.println(nickname + " logged in.");
+
+                    controller.addClientRMI(nickname, client);
+
                     if(controller.isFirst()){//controllo se è il primo
-                        controller.addClientRMI(nickname, client);
-                        controller.addPlayer(nickname);//aggiungo player
-                        System.out.println(nickname + " logged in."); //per debug
                         try {//chiedo numeri giocatori e gestisco eccezione
                             client.handleMessageNew("ChooseNumOfPlayer");
                         } catch (RemoteException e) {
@@ -236,6 +237,15 @@ public interface CommunicationInterface extends Remote {
 
         Message otherTurn = new Message("OtherTurn", nickname);
         sendMessageToAllExcept(nickname, otherTurn);
+    }
+
+    default void sendMessageToAll (String currentPlayerNickname, Message message) throws RemoteException {
+        HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
+        HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
+
+        for (String nickname : tcpClients.keySet()) {
+            tcpClients.get(nickname).sendMessageToClient(message);
+        }
     }
 
     default void sendMessageToAllExcept (String currentPlayerNickname, Message message) throws RemoteException {

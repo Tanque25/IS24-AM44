@@ -1,6 +1,7 @@
 package org.example.myversion.client.view;
 
 import org.example.myversion.client.Client;
+import org.example.myversion.server.model.Coordinates;
 import org.example.myversion.server.model.Player;
 import org.example.myversion.server.model.decks.cards.*;
 
@@ -77,6 +78,14 @@ public abstract class GameView {
             playArea[41][41] = starterCards.get(nickname);
             playAreasMap.put(nickname, playArea);
         }
+    }
+
+    public void playCard(String nickname, PlayableCard playedCard, Coordinates coordinates) {
+
+    }
+
+    public void drawCard(String nickname, PlayableCard drawnCard) {
+
     }
 
     public abstract void setClient(Client client);
