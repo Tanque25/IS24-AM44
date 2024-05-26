@@ -246,7 +246,7 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
                         // If this is the last player to reach the max player number, the game starts
                         if (controller.getPlayersNumber() != 0 && controller.gameIsFull()) {
                             System.out.println("Game is full.");
-                            startGamesTcp();
+                            startGame();
                             System.out.println("Game started.");
                         }
                     }
@@ -256,13 +256,22 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
         }
     }
 
-    public void startGamesTcp() throws RemoteException {
+    public void startGame() {
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
-        //HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
+        HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
 
         List<ObjectiveCard> commonObjectiveCards = controller.getCommonObjectiveCards();
 
+        List<PlayableCard> visibleResourceCards = controller.getVisibleResourceCards();
+        PlayableCard coveredResourceCard = controller.getRsourceDeckPeek();
+        List<GoldCard> visibleGoldCards = controller.getVisibleGoldCards();
+        GoldCard coveredGoldCard = controller.getGoldDeckPeek();
+
+
         for (String nickname : tcpClients.keySet()) {
+            Message visibleCardsMessage = new Message("VisibleCards", visibleResourceCards, coveredResourceCard, visibleGoldCards, coveredGoldCard);
+            tcpClients.get(nickname).sendMessageToClient(visibleCardsMessage);
+
             Message starterCardMessage = new Message("StarterCard", controller.getStarterCard());
             tcpClients.get(nickname).sendMessageToClient(starterCardMessage);
 
@@ -276,6 +285,7 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
 
         // TODO: do the same for the RMI clients
     }
+
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
