@@ -97,7 +97,17 @@ public class CLIView extends GameView {
 
     public void playersNumberChoice() throws IOException {
         int playersNumber = askForPlayersNumber();
-        client.sendMessage(new Message("NumberOfPlayers", playersNumber));
+        String playersNum = "zero";
+        if (playersNumber==2){
+            client.sendMessage(new Message("due"));
+        }
+        else if (playersNumber == 3){
+            client.sendMessage(new Message("tre"));
+        }
+        else if (playersNumber == 4){ client.sendMessage(new Message("quattro"));}
+        else {
+            client.sendMessage(new Message("uno"));
+        }
     }
 
     public void invalidPlayersNumberChoice() throws IOException {
