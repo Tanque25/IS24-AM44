@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="497.0" prefWidth="658.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <ImageView fitHeight="498.0" fitWidth="662.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../Images/CreateOrJoinGame/CreateOrJoinGameBackround.png" />
+            </image>
+            <effect>
+                <BoxBlur />
+            </effect>
+        </ImageView>
+        <VBox prefHeight="200.0" prefWidth="100.0">
+            <children>
+                <HBox prefHeight="441.0" prefWidth="650.0">
+                    <children>
+                        <ImageView fitHeight="148.0" fitWidth="490.0" pickOnBounds="true" preserveRatio="true" translateX="85.0" translateY="160.0">
+                            <image>
+                                <Image url="@../Images/Login_images/logo.png" />
+                            </image>
+                            <HBox.margin>
+                                <Insets />
+                            </HBox.margin>
+                        </ImageView>
+                    </children>
+                </HBox>
+                <HBox prefHeight="310.0" prefWidth="539.0">
+                    <children>
+                        <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="170.0" text="Create New Game" translateX="120.0">
+                            <font>
+                                <Font size="18.0" />
+                            </font>
+                        </Button>
+                        <Region prefHeight="250.0" prefWidth="82.0" translateX="120.0" />
+                        <Button mnemonicParsing="false" text="Join Game" translateX="120.0">
+                            <font>
+                                <Font size="18.0" />
+                            </font>
+                        </Button>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</StackPane>
