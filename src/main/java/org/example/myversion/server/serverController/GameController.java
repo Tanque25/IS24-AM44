@@ -332,7 +332,8 @@ public class GameController {
                         gameState = GameState.LAST_ROUND;
                     }
                 }
-                changeTurn();
+                // Going to call changeTurn() in the updateClients() method
+                // changeTurn();
             }else{
                 throw new InvalidNicknameException("Invalid nickname");
             }

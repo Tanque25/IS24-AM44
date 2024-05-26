@@ -3,6 +3,7 @@ package org.example.myversion.server.serverController;
 import org.example.myversion.client.ClientCommunicationInterface;
 import org.example.myversion.client.view.PlayAreaView;
 import org.example.myversion.messages.Message;
+import org.example.myversion.server.model.Coordinates;
 import org.example.myversion.server.model.decks.cards.GoldCard;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
 import org.example.myversion.server.model.decks.cards.ObjectiveCard;
@@ -16,9 +17,11 @@ import java.io.*;
 import java.net.Socket;
 import jakarta.json.*;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class HandleClientSocket implements CommunicationInterface, Runnable {
@@ -157,6 +160,8 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
                     // Saving the played card in the Player instance
                     controller.getGame().getCurrentPlayer().setLastPlayedCard(message.getPlayableCard(), message.getCoordinates());
 
+                    updateClientsPlayedCard(message.getPlayableCard(), message.getCoordinates());
+
                     sendMessageToClient(new Message("VisibleCards", controller.getVisibleResourceCards(), controller.getRsourceDeckPeek(), controller.getVisibleGoldCards(), controller.getGoldDeckPeek()));
 
                     sendMessageToClient(new Message("DrawCard"));
@@ -178,6 +183,7 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
                         try {
                             PlayableCard chosenCard = controller.getVisibleResourceCards().get(cardToDrawChoice);
                             controller.drawCard(client.nickname, chosenCard);
+                            updateClientsDrawnCard(chosenCard);
                         } catch (InvalidGameStateException e) {
                             e.printStackTrace();
                         }
@@ -186,27 +192,31 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
                         try {
                             GoldCard chosenCard = controller.getVisibleGoldCards().get(cardToDrawChoice-2);
                             controller.drawCard(client.nickname, chosenCard);
+                            updateClientsDrawnCard(chosenCard);
                         } catch (InvalidGameStateException e) {
                             e.printStackTrace();
                         }
                     }
                     case 4 -> {
                         try {
-                            controller.drawCard(client.nickname, controller.getRsourceDeckPeek());
+                            PlayableCard chosenCard = controller.getRsourceDeckPeek();
+                            controller.drawCard(client.nickname, chosenCard);
+                            updateClientsDrawnCard(chosenCard);
                         } catch (InvalidGameStateException e) {
                             e.printStackTrace();
                         }
                     }
                     case 5 -> {
                         try {
-                            controller.drawCard(client.nickname, controller.getGoldDeckPeek());
+                            GoldCard chosenCard = controller.getGoldDeckPeek();
+                            controller.drawCard(client.nickname, chosenCard);
+                            updateClientsDrawnCard(chosenCard);
                         } catch (InvalidGameStateException e) {
                             e.printStackTrace();
                         }
                     }
                 }
             }
-
         }
     }
 
@@ -250,7 +260,6 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
                             System.out.println("Game started.");
                         }
                     }
-
                 }
             }
         }
@@ -285,6 +294,23 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
 
     }
 
+    public void updateClientsPlayedCard(PlayableCard playedCard, Coordinates coordinates) throws RemoteException {
+        HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
+
+        String nickname = controller.getCurrentPlayer().getNickname();
+
+        Message updateMessage = new Message("UpdatePlayedCard", nickname, playedCard, coordinates);
+
+        sendMessageToAll(nickname, updateMessage);
+    }
+
+    public void updateClientsDrawnCard(PlayableCard drawnCard) throws RemoteException {
+        HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
+
+        String nickname = controller.getCurrentPlayer().getNickname();
+
+        Message updateMessage = new Message("UpdateDrawnCard", nickname, drawnCard, null);
+    }
 
     public void setNickname(String nickname) {
         this.nickname = nickname;

@@ -239,6 +239,15 @@ public interface CommunicationInterface extends Remote {
         sendMessageToAllExcept(nickname, otherTurn);
     }
 
+    default void sendMessageToAll (String currentPlayerNickname, Message message) throws RemoteException {
+        HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
+        HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
+
+        for (String nickname : tcpClients.keySet()) {
+            tcpClients.get(nickname).sendMessageToClient(message);
+        }
+    }
+
     default void sendMessageToAllExcept (String currentPlayerNickname, Message message) throws RemoteException {
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
         HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();

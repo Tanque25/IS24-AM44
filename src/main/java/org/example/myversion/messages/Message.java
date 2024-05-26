@@ -137,6 +137,20 @@ public class Message implements Serializable {
                 .build();
     }
 
+    public Message(String messageCode, String nickname, PlayableCard playableCard, Coordinates coordinates) {
+        JsonObjectBuilder jsonBuilder = Json.createObjectBuilder()
+                .add("messageCode", messageCode)
+                .add("nickname", nickname)
+                .add("playableCard", createPlayableCardJson(playableCard));
+
+        if (coordinates != null) {
+            jsonBuilder.add("xCoordinate", coordinates.getX())
+                    .add("yCoordinate", coordinates.getY());
+        }
+
+        json = jsonBuilder.build();
+    }
+
     /**
      * Constructs a Message object representing a message containing a GoldCard.
      * This constructor is used to send information about a GoldCard.
@@ -158,6 +172,20 @@ public class Message implements Serializable {
                 .add("xCoordinate", coordinates.getX())
                 .add("yCoordinate", coordinates.getY())
                 .build();
+    }
+
+    public Message(String messageCode, String nickname, GoldCard goldCard, Coordinates coordinates) {
+        JsonObjectBuilder jsonBuilder = Json.createObjectBuilder()
+                .add("messageCode", messageCode)
+                .add("nickname", nickname)
+                .add("goldCard", createGoldCardJson(goldCard));
+
+        if (coordinates != null) {
+            jsonBuilder.add("xCoordinate", coordinates.getX())
+                    .add("yCoordinate", coordinates.getY());
+        }
+
+        json = jsonBuilder.build();
     }
 
     public Message(String messageCode, Map<String, StarterCard> starterCards, Map<String, List<PlayableCard>> playersHands) {
