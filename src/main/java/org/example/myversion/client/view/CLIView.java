@@ -30,6 +30,8 @@ public class CLIView extends GameView {
 //            System.err.println(e.getMessage());
 //            System.exit(1);
 //        }
+        //String hostname = "myserver"; //hostname that resolves for a local address
+        //System.setProperty("java.rmi.server.hostname",hostname);
 
         CodexNaturalis.setParameters("127.0.0.1", "rmi", this);
 

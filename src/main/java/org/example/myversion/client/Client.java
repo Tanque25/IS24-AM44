@@ -38,8 +38,6 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
     public Client() throws RemoteException {
         super();
 
-        // TODO
-
         lock = new Object();
     }
 
@@ -269,9 +267,6 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
             case "CommonObjective" ->{
 
                 gameView.showCommonObjectives(message.getObjectiveCards());
-
-
-
             }
             case "SecretObjectiveCardsOptions" -> {
                 try {
