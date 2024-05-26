@@ -23,7 +23,7 @@ class PlayableCardTest {
     @BeforeEach
     void setUp() {
         // Create a new playable card instance with specified parameters
-        RC_003 = new PlayableCard(
+        /*RC_003 = new PlayableCard(
                 // Resource of the card
                 Resource.FUNGI_KINGDOM,
                 // Corners of the card
@@ -34,7 +34,7 @@ class PlayableCardTest {
                         CornerPosition.BOTTOM_RIGHT, new Corner(Resource.FUNGI_KINGDOM)
                 ),
                 // Points of the card
-                0);
+                0);*/
     }
 
     /**

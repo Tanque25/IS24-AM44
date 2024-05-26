@@ -5,8 +5,9 @@ import org.example.myversion.messages.Message;
 import jakarta.json.*;
 import java.io.*;
 import java.net.Socket;
+import java.rmi.RemoteException;
 
-public class TCPClient extends Client {
+public class TCPClient extends Client implements ClientCommunicationInterface {
 
     // Used to send messages to the server.
     private DataOutputStream dataOutputStream;
@@ -103,4 +104,13 @@ public class TCPClient extends Client {
         }
     }
 
+    @Override
+    public void startGame() throws RemoteException {
+
+    }
+
+    //@Override
+    //public void receiveCard(String message) throws RemoteException {
+
+    //}
 }

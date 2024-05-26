@@ -1,7 +1,13 @@
 package org.example.myversion.server.serverController;
 
+import org.example.myversion.client.ClientCommunicationInterface;
+import org.example.myversion.client.view.PlayAreaView;
 import org.example.myversion.messages.Message;
+import org.example.myversion.server.model.decks.cards.GoldCard;
+import org.example.myversion.server.model.decks.cards.PlayableCard;
+import org.example.myversion.server.model.decks.cards.ObjectiveCard;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
+import org.example.myversion.server.model.exceptions.InvalidGameStateException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
 import org.example.myversion.server.model.exceptions.InvalidNicknameException;
 import org.example.myversion.server.Server;
@@ -11,6 +17,8 @@ import java.net.Socket;
 import jakarta.json.*;
 
 import java.rmi.RemoteException;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class HandleClientSocket implements CommunicationInterface, Runnable {
@@ -25,7 +33,7 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
 
     private Server server;
 
-    private String Nickname;
+    private String nickname;
 
     public HandleClientSocket(Socket clientSocket, GameController controller) {
         this.clientSocket = clientSocket;
@@ -104,7 +112,7 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
 
             // This case verify the selected number of players and ank it again if necessary
             case "NumberOfPlayers" -> {
-                int numberOfPlayers = message.getMaxPlayers();
+                int numberOfPlayers = message.getNumber();
                 System.out.println("Number of players: " + numberOfPlayers);
 
                 // check the validity of the players' number
@@ -116,14 +124,14 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
 
             // This case is used to place the starter card in the Player's playArea on the selected side
             case "StarterCard" -> {
-                System.out.println("Starter card side received from " + Nickname);
-                controller.playStarterCard(controller.getPlayerFromNickname(Nickname), message.getStarterCard());
+                System.out.println("Starter card side received from " + nickname);
+                controller.playStarterCard(controller.getPlayerFromNickname(nickname), message.getStarterCard());
             }
 
             // This case is used to set the secret objective card in the game model
             case "ObjectiveCardChoice" -> {
-                System.out.println("Secret objective card received from " + Nickname);
-                controller.chooseObjectiveCard(controller.getPlayerFromNickname(Nickname), message.getObjectiveCard());
+                System.out.println("Secret objective card received from " + nickname);
+                controller.chooseObjectiveCard(controller.getPlayerFromNickname(nickname), message.getObjectiveCard());
 
                 // When the server receives the player's secret objective choice, the readyPlayersNumber is updated
                 controller.updateReadyPlayersNumber();
@@ -135,7 +143,68 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
             }
 
             case "CardToPlayChoice" -> {
-                // TODO
+                try {
+                    // If it's a PlayableCard call getPlayableCard(), otherwise call getGoldCard()
+                    if (message.getJson().containsKey("playableCard"))
+                        controller.playCard(nickname, message.getPlayableCard(), message.getCoordinates());
+                    else
+                        controller.playCard(nickname, message.getGoldCard(), message.getCoordinates());
+
+                    // Checking if the card has been actually placed - to remove
+                    PlayAreaView playAreaView = new PlayAreaView();
+                    playAreaView.displayMyPlayArea(controller.getPlayerFromNickname(nickname).getPlayArea());
+
+                    // Saving the played card in the Player instance
+                    controller.getGame().getCurrentPlayer().setLastPlayedCard(message.getPlayableCard(), message.getCoordinates());
+
+                    sendMessageToClient(new Message("VisibleCards", controller.getVisibleResourceCards(), controller.getRsourceDeckPeek(), controller.getVisibleGoldCards(), controller.getGoldDeckPeek()));
+
+                    sendMessageToClient(new Message("DrawCard"));
+                } catch (InvalidMoveException e) {
+                    sendMessageToClient(new Message("InvalidMove"));
+                } catch (InvalidNicknameException | InvalidGameStateException e) {
+                    // The nickname will always be valid
+                    // The game state will always be valid
+                    // sendMessageToClient(new Message("InvalidMove"));
+                }
+
+            }
+
+            case "CardToDrawChoice" -> {
+                int cardToDrawChoice = message.getNumber();
+
+                switch (cardToDrawChoice) {
+                    case 0, 1 -> {
+                        try {
+                            PlayableCard chosenCard = controller.getVisibleResourceCards().get(cardToDrawChoice);
+                            controller.drawCard(client.nickname, chosenCard);
+                        } catch (InvalidGameStateException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    case 2, 3 -> {
+                        try {
+                            GoldCard chosenCard = controller.getVisibleGoldCards().get(cardToDrawChoice-2);
+                            controller.drawCard(client.nickname, chosenCard);
+                        } catch (InvalidGameStateException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    case 4 -> {
+                        try {
+                            controller.drawCard(client.nickname, controller.getRsourceDeckPeek());
+                        } catch (InvalidGameStateException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    case 5 -> {
+                        try {
+                            controller.drawCard(client.nickname, controller.getGoldDeckPeek());
+                        } catch (InvalidGameStateException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
             }
 
         }
@@ -143,7 +212,7 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
 
     public void sendMessageToClient(Message message) {
         try {
-            System.out.println("Sending " + message.getMessageCode() + " " + Nickname);
+            System.out.println("Sending " + message.getMessageCode() + " " + nickname);
             String jsonString = message.getJson().toString() + "\n";
             writer.write(jsonString);
             writer.flush();
@@ -187,12 +256,43 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
         }
     }
 
+    public void startGame() {
+        HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
+        HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
+
+        List<ObjectiveCard> commonObjectiveCards = controller.getCommonObjectiveCards();
+
+        List<PlayableCard> visibleResourceCards = controller.getVisibleResourceCards();
+        PlayableCard coveredResourceCard = controller.getRsourceDeckPeek();
+        List<GoldCard> visibleGoldCards = controller.getVisibleGoldCards();
+        GoldCard coveredGoldCard = controller.getGoldDeckPeek();
+
+
+        for (String nickname : tcpClients.keySet()) {
+            Message visibleCardsMessage = new Message("VisibleCards", visibleResourceCards, coveredResourceCard, visibleGoldCards, coveredGoldCard);
+            tcpClients.get(nickname).sendMessageToClient(visibleCardsMessage);
+
+            Message starterCardMessage = new Message("StarterCard", controller.getStarterCard());
+            tcpClients.get(nickname).sendMessageToClient(starterCardMessage);
+
+            Message commmonObjectiveCardsMessage = new Message("CommonObjectiveCards", commonObjectiveCards.get(0), commonObjectiveCards.get(1));
+            tcpClients.get(nickname).sendMessageToClient(commmonObjectiveCardsMessage);
+
+            List<ObjectiveCard> secretObjectiveCardsOptions = controller.getSecretObjectiveCardsOptions();
+            Message secretObjectiveCardsOptionsMessage = new Message("SecretObjectiveCardsOptions", secretObjectiveCardsOptions.get(0), secretObjectiveCardsOptions.get(1));
+            tcpClients.get(nickname).sendMessageToClient(secretObjectiveCardsOptionsMessage);
+        }
+
+        // TODO: do the same for the RMI clients
+    }
+
+
     public void setNickname(String nickname) {
-        Nickname = nickname;
+        this.nickname = nickname;
     }
 
     public String getNickname() {
-        return Nickname;
+        return nickname;
     }
 }
 

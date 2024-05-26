@@ -1,14 +1,12 @@
 package org.example.myversion.server.serverController;
 
 import org.example.myversion.client.Client;
+import org.example.myversion.client.ClientCommunicationInterface;
 import org.example.myversion.server.Server;
 import org.example.myversion.server.model.Coordinates;
 import org.example.myversion.server.model.Game;
 import org.example.myversion.server.model.Player;
-import org.example.myversion.server.model.decks.cards.Card;
-import org.example.myversion.server.model.decks.cards.ObjectiveCard;
-import org.example.myversion.server.model.decks.cards.PlayableCard;
-import org.example.myversion.server.model.decks.cards.StarterCard;
+import org.example.myversion.server.model.decks.cards.*;
 import org.example.myversion.server.model.exceptions.*;
 
 import java.util.HashMap;
@@ -25,7 +23,7 @@ public class GameController {
     public HashMap<String, Integer> pongLost;
     public List<String> pongReceived;
     private HashMap<String, HandleClientSocket> tcpClients;
-    private HashMap<String, Client> rmiClients;
+    private HashMap<String, ClientCommunicationInterface> rmiClients;
     private GameState gameState;
     public int roundsPlayed;
     private int playersNumber;
@@ -94,7 +92,9 @@ public class GameController {
      * @return true if the player is the first player, false otherwise
      */
     public boolean isFirst() {
-        return tcpClients.size() + rmiClients.size() == 1;
+        System.out.println("numero tcp: "+tcpClients.size());
+        System.out.println("numero tcp: "+rmiClients.size());
+        return tcpClients.size() + rmiClients.size() == 0;
     }
 
     public void newGame() {
@@ -130,7 +130,7 @@ public class GameController {
      * @param nickname the nickname of the player
      * @param client   the client associated to the player
      */
-    public void addClientRMI(String nickname, Client client) {
+    public void addClientRMI(String nickname, ClientCommunicationInterface client) {
         rmiClients.put(nickname, client);
     }
 
@@ -176,7 +176,7 @@ public class GameController {
 
     ///////////////////////////////////////////////////////GETTERS AND SETTERS////////////////////////////////////////////////////////
 
-    public HashMap<String, Client> getRmiClients() {
+    public HashMap<String, ClientCommunicationInterface> getRmiClients() {
         return rmiClients;
     }
 
@@ -214,6 +214,22 @@ public class GameController {
 
     public Player getLastPlayer() {
         return lastPlayer;
+    }
+
+    public PlayableCard getRsourceDeckPeek() {
+        return game.getResourceDeckPeek();
+    }
+
+    public GoldCard getGoldDeckPeek() {
+        return game.getGoldDeckPeek();
+    }
+
+    public List<PlayableCard> getVisibleResourceCards() {
+        return game.getVisibleResourceCards();
+    }
+
+    public List<GoldCard> getVisibleGoldCards() {
+        return game.getVisibleGoldCards();
     }
 
     /**
@@ -297,7 +313,6 @@ public class GameController {
                 throw new InvalidNicknameException("Invalid nickname");
             }
         } else throw new InvalidGameStateException("Invalid game state");
-
     }
 
     /**
@@ -381,7 +396,8 @@ public class GameController {
      * @return true if the player's number chosen by the first player is correct
      */
     public boolean checkNumberOfPlayer(int numPlayer){
-        return numPlayer >= 2 && numPlayer <= 4;//ritorna true se compreso
+        System.out.println("numero di giocatori: "+numPlayer);
+        return numPlayer >= 1 && numPlayer <= 4;//ritorna true se compreso
     }
 
     /**

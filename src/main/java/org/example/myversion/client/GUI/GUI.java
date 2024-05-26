@@ -1,23 +1,18 @@
 package org.example.myversion.client.GUI;
 
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 import org.example.myversion.client.Client;
 import org.example.myversion.client.view.GameView;
 import org.example.myversion.server.model.Board;
 import org.example.myversion.server.model.Player;
-import org.example.myversion.server.model.decks.cards.Card;
 import org.example.myversion.server.model.decks.cards.ObjectiveCard;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
 import org.example.myversion.server.model.decks.cards.StarterCard;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,7 +27,7 @@ public class GUI extends GameView {
 
     }
 
-    public VBox showBoard(Board board) {
+    public VBox showBoard(Board board){
         VBox boardView = new VBox();
 
         for (Player player : board.getScores().keySet()) {
@@ -83,6 +78,11 @@ public class GUI extends GameView {
     }
 
     @Override
+    public void showVisibleCards() {
+
+    }
+
+    @Override
     public void showCommonObjectives(List<ObjectiveCard> objectiveCards) {
 
     }
@@ -97,7 +97,7 @@ public class GUI extends GameView {
         VBox vbox = new VBox();
         HBox hbox = new HBox();
         Label label = new Label("Choose your secret objective card: ");
-        for (ObjectiveCard card : objectiveCards) {
+        for(ObjectiveCard card : objectiveCards){
             Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + card.getId().toString() + ".png").toExternalForm());
             ImageView imgView = new ImageView(img);
             hbox.getChildren().add(imgView);
@@ -159,6 +159,16 @@ public class GUI extends GameView {
 
     @Override
     public void chooseCardToPlay() throws IOException {
+
+    }
+
+    @Override
+    public void invalidMove() throws IOException {
+
+    }
+
+    @Override
+    public void chooseCardToDraw() {
 
     }
 }

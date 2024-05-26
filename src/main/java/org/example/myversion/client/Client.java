@@ -1,6 +1,8 @@
 package org.example.myversion.client;
 
+import jakarta.json.Json;
 import org.example.myversion.client.view.GameView;
+import org.example.myversion.client.view.HandView;
 import org.example.myversion.messages.Message;
 import org.example.myversion.server.model.Game;
 import org.example.myversion.server.model.decks.ObjectiveDeck;
@@ -10,11 +12,14 @@ import org.example.myversion.server.model.decks.cards.StarterCard;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.io.StringReader;
 import java.rmi.NotBoundException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -22,7 +27,7 @@ import java.util.concurrent.ScheduledExecutorService;
  * This class represents the client.
  * It is abstract because each client will either be an RMI client or a Socket client.
  */
-public abstract class Client extends UnicastRemoteObject implements Serializable {
+public abstract class Client extends UnicastRemoteObject implements Serializable, ClientCommunicationInterface {
     private String nickname;
     private GameView gameView;
     private boolean serverConnection;
@@ -85,6 +90,14 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
             }
             case "WaitForOtherPlayers" ->
                 gameView.waitForOtherPlayers();
+            case "VisibleCards" ->{
+                gameView.setVisibleResourceCards(message.getResourceCards());
+                gameView.setCoveredResourceCard(message.getPlayableCard());
+                gameView.setVisibleGoldCards(message.getGoldCards());
+                gameView.setCoveredGoldCard(message.getGoldCard());
+
+                gameView.showVisibleCards();
+            }
             case "StarterCard" -> {
                 try {
                     gameView.showStarterCard(message.getStarterCard());
@@ -105,6 +118,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
             }
             case "StartCondition" -> {
                 gameView.setHandsMap(message.getPlayersHandsMap());
+
                 gameView.initializePlayAreas(message.getStarterCardsMap());
 
                 gameView.showOthersHandsAndPlayAreas();
@@ -112,12 +126,112 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 gameView.showMyPlayArea();
             }
             case "MyTurn" -> {
-                System.out.println("My turn");
+                gameView.showMessage("\nIt's your turn.\n");
+                myTurn();
             }
             case "OtherTurn" -> {
                 gameView.showMessage("\nIt's " + message.getArgument() + "'s turn.\n");
             }
+            case "InvalidMove" -> {
+                try {
+                    gameView.invalidMove();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            case "DrawCard" -> {
+                try {
+                    gameView.chooseCardToDraw();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
             default -> throw new IllegalArgumentException("Invalid messageCode: " + messageCode);
+        }
+    }
+
+    public void handleMessageNew(String scelta)throws RemoteException {
+
+//        if(!messageCode.equals("Pong")) {
+//            System.out.println("Received TCP message: with messageCode " + messageCode);
+
+//        }
+        //Message message = new Message(Json.createReader(new StringReader(scelta)).readObject());
+        //        String messageType = message.getMessageCode();
+        //        System.out.println("tipodelmessaggio: "+messageType);
+        //
+        switch (scelta) {
+            case "Pong" -> {
+                serverConnection = true;
+            }
+            case "Nickname" -> {
+                //setNickname(message.getArgument());
+                // TODO: Implement the connection check on a different channel on the server side
+                // checkServerConnection();
+            }
+            case "GameAlreadyStarted" ->
+                    gameView.showGameAlreadyStartedMessage();
+            case "ChooseNumOfPlayer" ->{
+                try{
+                    gameView.playersNumberChoice();
+                }catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            case "InvalidNumberOfPlayers" ->{
+                try{
+                    gameView.invalidPlayersNumberChoice();
+                }catch (IOException e){
+                    throw new RuntimeException(e);
+                }
+            }
+            case "LobbyNotFull" ->{
+                System.out.println("In attesa di altri giocatori...");
+            }
+            case "WaitForOtherPlayers" ->
+                    gameView.waitForOtherPlayers();
+            /*case "StarterCard" -> {
+                receiveStarterCard();
+            }
+
+            case "CommonObjectiveCards" ->
+
+            case "SecretObjectiveCardsOptions" -> {
+                try {
+                    gameView.showSecretObjectives(message.getObjectiveCards());
+                    gameView.secretObjectiveCardChoice(message.getObjectiveCards());
+                } catch (IOException e){
+                    throw new RuntimeException(e);
+                }
+            }
+            case "StartCondition" -> {
+                gameView.setHandsMap(message.getPlayersHandsMap());
+                gameView.initializePlayAreas(message.getStarterCardsMap());
+
+                gameView.showOthersHandsAndPlayAreas();
+                gameView.showMyHand();
+                gameView.showMyPlayArea();
+            }
+            case "MyTurn" -> {
+                gameView.showMessage("\nIt's your turn.\n");
+                myTurn();
+            }
+            case "OtherTurn" -> {
+                gameView.showMessage("\nIt's " + message.getArgument() + "'s turn.\n");
+            }
+            case "InvalidMove" -> {
+                try {
+                    // TODO: Remove the card from the play area first
+                    gameView.invalidMove();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }*/
+            case "DrawCard" -> {
+                System.out.println("Choose the card to draw.");
+            }
+            default -> throw new IllegalArgumentException("Invalid messageCode: ");
         }
     }
 
@@ -130,9 +244,46 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
     public abstract void sendMessage(Message message) throws IOException;
 
     public void myTurn() {
-        gameView.showMessage("\nIt's your turn.\n");
-
         // TODO: implement myTurn thread launch
+        try {
+            gameView.chooseCardToPlay();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public void receiveCard(String messageString) throws RemoteException{
+        Message message = new Message(Json.createReader(new StringReader(messageString)).readObject());
+        String messageType = message.getMessageCode();
+        System.out.println("entra in receive card");
+        switch (messageType){
+            case "StarterCard"->{
+                try {
+                    gameView.showStarterCard(message.getStarterCard());
+                    gameView.starterCardSideChoice(message.getStarterCard());
+                } catch (IOException e){
+                    throw new RuntimeException(e);
+                }
+            }
+            case "CommonObjective" ->{
+
+                gameView.showCommonObjectives(message.getObjectiveCards());
+
+
+
+            }
+            case "SecretObjectiveCardsOptions" -> {
+                try {
+                    gameView.showSecretObjectives(message.getObjectiveCards());
+                    gameView.secretObjectiveCardChoice(message.getObjectiveCards());
+                } catch (IOException e){
+                    throw new RuntimeException(e);
+                }
+            }
+
+        }
+
     }
 
     /**

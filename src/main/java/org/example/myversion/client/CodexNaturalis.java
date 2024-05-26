@@ -28,6 +28,7 @@ public class CodexNaturalis {
             case "rmi" -> {
                 try {
                     client = new RMIClient();
+                    //System.out.println("qui passa");
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
                 }
@@ -46,7 +47,9 @@ public class CodexNaturalis {
         }
 
         client.setGameView(gameView);
+        //System.out.println("qui passa2");
         gameView.setClient(client);
+        //System.out.println("qui passa3");
     }
 
     /**
