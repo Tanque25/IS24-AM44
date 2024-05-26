@@ -1,11 +1,13 @@
 package org.example.myversion.client.GUI;
 
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 import org.example.myversion.client.Client;
 import org.example.myversion.client.view.GameView;
 import org.example.myversion.server.model.Board;
 import org.example.myversion.server.model.Player;
+import org.example.myversion.server.model.decks.cards.Card;
 import org.example.myversion.server.model.decks.cards.ObjectiveCard;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
 import org.example.myversion.server.model.decks.cards.StarterCard;
@@ -19,14 +21,18 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 public class GUI extends GameView {
+
+    //private static final String GOLD_BACK_PATH = "org/example/myversion/cards_gold_back/";
+    //private static final String GOLD_FRONT_PATH = "org/example/myversion/cards_gold_front";
     @Override
     public void setClient(Client client) {
 
     }
 
-    public VBox showBoard(Board board){
+    public VBox showBoard(Board board) {
         VBox boardView = new VBox();
 
         for (Player player : board.getScores().keySet()) {
@@ -91,7 +97,7 @@ public class GUI extends GameView {
         VBox vbox = new VBox();
         HBox hbox = new HBox();
         Label label = new Label("Choose your secret objective card: ");
-        for(ObjectiveCard card : objectiveCards){
+        for (ObjectiveCard card : objectiveCards) {
             Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + card.getId().toString() + ".png").toExternalForm());
             ImageView imgView = new ImageView(img);
             hbox.getChildren().add(imgView);
@@ -108,19 +114,23 @@ public class GUI extends GameView {
         VBox vbox = new VBox();
         HBox hbox = new HBox();
         Label label = new Label("Choose the side to play your starter card: ");
-        Image imgFront = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + starterCard.getId().toString() + ".png").toExternalForm());
+        Image imgFront = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + Objects.toString(starterCard.getId()) + ".png").toExternalForm());
         ImageView imgViewFront = new ImageView(imgFront);
-        Image imgBack = new Image(getClass().getResource("org/example/myversion/cards_gold_back" + starterCard.getId().toString() + ".png").toExternalForm());
+        Image imgBack = new Image(getClass().getResource("org/example/myversion/cards_gold_back" + Objects.toString(starterCard.getId()) + ".png").toExternalForm());
         ImageView imgViewBack = new ImageView(imgBack);
         hbox.getChildren().addAll(imgViewFront, imgViewBack);
         vbox.getChildren().addAll(label, hbox);
     }
 
+    @Override
+    public void showMyHand() {
+
+    }
 
     public HBox showMyHand(List<PlayableCard> hand) {
         HBox hbox = new HBox();
-        for(PlayableCard card : hand){
-            Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + card.getId().toString() + ".png").toExternalForm());
+        for (PlayableCard card : hand) {
+            Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + Objects.toString(card.getId()) + ".png").toExternalForm());
             ImageView imgView = new ImageView(img);
             hbox.getChildren().add(imgView);
         }
@@ -129,8 +139,8 @@ public class GUI extends GameView {
 
     public HBox showMyHandBack(List<PlayableCard> hand) {
         HBox hbox = new HBox();
-        for(PlayableCard card : hand){
-            Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_back" + card.getId().toString() + ".png").toExternalForm());
+        for (PlayableCard card : hand) {
+            Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_back" + Objects.toString(card.getId()) + ".png").toExternalForm());
             ImageView imgView = new ImageView(img);
             hbox.getChildren().add(imgView);
         }
