@@ -6,6 +6,8 @@ import org.example.myversion.client.ClientCommunicationInterface;
 import org.example.myversion.client.view.HandView;
 import org.example.myversion.messages.Message;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.StringReader;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -30,197 +32,180 @@ public interface CommunicationInterface extends Remote {
     default void receiveMessageTCP(Message message, HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException {
     }
 
-    default void receiveMessageRMI(String messageString, ClientCommunicationInterface client) throws RemoteException {
+    default void receiveMessageRMInew(String messageString,ClientCommunicationInterface client) throws RemoteException {
         Message message = new Message(Json.createReader(new StringReader(messageString)).readObject());
         String messageType = message.getMessageCode();
 
         switch (messageType) {
             case "Login" -> {
+                System.out.println("Received Login request from " + client.getNickname());
                 String nickname = message.getArgument();
                 int checkNicknameStatus = controller.checkNickname(nickname);
-                checkNickname(client, nickname, checkNicknameStatus);
+                checkNicknameNew(client, nickname, checkNicknameStatus);
             }
+            case "due" ->{
+                numberOfPlayers(2,client);
+                System.out.println("Impostato numero giocatori a 2");
+            }
+            case "tre" ->{
+                numberOfPlayers(3,client);
+                System.out.println("Impostato numero giocatori a 3");
+            }
+            case "quattro" ->{
+                numberOfPlayers(3,client);
+                System.out.println("Impostato numero giocatori a 4");
+            }
+            case "uno" -> {//per test
+                numberOfPlayers(1,client);
+                System.out.println("Impostato numero giocatori a 1");
+            }
+
         }
     }
 
-    default void receiveMessageRMIOld(String messageString, ClientCommunicationInterface client) throws RemoteException {
-        Message message = new Message(Json.createReader(new StringReader(messageString)).readObject());
 
-        String messageType = message.getMessageCode();
+    default void rispostatest ()throws RemoteException{
+        System.out.println("bellaaa");
+    }
 
-        switch (messageType) {
 
-            case "Login" -> {
-                System.out.println("Received Login request from " + client.getNickname()); //per CLI, debug
-                String nickname = message.getArgument(); // nickname
-
-                //CASO 1: nickname libero
-                if (controller.checkNickname(nickname) == 1) {
-
-                    if(!controller.isGameStarted()){//se gioco non iniziato ancora
-                        try {//gestisco eccezione Remote
-                            client.handleMessage(new Message("GameAlreadyStarted"));
-                        } catch (RemoteException e) {
-                            System.err.println("Error while sending message to " + nickname);
-                            throw new RemoteException();
-                        }
-                    }else{//gioco gia iniziato
-                        try {//gestisco eccezione Remote
-                            client.handleMessage(new Message("Nickname", nickname));
-                        } catch (RemoteException e) {
-                            System.err.println("Error while sending message to " + nickname);
-                            throw new RemoteException();
-                        }
-
-                        controller.addPlayer(nickname);//aggiungo player
-                        System.out.println(nickname + " logged in."); //per debug
-
-                        //controller.addClientRMI(username, client);
-
-                        // startPingThread(client);
-
-                        if(controller.isFirst()){//se è il primo giocatore
-                            try {//chiedo numeri giocatori e gestisco eccezione
-                                client.handleMessage(new Message("ChooseNumOfPlayer"));
-                            } catch (RemoteException e) {
-                                System.err.println("Error while sending message to " + nickname);
-                                throw new RemoteException();
-                            }
-                        }
-                        else{//se la lobby è piena si parte con la partita
-                            if (controller.gameIsFull()) {
-                                controller.newGame();//si occupa questo di tutto? startGame()
-                                System.out.println("Game started.");
-
-                            } else if (!controller.gameIsFull()) {//altrimenti:
-
-                                System.err.println("Aspettando altri giocatori..." );
-                                //qui devo fare qualcosa??
-                            }
-                        }
-                    }
-
-                    //CASO 2: nel caso in cui il Nickname sia gia in uso
-                } else if (controller.checkNickname(nickname) == 0) {
-
-                    try {
-                        client.handleMessage(new Message("CheckingDisconnection"));
-                    } catch (RemoteException e) {
-                        System.err.println("Error while sending message to " + nickname);
-                        throw new RemoteException();
-                    }
-                    try {//thread per fare cosa ??
-                        Thread.sleep(60000);
-                    } catch (InterruptedException e) {
-                        System.err.println("Error while sleeping.");
-                    }
-
-                    if ( controller.checkNickname(nickname) == 0) {
-                        System.out.println(nickname + " requested login, but the username is already taken.");
-                        //client.sendMessageToClient(new Message("UsernameRetry"));
-                    } else {
-                        System.out.println(nickname + " reconnected.");
-                        //controller.addClientRMI(nickname, client);
-                        //resendGameToReconnectedClient(client);
-                    }
-
-                    //CASO 3: l'username è gia utilizzato, ma il giocatore era disconnesso e prova a riconnettersi
-                } else {
-
-                    System.out.println(nickname + " reconnected.");
-                    client.setNickname(nickname);
-
-                    // TODO: Commentato perchè da problemi mentre provo la sendMessage dal client
-                    // controller.addClientRMI(nickname, client);
-
-                    //gestione della PERSISTENZA:
-                    /*if (!controller.isGameLoaded) {
-                        resendGameToReconnectedClient(client);
-                    } else {
-                        resendToReconnectAfterServerDown(client);
-                    }*/
-                }
-
+    default void numberOfPlayers (int num,ClientCommunicationInterface client) throws RemoteException{
+        boolean isValidNumberOfPlayers = controller.checkNumberOfPlayer(num);
+        if(!isValidNumberOfPlayers){//non dovrebbe mai succedere perche abbiamo controllo pre chimamata metodo lato client
+            try {
+                client.handleMessageNew("InvalidNumberOfPlayers");
+            } catch (RemoteException e) {
+                System.err.println("Error while sending numOfPlayersNotOK to client.");
             }
 
-            case "p?" -> {
-                String nickname = message.getArgument();
-                // TODO check nickname
-                controller.addPlayer(nickname);
-            }
-
-            case "numOfPlayersMessage" -> {
-                int numberOfPlayers = message.getNumber();//numero di giocatori
-                boolean isValidNumberOfPlayers = controller.checkNumberOfPlayer(numberOfPlayers);
-
-                //numero di giocatori NON è valido:
-                if(isValidNumberOfPlayers){
-                    try {
-                        client.handleMessage(new Message("numOfPlayersNotOK"));
-                    } catch (RemoteException e) {
-                        System.err.println("Error while sending numOfPlayersNotOK to client.");
-                    }
-
-                    //se il numero di giocatori è valido:
-                } else {
-                    controller.setPlayersNumber(numberOfPlayers);//setta il numero di giocatori
-                    if (controller.gameIsFull()) {
-                        controller.newGame();
-                        //startGame();????
-                    } else {
-                        try {
-                            client.handleMessage(new Message("Lobby...in attesa di altri giocatori..."));
-                        } catch (RemoteException e) {
-                            System.err.println("Error while sending waitingRoom to client.");
-                        }
-                    }
+            //se il numero di giocatori è valido:
+        } else {
+            controller.setPlayersNumber(num);//setta il numero di giocatori
+            if (controller.gameIsFull()) {
+                controller.newGame();
+                startGame(client);
+                //System.out.println("devo inviare le started card...");
+            } else {
+                System.out.println("giocatori settati nel controller: "+controller.getPlayersNumber());
+                System.out.println("numero di giocatori: "+num);
+                try {
+                    client.handleMessageNew("LobbyNotFull");
+                } catch (RemoteException e) {
+                    System.err.println("Error while sending waitingRoom to client.");
                 }
             }
         }
     }
 
-    default void checkNickname(ClientCommunicationInterface client, String nickname, int checkNicknameStatus) throws RemoteException {
+    default void checkNicknameNew(ClientCommunicationInterface client, String nickname, int checkNicknameStatus) throws RemoteException {
         switch (checkNicknameStatus) {
             case 1 -> {
-                // System.out.println("ciao");
-                // client.getGameView().showGameAlreadyStartedMessage();
+
+                if(!controller.isGameStarted()){//se gioco non iniziato ancora
+                    if(controller.isFirst()){//controllo se è il primo
+                        controller.addClientRMI(nickname, client);
+                        controller.addPlayer(nickname);//aggiungo player
+                        System.out.println(nickname + " logged in."); //per debug
+                        try {//chiedo numeri giocatori e gestisco eccezione
+                            client.handleMessageNew("ChooseNumOfPlayer");
+                        } catch (RemoteException e) {
+                            System.err.println("Error 3 while sending message to " + nickname);
+                            throw new RemoteException();
+                        }
+                    }else{
+
+                        if(controller.gameIsFull()){//partita piena
+                            System.out.println("Game started.");
+                        }else{
+                            controller.addClientRMI(nickname, client);
+                            controller.addPlayer(nickname);//aggiungo player
+                            System.out.println(nickname + " logged in."); //per debug
+                            if(controller.gameIsFull()){
+                                startGame(client);
+                            }
+                            /*try {//gestisco eccezione Remote, setto nickname
+                                client.handleMessageNew("Nickname");
+                            } catch (RemoteException e) {
+                                System.err.println("Error 1 while sending message to " + nickname);
+                                throw new RemoteException();
+                            }*/
+                        }
+                    }
+                }else{//gioco gia iniziato
+                    try {//gestisco eccezione Remote
+                        client.handleMessageNew("GameAlreadyStarted");
+                    } catch (RemoteException e) {
+                        System.err.println("Error 2 while sending message to " + nickname);
+                        throw new RemoteException();
+                    }
+
+
+                }
             }
         }
     }
 
-    default void startGame() throws RemoteException {
-        HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
-        HashMap<String, Client> rmiClients = controller.getRmiClients();
+    default void startGame(ClientCommunicationInterface client) throws RemoteException {
+        //HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
+        HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
 
         List<ObjectiveCard> commonObjectiveCards = controller.getCommonObjectiveCards();
 
-        List<PlayableCard> visibleResourceCards = controller.getVisibleResourceCards();
-        PlayableCard coveredResourceCard = controller.getRsourceDeckPeek();
-        List<GoldCard> visibleGoldCards = controller.getVisibleGoldCards();
-        GoldCard coveredGoldCard = controller.getGoldDeckPeek();
-
-
-        for (String nickname : tcpClients.keySet()) {
-            Message visibleCardsMessage = new Message("VisibleCards", visibleResourceCards, coveredResourceCard, visibleGoldCards, coveredGoldCard);
-            tcpClients.get(nickname).sendMessageToClient(visibleCardsMessage);
-
+        for (String nickname : rmiClients.keySet()) {
+            /*
+            for (String username : rmiClients.keySet()) {
+                int position = controller.getPositionByUsername(username);
+                try {
+                    rmiClients.get(username).callBackSendMessage(myGame);
+                } catch (RemoteException e) {
+                    // e.printStackTrace();
+                    System.err.println("Error while sending game to " + username);
+                }
+            }*/
             Message starterCardMessage = new Message("StarterCard", controller.getStarterCard());
-            tcpClients.get(nickname).sendMessageToClient(starterCardMessage);
 
-            Message commmonObjectiveCardsMessage = new Message("CommonObjectiveCards", commonObjectiveCards.get(0), commonObjectiveCards.get(1));
-            tcpClients.get(nickname).sendMessageToClient(commmonObjectiveCardsMessage);
+            try{
+                sendMessage(starterCardMessage,rmiClients.get(nickname));
+            }catch (RemoteException e){
+                e.printStackTrace();
+                System.err.println("Error while sending game to " + nickname);
+            }
+
+            Message commmonObjectiveCardsMessage = new Message("CommonObjective", commonObjectiveCards.get(0), commonObjectiveCards.get(1));
+            try{
+                sendMessage(commmonObjectiveCardsMessage,rmiClients.get(nickname));
+            }catch (RemoteException e){
+                e.printStackTrace();
+                System.err.println("Error while sending game to " + nickname);
+            }
 
             List<ObjectiveCard> secretObjectiveCardsOptions = controller.getSecretObjectiveCardsOptions();
             Message secretObjectiveCardsOptionsMessage = new Message("SecretObjectiveCardsOptions", secretObjectiveCardsOptions.get(0), secretObjectiveCardsOptions.get(1));
-            tcpClients.get(nickname).sendMessageToClient(secretObjectiveCardsOptionsMessage);
+            try{
+                sendMessage(secretObjectiveCardsOptionsMessage,rmiClients.get(nickname));
+            }catch (RemoteException e){
+                e.printStackTrace();
+                System.err.println("Error while sending game to " + nickname);
+            }
         }
+    }
 
-        // TODO: do the same for the RMI clients
+    default void sendMessage(Message message,ClientCommunicationInterface client) throws RemoteException{
+        try {
+            String jsonString = message.getJson().toString();
+            System.out.println(jsonString);
+            //System.out.println("entra in sendmessage");
+            client.receiveCard(jsonString);
+           //client.handleMessageNew(jsonString);
+            // server.receiveMessageRMI(jsonString, this);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     default void sendStartCondition() throws RemoteException {
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
-        HashMap<String, Client> rmiClients = controller.getRmiClients();
+        HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
 
         for (String nickname : tcpClients.keySet()) {
 
@@ -255,7 +240,7 @@ public interface CommunicationInterface extends Remote {
 
     default void sendMessageToAllExcept (String currentPlayerNickname, Message message) throws RemoteException {
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
-        HashMap<String, Client> rmiClients = controller.getRmiClients();
+        HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
 
         for (String nickname : tcpClients.keySet()) {
             if(!nickname.equals(currentPlayerNickname)) {

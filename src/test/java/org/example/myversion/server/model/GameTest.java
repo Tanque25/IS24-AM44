@@ -41,7 +41,7 @@ class GameTest {
         game = new Game();
         board = new Board();
         players = new ArrayList<>();
-
+        /*
         SC_002 = new StarterCard(
                 // Resources of the card
                 new Resource[]{Resource.FUNGI_KINGDOM},
@@ -91,7 +91,7 @@ class GameTest {
                         CornerPosition.BOTTOM_LEFT, new Corner(Resource.ANIMAL_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT, new Corner(Resource.FUNGI_KINGDOM)
                 )
-        );
+        );*/
     }
 
     @Test

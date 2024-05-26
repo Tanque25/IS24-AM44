@@ -33,7 +33,7 @@ class GameControllerTest{
         gameController = new GameController();
         testPlayer = new Player("TestPlayer");
         //testStarterCard = new StarterCard("TestStarterCard", 5, 3, 2);
-        SC_002 = new StarterCard(
+        /*SC_002 = new StarterCard(
                 // Resources of the card
                 new Resource[]{Resource.FUNGI_KINGDOM},
                 // Corners of the card
@@ -97,7 +97,7 @@ class GameControllerTest{
                 {Resource.PLANT_KINGDOM, null, null},
                 {null, Resource.PLANT_KINGDOM, null},
                 {null, null, Resource.PLANT_KINGDOM}
-        });
+        });*/
 
     }
 

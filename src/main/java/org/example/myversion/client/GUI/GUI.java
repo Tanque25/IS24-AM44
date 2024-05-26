@@ -105,6 +105,7 @@ public class GUI extends GameView {
         vbox.getChildren().addAll(label, hbox);
     }
 
+
     @Override
     public void showStarterCard(StarterCard starterCard) {
     }

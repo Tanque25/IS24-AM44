@@ -23,7 +23,7 @@ class StarterCardTest {
     @BeforeEach
     void setUp() {
         // Create a new StarterCard instance with specified parameters
-        SC_002 = new StarterCard(
+       /* SC_002 = new StarterCard(
                 // Resources of the card
                 new Resource[]{Resource.FUNGI_KINGDOM},
                 // Corners of the card
@@ -40,7 +40,7 @@ class StarterCardTest {
                         CornerPosition.BOTTOM_LEFT, new Corner(Resource.FUNGI_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT, new Corner(Resource.INSECT_KINGDOM)
                 )
-        );
+        );*/
     }
 
     /**

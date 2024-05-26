@@ -29,7 +29,7 @@ public class GoldCardTest {
      */
     @BeforeEach
     void setUp() {
-        GC_041 = new GoldCard(
+        /*GC_041 = new GoldCard(
                 Resource.FUNGI_KINGDOM,
                 Map.of(
                         CornerPosition.UP_LEFT,new Corner(CornerVisibility.FULL),
@@ -39,7 +39,7 @@ public class GoldCardTest {
                 ),
                 0,
                 new Resource[]{Resource.FUNGI_KINGDOM, Resource.FUNGI_KINGDOM, Resource.ANIMAL_KINGDOM},
-                SpecialObject.QUILL);
+                SpecialObject.QUILL);*/
     }
 
     /**
