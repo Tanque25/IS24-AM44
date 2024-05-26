@@ -283,7 +283,6 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
             tcpClients.get(nickname).sendMessageToClient(secretObjectiveCardsOptionsMessage);
         }
 
-        // TODO: do the same for the RMI clients
     }
 
 
