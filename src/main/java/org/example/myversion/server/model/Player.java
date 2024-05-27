@@ -22,10 +22,6 @@ public class Player {
     private ObjectiveCard secretObjective;
     private Map<CornerContent, Integer> stock;
 
-    // Variable used to save the played card and send it to each client with the update message
-    private PlayableCard lastPlayedCard;
-    private Coordinates lastPlayedCoordinates;
-
     /**
      * Constructs a player with the specified nickname.
      * The player is initially connected, and their play area is initialized with dimensions of 81x81 cells.
@@ -174,13 +170,38 @@ public class Player {
      * @param coordinates The x-coordinate and y-coordinate position.
      */
     public void placeCard(PlayableCard placedCard, Coordinates coordinates) {
-        // TODO: I think that this has been added for a test but shouldn't be here
         if (hand==null)
             hand=new ArrayList<>();
 
         playArea[coordinates.getX()][coordinates.getY()] = placedCard;
         hand.remove(placedCard);
         updateStock(placedCard);
+    }
+
+    public boolean hasEnoughStock(GoldCard playedCard) throws InvalidMoveException {
+        Resource[] cost = playedCard.getCost();
+
+        // Create a map to count the required quantities of each resource
+        Map<Resource, Integer> requiredResources = new HashMap<>();
+
+        for (Resource resource : cost) {
+            requiredResources.put(resource, requiredResources.getOrDefault(resource, 0) + 1);
+        }
+
+        // Check if the stock has enough of each required resource
+        for (Map.Entry<Resource, Integer> entry : requiredResources.entrySet()) {
+            Resource resource = entry.getKey();
+            int requiredQuantity = entry.getValue();
+
+            int availableQuantity = stock.getOrDefault(resource, 0);
+
+            if (availableQuantity < requiredQuantity) {
+                throw new InvalidMoveException("The player doesn't have enough stock to play this card.");
+            }
+        }
+
+        return true; // All required resources are available in sufficient quantities
+
     }
 
     /**
@@ -192,9 +213,8 @@ public class Player {
      */
     public boolean isValidMove(Coordinates coordinates) throws InvalidMoveException {
         // Check if the position is valid
-        if (isValidPosition(coordinates)) {
-            //throw new InvalidMoveException("Not valid position.");
-            return false;
+        if (!isValidPosition(coordinates)) {
+            throw new InvalidMoveException("Not valid position.");
         }
 
         // Check if any of the adjacent corners are full
@@ -217,11 +237,11 @@ public class Player {
 
         // Check if there's a card above, beneath, to the left, or to the right of the specified coordinates
         // If any adjacent position contains a card, return true
-        return isCardPresent(new Coordinates(x, y-1)) ||
+        return !(isCardPresent(new Coordinates(x, y-1)) ||
                 isCardPresent(new Coordinates(x, y)) ||
                 isCardPresent(new Coordinates(x, y + 1)) ||
                 isCardPresent(new Coordinates(x - 1, y)) ||
-                isCardPresent(new Coordinates(x + 1, y));
+                isCardPresent(new Coordinates(x + 1, y)));
     }
 
     /**
@@ -399,17 +419,4 @@ public class Player {
         }
         return false;
     }*/
-
-    public void setLastPlayedCard(PlayableCard lastPlayedCard, Coordinates lastPlayedCoordinates) {
-        this.lastPlayedCard = lastPlayedCard;
-        this.lastPlayedCoordinates = lastPlayedCoordinates;
-    }
-
-    public PlayableCard getLastPlayedCard() {
-        return lastPlayedCard;
-    }
-
-    public Coordinates getLastPlayedCoordinates() {
-        return  lastPlayedCoordinates;
-    }
 }

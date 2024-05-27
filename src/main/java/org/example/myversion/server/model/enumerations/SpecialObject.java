@@ -5,9 +5,9 @@ package org.example.myversion.server.model.enumerations;
  * Includes constants for Quill, Inkwell, Manuscript, and Corner.
  */
 public enum SpecialObject implements CornerContent, PointsParameter {
-    QUILL("Q"),
-    INKWELL("I"),
-    MANUSCRIPT("M");
+    QUILL("\u001B[93m" + "Q" + "\u001B[0m"),
+    INKWELL("\u001B[93m" + "I" +"\u001B[0m"),
+    MANUSCRIPT("\u001B[93m" + "M" + "\u001B[0m");
 
     private final String shortName;
 
