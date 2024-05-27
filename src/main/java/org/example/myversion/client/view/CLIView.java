@@ -33,7 +33,7 @@ public class CLIView extends GameView {
         //String hostname = "myserver"; //hostname that resolves for a local address
         //System.setProperty("java.rmi.server.hostname",hostname);
 
-        CodexNaturalis.setParameters("127.0.0.1", "rmi", this);
+        CodexNaturalis.setParameters("localhost", "rmi", this);
 
     }
 
@@ -100,18 +100,13 @@ public class CLIView extends GameView {
     public void playersNumberChoice() throws IOException {
         int playersNumber = askForPlayersNumber();
         client.sendMessage(new Message("NumberOfPlayers", playersNumber));
-//        String playersNum = "zero";
-//        if (playersNumber==2){
-//            client.sendMessage(new Message("due"));
-//        }
-//        else if (playersNumber == 3){
-//            client.sendMessage(new Message("tre"));
-//        }
-//        else if (playersNumber == 4){ client.sendMessage(new Message("quattro"));}
-//        else {
-//            client.sendMessage(new Message("uno"));
-//        }
     }
+
+    public void playersNumberChoiceRMI() throws IOException {
+        int playersNumber = askForPlayersNumber();
+        client.sendMessage(new Message("NumberOfPlayers", playersNumber));
+    }
+
 
     public void invalidPlayersNumberChoice() throws IOException {
         showMessage("Invalid player number! Please try again: ");

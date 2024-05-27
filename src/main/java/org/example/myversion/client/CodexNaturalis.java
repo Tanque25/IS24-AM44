@@ -30,7 +30,6 @@ public class CodexNaturalis {
                 try {
                     //System.out.println("bella2\n");
                     client = new RMIClient();
-                    System.out.println("qui passa");
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
                 }

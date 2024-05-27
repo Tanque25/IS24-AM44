@@ -35,12 +35,8 @@ public class RMIClient extends Client implements ClientCommunicationInterface {
      */
     @Override
     public void connect() throws IOException, NotBoundException {
-
-
-            registry = LocateRegistry.getRegistry("127.0.0.1", CommunicationInterface.RMI_PORT);
-            server = (CommunicationInterface) registry.lookup("CommunicationInterface");
-
-
+        registry = LocateRegistry.getRegistry("localhost",CommunicationInterface.RMI_PORT);
+        server = (CommunicationInterface) registry.lookup("CommunicationInterface");
     }
 
     /**
@@ -50,8 +46,9 @@ public class RMIClient extends Client implements ClientCommunicationInterface {
      * @throws IOException if the message send fails.
      */
     @Override
-    public void sendMessage(Message message) throws IOException, RemoteException {
+    public void sendMessage(Message message)  {
         try {
+
             String jsonString = message.getJson().toString();
             System.out.println(jsonString);
             server.receiveMessageRMInew(jsonString, this);

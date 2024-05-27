@@ -75,10 +75,12 @@ public class TCPClient extends Client implements ClientCommunicationInterface {
      */
     @Override
     public void sendMessage(Message message) throws IOException {
+        System.out.println("fnif");
         String jsonString = message.getJson().toString(); // Convert message to JSON string
         dataOutputStream.writeBytes(jsonString + "\n"); // Send the JSON string over the network
         dataOutputStream.flush(); // Flush to ensure the message is sent immediately
     }
+
 
     /**
      * Receives and parses a JSON message from the server as a {@link Message} object.

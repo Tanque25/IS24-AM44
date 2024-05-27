@@ -9,6 +9,7 @@ import org.example.myversion.server.model.decks.ObjectiveDeck;
 import org.example.myversion.server.model.decks.cards.Card;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
 import org.example.myversion.server.model.decks.cards.StarterCard;
+import org.example.myversion.server.serverController.CommunicationInterface;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -32,7 +33,6 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
     private GameView gameView;
     private boolean serverConnection;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
     private final Object lock;
 
     public Client() throws RemoteException {
@@ -78,6 +78,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 }catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+
             }
             case "InvalidNumberOfPlayers" ->{
                 try{
@@ -146,9 +147,6 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
 
             }
             case "UpdatePlayedCard" -> {
-
-            }
-            case "UpdateDrawnCard" -> {
 
             }
             default -> throw new IllegalArgumentException("Invalid messageCode: " + messageCode);

@@ -265,35 +265,6 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
         }
     }
 
-    public void startGame() {
-        HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
-        HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
-
-        List<ObjectiveCard> commonObjectiveCards = controller.getCommonObjectiveCards();
-
-        List<PlayableCard> visibleResourceCards = controller.getVisibleResourceCards();
-        PlayableCard coveredResourceCard = controller.getRsourceDeckPeek();
-        List<GoldCard> visibleGoldCards = controller.getVisibleGoldCards();
-        GoldCard coveredGoldCard = controller.getGoldDeckPeek();
-
-
-        for (String nickname : tcpClients.keySet()) {
-            Message visibleCardsMessage = new Message("VisibleCards", visibleResourceCards, coveredResourceCard, visibleGoldCards, coveredGoldCard);
-            tcpClients.get(nickname).sendMessageToClient(visibleCardsMessage);
-
-            Message starterCardMessage = new Message("StarterCard", controller.getStarterCard());
-            tcpClients.get(nickname).sendMessageToClient(starterCardMessage);
-
-            Message commmonObjectiveCardsMessage = new Message("CommonObjectiveCards", commonObjectiveCards.get(0), commonObjectiveCards.get(1));
-            tcpClients.get(nickname).sendMessageToClient(commmonObjectiveCardsMessage);
-
-            List<ObjectiveCard> secretObjectiveCardsOptions = controller.getSecretObjectiveCardsOptions();
-            Message secretObjectiveCardsOptionsMessage = new Message("SecretObjectiveCardsOptions", secretObjectiveCardsOptions.get(0), secretObjectiveCardsOptions.get(1));
-            tcpClients.get(nickname).sendMessageToClient(secretObjectiveCardsOptionsMessage);
-        }
-
-    }
-
     public void updateClientsPlayedCard(PlayableCard playedCard, Coordinates coordinates) throws RemoteException {
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
 

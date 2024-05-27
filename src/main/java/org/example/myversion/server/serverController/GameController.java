@@ -26,7 +26,7 @@ public class GameController {
     private HashMap<String, ClientCommunicationInterface> rmiClients;
     private GameState gameState;
     public int roundsPlayed;
-    private int playersNumber;
+    public int playersNumber;
     private static int readyPlayersNumber = 0;
     private boolean isGameLoaded;
     private Player lastPlayer;
@@ -75,6 +75,7 @@ public class GameController {
     }
 
     public void addPlayer(String nickname){
+        System.out.println("---addPlayer: " + nickname);
         if (gameIsEmpty()) {
             game.newPlayer(nickname);
         } else {
@@ -343,6 +344,8 @@ public class GameController {
     }
 
     public boolean gameIsFull(){
+        System.out.println("numero giocatori: "+game.getPlayers().size());
+        System.out.println("numero giocatori settato: "+playersNumber);
         if(game.getPlayers().size() == playersNumber){
             return true;
         }
@@ -395,8 +398,8 @@ public class GameController {
      * @return true if the player's number chosen by the first player is correct
      */
     public boolean checkNumberOfPlayer(int numPlayer){
-        System.out.println("numero di giocatori: "+numPlayer);
-        return numPlayer >= 1 && numPlayer <= 4;//ritorna true se compreso
+
+        return numPlayer >= 2 && numPlayer <= 4;//ritorna true se compreso
     }
 
     /**
