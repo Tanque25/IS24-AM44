@@ -64,7 +64,7 @@ public abstract class GameView {
         this.handsMap = handsMap;
     }
 
-    protected Map<String, Card[][]> getPlayAreasMap() {
+    public Map<String, Card[][]> getPlayAreasMap() {
         return playAreasMap;
     }
 
@@ -81,11 +81,36 @@ public abstract class GameView {
     }
 
     public void playCard(String nickname, PlayableCard playedCard, Coordinates coordinates) {
+        // Remove the played card from the player's hand
+        // Retrive the hand for the given nickname
+        List<PlayableCard> hand = handsMap.get(nickname);
 
+        // Remove the card from the hand
+        for (PlayableCard card : hand)
+            if (card.getId() == playedCard.getId()) {
+                hand.remove(card);
+                break;
+            }
+
+        // Add the played card to the player's play area
+        // Retrieve the play area for the given nickname
+        Card[][] playArea = playAreasMap.get(nickname);
+
+        // Retrieve the coordinates
+        int x = coordinates.getX();
+        int y = coordinates.getY();
+
+        // Place the card in the specified coordinates in the play area
+        playArea[x][y] = playedCard;
     }
 
     public void drawCard(String nickname, PlayableCard drawnCard) {
+        // Add the drawn card to the player's hand
+        // Retrive the hand for the given nickname
+        List<PlayableCard> hand = handsMap.get(nickname);
 
+        // Add the drawn card to the player's hand
+        hand.add(drawnCard);
     }
 
     public abstract void setClient(Client client);
@@ -125,6 +150,8 @@ public abstract class GameView {
     public abstract void chooseCardToPlay() throws IOException;
 
     public abstract void invalidMove() throws IOException;
+
+    public abstract void showUpdatedPlayArea(String nickname, Card[][] playArea);
 
     public abstract void chooseCardToDraw() throws IOException;
 }

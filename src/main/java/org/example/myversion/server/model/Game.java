@@ -196,7 +196,13 @@ public class Game {
      * @throws InvalidMoveException If the move is not valid.
      */
     public void playCard(Player player, PlayableCard playedCard, Coordinates coordinates) throws InvalidMoveException {
+        // Check if it's possible to place the card at the specified coordinates
         if(player.isValidMove(coordinates)){
+
+            // Check if the player has enough stock in case of GoldCard
+            if(playedCard instanceof GoldCard)
+                player.hasEnoughStock((GoldCard) playedCard);
+
             // placing the card in the play area, removing it from the player's hand and updating his stock
             player.placeCard(playedCard, coordinates);
 

@@ -17,6 +17,13 @@ import java.util.Map;
 public class CLIView extends GameView {
     private Client client;
 
+    private static final String RESET_COLOR = "\u001B[0m";
+    private static final String GREEN_COLOR = "\u001B[92m";
+    private static final String BLUE_COLOR = "\u001B[94m";
+    private static final String PURPLE_COLOR = "\u001B[95m";
+    private static final String RED_COLOR = "\u001B[91m";
+    private static final String YELLOW_COLOR = "\u001B[93m";
+
     // private Map<String, List<PlayableCard>> handsMap;
     private Map<String, Card> playAreasMap;
 
@@ -31,7 +38,7 @@ public class CLIView extends GameView {
 //            System.exit(1);
 //        }
 
-        CodexNaturalis.setParameters("127.0.0.1", "rmi", this);
+        CodexNaturalis.setParameters("127.0.0.1", "tcp", this);
 
     }
 
@@ -69,7 +76,7 @@ public class CLIView extends GameView {
                 "| \\__/\\ (_) | (_| |  __/>  <| |\\  | (_| | |_| |_| | | | (_| | | \\__ \\\n" +
                 " \\____/\\___/ \\__,_|\\___/_/\\_\\_| \\_/\\__,_|\\__|\\__,_|_|  \\__,_|_|_|___/\n" +
                 "\n";
-        System.out.println("Welcome to...\n" + gameTitle);
+        System.out.print("Welcome to...\n" + YELLOW_COLOR + gameTitle + RESET_COLOR);
     }
 
     public String showLogin() throws IOException {
@@ -243,7 +250,7 @@ public class CLIView extends GameView {
         int sideChoice = readNumber();
 
         while (sideChoice!=0 && sideChoice!=1){
-            System.err.println("Please enter '0' or '1': ");
+            System.err.print("Please enter '0' or '1': ");
             sideChoice = readNumber();
         }
 
@@ -273,7 +280,7 @@ public class CLIView extends GameView {
             } else if (objectiveCard instanceof PatternObjectiveCard) {
                 objectiveCardView.displayObjectiveCardTopLine((PatternObjectiveCard) objectiveCard);
             } else {
-                System.out.println("Objective card error");
+                System.out.println("Objective card error.");
             }
             System.out.print("  ");
         }
@@ -287,7 +294,7 @@ public class CLIView extends GameView {
             } else if (objectiveCard instanceof PatternObjectiveCard) {
                 objectiveCardView.displayObjectiveCardMiddleLine((PatternObjectiveCard) objectiveCard);
             } else {
-                System.out.println("Objective card error");
+                System.out.println("Objective card error.");
             }
             System.out.print("  ");
         }
@@ -301,7 +308,7 @@ public class CLIView extends GameView {
             } else if (objectiveCard instanceof PatternObjectiveCard) {
                 objectiveCardView.displayObjectiveCardBottomLine((PatternObjectiveCard) objectiveCard);
             } else {
-                System.out.println("Objective card error");
+                System.out.println("Objective card error.");
             }
             System.out.print("  ");
         }
@@ -319,7 +326,7 @@ public class CLIView extends GameView {
         int objectiveCardChoice = readNumber();
 
         while (objectiveCardChoice!=0 && objectiveCardChoice!=1) {
-            System.err.println("Please enter '0' or '1': ");
+            System.err.print("Please enter '0' or '1': ");
             objectiveCardChoice = readNumber();
         }
 
@@ -376,14 +383,28 @@ public class CLIView extends GameView {
 
         List<PlayableCard> hand = getHandsMap().get(client.getNickname());
         PlayableCard chosenCard = hand.get(cardToPlayChoice);
+
         if (sideChoide == 1) chosenCard.setPlayedBack(true);
 
-        client.sendMessage(new Message("CardToPlayChoice", chosenCard, coordinates));
+        if(chosenCard instanceof GoldCard)
+            client.sendMessage(new Message("CardToPlayChoice", (GoldCard) chosenCard, coordinates));
+        else
+            client.sendMessage(new Message("CardToPlayChoice", chosenCard, coordinates));
     }
 
     public void invalidMove() throws IOException {
         showMessage("\nYou can't place that card in the selected position. Make another choice.\n");
         chooseCardToPlay();
+    }
+
+    @Override
+    public void showUpdatedPlayArea(String nickname, Card[][] playArea) {
+        if(nickname.equals(client.getNickname()))
+            showMessage("\nHere is your updated play area:\n");
+        else showMessage("\nHere is " + nickname +"'s updated play area:\n");
+
+        PlayAreaView playAreaView = new PlayAreaView();
+        playAreaView.displayOtherPlayArea(playArea);
     }
 
     public int askForCardToPlayChoice() {

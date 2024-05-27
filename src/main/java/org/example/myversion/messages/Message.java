@@ -140,7 +140,7 @@ public class Message implements Serializable {
     public Message(String messageCode, String nickname, PlayableCard playableCard, Coordinates coordinates) {
         JsonObjectBuilder jsonBuilder = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
-                .add("nickname", nickname)
+                .add("argument", nickname)
                 .add("playableCard", createPlayableCardJson(playableCard));
 
         if (coordinates != null) {
@@ -177,7 +177,7 @@ public class Message implements Serializable {
     public Message(String messageCode, String nickname, GoldCard goldCard, Coordinates coordinates) {
         JsonObjectBuilder jsonBuilder = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
-                .add("nickname", nickname)
+                .add("argument", nickname)
                 .add("goldCard", createGoldCardJson(goldCard));
 
         if (coordinates != null) {

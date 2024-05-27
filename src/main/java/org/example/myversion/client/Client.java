@@ -1,12 +1,15 @@
 package org.example.myversion.client;
 
 import jakarta.json.Json;
+import org.example.myversion.client.view.CardView;
 import org.example.myversion.client.view.GameView;
 import org.example.myversion.client.view.HandView;
 import org.example.myversion.messages.Message;
+import org.example.myversion.server.model.Coordinates;
 import org.example.myversion.server.model.Game;
 import org.example.myversion.server.model.decks.ObjectiveDeck;
 import org.example.myversion.server.model.decks.cards.Card;
+import org.example.myversion.server.model.decks.cards.GoldCard;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
 import org.example.myversion.server.model.decks.cards.StarterCard;
 
@@ -139,19 +142,33 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                     throw new RuntimeException(e);
                 }
             }
+            case "UpdatePlayedCard" -> {
+                String nickname = message.getArgument();
+                Coordinates coordinates = message.getCoordinates();
+
+                if (message.getJson().containsKey("playableCard")) {
+                    gameView.playCard(nickname, message.getPlayableCard(), coordinates);
+                } else {
+                    gameView.playCard(nickname, message.getGoldCard(), coordinates);
+                }
+
+                gameView.showUpdatedPlayArea(nickname, gameView.getPlayAreasMap().get(nickname));
+            }
             case "DrawCard" -> {
                 try {
                     gameView.chooseCardToDraw();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-
-            }
-            case "UpdatePlayedCard" -> {
-
             }
             case "UpdateDrawnCard" -> {
+                String nickname = message.getArgument();
 
+                if (message.getJson().containsKey("playableCard")) {
+                    gameView.drawCard(nickname, message.getPlayableCard());
+                } else {
+                    gameView.drawCard(nickname, message.getGoldCard());
+                }
             }
             default -> throw new IllegalArgumentException("Invalid messageCode: " + messageCode);
         }
@@ -256,7 +273,6 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public void receiveCard(String messageString) throws RemoteException{
@@ -273,11 +289,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 }
             }
             case "CommonObjective" ->{
-
                 gameView.showCommonObjectives(message.getObjectiveCards());
-
-
-
             }
             case "SecretObjectiveCardsOptions" -> {
                 try {

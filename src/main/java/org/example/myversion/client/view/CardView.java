@@ -342,9 +342,9 @@ public class CardView {
         StringBuilder stringBuilder = new StringBuilder();
 
         // Top line of the card
-        stringBuilder.append("E");
+        stringBuilder.append("▫");
         stringBuilder.append("-------");
-        stringBuilder.append("E");
+        stringBuilder.append("▫");
 
         System.out.print(stringBuilder);
     }
@@ -364,9 +364,9 @@ public class CardView {
         StringBuilder stringBuilder = new StringBuilder();
 
         // Bottom line of the card
-        stringBuilder.append("E");
+        stringBuilder.append("▫");
         stringBuilder.append("-------");
-        stringBuilder.append("E");
+        stringBuilder.append("▫");
 
         System.out.print(stringBuilder);
     }

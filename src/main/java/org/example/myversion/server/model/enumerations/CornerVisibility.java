@@ -7,7 +7,7 @@ package org.example.myversion.server.model.enumerations;
  */
 public enum CornerVisibility implements CornerContent{
     EMPTY("▫"),
-    FULL("▪");
+    FULL("\u001B[90m" + "▪" + "\u001B[0m");
 
     private final String shortName;
 

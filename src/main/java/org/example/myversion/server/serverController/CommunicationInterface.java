@@ -239,6 +239,19 @@ public interface CommunicationInterface extends Remote {
         sendMessageToAllExcept(nickname, otherTurn);
     }
 
+    default void changeTurn() throws RemoteException {
+        controller.changeTurn();
+
+        if(controller.getGameState() == GameState.IN_GAME) {
+            startTurn();
+        } else if (controller.getGameState() == GameState.LAST_ROUND) {
+
+        } else if (controller.getGameState() == GameState.END) {
+
+        }
+
+    }
+
     default void sendMessageToAll (String currentPlayerNickname, Message message) throws RemoteException {
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
         HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
