@@ -20,6 +20,7 @@ public class CodexNaturalis {
     }
 
     public static void setParameters(String hostname, String communicationProtocol, GameView gameView) {
+        //System.out.println("bella\n");
         CodexNaturalis.hostname = hostname;
         CodexNaturalis.communicationProtocol = communicationProtocol;
         CodexNaturalis.gameView = gameView;
@@ -27,8 +28,8 @@ public class CodexNaturalis {
         switch (communicationProtocol) {
             case "rmi" -> {
                 try {
+                    //System.out.println("bella2\n");
                     client = new RMIClient();
-                    System.out.println("qui passa");
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
                 }

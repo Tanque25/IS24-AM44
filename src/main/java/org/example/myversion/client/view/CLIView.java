@@ -39,7 +39,7 @@ public class CLIView extends GameView {
 //            System.exit(1);
 //        }
 
-        CodexNaturalis.setParameters("127.0.0.1", "tcp", this);
+        CodexNaturalis.setParameters("localhost", "rmi", this);
 
     }
 
@@ -95,6 +95,7 @@ public class CLIView extends GameView {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
             nickname = in.readLine();
+            client.setNickname(nickname);
         } catch (IOException e) {
             System.err.println("An error occurred while reading the nickname.");
         }
@@ -110,18 +111,13 @@ public class CLIView extends GameView {
     public void playersNumberChoice() throws IOException {
         int playersNumber = askForPlayersNumber();
         client.sendMessage(new Message("NumberOfPlayers", playersNumber));
-//        String playersNum = "zero";
-//        if (playersNumber==2){
-//            client.sendMessage(new Message("due"));
-//        }
-//        else if (playersNumber == 3){
-//            client.sendMessage(new Message("tre"));
-//        }
-//        else if (playersNumber == 4){ client.sendMessage(new Message("quattro"));}
-//        else {
-//            client.sendMessage(new Message("uno"));
-//        }
     }
+
+    public void playersNumberChoiceRMI() throws IOException {
+        int playersNumber = askForPlayersNumber();
+        client.sendMessage(new Message("NumberOfPlayers", playersNumber));
+    }
+
 
     public void invalidPlayersNumberChoice() throws IOException {
         showMessage("Invalid player number! Please try again: ");

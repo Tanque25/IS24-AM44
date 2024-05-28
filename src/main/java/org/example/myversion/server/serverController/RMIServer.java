@@ -26,7 +26,7 @@ public class RMIServer implements ServerInterface, CommunicationInterface {
     @Override
     public void start() {
         try {
-            // TODO: understand if writing 'serverInterface = this;' would be more correct
+            System.setProperty("java.rmi.server.hostname","127.0.0.1");
             // Initialize the serverInterface
             serverInterface = new RMIServer();
 
