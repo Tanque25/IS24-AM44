@@ -319,13 +319,6 @@ public interface CommunicationInterface extends Remote {
         HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
 
         for (String nickname : tcpClients.keySet()) {
-
-            // To remove
-            HandView handView = new HandView();
-            Set<String> nicknames = controller.getPlayersHandsMap().keySet();
-            for (String nick : nicknames)
-                handView.displayHand(controller.getPlayersHandsMap().get(nick));
-
             Message startConditionMessage = new Message("StartCondition", controller.getStarterCardsMap(), controller.getPlayersHandsMap());
             tcpClients.get(nickname).sendMessageToClient(startConditionMessage);
         }
@@ -360,6 +353,7 @@ public interface CommunicationInterface extends Remote {
     }
 
     default void changeTurn() throws RemoteException {
+        // Update the current player
         controller.changeTurn();
 
         if(controller.getGameState() == GameState.IN_GAME) {
@@ -372,7 +366,7 @@ public interface CommunicationInterface extends Remote {
 
     }
 
-    default void sendMessageToAll (String currentPlayerNickname, Message message) throws RemoteException {
+    default void sendMessageToAll (Message message) throws RemoteException {
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
         HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
 

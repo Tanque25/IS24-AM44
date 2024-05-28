@@ -23,6 +23,7 @@ import org.example.myversion.server.serverController.GameController;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static javafx.application.Application.launch;
@@ -183,6 +184,16 @@ public class GUI extends GameView{
 
     @Override
     public void chooseCardToDraw() {
+
+    }
+
+    @Override
+    public void showUpdatedHand(String nickname) {
+
+    }
+
+    @Override
+    public void showScores(Map<String, Integer> scores) {
 
     }
 }

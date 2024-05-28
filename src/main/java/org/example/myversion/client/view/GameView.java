@@ -155,4 +155,8 @@ public abstract class GameView extends Application{
     public abstract void showUpdatedPlayArea(String nickname, Card[][] playArea);
 
     public abstract void chooseCardToDraw() throws IOException;
+
+    public abstract void showUpdatedHand(String nickname);
+
+    public abstract void showScores(Map<String, Integer> scores);
 }

@@ -9,6 +9,13 @@ import org.example.myversion.server.model.enumerations.Resource;
 
 public class CardView {
 
+    private static final String RESET_COLOR = "\u001B[0m";
+    private static final String GREEN_COLOR = "\u001B[92m";
+    private static final String BLUE_COLOR = "\u001B[94m";
+    private static final String PURPLE_COLOR = "\u001B[95m";
+    private static final String RED_COLOR = "\u001B[91m";
+    private static final String YELLOW_COLOR = "\u001B[93m";
+
 //    public static void main(String[] args) {
 //        StarterDeck starterDeck = new StarterDeck();
 //        ResourceDeck resourceDeck = new ResourceDeck();
@@ -97,7 +104,7 @@ public class CardView {
 
         // Top line of the card
         stringBuilder.append(starterCard.getCorners().get(CornerPosition.UP_LEFT).getCornerContent().getShortName());
-        stringBuilder.append("-------");
+        stringBuilder.append("―――――――");
         stringBuilder.append(starterCard.getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().getShortName());
 
         System.out.print(stringBuilder);
@@ -110,27 +117,27 @@ public class CardView {
         // Middle line of the card
         switch(resourceSize) {
             case 1: {
-                stringBuilder.append("|   ");
+                stringBuilder.append("│   ");
                 for(Resource resource : starterCard.getResource()) {
                     stringBuilder.append(resource.getShortName());
                 }
-                stringBuilder.append("   |");
+                stringBuilder.append("   │");
                 break;
             }
             case 2: {
-                stringBuilder.append("|   ");
+                stringBuilder.append("│   ");
                 for(Resource resource : starterCard.getResource()) {
                     stringBuilder.append(resource.getShortName());
                 }
-                stringBuilder.append("  |");
+                stringBuilder.append("  │");
                 break;
             }
             case 3: {
-                stringBuilder.append("|  ");
+                stringBuilder.append("│  ");
                 for(Resource resource : starterCard.getResource()) {
                     stringBuilder.append(resource.getShortName());
                 }
-                stringBuilder.append("  |");
+                stringBuilder.append("  │");
                 break;
             }
         }
@@ -143,7 +150,7 @@ public class CardView {
 
         // Bottom line of the card
         stringBuilder.append(starterCard.getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().getShortName());
-        stringBuilder.append("-------");
+        stringBuilder.append("―――――――");
         stringBuilder.append(starterCard.getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().getShortName());
 
         System.out.print(stringBuilder);
@@ -181,7 +188,7 @@ public class CardView {
         else
             stringBuilder.append(starterCard.getBackCorner().get(CornerPosition.UP_LEFT).getCornerContent().getShortName());
 
-        stringBuilder.append("-------");
+        stringBuilder.append("―――――――");
 
         if(starterCard.getBackCorner().get(CornerPosition.UP_RIGHT).isCovered())
             stringBuilder.append("X");
@@ -195,7 +202,7 @@ public class CardView {
         StringBuilder stringBuilder = new StringBuilder();
 
         // Middle line of the card
-        stringBuilder.append("|       |");
+        stringBuilder.append("│       │");
 
         System.out.print(stringBuilder);
     }
@@ -209,7 +216,7 @@ public class CardView {
         else
             stringBuilder.append(starterCard.getBackCorner().get(CornerPosition.BOTTOM_LEFT).getCornerContent().getShortName());
 
-        stringBuilder.append("-------");
+        stringBuilder.append("―――――――");
 
         if(starterCard.getBackCorner().get(CornerPosition.BOTTOM_RIGHT).isCovered())
             stringBuilder.append("X");
@@ -272,9 +279,11 @@ public class CardView {
         else
             stringBuilder.append(playableCard.getCorners().get(CornerPosition.UP_LEFT).getCornerContent().getShortName());
 
-        stringBuilder.append("---");
-        stringBuilder.append(playableCard.getCardPoints());
-        stringBuilder.append("---");
+        stringBuilder.append("―――");
+        if (playableCard.getCardPoints() != 0)
+            stringBuilder.append(playableCard.getCardPoints());
+        else stringBuilder.append("―");
+        stringBuilder.append("―――");
 
         if(playableCard.getCorners().get(CornerPosition.UP_RIGHT).isCovered())
             stringBuilder.append("X");
@@ -288,9 +297,9 @@ public class CardView {
         StringBuilder stringBuilder = new StringBuilder();
 
         // Middle line of the card
-        stringBuilder.append("|   ");
+        stringBuilder.append("│   ");
         stringBuilder.append(playableCard.getResource().getShortName());
-        stringBuilder.append("   |");
+        stringBuilder.append("   │");
 
         System.out.print(stringBuilder);
     }
@@ -304,7 +313,7 @@ public class CardView {
         else
             stringBuilder.append(playableCard.getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().getShortName());
 
-        stringBuilder.append("-------");
+        stringBuilder.append("―――――――");
         if(playableCard.getCorners().get(CornerPosition.UP_RIGHT).isCovered())
             stringBuilder.append("X");
         else
@@ -343,7 +352,7 @@ public class CardView {
 
         // Top line of the card
         stringBuilder.append("▫");
-        stringBuilder.append("-------");
+        stringBuilder.append("―――――――");
         stringBuilder.append("▫");
 
         System.out.print(stringBuilder);
@@ -353,9 +362,9 @@ public class CardView {
         StringBuilder stringBuilder = new StringBuilder();
 
         // Middle line of the card
-        stringBuilder.append("|   ");
+        stringBuilder.append("│   ");
         stringBuilder.append(playableCard.getResource().getShortName());
-        stringBuilder.append("   |");
+        stringBuilder.append("   │");
 
         System.out.print(stringBuilder);
     }
@@ -365,7 +374,7 @@ public class CardView {
 
         // Bottom line of the card
         stringBuilder.append("▫");
-        stringBuilder.append("-------");
+        stringBuilder.append("―――――――");
         stringBuilder.append("▫");
 
         System.out.print(stringBuilder);
@@ -453,9 +462,9 @@ public class CardView {
 
         // Top line of the card
         stringBuilder.append(goldCard.getCorners().get(CornerPosition.UP_LEFT).getCornerContent().getShortName());
-        stringBuilder.append("--");
-        stringBuilder.append(goldCard.getCardPoints()).append("-").append(goldCard.getPointsParameter().getShortName());
-        stringBuilder.append("--");
+        stringBuilder.append(YELLOW_COLOR + "――" + RESET_COLOR);
+        stringBuilder.append(goldCard.getCardPoints()).append(YELLOW_COLOR + "―" + RESET_COLOR).append(goldCard.getPointsParameter().getShortName());
+        stringBuilder.append(YELLOW_COLOR + "――" + RESET_COLOR);
         stringBuilder.append(goldCard.getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().getShortName());
 
         System.out.print(stringBuilder);
@@ -465,9 +474,9 @@ public class CardView {
         StringBuilder stringBuilder = new StringBuilder();
 
         // Middle line of the card
-        stringBuilder.append("|   ");
+        stringBuilder.append(YELLOW_COLOR + "│   " + RESET_COLOR);
         stringBuilder.append(goldCard.getResource().getShortName());
-        stringBuilder.append("   |");
+        stringBuilder.append(YELLOW_COLOR + "   │" + RESET_COLOR);
 
         System.out.print(stringBuilder);
     }
@@ -480,55 +489,113 @@ public class CardView {
         stringBuilder.append(goldCard.getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().getShortName());
         switch (costSize) {
             case 0: {
-                stringBuilder.append("----");
+                stringBuilder.append(YELLOW_COLOR + "――――" + RESET_COLOR);
                 for(Resource resource : goldCard.getCost()) {
                     stringBuilder.append(resource.getShortName());
                 }
-                stringBuilder.append("---");
+                stringBuilder.append(YELLOW_COLOR + "―――" + RESET_COLOR);
                 break;
             }
             case 1: {
-                stringBuilder.append("---");
+                stringBuilder.append(YELLOW_COLOR + "―――" + RESET_COLOR);
                 for(Resource resource : goldCard.getCost()) {
                     stringBuilder.append(resource.getShortName());
                 }
-                stringBuilder.append("---");
+                stringBuilder.append(YELLOW_COLOR + "―――" + RESET_COLOR);
                 break;
             }
             case 2: {
-                stringBuilder.append("---");
+                stringBuilder.append(YELLOW_COLOR + "―――" + RESET_COLOR);
                 for(Resource resource : goldCard.getCost()) {
                     stringBuilder.append(resource.getShortName());
                 }
-                stringBuilder.append("--");
+                stringBuilder.append(YELLOW_COLOR + "――" + RESET_COLOR);
                 break;
             }
             case 3: {
-                stringBuilder.append("--");
+                stringBuilder.append(YELLOW_COLOR + "――" + RESET_COLOR);
                 for(Resource resource : goldCard.getCost()) {
                     stringBuilder.append(resource.getShortName());
                 }
-                stringBuilder.append("--");
+                stringBuilder.append(YELLOW_COLOR + "――" + RESET_COLOR);
                 break;
             }
             case 4: {
-                stringBuilder.append("--");
+                stringBuilder.append(YELLOW_COLOR + "――" + RESET_COLOR);
                 for(Resource resource : goldCard.getCost()) {
                     stringBuilder.append(resource.getShortName());
                 }
-                stringBuilder.append("-");
+                stringBuilder.append(YELLOW_COLOR + "―" + RESET_COLOR);
                 break;
             }
             case 5: {
-                stringBuilder.append("-");
+                stringBuilder.append(YELLOW_COLOR + "―" + RESET_COLOR);
                 for(Resource resource : goldCard.getCost()) {
                     stringBuilder.append(resource.getShortName());
                 }
-                stringBuilder.append("-");
+                stringBuilder.append(YELLOW_COLOR + "―" + RESET_COLOR);
                 break;
             }
         }
         stringBuilder.append(goldCard.getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().getShortName());
+
+        System.out.print(stringBuilder);
+    }
+
+    ///////////////////////////////////////////////////////GOLD CARD BACK////////////////////////////////////////////////////////
+
+    public static void displayCardBack(GoldCard goldCard) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        // Top line of the card
+        stringBuilder.append("E");
+        stringBuilder.append("-------");
+        stringBuilder.append("E");
+        stringBuilder.append("\n");
+
+        // Middle line of the card
+        stringBuilder.append("|   ");
+        stringBuilder.append(goldCard.getResource().getShortName());
+        stringBuilder.append("   |\n");
+
+        // Bottom line of the card
+        stringBuilder.append("E");
+        stringBuilder.append("-------");
+        stringBuilder.append("E");
+        stringBuilder.append("\n");
+
+        System.out.println(stringBuilder);
+    }
+
+    public static void displayCardBackTopLine(GoldCard goldCard) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        // Top line of the card
+        stringBuilder.append("▫");
+        stringBuilder.append(YELLOW_COLOR + "―――――――" + RESET_COLOR);
+        stringBuilder.append("▫");
+
+        System.out.print(stringBuilder);
+    }
+
+    public static void displayCardBackMiddleLine(GoldCard goldCard) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        // Middle line of the card
+        stringBuilder.append(YELLOW_COLOR + "│   " + RESET_COLOR);
+        stringBuilder.append(goldCard.getResource().getShortName());
+        stringBuilder.append(YELLOW_COLOR + "   │" + RESET_COLOR);
+
+        System.out.print(stringBuilder);
+    }
+
+    public static void displayCardBackBottomLine(GoldCard goldCard) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        // Bottom line of the card
+        stringBuilder.append("▫");
+        stringBuilder.append(YELLOW_COLOR + "―――――――" + RESET_COLOR);
+        stringBuilder.append("▫");
 
         System.out.print(stringBuilder);
     }
@@ -542,15 +609,15 @@ public class CardView {
 
     public static void displayOptionSlotTopBottomLine() {
         // Top and bottom line of the option slot
-        System.out.print(" ------- ");
+        System.out.print(" ――――――― ");
     }
 
     public static void displayOptionSlotMiddleLine(int row, int col) {
         if (row<10 && col<10)
-            System.out.print("|(" + row + ", " + col + " )|");
+            System.out.print("│(" + row + ", " + col + " )│");
         else if (row<10 || col<10)
-            System.out.print("|(" + row + ", " + col + ")|");
+            System.out.print("│(" + row + ", " + col + ")│");
         else
-            System.out.print("|(" + row + "," + col + ")|");
+            System.out.print("│(" + row + "," + col + ")│");
     }
 }

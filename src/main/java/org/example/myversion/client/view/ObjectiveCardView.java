@@ -10,7 +10,7 @@ import org.example.myversion.server.model.enumerations.SpecialObject;
 public class ObjectiveCardView {
 
     public void displayObjectiveCardTopLine(ObjectiveCard objectiveCard) {
-        System.out.print("┌-------┐");
+        System.out.print("┌―――――――┐");
     }
 
     public void displayObjectiveCardMiddleLine(ObjectiveCard objectiveCard) {
@@ -18,7 +18,7 @@ public class ObjectiveCardView {
     }
 
     public void displayObjectiveCardBottomLine(ObjectiveCard objectiveCard) {
-        System.out.print("└-------┘");
+        System.out.print("└―――――――┘");
     }
 
     public void displayObjectiveCardMiddleLine(ResourceObjectiveCard resourceObjectiveCard) {
@@ -29,7 +29,7 @@ public class ObjectiveCardView {
         for(Resource resource : resourceObjectiveCard.getObjective()) {
             stringBuilder.append(resource.getShortName());
         }
-        stringBuilder.append("  |");
+        stringBuilder.append("  │");
 
         System.out.print(stringBuilder);
     }
@@ -45,7 +45,7 @@ public class ObjectiveCardView {
                 for(SpecialObject specialObject : specialObjectiveCard.getObjective()) {
                     stringBuilder.append(specialObject.getShortName());
                 }
-                stringBuilder.append("  |");
+                stringBuilder.append("  │");
             }
             case 3 -> {
                 stringBuilder.append(specialObjectiveCard.getCardPoints());
@@ -53,7 +53,7 @@ public class ObjectiveCardView {
                 for(SpecialObject specialObject : specialObjectiveCard.getObjective()) {
                     stringBuilder.append(specialObject.getShortName());
                 }
-                stringBuilder.append("  |");
+                stringBuilder.append("  │");
             }
         }
 
@@ -64,13 +64,13 @@ public class ObjectiveCardView {
         StringBuilder stringBuilder = new StringBuilder();
         Resource[] topLineObjective = patternObjectiveCard.getObjective()[0];
 
-        stringBuilder.append("┌--");
+        stringBuilder.append("┌――");
 
         for (Resource resource : topLineObjective) {
-            stringBuilder.append(resource != null ? resource.getShortName() : "-");
+            stringBuilder.append(resource != null ? resource.getShortName() : "―");
         }
 
-        stringBuilder.append("--┐");
+        stringBuilder.append("――┐");
 
         System.out.print(stringBuilder);
     }
@@ -86,7 +86,7 @@ public class ObjectiveCardView {
             stringBuilder.append(resource != null ? resource.getShortName() : " ");
         }
 
-        stringBuilder.append("  |");
+        stringBuilder.append("  │");
 
         System.out.print(stringBuilder);
     }
@@ -95,13 +95,13 @@ public class ObjectiveCardView {
         StringBuilder stringBuilder = new StringBuilder();
         Resource[] topLineObjective = patternObjectiveCard.getObjective()[2];
 
-        stringBuilder.append("└--");
+        stringBuilder.append("└――");
 
         for (Resource resource : topLineObjective) {
-            stringBuilder.append(resource != null ? resource.getShortName() : "-");
+            stringBuilder.append(resource != null ? resource.getShortName() : "―");
         }
 
-        stringBuilder.append("--┘");
+        stringBuilder.append("――┘");
 
         System.out.print(stringBuilder);
     }

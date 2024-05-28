@@ -169,6 +169,11 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 } else {
                     gameView.drawCard(nickname, message.getGoldCard());
                 }
+
+                gameView.showUpdatedHand(nickname);
+            }
+            case "Scores" -> {
+                gameView.showScores(message.getScores());
             }
             default -> throw new IllegalArgumentException("Invalid messageCode: " + messageCode);
         }

@@ -439,4 +439,25 @@ public class CLIView extends GameView {
 
     }
 
+    @Override
+    public void showUpdatedHand(String nickname) {
+        if(nickname.equals(client.getNickname()))
+            showMessage("\nHere is your updated hand:\n");
+        else showMessage("\nHere is " + nickname +"'s updated hand:\n");
+
+        List<PlayableCard> hand = getHandsMap().get(nickname);
+
+        HandView handView = new HandView();
+        handView.displayHand(hand);
+    }
+
+    @Override
+    public void showScores(Map<String, Integer> scores) {
+        showMessage("\nHere are the current scores:\n");
+
+        for(String nickname : scores.keySet()) {
+            System.out.println(nickname + ": " + scores.get(nickname));
+        }
+    }
+
 }
