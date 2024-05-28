@@ -1,7 +1,10 @@
 package org.example.myversion.client.GUI;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
+import javafx.stage.Stage;
 import org.example.myversion.client.Client;
 import org.example.myversion.client.view.GameView;
 import org.example.myversion.server.model.Board;
@@ -15,11 +18,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
-public class GUI extends GameView {
+import static javafx.application.Application.launch;
+
+public class GUI extends GameView{
 
     //private static final String GOLD_BACK_PATH = "org/example/myversion/cards_gold_back/";
     //private static final String GOLD_FRONT_PATH = "org/example/myversion/cards_gold_front";
@@ -28,18 +34,15 @@ public class GUI extends GameView {
 
     }
 
-    public VBox showBoard(Board board){
-        VBox boardView = new VBox();
-
-        for (Player player : board.getScores().keySet()) {
-            HBox hbox = new HBox();
-            Label nicknameLabel = new Label(player.getNickname());
-            Label scoreLabel = new Label(String.valueOf(board.getScores().get(player)));
-            hbox.getChildren().addAll(nicknameLabel, scoreLabel);
-            boardView.getChildren().add(hbox);
-        }
-        return boardView;
+    @Override
+    public void start(Stage stage) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("org/example/myversion/FXML/Login.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 500, 500);
+        stage.setTitle("LoginPage");
+        stage.setScene(scene);
+        stage.show();
     }
+
 
     @Override
     public void showMessage(String message) {
@@ -50,7 +53,7 @@ public class GUI extends GameView {
 
     @Override
     public void startView() throws IOException {
-
+        launch();
     }
 
     @Override
@@ -112,15 +115,6 @@ public class GUI extends GameView {
 
     @Override
     public void starterCardSideChoice(StarterCard starterCard) throws IOException {
-        VBox vbox = new VBox();
-        HBox hbox = new HBox();
-        Label label = new Label("Choose the side to play your starter card: ");
-        Image imgFront = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + Objects.toString(starterCard.getId()) + ".png").toExternalForm());
-        ImageView imgViewFront = new ImageView(imgFront);
-        Image imgBack = new Image(getClass().getResource("org/example/myversion/cards_gold_back" + Objects.toString(starterCard.getId()) + ".png").toExternalForm());
-        ImageView imgViewBack = new ImageView(imgBack);
-        hbox.getChildren().addAll(imgViewFront, imgViewBack);
-        vbox.getChildren().addAll(label, hbox);
     }
 
     @Override

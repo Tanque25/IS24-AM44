@@ -1,5 +1,6 @@
 package org.example.myversion.client.view;
 
+import javafx.stage.Stage;
 import org.example.myversion.client.Client;
 import org.example.myversion.client.CodexNaturalis;
 import org.example.myversion.messages.Message;
@@ -45,6 +46,10 @@ public class CLIView extends GameView {
     @Override
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
     }
 
     /**
