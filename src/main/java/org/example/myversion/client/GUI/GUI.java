@@ -2,10 +2,9 @@ package org.example.myversion.client.GUI;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
-import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import org.example.myversion.client.Client;
+import org.example.myversion.client.GUI.Controllers.LoginController;
 import org.example.myversion.client.view.GameView;
 import org.example.myversion.server.model.Board;
 import org.example.myversion.server.model.Player;
@@ -17,6 +16,7 @@ import org.example.myversion.server.model.decks.cards.StarterCard;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import org.example.myversion.server.serverController.GameController;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,15 +27,34 @@ import static javafx.application.Application.launch;
 
 public class GUI extends GameView{
 
+    private static Client client;
+    public static GameController gameController;
+    private static LoginController loginController;
+
+    public static Stage stage;
+
+    public GUI(Client client){
+        gameController = new GameController();
+        loginController = new LoginController(client);
+    }
+
     //private static final String GOLD_BACK_PATH = "org/example/myversion/cards_gold_back/";
     //private static final String GOLD_FRONT_PATH = "org/example/myversion/cards_gold_front";
     @Override
     public void setClient(Client client) {
-
+        this.client = client;
+    }
+    public static Client getClient() {
+        return client;
+    }
+    public static Stage getStage() {
+        return stage;
     }
 
     @Override
     public void start(Stage stage) throws IOException {
+        this.stage = stage;
+
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("org/example/myversion/FXML/Login.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 500, 500);
         stage.setTitle("LoginPage");
@@ -98,15 +117,6 @@ public class GUI extends GameView{
 
     @Override
     public void secretObjectiveCardChoice(List<ObjectiveCard> objectiveCards) throws IOException {
-        VBox vbox = new VBox();
-        HBox hbox = new HBox();
-        Label label = new Label("Choose your secret objective card: ");
-        for(ObjectiveCard card : objectiveCards){
-            Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + card.getId().toString() + ".png").toExternalForm());
-            ImageView imgView = new ImageView(img);
-            hbox.getChildren().add(imgView);
-        }
-        vbox.getChildren().addAll(label, hbox);
     }
 
     @Override
