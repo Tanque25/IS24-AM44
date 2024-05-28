@@ -90,6 +90,7 @@ public class CLIView extends GameView {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
             nickname = in.readLine();
+            client.setNickname(nickname);
         } catch (IOException e) {
             System.err.println("An error occurred while reading the nickname.");
         }

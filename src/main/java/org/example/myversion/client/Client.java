@@ -71,7 +71,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 serverConnection = true;
             }
             case "Nickname" -> {
-                setNickname(message.getArgument());
+                //setNickname(message.getArgument());
                 // TODO: Implement the connection check on a different channel on the server side
                 // checkServerConnection();
             }
@@ -276,9 +276,10 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
     }
 
     public void receiveCard(String messageString) throws RemoteException{
+        System.out.println("entra in receive card");
         Message message = new Message(Json.createReader(new StringReader(messageString)).readObject());
         String messageType = message.getMessageCode();
-        System.out.println("entra in receive card");
+
         switch (messageType){
             case "StarterCard"->{
                 try {
@@ -298,6 +299,16 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 } catch (IOException e){
                     throw new RuntimeException(e);
                 }
+            }
+            case "StartCondition" ->{
+                System.out.println("é entrato in start condition");
+                gameView.setHandsMap(message.getPlayersHandsMap());
+
+                gameView.initializePlayAreas(message.getStarterCardsMap());
+
+                gameView.showOthersHandsAndPlayAreas();
+                gameView.showMyHand();
+                gameView.showMyPlayArea();
             }
 
         }

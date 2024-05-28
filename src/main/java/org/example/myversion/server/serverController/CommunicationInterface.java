@@ -66,6 +66,10 @@ public interface CommunicationInterface extends Remote {
                 }
 
             }
+            case "StarterCard" ->{
+                System.out.println("Starter card side from: "+client.getNickname());
+                controller.playStarterCard(controller.getPlayerFromNickname(client.getNickname()), message.getStarterCard());
+            }
 
         }
     }
@@ -86,10 +90,9 @@ public interface CommunicationInterface extends Remote {
             if (controller.gameIsFull()) {
                 controller.newGame();
                 startGame();
+                sendStartCondition();
                 //System.out.println("devo inviare le started card...");
             } else {
-                System.out.println("giocatori settati nel controller: "+controller.getPlayersNumber());
-                System.out.println("numero di giocatori: "+num);
                 try {
                     client.handleMessageNew("LobbyNotFull");
                 } catch (RemoteException e) {
@@ -102,7 +105,6 @@ public interface CommunicationInterface extends Remote {
     default void checkNicknameNew(ClientCommunicationInterface client, String nickname, int checkNicknameStatus) throws RemoteException {
         switch (checkNicknameStatus) {
             case 1 -> {
-                System.out.println("entra nel case");
                 if(!controller.isGameStarted()){//se gioco non iniziato ancora
                     System.out.println(nickname + " logged in.");
 
@@ -123,14 +125,7 @@ public interface CommunicationInterface extends Remote {
                         if(controller.gameIsFull()){//partita piena
                             System.out.println("starting game");
                             startGame();
-                        }else{
-
-                            /*try {//gestisco eccezione Remote, setto nickname
-                                client.handleMessageNew("Nickname");
-                            } catch (RemoteException e) {
-                                System.err.println("Error 1 while sending message to " + nickname);
-                                throw new RemoteException();
-                            }*/
+                            sendStartCondition();
                         }
                     }
                 }else{//gioco gia iniziato
@@ -205,19 +200,17 @@ public interface CommunicationInterface extends Remote {
     }
 
     default void sendMessage(Message message,ClientCommunicationInterface client) throws RemoteException{
+        String jsonString = message.getJson().toString();
+        System.out.println(jsonString);
         try {
-            String jsonString = message.getJson().toString();
-            System.out.println(jsonString);
-            //System.out.println("entra in sendmessage");
             client.receiveCard(jsonString);
-           //client.handleMessageNew(jsonString);
-            // server.receiveMessageRMI(jsonString, this);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
 
     default void sendStartCondition() throws RemoteException {
+        System.out.println("Entra in start");
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
         HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
 
@@ -233,7 +226,17 @@ public interface CommunicationInterface extends Remote {
             tcpClients.get(nickname).sendMessageToClient(startConditionMessage);
         }
 
-        // TODO: do the same for the RMI clients
+        for (String nickname : rmiClients.keySet()) {
+            System.out.println("nickname: " + nickname);
+            HandView handView = new HandView();
+            Set<String> nicknames = controller.getPlayersHandsMap().keySet();
+            for (String nick : nicknames)
+                handView.displayHand(controller.getPlayersHandsMap().get(nick));
+
+
+            sendMessage(new Message("StartCondition", controller.getStarterCardsMap(), controller.getPlayersHandsMap()),rmiClients.get(nickname));
+
+        }
 
         startTurn();
     }
