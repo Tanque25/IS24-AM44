@@ -15,10 +15,12 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Set;
 
+import org.example.myversion.server.model.Coordinates;
 import org.example.myversion.server.model.decks.cards.GoldCard;
 import org.example.myversion.server.model.decks.cards.ObjectiveCard;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
+import org.example.myversion.server.model.exceptions.InvalidGameStateException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
 import org.example.myversion.server.model.exceptions.InvalidNicknameException;
 
@@ -67,11 +69,113 @@ public interface CommunicationInterface extends Remote {
 
             }
             case "StarterCard" ->{
+
                 System.out.println("Starter card side from: "+client.getNickname());
                 controller.playStarterCard(controller.getPlayerFromNickname(client.getNickname()), message.getStarterCard());
             }
+            case "CardToPlayChoice"->{
+                String nickname = client.getNickname();
+                System.out.println("Playing card from: "+nickname);
+                try {
+                    // If it's a PlayableCard call getPlayableCard(), otherwise call getGoldCard()
+                    if (message.getJson().containsKey("playableCard")) {
+                        controller.playCard(nickname, message.getPlayableCard(), message.getCoordinates());
+                        updateClientsPlayedCard(message.getPlayableCard(), message.getCoordinates());
+                    } else {
+                        controller.playCard(nickname, message.getGoldCard(), message.getCoordinates());
+                        updateClientsPlayedCard(message.getGoldCard(), message.getCoordinates());
+                    }
+
+                    sendMessage(new Message("VisibleCards", controller.getVisibleResourceCards(), controller.getRsourceDeckPeek(), controller.getVisibleGoldCards(), controller.getGoldDeckPeek()),client);
+
+                    client.handleMessageNew("DrawCard");
+                } catch (InvalidMoveException e) {
+                    System.out.println(e.getMessage());
+                    client.handleMessageNew("InvalidMove");
+                } catch (InvalidNicknameException | InvalidGameStateException e) {
+                    // The nickname will always be valid
+                    // The game state will always be valid
+                    // sendMessageToClient(new Message("InvalidMove"));
+                }
+            }
+            case "CardToDrawChoice" -> {
+                int cardToDrawChoice = message.getNumber();
+                String nickname = client.getNickname();
+                switch (cardToDrawChoice) {
+                    case 0, 1 -> {
+                        try {
+                            PlayableCard chosenCard = controller.getVisibleResourceCards().get(cardToDrawChoice);
+                            controller.drawCard(nickname, chosenCard);
+                            updateClientsDrawnCard(chosenCard);
+                        } catch (InvalidGameStateException | InvalidChoiceException  | InvalidNicknameException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    case 2, 3 -> {
+                        try {
+                            GoldCard chosenCard = controller.getVisibleGoldCards().get(cardToDrawChoice-2);
+                            controller.drawCard(nickname, chosenCard);
+                            updateClientsDrawnCard(chosenCard);
+                        } catch (InvalidGameStateException | InvalidChoiceException  | InvalidNicknameException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    case 4 -> {
+                        try {
+                            PlayableCard chosenCard = controller.getRsourceDeckPeek();
+                            controller.drawCard(nickname, chosenCard);
+                            updateClientsDrawnCard(chosenCard);
+                        } catch (InvalidGameStateException | InvalidChoiceException  | InvalidNicknameException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    case 5 -> {
+                        try {
+                            GoldCard chosenCard = controller.getGoldDeckPeek();
+                            controller.drawCard(nickname, chosenCard);
+                            updateClientsDrawnCard(chosenCard);
+                        } catch (InvalidGameStateException | InvalidChoiceException  | InvalidNicknameException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                // The current turn is finished, it passes to the next player.
+                changeTurn();
+
+            }
+
 
         }
+    }
+
+    default void updateClientsPlayedCard(PlayableCard playedCard, Coordinates coordinates) throws RemoteException {
+        HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
+
+        String nickname = controller.getCurrentPlayer().getNickname();
+
+        Message updateMessage = new Message("UpdatePlayedCard", nickname, playedCard, coordinates);
+
+        sendMessageToAll(nickname, updateMessage);
+    }
+
+    default void updateClientsDrawnCard(PlayableCard drawnCard) throws RemoteException {
+        HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
+
+        String nickname = controller.getCurrentPlayer().getNickname();
+
+        Message updateMessage = new Message("UpdateDrawnCard", nickname, drawnCard, null);
+
+        sendMessageToAll(nickname, updateMessage);
+    }
+
+    default void updateClientsDrawnCard(GoldCard drawnCard) throws RemoteException {
+        HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
+
+        String nickname = controller.getCurrentPlayer().getNickname();
+
+        Message updateMessage = new Message("UpdateDrawnCard", nickname, drawnCard, null);
+
+        sendMessageToAll(nickname, updateMessage);
     }
 
 
@@ -237,7 +341,6 @@ public interface CommunicationInterface extends Remote {
             sendMessage(new Message("StartCondition", controller.getStarterCardsMap(), controller.getPlayersHandsMap()),rmiClients.get(nickname));
 
         }
-
         startTurn();
     }
 
@@ -249,7 +352,8 @@ public interface CommunicationInterface extends Remote {
         if (controller.isTCP(nickname))
             controller.getTcpClients().get(nickname).sendMessageToClient(myTurn);
 
-        // TODO: handle RMI client's turn
+        if(controller.isRMI(nickname))
+            controller.getRmiClients().get(nickname).handleMessageNew("MyTurn");
 
         Message otherTurn = new Message("OtherTurn", nickname);
         sendMessageToAllExcept(nickname, otherTurn);
@@ -275,18 +379,30 @@ public interface CommunicationInterface extends Remote {
         for (String nickname : tcpClients.keySet()) {
             tcpClients.get(nickname).sendMessageToClient(message);
         }
+        for (String nickname : tcpClients.keySet()) {
+            sendMessage(message,rmiClients.get(nickname));
+        }
     }
 
     default void sendMessageToAllExcept (String currentPlayerNickname, Message message) throws RemoteException {
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
-        HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
 
         for (String nickname : tcpClients.keySet()) {
             if(!nickname.equals(currentPlayerNickname)) {
                 tcpClients.get(nickname).sendMessageToClient(message);
             }
         }
+        sendMessageToAllExceptRMI(currentPlayerNickname,"OtherTurn");
+    }
 
-        // TODO: do the same for the RMI clients
+    default void sendMessageToAllExceptRMI (String currentPlayerNickname, String scelta) throws RemoteException {
+
+        HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
+
+        for (String nickname : rmiClients.keySet()) {
+            if(!nickname.equals(currentPlayerNickname)) {
+                rmiClients.get(nickname).handleMessageNew(scelta);
+            }
+        }
     }
 }

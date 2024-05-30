@@ -108,11 +108,6 @@ public class CLIView extends GameView {
         client.sendMessage(new Message("NumberOfPlayers", playersNumber));
     }
 
-    public void playersNumberChoiceRMI() throws IOException {
-        int playersNumber = askForPlayersNumber();
-        client.sendMessage(new Message("NumberOfPlayers", playersNumber));
-    }
-
 
     public void invalidPlayersNumberChoice() throws IOException {
         showMessage("Invalid player number! Please try again: ");
@@ -386,6 +381,8 @@ public class CLIView extends GameView {
             client.sendMessage(new Message("CardToPlayChoice", (GoldCard) chosenCard, coordinates));
         else
             client.sendMessage(new Message("CardToPlayChoice", chosenCard, coordinates));
+
+
     }
 
     public void invalidMove() throws IOException {

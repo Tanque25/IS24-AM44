@@ -176,14 +176,6 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
 
     public void handleMessageNew(String scelta)throws RemoteException {
 
-//        if(!messageCode.equals("Pong")) {
-//            System.out.println("Received TCP message: with messageCode " + messageCode);
-
-//        }
-        //Message message = new Message(Json.createReader(new StringReader(scelta)).readObject());
-        //        String messageType = message.getMessageCode();
-        //        System.out.println("tipodelmessaggio: "+messageType);
-        //
         switch (scelta) {
             case "Pong" -> {
                 serverConnection = true;
@@ -214,45 +206,27 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
             }
             case "WaitForOtherPlayers" ->
                     gameView.waitForOtherPlayers();
-            /*case "StarterCard" -> {
-                receiveStarterCard();
-            }
-
-            case "CommonObjectiveCards" ->
-
-            case "SecretObjectiveCardsOptions" -> {
-                try {
-                    gameView.showSecretObjectives(message.getObjectiveCards());
-                    gameView.secretObjectiveCardChoice(message.getObjectiveCards());
-                } catch (IOException e){
-                    throw new RuntimeException(e);
-                }
-            }
-            case "StartCondition" -> {
-                gameView.setHandsMap(message.getPlayersHandsMap());
-                gameView.initializePlayAreas(message.getStarterCardsMap());
-
-                gameView.showOthersHandsAndPlayAreas();
-                gameView.showMyHand();
-                gameView.showMyPlayArea();
-            }
             case "MyTurn" -> {
                 gameView.showMessage("\nIt's your turn.\n");
                 myTurn();
             }
             case "OtherTurn" -> {
-                gameView.showMessage("\nIt's " + message.getArgument() + "'s turn.\n");
+                gameView.showMessage("\nIt's others turn.\n");
+            }
+            case "DrawCard" -> {
+                System.out.println("Choose the card to draw.");
+                try {
+                    gameView.chooseCardToDraw();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
             case "InvalidMove" -> {
                 try {
-                    // TODO: Remove the card from the play area first
                     gameView.invalidMove();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            }*/
-            case "DrawCard" -> {
-                System.out.println("Choose the card to draw.");
             }
             default -> throw new IllegalArgumentException("Invalid messageCode: ");
         }
@@ -309,6 +283,18 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 gameView.showOthersHandsAndPlayAreas();
                 gameView.showMyHand();
                 gameView.showMyPlayArea();
+            }
+            case "UpdatePlayedCard" ->{
+                String nickname = message.getArgument();
+                Coordinates coordinates = message.getCoordinates();
+
+                if (message.getJson().containsKey("playableCard")) {
+                    gameView.playCard(nickname, message.getPlayableCard(), coordinates);
+                } else {
+                    gameView.playCard(nickname, message.getGoldCard(), coordinates);
+                }
+
+                gameView.showUpdatedPlayArea(nickname, gameView.getPlayAreasMap().get(nickname));
             }
 
         }
