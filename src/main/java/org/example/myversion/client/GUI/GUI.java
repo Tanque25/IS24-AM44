@@ -1,8 +1,10 @@
 package org.example.myversion.client.GUI;
 
-import javafx.scene.layout.VBox;
-import javafx.scene.control.Label;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import org.example.myversion.client.Client;
+import org.example.myversion.client.GUI.Controllers.LoginController;
 import org.example.myversion.client.view.GameView;
 import org.example.myversion.server.model.Board;
 import org.example.myversion.server.model.Player;
@@ -14,32 +16,52 @@ import org.example.myversion.server.model.decks.cards.StarterCard;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import org.example.myversion.server.serverController.GameController;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
-public class GUI extends GameView {
+import static javafx.application.Application.launch;
+
+public class GUI extends GameView{
+
+    private static Client client;
+    public static GameController gameController;
+    private static LoginController loginController;
+
+    public static Stage stage;
+
+    public GUI(Client client){
+        gameController = new GameController();
+        loginController = new LoginController(client);
+    }
 
     //private static final String GOLD_BACK_PATH = "org/example/myversion/cards_gold_back/";
     //private static final String GOLD_FRONT_PATH = "org/example/myversion/cards_gold_front";
     @Override
     public void setClient(Client client) {
-
+        this.client = client;
+    }
+    public static Client getClient() {
+        return client;
+    }
+    public static Stage getStage() {
+        return stage;
     }
 
-    public VBox showBoard(Board board){
-        VBox boardView = new VBox();
+    @Override
+    public void start(Stage stage) throws IOException {
+        this.stage = stage;
 
-        for (Player player : board.getScores().keySet()) {
-            HBox hbox = new HBox();
-            Label nicknameLabel = new Label(player.getNickname());
-            Label scoreLabel = new Label(String.valueOf(board.getScores().get(player)));
-            hbox.getChildren().addAll(nicknameLabel, scoreLabel);
-            boardView.getChildren().add(hbox);
-        }
-        return boardView;
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("org/example/myversion/FXML/Login.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 500, 500);
+        stage.setTitle("LoginPage");
+        stage.setScene(scene);
+        stage.show();
     }
+
 
     @Override
     public void showMessage(String message) {
@@ -50,7 +72,7 @@ public class GUI extends GameView {
 
     @Override
     public void startView() throws IOException {
-
+        launch();
     }
 
     @Override
@@ -95,15 +117,6 @@ public class GUI extends GameView {
 
     @Override
     public void secretObjectiveCardChoice(List<ObjectiveCard> objectiveCards) throws IOException {
-        VBox vbox = new VBox();
-        HBox hbox = new HBox();
-        Label label = new Label("Choose your secret objective card: ");
-        for(ObjectiveCard card : objectiveCards){
-            Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + card.getId().toString() + ".png").toExternalForm());
-            ImageView imgView = new ImageView(img);
-            hbox.getChildren().add(imgView);
-        }
-        vbox.getChildren().addAll(label, hbox);
     }
 
     @Override
@@ -112,15 +125,6 @@ public class GUI extends GameView {
 
     @Override
     public void starterCardSideChoice(StarterCard starterCard) throws IOException {
-        VBox vbox = new VBox();
-        HBox hbox = new HBox();
-        Label label = new Label("Choose the side to play your starter card: ");
-        Image imgFront = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + Objects.toString(starterCard.getId()) + ".png").toExternalForm());
-        ImageView imgViewFront = new ImageView(imgFront);
-        Image imgBack = new Image(getClass().getResource("org/example/myversion/cards_gold_back" + Objects.toString(starterCard.getId()) + ".png").toExternalForm());
-        ImageView imgViewBack = new ImageView(imgBack);
-        hbox.getChildren().addAll(imgViewFront, imgViewBack);
-        vbox.getChildren().addAll(label, hbox);
     }
 
     @Override

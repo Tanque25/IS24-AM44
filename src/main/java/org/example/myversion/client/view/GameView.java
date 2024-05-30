@@ -1,5 +1,6 @@
 package org.example.myversion.client.view;
 
+import javafx.application.Application;
 import org.example.myversion.client.Client;
 import org.example.myversion.server.model.Coordinates;
 import org.example.myversion.server.model.Player;
@@ -15,7 +16,7 @@ import java.util.Set;
 /**
  * This is the interface used for the view (cli or gui)
  */
-public abstract class GameView {
+public abstract class GameView extends Application{
     private List<PlayableCard> visibleResourceCards;
     private PlayableCard coveredResourceCard;
     private List<GoldCard> visibleGoldCards;
