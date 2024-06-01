@@ -50,5 +50,4 @@ public class StarterCardSideController implements GUIController {
             }
         });
     }
-
 }

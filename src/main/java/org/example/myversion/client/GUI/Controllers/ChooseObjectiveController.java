@@ -41,20 +41,19 @@ public class ChooseObjectiveController implements GUIController {
             button0.setOnAction(event -> {
                 try{
                     client.sendMessage(new Message("ObjectiveCardChoice", objectiveCards.get(1)));
-                    button1.setDisable(true);
                 }catch(IOException e){
-
                 }
+                button0.setDisable(true);
+                button1.setDisable(true);
             });
             button1.setOnAction(event -> {
                 try{
                     client.sendMessage(new Message("ObjectiveCardChoice", objectiveCards.get(1)));
-                    button0.setDisable(true);
                 }catch (IOException e){
                 }
+                button0.setDisable(true);
+                button1.setDisable(true);
             });
         });
     }
-
-
 }
