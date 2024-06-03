@@ -33,6 +33,7 @@ public class LoginController implements GUIController {
                         client.sendMessage(new Message("Login", nickname));
                     } catch (IOException e) {
                     }
+                    connect.setDisable(true);
                 });
         });
     }
