@@ -228,6 +228,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                     throw new RuntimeException(e);
                 }
             }
+
             default -> throw new IllegalArgumentException("Invalid messageCode: ");
         }
     }
@@ -296,9 +297,16 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
 
                 gameView.showUpdatedPlayArea(nickname, gameView.getPlayAreasMap().get(nickname));
             }
+            case "UpdateDrawnCard" -> {
+                String nickname = message.getArgument();
 
+                if (message.getJson().containsKey("playableCard")) {
+                    gameView.drawCard(nickname, message.getPlayableCard());
+                } else {
+                    gameView.drawCard(nickname, message.getGoldCard());
+                }
+            }
         }
-
     }
 
     /**
