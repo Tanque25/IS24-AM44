@@ -4,7 +4,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.example.myversion.client.Client;
+import org.example.myversion.client.GUI.Controllers.ChooseObjectiveController;
 import org.example.myversion.client.GUI.Controllers.LoginController;
+import org.example.myversion.client.GUI.Controllers.StarterCardSideController;
 import org.example.myversion.client.view.GameView;
 import org.example.myversion.server.model.Board;
 import org.example.myversion.server.model.Player;
@@ -30,13 +32,12 @@ public class GUI extends GameView{
     private static Client client;
     public static GameController gameController;
     private static LoginController loginController;
+    private static StarterCardSideController starterCardSideController;
+    private static ChooseObjectiveController chooseObjectiveController;
 
     public static Stage stage;
 
-    public GUI(Client client){
-        gameController = new GameController();
-        loginController = new LoginController(client);
-    }
+    public GUI(){}
 
     //private static final String GOLD_BACK_PATH = "org/example/myversion/cards_gold_back/";
     //private static final String GOLD_FRONT_PATH = "org/example/myversion/cards_gold_front";
@@ -57,9 +58,9 @@ public class GUI extends GameView{
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("org/example/myversion/FXML/Login.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 500, 500);
-        stage.setTitle("LoginPage");
         stage.setScene(scene);
         stage.show();
+        clientLogin();
     }
 
 
@@ -77,7 +78,8 @@ public class GUI extends GameView{
 
     @Override
     public void clientLogin() throws IOException {
-
+        loginController = new LoginController(client);
+        loginController.login();
     }
 
     @Override
@@ -125,6 +127,8 @@ public class GUI extends GameView{
 
     @Override
     public void starterCardSideChoice(StarterCard starterCard) throws IOException {
+        starterCardSideController = new StarterCardSideController(client);
+        starterCardSideController.sideChoice(starterCard);
     }
 
     @Override
