@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.example.myversion.client.Client;
 import org.example.myversion.client.GUI.Controllers.ChooseObjectiveController;
+import org.example.myversion.client.GUI.Controllers.ChosePlayerNumberController;
 import org.example.myversion.client.GUI.Controllers.LoginController;
 import org.example.myversion.client.GUI.Controllers.StarterCardSideController;
 import org.example.myversion.client.view.GameView;
@@ -35,6 +36,7 @@ public class GUI extends GameView{
     private static LoginController loginController;
     private static StarterCardSideController starterCardSideController;
     private static ChooseObjectiveController chooseObjectiveController;
+    private static ChosePlayerNumberController chosePlayerNumberController;
 
     public static Stage stage;
 
@@ -90,9 +92,8 @@ public class GUI extends GameView{
 
     @Override
     public void playersNumberChoice() throws IOException {
-        // Questo metodo mostrerà la scena con un checkbox da 2 a 4
-        // Il controller di questa scena si occuperà di tutto il resto, come inviare
-        // il messaggio del client
+        chosePlayerNumberController = new ChosePlayerNumberController();
+        chosePlayerNumberController.choseNumberOfPlayer();
     }
 
     @Override
