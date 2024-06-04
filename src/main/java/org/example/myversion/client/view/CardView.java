@@ -5,6 +5,7 @@ import org.example.myversion.server.model.decks.ResourceDeck;
 import org.example.myversion.server.model.decks.StarterDeck;
 import org.example.myversion.server.model.decks.cards.*;
 import org.example.myversion.server.model.enumerations.CornerPosition;
+import org.example.myversion.server.model.enumerations.ParameterType;
 import org.example.myversion.server.model.enumerations.Resource;
 
 public class CardView {
@@ -103,9 +104,13 @@ public class CardView {
         StringBuilder stringBuilder = new StringBuilder();
 
         // Top line of the card
-        stringBuilder.append(starterCard.getCorners().get(CornerPosition.UP_LEFT).getCornerContent().getShortName());
+        if(starterCard.getCorners().get(CornerPosition.UP_LEFT).isCovered())
+            stringBuilder.append("✖");
+        else stringBuilder.append(starterCard.getCorners().get(CornerPosition.UP_LEFT).getCornerContent().getShortName());
         stringBuilder.append("―――――――");
-        stringBuilder.append(starterCard.getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().getShortName());
+        if(starterCard.getCorners().get(CornerPosition.UP_RIGHT).isCovered())
+            stringBuilder.append("✖");
+        else stringBuilder.append(starterCard.getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().getShortName());
 
         System.out.print(stringBuilder);
     }
@@ -149,9 +154,13 @@ public class CardView {
         StringBuilder stringBuilder = new StringBuilder();
 
         // Bottom line of the card
-        stringBuilder.append(starterCard.getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().getShortName());
+        if(starterCard.getCorners().get(CornerPosition.BOTTOM_LEFT).isCovered())
+            stringBuilder.append("✖");
+        else stringBuilder.append(starterCard.getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().getShortName());
         stringBuilder.append("―――――――");
-        stringBuilder.append(starterCard.getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().getShortName());
+        if(starterCard.getCorners().get(CornerPosition.BOTTOM_RIGHT).isCovered())
+            stringBuilder.append("✖");
+        else stringBuilder.append(starterCard.getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().getShortName());
 
         System.out.print(stringBuilder);
     }
@@ -212,16 +221,14 @@ public class CardView {
 
         // Bottom line of the card
         if(starterCard.getBackCorner().get(CornerPosition.BOTTOM_LEFT).isCovered())
-            stringBuilder.append("X");
-        else
-            stringBuilder.append(starterCard.getBackCorner().get(CornerPosition.BOTTOM_LEFT).getCornerContent().getShortName());
+            stringBuilder.append("✖");
+        else stringBuilder.append(starterCard.getBackCorner().get(CornerPosition.BOTTOM_LEFT).getCornerContent().getShortName());
 
         stringBuilder.append("―――――――");
 
         if(starterCard.getBackCorner().get(CornerPosition.BOTTOM_RIGHT).isCovered())
-            stringBuilder.append("X");
-        else
-            stringBuilder.append(starterCard.getBackCorner().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().getShortName());
+            stringBuilder.append("✖");
+        else stringBuilder.append(starterCard.getBackCorner().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().getShortName());
 
         System.out.print(stringBuilder);
     }
@@ -233,7 +240,7 @@ public class CardView {
 
         // Top line of the card
         if(playableCard.getCorners().get(CornerPosition.UP_LEFT).isCovered())
-            stringBuilder.append("X");
+            stringBuilder.append("✖");
         else
             stringBuilder.append(playableCard.getCorners().get(CornerPosition.UP_LEFT).getCornerContent().getShortName());
 
@@ -242,7 +249,7 @@ public class CardView {
         stringBuilder.append("---");
 
         if(playableCard.getCorners().get(CornerPosition.UP_RIGHT).isCovered())
-            stringBuilder.append("X");
+            stringBuilder.append("✖");
         else
             stringBuilder.append(playableCard.getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().getShortName());
 
@@ -255,13 +262,13 @@ public class CardView {
 
         // Bottom line of the card
         if(playableCard.getCorners().get(CornerPosition.UP_LEFT).isCovered())
-            stringBuilder.append("X");
+            stringBuilder.append("✖");
         else
             stringBuilder.append(playableCard.getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().getShortName());
 
         stringBuilder.append("-------");
         if(playableCard.getCorners().get(CornerPosition.UP_RIGHT).isCovered())
-            stringBuilder.append("X");
+            stringBuilder.append("✖");
         else
             stringBuilder.append(playableCard.getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().getShortName());
 
@@ -275,9 +282,8 @@ public class CardView {
 
         // Top line of the card
         if(playableCard.getCorners().get(CornerPosition.UP_LEFT).isCovered())
-            stringBuilder.append("X");
-        else
-            stringBuilder.append(playableCard.getCorners().get(CornerPosition.UP_LEFT).getCornerContent().getShortName());
+            stringBuilder.append("✖");
+        else stringBuilder.append(playableCard.getCorners().get(CornerPosition.UP_LEFT).getCornerContent().getShortName());
 
         stringBuilder.append("―――");
         if (playableCard.getCardPoints() != 0)
@@ -286,9 +292,8 @@ public class CardView {
         stringBuilder.append("―――");
 
         if(playableCard.getCorners().get(CornerPosition.UP_RIGHT).isCovered())
-            stringBuilder.append("X");
-        else
-            stringBuilder.append(playableCard.getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().getShortName());
+            stringBuilder.append("✖");
+        else stringBuilder.append(playableCard.getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().getShortName());
 
         System.out.print(stringBuilder);
     }
@@ -308,14 +313,14 @@ public class CardView {
         StringBuilder stringBuilder = new StringBuilder();
 
         // Bottom line of the card
-        if(playableCard.getCorners().get(CornerPosition.UP_LEFT).isCovered())
-            stringBuilder.append("X");
+        if(playableCard.getCorners().get(CornerPosition.BOTTOM_LEFT).isCovered())
+            stringBuilder.append("✖");
         else
             stringBuilder.append(playableCard.getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().getShortName());
 
         stringBuilder.append("―――――――");
-        if(playableCard.getCorners().get(CornerPosition.UP_RIGHT).isCovered())
-            stringBuilder.append("X");
+        if(playableCard.getCorners().get(CornerPosition.BOTTOM_RIGHT).isCovered())
+            stringBuilder.append("✖");
         else
             stringBuilder.append(playableCard.getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().getShortName());
 
@@ -351,9 +356,13 @@ public class CardView {
         StringBuilder stringBuilder = new StringBuilder();
 
         // Top line of the card
-        stringBuilder.append("▫");
+        if(playableCard.getCorners().get(CornerPosition.UP_LEFT).isCovered())
+            stringBuilder.append("✖");
+        else stringBuilder.append("▫");
         stringBuilder.append("―――――――");
-        stringBuilder.append("▫");
+        if(playableCard.getCorners().get(CornerPosition.UP_RIGHT).isCovered())
+            stringBuilder.append("✖");
+        else stringBuilder.append("▫");
 
         System.out.print(stringBuilder);
     }
@@ -373,9 +382,13 @@ public class CardView {
         StringBuilder stringBuilder = new StringBuilder();
 
         // Bottom line of the card
-        stringBuilder.append("▫");
+        if(playableCard.getCorners().get(CornerPosition.BOTTOM_LEFT).isCovered())
+            stringBuilder.append("✖");
+        else stringBuilder.append("▫");
         stringBuilder.append("―――――――");
-        stringBuilder.append("▫");
+        if(playableCard.getCorners().get(CornerPosition.BOTTOM_RIGHT).isCovered())
+            stringBuilder.append("✖");
+        else stringBuilder.append("▫");
 
         System.out.print(stringBuilder);
     }
@@ -461,11 +474,17 @@ public class CardView {
         StringBuilder stringBuilder = new StringBuilder();
 
         // Top line of the card
-        stringBuilder.append(goldCard.getCorners().get(CornerPosition.UP_LEFT).getCornerContent().getShortName());
+        if(goldCard.getCorners().get(CornerPosition.UP_LEFT).isCovered())
+            stringBuilder.append("✖");
+        else stringBuilder.append(goldCard.getCorners().get(CornerPosition.UP_LEFT).getCornerContent().getShortName());
         stringBuilder.append(YELLOW_COLOR + "――" + RESET_COLOR);
-        stringBuilder.append(goldCard.getCardPoints()).append(YELLOW_COLOR + "―" + RESET_COLOR).append(goldCard.getPointsParameter().getShortName());
+        if (goldCard.getPointsParameter().equals(ParameterType.EMPTY))
+            stringBuilder.append(YELLOW_COLOR + "―" + RESET_COLOR).append(goldCard.getCardPoints()).append(YELLOW_COLOR + "―" + RESET_COLOR);
+        else stringBuilder.append(goldCard.getCardPoints()).append(YELLOW_COLOR + "―" + RESET_COLOR).append(goldCard.getPointsParameter().getShortName());
         stringBuilder.append(YELLOW_COLOR + "――" + RESET_COLOR);
-        stringBuilder.append(goldCard.getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().getShortName());
+        if(goldCard.getCorners().get(CornerPosition.UP_RIGHT).isCovered())
+            stringBuilder.append("✖");
+        else stringBuilder.append(goldCard.getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().getShortName());
 
         System.out.print(stringBuilder);
     }
@@ -486,7 +505,9 @@ public class CardView {
         int costSize = goldCard.getCost().length;
 
         // Bottom line of the card
-        stringBuilder.append(goldCard.getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().getShortName());
+        if(goldCard.getCorners().get(CornerPosition.BOTTOM_LEFT).isCovered())
+            stringBuilder.append("✖");
+        else stringBuilder.append(goldCard.getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().getShortName());
         switch (costSize) {
             case 0: {
                 stringBuilder.append(YELLOW_COLOR + "――――" + RESET_COLOR);
@@ -537,7 +558,9 @@ public class CardView {
                 break;
             }
         }
-        stringBuilder.append(goldCard.getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().getShortName());
+        if(goldCard.getCorners().get(CornerPosition.BOTTOM_RIGHT).isCovered())
+            stringBuilder.append("✖");
+        else stringBuilder.append(goldCard.getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().getShortName());
 
         System.out.print(stringBuilder);
     }

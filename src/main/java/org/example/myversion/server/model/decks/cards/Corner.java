@@ -29,6 +29,10 @@ public class Corner {
         return cornerContent;
     }
 
+    public void setCovered(boolean covered) {
+        this.covered = covered;
+    }
+
     /**
      * Checks if the corner is covered.
      *

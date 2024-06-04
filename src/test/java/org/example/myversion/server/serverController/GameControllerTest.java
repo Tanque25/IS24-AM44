@@ -3,14 +3,10 @@ package org.example.myversion.server.serverController;
 import org.example.myversion.server.model.Player;
 import org.example.myversion.server.model.Game;
 import org.example.myversion.server.model.decks.cards.*;
-import org.example.myversion.server.model.enumerations.CornerPosition;
-import org.example.myversion.server.model.enumerations.Resource;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidGameStateException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -243,11 +239,11 @@ class GameControllerTest{
     }
 
     @Test
-    void isLastTurn() {
+    void isLastRound() {
         gameController.setGameState(GameState.LAST_ROUND);
-        assertTrue(gameController.isLastTurn());
+        assertTrue(gameController.isLastRound());
         gameController.setGameState(GameState.END);
-        assertFalse(gameController.isLastTurn());
+        assertFalse(gameController.isLastRound());
     }
 
     @Test
@@ -255,7 +251,7 @@ class GameControllerTest{
         gameController.setGameState(GameState.END);
         assertTrue(gameController.isGameOver());
         gameController.setGameState(GameState.LAST_ROUND);
-        assertFalse(gameController.isLastTurn());
+        assertFalse(gameController.isLastRound());
     }
 
     @Test

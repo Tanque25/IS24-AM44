@@ -66,11 +66,17 @@ public class PlayAreaView {
             // Print top line of the cards in the current row
             for(int col = minCol-1; col <= maxCol+1; col++) {
                 if(playArea[row][col] instanceof StarterCard) {
-                    CardView.displayCardFrontTopLine((StarterCard) playArea[row][col]);
+                    if(playArea[row][col].isPlayedBack())
+                        CardView.displayCardBackTopLine((StarterCard) playArea[row][col]);
+                    else CardView.displayCardFrontTopLine((StarterCard) playArea[row][col]);
                 } else if (playArea[row][col] instanceof GoldCard) {
-                    CardView.displayCardFrontTopLine((GoldCard) playArea[row][col]);
+                    if(playArea[row][col].isPlayedBack())
+                        CardView.displayCardBackTopLine((GoldCard) playArea[row][col]);
+                    else CardView.displayCardFrontTopLine((GoldCard) playArea[row][col]);
                 } else if (playArea[row][col] instanceof PlayableCard) {
-                    CardView.displayCardFrontTopLine((PlayableCard) playArea[row][col]);
+                    if(playArea[row][col].isPlayedBack())
+                        CardView.displayCardBackTopLine((PlayableCard) playArea[row][col]);
+                    else CardView.displayCardFrontTopLine((PlayableCard) playArea[row][col]);
                 } else if (row % 2 == 0 && col % 2 == 0 || (row % 2 == 1 && col % 2 == 1)) {
                     // Check if the adjacent cards have full corners
                     if (playArea[row-1][col-1] != null && !playArea[row-1][col-1].getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().equals(CornerVisibility.FULL) ||
@@ -89,11 +95,17 @@ public class PlayAreaView {
             // Print middle line of the cards in the current row
             for(int col = minCol-1; col <= maxCol+1; col++) {
                 if(playArea[row][col] instanceof StarterCard) {
-                    CardView.displayCardFrontMiddleLine((StarterCard) playArea[row][col]);
+                    if(playArea[row][col].isPlayedBack())
+                        CardView.displayCardBackMiddleLine((StarterCard) playArea[row][col]);
+                    else CardView.displayCardFrontMiddleLine((StarterCard) playArea[row][col]);
                 } else if (playArea[row][col] instanceof GoldCard) {
-                    CardView.displayCardFrontMiddleLine((GoldCard) playArea[row][col]);
+                    if(playArea[row][col].isPlayedBack())
+                        CardView.displayCardBackMiddleLine((GoldCard) playArea[row][col]);
+                    else CardView.displayCardFrontMiddleLine((GoldCard) playArea[row][col]);
                 } else if (playArea[row][col] instanceof PlayableCard) {
-                    CardView.displayCardFrontMiddleLine((PlayableCard) playArea[row][col]);
+                    if(playArea[row][col].isPlayedBack())
+                        CardView.displayCardBackMiddleLine((PlayableCard) playArea[row][col]);
+                    else CardView.displayCardFrontMiddleLine((PlayableCard) playArea[row][col]);
                 } else if (row % 2 == 0 && col % 2 == 0 || (row % 2 == 1 && col % 2 == 1)) {
                     // Check if the adjacent cards have full corners
                     if (playArea[row-1][col-1] != null && !playArea[row-1][col-1].getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().equals(CornerVisibility.FULL) ||
@@ -112,11 +124,17 @@ public class PlayAreaView {
             // Print bottom line of the cards in the current row
             for(int col = minCol-1; col <= maxCol+1; col++) {
                 if(playArea[row][col] instanceof StarterCard) {
-                    CardView.displayCardFrontBottomLine((StarterCard) playArea[row][col]);
+                    if(playArea[row][col].isPlayedBack())
+                        CardView.displayCardBackBottomLine((StarterCard) playArea[row][col]);
+                    else CardView.displayCardFrontBottomLine((StarterCard) playArea[row][col]);
                 } else if (playArea[row][col] instanceof GoldCard) {
-                    CardView.displayCardFrontBottomLine((GoldCard) playArea[row][col]);
+                    if(playArea[row][col].isPlayedBack())
+                        CardView.displayCardBackBottomLine((GoldCard) playArea[row][col]);
+                    else CardView.displayCardFrontBottomLine((GoldCard) playArea[row][col]);
                 } else if (playArea[row][col] instanceof PlayableCard) {
-                    CardView.displayCardFrontBottomLine((PlayableCard) playArea[row][col]);
+                    if(playArea[row][col].isPlayedBack())
+                        CardView.displayCardBackBottomLine((PlayableCard) playArea[row][col]);
+                    else CardView.displayCardFrontBottomLine((PlayableCard) playArea[row][col]);
                 } else if ((row % 2 == 0 && col % 2 == 0) || (row % 2 == 1 && col % 2 == 1)) {
                     // Check if the adjacent cards have full corners
                     if (playArea[row-1][col-1] != null && !playArea[row-1][col-1].getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().equals(CornerVisibility.FULL) ||
@@ -146,13 +164,17 @@ public class PlayAreaView {
             // Print top line of the cards in the current row
             for(int col = minCol; col <= maxCol; col++) {
                 if(playArea[row][col] instanceof StarterCard) {
-                    if(!playArea[row][col].isPlayedBack())
-                        CardView.displayCardFrontTopLine((StarterCard) playArea[row][col]);
-                    else CardView.displayCardBackTopLine((StarterCard) playArea[row][col]);
+                    if(playArea[row][col].isPlayedBack())
+                        CardView.displayCardBackTopLine((StarterCard) playArea[row][col]);
+                    else CardView.displayCardFrontTopLine((StarterCard) playArea[row][col]);
                 } else if (playArea[row][col] instanceof GoldCard) {
-                    CardView.displayCardFrontTopLine((GoldCard) playArea[row][col]);
+                    if(playArea[row][col].isPlayedBack())
+                        CardView.displayCardBackTopLine((GoldCard) playArea[row][col]);
+                    else CardView.displayCardFrontTopLine((GoldCard) playArea[row][col]);
                 } else if (playArea[row][col] instanceof PlayableCard) {
-                    CardView.displayCardFrontTopLine((PlayableCard) playArea[row][col]);
+                    if(playArea[row][col].isPlayedBack())
+                        CardView.displayCardBackTopLine((PlayableCard) playArea[row][col]);
+                    else CardView.displayCardFrontTopLine((PlayableCard) playArea[row][col]);
                 } else {
                     CardView.displayEmptySlotLine();
                 }
@@ -163,13 +185,17 @@ public class PlayAreaView {
             // Print middle line of the cards in the current row
             for(int col = minCol; col <= maxCol; col++) {
                 if(playArea[row][col] instanceof StarterCard) {
-                    if(!playArea[row][col].isPlayedBack())
-                        CardView.displayCardFrontMiddleLine((StarterCard) playArea[row][col]);
-                    else CardView.displayCardBackMiddleLine((StarterCard) playArea[row][col]);
+                    if(playArea[row][col].isPlayedBack())
+                        CardView.displayCardBackMiddleLine((StarterCard) playArea[row][col]);
+                    else CardView.displayCardFrontMiddleLine((StarterCard) playArea[row][col]);
                 } else if (playArea[row][col] instanceof GoldCard) {
-                    CardView.displayCardFrontMiddleLine((GoldCard) playArea[row][col]);
+                    if(playArea[row][col].isPlayedBack())
+                        CardView.displayCardBackMiddleLine((GoldCard) playArea[row][col]);
+                    else CardView.displayCardFrontMiddleLine((GoldCard) playArea[row][col]);
                 } else if (playArea[row][col] instanceof PlayableCard) {
-                    CardView.displayCardFrontMiddleLine((PlayableCard) playArea[row][col]);
+                    if(playArea[row][col].isPlayedBack())
+                        CardView.displayCardBackMiddleLine((PlayableCard) playArea[row][col]);
+                    else CardView.displayCardFrontMiddleLine((PlayableCard) playArea[row][col]);
                 } else {
                     CardView.displayEmptySlotLine();
                 }
@@ -180,13 +206,17 @@ public class PlayAreaView {
             // Print bottom line of the cards in the current row
             for(int col = minCol; col <= maxCol; col++) {
                 if(playArea[row][col] instanceof StarterCard) {
-                    if(!playArea[row][col].isPlayedBack())
-                        CardView.displayCardFrontBottomLine((StarterCard) playArea[row][col]);
-                    else CardView.displayCardBackBottomLine((StarterCard) playArea[row][col]);
+                    if(playArea[row][col].isPlayedBack())
+                        CardView.displayCardBackBottomLine((StarterCard) playArea[row][col]);
+                    else CardView.displayCardFrontBottomLine((StarterCard) playArea[row][col]);
                 } else if (playArea[row][col] instanceof GoldCard) {
-                    CardView.displayCardFrontBottomLine((GoldCard) playArea[row][col]);
+                    if(playArea[row][col].isPlayedBack())
+                        CardView.displayCardBackBottomLine((GoldCard) playArea[row][col]);
+                    else CardView.displayCardFrontBottomLine((GoldCard) playArea[row][col]);
                 } else if (playArea[row][col] instanceof PlayableCard) {
-                    CardView.displayCardFrontBottomLine((PlayableCard) playArea[row][col]);
+                    if(playArea[row][col].isPlayedBack())
+                        CardView.displayCardBackBottomLine((PlayableCard) playArea[row][col]);
+                    else CardView.displayCardFrontBottomLine((PlayableCard) playArea[row][col]);
                 } else {
                     CardView.displayEmptySlotLine();
                 }

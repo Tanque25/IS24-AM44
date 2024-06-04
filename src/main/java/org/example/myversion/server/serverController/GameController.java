@@ -1,6 +1,5 @@
 package org.example.myversion.server.serverController;
 
-import org.example.myversion.client.Client;
 import org.example.myversion.client.ClientCommunicationInterface;
 import org.example.myversion.server.Server;
 import org.example.myversion.server.model.Coordinates;
@@ -295,7 +294,7 @@ public class GameController {
                 try {
                     game.playCard(game.getCurrentPlayer(), card, coordinates);
 
-                    if(isLastTurn() && game.getCurrentPlayer().equals(lastPlayer)){
+                    if(isLastRound() && game.getCurrentPlayer().equals(lastPlayer)){
                         roundsPlayed++;
                         gameState = GameState.END;
                     }
@@ -327,17 +326,15 @@ public class GameController {
 
                 if (game.getCurrentPlayer().equals(lastPlayer)) {
                     roundsPlayed++;
-
                     if(checkScores())
                         gameState = GameState.LAST_ROUND;
-
                 }
 
             } else {
                 throw new InvalidNicknameException("Invalid nickname");
             }
         } else {
-            throw new InvalidGameStateException("Invalid game state");
+            throw new InvalidGameStateException("Drawing a card in an invalid game state");
         }
     }
 
@@ -514,10 +511,7 @@ public class GameController {
      *
      * @return  true if it is the last turn,  false otherwise.
      */
-    public boolean isLastTurn() {
-        if(gameState.equals(GameState.LAST_ROUND)){
-            return true;
-        }
-        return false;
+    public boolean isLastRound() {
+        return gameState.equals(GameState.LAST_ROUND) || gameState.equals(GameState.END);
     }
 }

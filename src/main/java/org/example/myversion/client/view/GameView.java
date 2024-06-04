@@ -5,6 +5,7 @@ import org.example.myversion.client.Client;
 import org.example.myversion.server.model.Coordinates;
 import org.example.myversion.server.model.Player;
 import org.example.myversion.server.model.decks.cards.*;
+import org.example.myversion.server.model.enumerations.CornerPosition;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -103,6 +104,17 @@ public abstract class GameView extends Application{
 
         // Place the card in the specified coordinates in the play area
         playArea[x][y] = playedCard;
+
+        // Update corner status of adjacent cards
+        if(playArea[x-1][y-1] != null)
+            playArea[x-1][y-1].getCorners().get(CornerPosition.BOTTOM_RIGHT).setCovered(true);
+        if(playArea[x-1][y+1] != null)
+            playArea[x-1][y+1].getCorners().get(CornerPosition.BOTTOM_LEFT).setCovered(true);
+        if(playArea[x+1][y-1] != null)
+            playArea[x+1][y-1].getCorners().get(CornerPosition.UP_RIGHT).setCovered(true);
+        if(playArea[x+1][y+1] != null){
+            playArea[x+1][y+1].getCorners().get(CornerPosition.UP_LEFT).setCovered(true);
+        }
     }
 
     public void drawCard(String nickname, PlayableCard drawnCard) {
