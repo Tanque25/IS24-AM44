@@ -39,8 +39,7 @@ public class CLIView extends GameView {
 //            System.exit(1);
 //        }
 
-        CodexNaturalis.setParameters("localhost", "rmi", this);
-
+        CodexNaturalis.setParameters("localhost", "tcp", this);
     }
 
     @Override
@@ -458,6 +457,12 @@ public class CLIView extends GameView {
         for(String nickname : scores.keySet()) {
             System.out.println(nickname + ": " + scores.get(nickname));
         }
+    }
+
+    @Override
+    public void showEndGame(String winner) {
+        showMessage("\nThe game is over!\n");
+        showMessage("\nThe winner is: " + winner + "!");
     }
 
 }

@@ -196,4 +196,9 @@ public class GUI extends GameView{
     public void showScores(Map<String, Integer> scores) {
 
     }
+
+    @Override
+    public void showEndGame(String winner) {
+
+    }
 }

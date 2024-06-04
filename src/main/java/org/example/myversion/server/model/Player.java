@@ -278,12 +278,6 @@ public class Player {
                 isCornerFull(playArea[x-1][y+1], CornerPosition.BOTTOM_LEFT) ||
                 isCornerFull(playArea[x+1][y+1], CornerPosition.BOTTOM_RIGHT);
     }
-    public int getNumberCardHand(){
-        if(hand!=null)
-            return hand.size();
-        else
-            return 0;
-    }
 
     /**
      * Checks if the specified corner of the given card is full.

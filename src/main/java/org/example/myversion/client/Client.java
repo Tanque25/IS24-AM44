@@ -175,6 +175,12 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
             case "Scores" -> {
                 gameView.showScores(message.getScores());
             }
+            case "LastTurn" -> {
+                gameView.showMessage("\nLast round\n");
+            }
+            case "EndGame" -> {
+                gameView.showEndGame(message.getArgument());
+            }
             default -> throw new IllegalArgumentException("Invalid messageCode: " + messageCode);
         }
     }

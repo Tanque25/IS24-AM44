@@ -149,9 +149,6 @@ public class GameController {
 
     public void playStarterCard(Player player, StarterCard starterCard) {
         game.placeStarterCard(player, starterCard);
-        if (player.equals(lastPlayer)) {
-            gameState = GameState.IN_GAME;
-        }
     }
 
     public Player getPlayerFromNickname(String nickname) {
@@ -459,7 +456,7 @@ public class GameController {
 
     public boolean checkScores() {
         for(Player player : game.getPlayers()){
-            if(game.getBoard().getScore(player)>=20){
+            if(game.getBoard().getScore(player)>=2){
                 return true;
             }
         }
@@ -492,10 +489,7 @@ public class GameController {
      * @return True if the game is over, false otherwise.
      */
     public boolean isGameOver() {
-        if(gameState.equals(GameState.END)){
-            return true;
-        }
-        return false;
+        return gameState.equals(GameState.END);
     }
 
     /**
@@ -506,13 +500,10 @@ public class GameController {
     }
 
     /**
-     * Sets the winner of the game.
-     * This method will be called to set the winner of the game.
+     * Retrieves the nickname of the winner.
      */
-    public void setWinner() {
-        if (gameState == GameState.END) {
-            game.winner();
-        }
+    public String findWinner() {
+        return game.winner().getNickname();
     }
 
     /**

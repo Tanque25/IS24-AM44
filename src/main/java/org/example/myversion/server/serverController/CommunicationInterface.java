@@ -247,6 +247,8 @@ public interface CommunicationInterface extends Remote {
     }
 
     default void startGame() throws RemoteException {
+        controller.setGameState(GameState.IN_GAME);
+
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
         HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
 
@@ -330,9 +332,7 @@ public interface CommunicationInterface extends Remote {
             for (String nick : nicknames)
                 handView.displayHand(controller.getPlayersHandsMap().get(nick));
 
-
             sendMessage(new Message("StartCondition", controller.getStarterCardsMap(), controller.getPlayersHandsMap()),rmiClients.get(nickname));
-
         }
         startTurn();
     }
@@ -359,9 +359,12 @@ public interface CommunicationInterface extends Remote {
         if(controller.getGameState() == GameState.IN_GAME) {
             startTurn();
         } else if (controller.getGameState() == GameState.LAST_ROUND) {
-
+            Message lastTurn = new Message("LastTurn");
+            sendMessageToAll(lastTurn);
+            startTurn();
         } else if (controller.getGameState() == GameState.END) {
-
+            Message endGame = new Message("EndGame", controller.findWinner());
+            sendMessageToAll(endGame);
         }
 
     }

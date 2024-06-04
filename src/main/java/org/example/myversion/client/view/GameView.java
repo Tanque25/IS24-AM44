@@ -159,4 +159,6 @@ public abstract class GameView extends Application{
     public abstract void showUpdatedHand(String nickname);
 
     public abstract void showScores(Map<String, Integer> scores);
+
+    public abstract void showEndGame(String winner);
 }
