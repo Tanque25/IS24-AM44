@@ -12,7 +12,7 @@ import org.example.myversion.messages.Message;
 
 import java.io.IOException;
 
-public class LoginController implements GUIController {
+public class LoginController extends GUIController {
     @FXML
     private TextField username;
 
