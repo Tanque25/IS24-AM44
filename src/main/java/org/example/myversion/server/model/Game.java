@@ -1,5 +1,6 @@
 package org.example.myversion.server.model;
 
+import org.example.myversion.client.view.HandView;
 import org.example.myversion.server.model.decks.*;
 import org.example.myversion.server.model.decks.cards.*;
 import org.example.myversion.server.model.exceptions.EmptyDeckException;

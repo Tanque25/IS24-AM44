@@ -3,6 +3,7 @@ package org.example.myversion.server.serverController;
 import org.controlsfx.control.tableview2.filter.filtereditor.SouthFilter;
 import org.example.myversion.client.ClientCommunicationInterface;
 import org.example.myversion.client.view.CardView;
+import org.example.myversion.client.view.HandView;
 import org.example.myversion.client.view.PlayAreaView;
 import org.example.myversion.messages.Message;
 import org.example.myversion.server.model.Coordinates;
@@ -213,6 +214,9 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
                     }
                 }
 
+                // Send the updated scores to all clients
+                updateScores();
+
                 // The current turn is finished, it passes to the next player.
                 changeTurn();
 
@@ -272,7 +276,7 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
 
         Message updateMessage = new Message("UpdatePlayedCard", nickname, playedCard, coordinates);
 
-        sendMessageToAll(nickname, updateMessage);
+        sendMessageToAll(updateMessage);
     }
 
     public void updateClientsPlayedCard(GoldCard playedCard, Coordinates coordinates) throws RemoteException {
@@ -282,27 +286,31 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
 
         Message updateMessage = new Message("UpdatePlayedCard", nickname, playedCard, coordinates);
 
-        sendMessageToAll(nickname, updateMessage);
+        sendMessageToAll(updateMessage);
     }
 
     public void updateClientsDrawnCard(PlayableCard drawnCard) throws RemoteException {
-        HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
-
         String nickname = controller.getCurrentPlayer().getNickname();
 
         Message updateMessage = new Message("UpdateDrawnCard", nickname, drawnCard, null);
 
-        sendMessageToAll(nickname, updateMessage);
+        sendMessageToAll(updateMessage);
     }
 
     public void updateClientsDrawnCard(GoldCard drawnCard) throws RemoteException {
-        HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
-
         String nickname = controller.getCurrentPlayer().getNickname();
 
         Message updateMessage = new Message("UpdateDrawnCard", nickname, drawnCard, null);
 
-        sendMessageToAll(nickname, updateMessage);
+        sendMessageToAll(updateMessage);
+    }
+
+    public void updateScores() throws RemoteException {
+        Map<String, Integer> scores = controller.getScores();
+
+        Message scoresMessage = new Message("Scores", scores);
+
+        sendMessageToAll(scoresMessage);
     }
 
     public void setNickname(String nickname) {

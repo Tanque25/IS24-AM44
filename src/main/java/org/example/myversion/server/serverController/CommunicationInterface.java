@@ -247,6 +247,8 @@ public interface CommunicationInterface extends Remote {
     }
 
     default void startGame() throws RemoteException {
+        controller.setGameState(GameState.IN_GAME);
+
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
         HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
 
@@ -319,13 +321,6 @@ public interface CommunicationInterface extends Remote {
         HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
 
         for (String nickname : tcpClients.keySet()) {
-
-            // To remove
-            HandView handView = new HandView();
-            Set<String> nicknames = controller.getPlayersHandsMap().keySet();
-            for (String nick : nicknames)
-                handView.displayHand(controller.getPlayersHandsMap().get(nick));
-
             Message startConditionMessage = new Message("StartCondition", controller.getStarterCardsMap(), controller.getPlayersHandsMap());
             tcpClients.get(nickname).sendMessageToClient(startConditionMessage);
         }
@@ -337,9 +332,7 @@ public interface CommunicationInterface extends Remote {
             for (String nick : nicknames)
                 handView.displayHand(controller.getPlayersHandsMap().get(nick));
 
-
             sendMessage(new Message("StartCondition", controller.getStarterCardsMap(), controller.getPlayersHandsMap()),rmiClients.get(nickname));
-
         }
         startTurn();
     }
@@ -360,26 +353,30 @@ public interface CommunicationInterface extends Remote {
     }
 
     default void changeTurn() throws RemoteException {
+        // Update the current player
         controller.changeTurn();
 
         if(controller.getGameState() == GameState.IN_GAME) {
             startTurn();
         } else if (controller.getGameState() == GameState.LAST_ROUND) {
-
+            Message lastTurn = new Message("LastTurn");
+            sendMessageToAll(lastTurn);
+            startTurn();
         } else if (controller.getGameState() == GameState.END) {
-
+            Message endGame = new Message("EndGame", controller.findWinner());
+            sendMessageToAll(endGame);
         }
 
     }
 
-    default void sendMessageToAll (String currentPlayerNickname, Message message) throws RemoteException {
+    default void sendMessageToAll (Message message) throws RemoteException {
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
         HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
 
         for (String nickname : tcpClients.keySet()) {
             tcpClients.get(nickname).sendMessageToClient(message);
         }
-        for (String nickname : tcpClients.keySet()) {
+        for (String nickname : rmiClients.keySet()) {
             sendMessage(message,rmiClients.get(nickname));
         }
     }

@@ -7,7 +7,7 @@ package org.example.myversion.server.model.enumerations;
  */
 public enum ParameterType implements PointsParameter{
     CORNER("C"),
-    EMPTY("E");
+    EMPTY("▫");
 
     private final String shortName;
 

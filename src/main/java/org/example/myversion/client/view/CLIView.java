@@ -39,8 +39,7 @@ public class CLIView extends GameView {
 //            System.exit(1);
 //        }
 
-        CodexNaturalis.setParameters("localhost", "rmi", this);
-
+        CodexNaturalis.setParameters("localhost", "tcp", this);
     }
 
     @Override
@@ -437,6 +436,33 @@ public class CLIView extends GameView {
 
         client.sendMessage(new Message("CardToDrawChoice", cardToDrawChoice));
 
+    }
+
+    @Override
+    public void showUpdatedHand(String nickname) {
+        if(nickname.equals(client.getNickname()))
+            showMessage("\nHere is your updated hand:\n");
+        else showMessage("\nHere is " + nickname +"'s updated hand:\n");
+
+        List<PlayableCard> hand = getHandsMap().get(nickname);
+
+        HandView handView = new HandView();
+        handView.displayHand(hand);
+    }
+
+    @Override
+    public void showScores(Map<String, Integer> scores) {
+        showMessage("\nHere are the current scores:\n");
+
+        for(String nickname : scores.keySet()) {
+            System.out.println(nickname + ": " + scores.get(nickname));
+        }
+    }
+
+    @Override
+    public void showEndGame(String winner) {
+        showMessage("\nThe game is over!\n");
+        showMessage("\nThe winner is: " + winner + "!");
     }
 
 }

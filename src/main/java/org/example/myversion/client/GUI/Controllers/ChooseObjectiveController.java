@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ChooseObjectiveController implements GUIController {
+public class ChooseObjectiveController extends GUIController {
     @FXML
     private Button button0;
     @FXML

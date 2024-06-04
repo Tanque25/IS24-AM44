@@ -255,6 +255,25 @@ public class Message implements Serializable {
                 .build();
     }
 
+    /**
+     * Constructs a Message object with a message code and a map of scores.
+     *
+     * @param messageCode the identifier of the message.
+     * @param scores      the map of scores.
+     */
+    public Message(String messageCode, Map<String, Integer> scores) {
+        JsonObjectBuilder jsonBuilder = Json.createObjectBuilder()
+                .add("messageCode", messageCode);
+
+        JsonObjectBuilder scoresBuilder = Json.createObjectBuilder();
+        for (Map.Entry<String, Integer> entry : scores.entrySet()) {
+            scoresBuilder.add(entry.getKey(), entry.getValue());
+        }
+
+        jsonBuilder.add("scores", scoresBuilder.build());
+        this.json = jsonBuilder.build();
+    }
+
 ///////////////////////////////////////////////////////UTILS////////////////////////////////////////////////////////
 
     /**
@@ -781,6 +800,22 @@ public class Message implements Serializable {
                 json.getInt("xCoordinate", -1),
                 json.getInt("yCoordinate", -1)
         );
+    }
+
+    /**
+     * Gets the scores map from the JSON object.
+     *
+     * @return the scores map.
+     */
+    public Map<String, Integer> getScores() {
+        Map<String, Integer> scores = new HashMap<>();
+        JsonObject scoresJson = json.getJsonObject("scores");
+
+        for (String key : scoresJson.keySet()) {
+            scores.put(key, scoresJson.getInt(key));
+        }
+
+        return scores;
     }
 
 }

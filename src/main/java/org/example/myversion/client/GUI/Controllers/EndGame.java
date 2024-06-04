@@ -2,5 +2,5 @@ package org.example.myversion.client.GUI.Controllers;
 
 import org.example.myversion.client.GUI.GUIController;
 
-public class EndGame implements GUIController {
+public class EndGame extends GUIController {
 }

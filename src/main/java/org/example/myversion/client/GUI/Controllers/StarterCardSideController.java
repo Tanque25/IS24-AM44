@@ -13,7 +13,7 @@ import org.example.myversion.server.model.decks.cards.StarterCard;
 import java.io.IOException;
 import java.util.Objects;
 
-public class StarterCardSideController implements GUIController {
+public class StarterCardSideController extends GUIController {
     @FXML
     private Button button0;
     @FXML

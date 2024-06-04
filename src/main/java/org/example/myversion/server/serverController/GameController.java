@@ -149,9 +149,6 @@ public class GameController {
 
     public void playStarterCard(Player player, StarterCard starterCard) {
         game.placeStarterCard(player, starterCard);
-        if (player.equals(lastPlayer)) {
-            gameState = GameState.IN_GAME;
-        }
     }
 
     public Player getPlayerFromNickname(String nickname) {
@@ -297,13 +294,12 @@ public class GameController {
             if(game.getCurrentPlayer().getNickname().equals(nickname)){
                 try {
                     game.playCard(game.getCurrentPlayer(), card, coordinates);
-                    // gameOver = endGame(); cos'è gameOver?
+
                     if(isLastTurn() && game.getCurrentPlayer().equals(lastPlayer)){
                         roundsPlayed++;
                         gameState = GameState.END;
-                        // Da capire cosa farsene del winner, se mettere un attributo o se pensa a tutto il server
-                        Player winner = game.winner();
                     }
+
                 } catch (InvalidMoveException e) {
                     throw new InvalidMoveException("Invalid move: " + e.getMessage());
                 }
@@ -322,20 +318,22 @@ public class GameController {
      * @param chosenCard The card chosen by the player.
      */
     public void drawCard(String nickname, PlayableCard chosenCard) throws InvalidNicknameException, InvalidChoiceException, InvalidGameStateException {
-
         if(gameState == GameState.IN_GAME) {
+
             if(game.getCurrentPlayer().getNickname().equals(nickname)){
+
                 game.drawCard(game.getCurrentPlayer(), chosenCard);
                 playerRoundsPlayed.put(game.getCurrentPlayer(), playerRoundsPlayed.get(game.getCurrentPlayer()) + 1);
+
                 if (game.getCurrentPlayer().equals(lastPlayer)) {
                     roundsPlayed++;
-                    if(checkScores()){
+
+                    if(checkScores())
                         gameState = GameState.LAST_ROUND;
-                    }
+
                 }
-                // Going to call changeTurn() in the updateClients() method
-                // changeTurn();
-            }else{
+
+            } else {
                 throw new InvalidNicknameException("Invalid nickname");
             }
         } else {
@@ -439,14 +437,26 @@ public class GameController {
      * This method will be called to switch the turn to the next player.
      */
     public void changeTurn() {
-        if (isGameStarted() || gameState == GameState.INITIALIZATION){
-            game.updateCurrentPlayer();
+        game.updateCurrentPlayer();
+    }
+
+    public Map<String, Integer> getScores() {
+        HashMap<Player, Integer> scores = game.getBoard().getScores();
+        Map<String, Integer> scoresByNickname = new HashMap<>();
+
+        for (Map.Entry<Player, Integer> entry : scores.entrySet()) {
+            Player player = entry.getKey();
+            Integer score = entry.getValue();
+            scoresByNickname.put(player.getNickname(), score);
         }
+
+        // Returns a map of the scores by nickname
+        return scoresByNickname;
     }
 
     public boolean checkScores() {
         for(Player player : game.getPlayers()){
-            if(game.getBoard().getScore(player)>=20){
+            if(game.getBoard().getScore(player)>=2){
                 return true;
             }
         }
@@ -479,10 +489,7 @@ public class GameController {
      * @return True if the game is over, false otherwise.
      */
     public boolean isGameOver() {
-        if(gameState.equals(GameState.END)){
-            return true;
-        }
-        return false;
+        return gameState.equals(GameState.END);
     }
 
     /**
@@ -493,13 +500,10 @@ public class GameController {
     }
 
     /**
-     * Sets the winner of the game.
-     * This method will be called to set the winner of the game.
+     * Retrieves the nickname of the winner.
      */
-    public void setWinner() {
-        if (gameState == GameState.END) {
-            game.winner();
-        }
+    public String findWinner() {
+        return game.winner().getNickname();
     }
 
     /**
