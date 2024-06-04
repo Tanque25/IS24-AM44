@@ -89,7 +89,9 @@ public class GUI extends GameView{
 
     @Override
     public void playersNumberChoice() throws IOException {
-
+        // Questo metodo mostrerà la scena con un checkbox da 2 a 4
+        // Il controller di questa scena si occuperà di tutto il resto, come inviare
+        // il messaggio del client
     }
 
     @Override
