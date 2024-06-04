@@ -155,7 +155,7 @@ public interface CommunicationInterface extends Remote {
 
         Message updateMessage = new Message("UpdatePlayedCard", nickname, playedCard, coordinates);
 
-        sendMessageToAll(nickname, updateMessage);
+        sendMessageToAll( updateMessage);
     }
 
     default void updateClientsDrawnCard(PlayableCard drawnCard) throws RemoteException {
@@ -165,7 +165,7 @@ public interface CommunicationInterface extends Remote {
 
         Message updateMessage = new Message("UpdateDrawnCard", nickname, drawnCard, null);
 
-        sendMessageToAll(nickname, updateMessage);
+        sendMessageToAll( updateMessage);
     }
 
     default void updateClientsDrawnCard(GoldCard drawnCard) throws RemoteException {
@@ -175,7 +175,7 @@ public interface CommunicationInterface extends Remote {
 
         Message updateMessage = new Message("UpdateDrawnCard", nickname, drawnCard, null);
 
-        sendMessageToAll(nickname, updateMessage);
+        sendMessageToAll( updateMessage);
     }
 
 
