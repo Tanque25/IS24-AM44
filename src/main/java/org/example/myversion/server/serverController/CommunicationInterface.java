@@ -379,7 +379,7 @@ public interface CommunicationInterface extends Remote {
         for (String nickname : tcpClients.keySet()) {
             tcpClients.get(nickname).sendMessageToClient(message);
         }
-        for (String nickname : tcpClients.keySet()) {
+        for (String nickname : rmiClients.keySet()) {
             sendMessage(message,rmiClients.get(nickname));
         }
     }

@@ -26,7 +26,7 @@ public class StarterCardSideController extends GUIController {
         this.client = client;
     }
 
-    public void initialize(StarterCard starterCard) throws IOException {
+    public void sideChoice(StarterCard starterCard) throws IOException {
         Platform.runLater(() -> {
             starterSides = new HBox();
             Image imgFront = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + Objects.toString(starterCard.getId()) + ".png").toExternalForm());
@@ -34,20 +34,24 @@ public class StarterCardSideController extends GUIController {
             Image imgBack = new Image(getClass().getResource("org/example/myversion/cards_gold_back" + Objects.toString(starterCard.getId()) + ".png").toExternalForm());
             ImageView imgViewBack = new ImageView(imgBack);
             starterSides.getChildren().addAll(imgViewFront, imgViewBack);
-            Button button0 = new Button("Front side");
+            button0 = new Button("Front side");
             button0. setOnAction(event -> {
                 starterCard.setPlayedBack(false);
+                try{
+                    client.sendMessage(new Message("StarterCard", starterCard));
+                }catch(IOException e){
+                }
                 button1.setDisable(true);
             });
-            Button button1 = new Button("Back side");
+            button1 = new Button("Back side");
             button1.setOnAction(event -> {
                 starterCard.setPlayedBack(true);
+                try{
+                    client.sendMessage(new Message("StarterCard", starterCard));
+                }catch(IOException e){
+                }
                 button0.setDisable(true);
             });
-            try{
-                client.sendMessage(new Message("StarterCard", starterCard));
-            }catch(IOException e){
-            }
         });
     }
 }
