@@ -124,9 +124,9 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
 
                 gameView.initializePlayAreas(message.getStarterCardsMap());
 
-                gameView.showOthersHandsAndPlayAreas();
-                gameView.showMyHand();
-                gameView.showMyPlayArea();
+                gameView.showOthersHandsAndPlayAreas(); // Questi tre metodi verranno compattati in GUI, nel senso
+                gameView.showMyHand();                  // che uno solo farà tutte e tre le cose. Si potrebbe mettere in CLI
+                gameView.showMyPlayArea();              // un metodo che le chiama tutte e 3 per avere interfaccia comune
             }
             case "MyTurn" -> {
                 gameView.showMessage("\nIt's your turn.\n");
