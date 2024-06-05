@@ -173,9 +173,23 @@ public class Player {
         if (hand==null)
             hand=new ArrayList<>();
 
-        playArea[coordinates.getX()][coordinates.getY()] = placedCard;
+        // Retrieve the coordinates
+        int x = coordinates.getX();
+        int y = coordinates.getY();
+
+        playArea[x][y] = placedCard;
         hand.remove(placedCard);
         updateStock(placedCard);
+
+        // Update corner status of adjacent cards
+        if(playArea[x-1][y-1] != null)
+            playArea[x-1][y-1].getCorners().get(CornerPosition.BOTTOM_RIGHT).setCovered(true);
+        if(playArea[x-1][y+1] != null)
+            playArea[x-1][y+1].getCorners().get(CornerPosition.BOTTOM_LEFT).setCovered(true);
+        if(playArea[x+1][y-1] != null)
+            playArea[x+1][y-1].getCorners().get(CornerPosition.UP_RIGHT).setCovered(true);
+        if(playArea[x+1][y+1] != null)
+            playArea[x+1][y+1].getCorners().get(CornerPosition.UP_LEFT).setCovered(true);
     }
 
     public boolean hasEnoughStock(GoldCard playedCard) throws InvalidMoveException {
@@ -237,11 +251,16 @@ public class Player {
 
         // Check if there's a card above, beneath, to the left, or to the right of the specified coordinates
         // If any adjacent position contains a card, return true
-        return !(isCardPresent(new Coordinates(x, y-1)) ||
-                isCardPresent(new Coordinates(x, y)) ||
-                isCardPresent(new Coordinates(x, y + 1)) ||
-                isCardPresent(new Coordinates(x - 1, y)) ||
-                isCardPresent(new Coordinates(x + 1, y)));
+        return !(isCardPresent(new Coordinates(x, y)) ||
+                    isCardPresent(new Coordinates(x, y-1)) ||
+                    isCardPresent(new Coordinates(x, y+1)) ||
+                    isCardPresent(new Coordinates(x-1, y)) ||
+                    isCardPresent(new Coordinates(x+1, y))) &&
+                // Check if the chosen card can be connected to a placed card
+                (isCardPresent(new Coordinates(x-1, y-1)) ||
+                        isCardPresent(new Coordinates(x-1, y+1)) ||
+                        isCardPresent(new Coordinates(x+1, y-1)) ||
+                        isCardPresent(new Coordinates(x+1, y+1)));
     }
 
     /**
@@ -273,10 +292,10 @@ public class Player {
 
         // Check if the corners of the adjacent cards are full
         // Return true if any adjacent corner is full
-        return isCornerFull(playArea[x-1][y-1], CornerPosition.UP_LEFT) ||
+        return isCornerFull(playArea[x+1][y+1], CornerPosition.UP_LEFT) ||
                 isCornerFull(playArea[x+1][y-1], CornerPosition.UP_RIGHT) ||
                 isCornerFull(playArea[x-1][y+1], CornerPosition.BOTTOM_LEFT) ||
-                isCornerFull(playArea[x+1][y+1], CornerPosition.BOTTOM_RIGHT);
+                isCornerFull(playArea[x-1][y-1], CornerPosition.BOTTOM_RIGHT);
     }
 
     /**

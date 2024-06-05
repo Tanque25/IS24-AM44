@@ -1,15 +1,9 @@
 package org.example.myversion.server.serverController;
 
-import org.controlsfx.control.tableview2.filter.filtereditor.SouthFilter;
-import org.example.myversion.client.ClientCommunicationInterface;
-import org.example.myversion.client.view.CardView;
-import org.example.myversion.client.view.HandView;
-import org.example.myversion.client.view.PlayAreaView;
 import org.example.myversion.messages.Message;
 import org.example.myversion.server.model.Coordinates;
 import org.example.myversion.server.model.decks.cards.GoldCard;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
-import org.example.myversion.server.model.decks.cards.ObjectiveCard;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidGameStateException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
@@ -20,10 +14,8 @@ import java.io.*;
 import java.net.Socket;
 import jakarta.json.*;
 
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -159,9 +151,14 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
                         updateClientsPlayedCard(message.getGoldCard(), message.getCoordinates());
                     }
 
-                    sendMessageToClient(new Message("VisibleCards", controller.getVisibleResourceCards(), controller.getRsourceDeckPeek(), controller.getVisibleGoldCards(), controller.getGoldDeckPeek()));
+                    if(controller.isLastRound()) {
+                        updateScores();
+                        changeTurn();
+                    } else {
+                        sendMessageToClient(new Message("VisibleCards", controller.getVisibleResourceCards(), controller.getRsourceDeckPeek(), controller.getVisibleGoldCards(), controller.getGoldDeckPeek()));
+                        sendMessageToClient(new Message("DrawCard"));
+                    }
 
-                    sendMessageToClient(new Message("DrawCard"));
                 } catch (InvalidMoveException e) {
                     System.out.println(e.getMessage());
                     sendMessageToClient(new Message("InvalidMove"));
@@ -182,7 +179,7 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
                             controller.drawCard(client.nickname, chosenCard);
                             updateClientsDrawnCard(chosenCard);
                         } catch (InvalidGameStateException e) {
-                            e.printStackTrace();
+                            System.out.println(e.getMessage());
                         }
                     }
                     case 2, 3 -> {
@@ -191,7 +188,7 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
                             controller.drawCard(client.nickname, chosenCard);
                             updateClientsDrawnCard(chosenCard);
                         } catch (InvalidGameStateException e) {
-                            e.printStackTrace();
+                            System.out.println(e.getMessage());
                         }
                     }
                     case 4 -> {
@@ -200,7 +197,7 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
                             controller.drawCard(client.nickname, chosenCard);
                             updateClientsDrawnCard(chosenCard);
                         } catch (InvalidGameStateException e) {
-                            e.printStackTrace();
+                            System.out.println(e.getMessage());
                         }
                     }
                     case 5 -> {
@@ -209,7 +206,7 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
                             controller.drawCard(client.nickname, chosenCard);
                             updateClientsDrawnCard(chosenCard);
                         } catch (InvalidGameStateException e) {
-                            e.printStackTrace();
+                            System.out.println(e.getMessage());
                         }
                     }
                 }

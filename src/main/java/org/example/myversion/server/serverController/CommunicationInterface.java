@@ -1,13 +1,10 @@
 package org.example.myversion.server.serverController;
 
 import jakarta.json.Json;
-import org.example.myversion.client.Client;
 import org.example.myversion.client.ClientCommunicationInterface;
 import org.example.myversion.client.view.HandView;
 import org.example.myversion.messages.Message;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.StringReader;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -155,7 +152,7 @@ public interface CommunicationInterface extends Remote {
 
         Message updateMessage = new Message("UpdatePlayedCard", nickname, playedCard, coordinates);
 
-        sendMessageToAll(nickname, updateMessage);
+        sendMessageToAll( updateMessage);
     }
 
     default void updateClientsDrawnCard(PlayableCard drawnCard) throws RemoteException {
@@ -165,7 +162,7 @@ public interface CommunicationInterface extends Remote {
 
         Message updateMessage = new Message("UpdateDrawnCard", nickname, drawnCard, null);
 
-        sendMessageToAll(nickname, updateMessage);
+        sendMessageToAll( updateMessage);
     }
 
     default void updateClientsDrawnCard(GoldCard drawnCard) throws RemoteException {
@@ -175,7 +172,7 @@ public interface CommunicationInterface extends Remote {
 
         Message updateMessage = new Message("UpdateDrawnCard", nickname, drawnCard, null);
 
-        sendMessageToAll(nickname, updateMessage);
+        sendMessageToAll( updateMessage);
     }
 
 
@@ -359,8 +356,8 @@ public interface CommunicationInterface extends Remote {
         if(controller.getGameState() == GameState.IN_GAME) {
             startTurn();
         } else if (controller.getGameState() == GameState.LAST_ROUND) {
-            Message lastTurn = new Message("LastTurn");
-            sendMessageToAll(lastTurn);
+            Message lastRound = new Message("LastRound");
+            sendMessageToAll(lastRound);
             startTurn();
         } else if (controller.getGameState() == GameState.END) {
             Message endGame = new Message("EndGame", controller.findWinner());
