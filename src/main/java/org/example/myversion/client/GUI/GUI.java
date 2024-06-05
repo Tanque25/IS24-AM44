@@ -1,13 +1,11 @@
 package org.example.myversion.client.GUI;
 
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.example.myversion.client.Client;
-import org.example.myversion.client.GUI.Controllers.ChooseObjectiveController;
-import org.example.myversion.client.GUI.Controllers.ChosePlayerNumberController;
-import org.example.myversion.client.GUI.Controllers.LoginController;
-import org.example.myversion.client.GUI.Controllers.StarterCardSideController;
+import org.example.myversion.client.GUI.Controllers.*;
 import org.example.myversion.client.view.GameView;
 import org.example.myversion.server.model.Board;
 import org.example.myversion.server.model.Player;
@@ -32,15 +30,18 @@ import static javafx.application.Application.launch;
 public class GUI extends GameView{
 
     private static Client client;
-    public static GameController gameController;
+    public static GamePhaseController gameController;
     private static LoginController loginController;
     private static StarterCardSideController starterCardSideController;
     private static ChooseObjectiveController chooseObjectiveController;
     private static ChosePlayerNumberController chosePlayerNumberController;
 
-    public static Stage stage;
+    private static Stage stage;
+    private static Scene scene;
+    private static Parent root;
 
-    public GUI(){}
+    public GUI(){
+    }
 
     //private static final String GOLD_BACK_PATH = "org/example/myversion/cards_gold_back/";
     //private static final String GOLD_FRONT_PATH = "org/example/myversion/cards_gold_front";
@@ -59,10 +60,6 @@ public class GUI extends GameView{
     public void start(Stage stage) throws IOException {
         this.stage = stage;
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("org/example/myversion/FXML/Login.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 500, 500);
-        stage.setScene(scene);
-        stage.show();
         clientLogin();
     }
 
@@ -81,7 +78,7 @@ public class GUI extends GameView{
 
     @Override
     public void clientLogin() throws IOException {
-        loginController = new LoginController(client);
+        loginController = new LoginController(stage, client, scene);
         loginController.login();
     }
 
@@ -92,7 +89,7 @@ public class GUI extends GameView{
 
     @Override
     public void playersNumberChoice() throws IOException {
-        chosePlayerNumberController = new ChosePlayerNumberController();
+        chosePlayerNumberController = new ChosePlayerNumberController(stage, client, scene);
         chosePlayerNumberController.choseNumberOfPlayer();
     }
 
@@ -103,7 +100,15 @@ public class GUI extends GameView{
 
     @Override
     public void waitForOtherPlayers() {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("org/example/myversion/FXML/WaitForOtherPlayers.fxml"));
+        try{
+            root = fxmlLoader.load();
+        }catch(IOException e){
+        }
 
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
     @Override
@@ -131,7 +136,7 @@ public class GUI extends GameView{
 
     @Override
     public void starterCardSideChoice(StarterCard starterCard) throws IOException {
-        starterCardSideController = new StarterCardSideController(client);
+        starterCardSideController = new StarterCardSideController(stage, client, scene);
         starterCardSideController.sideChoice(starterCard);
     }
 

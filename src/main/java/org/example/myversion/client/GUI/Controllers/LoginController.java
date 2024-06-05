@@ -2,6 +2,9 @@ package org.example.myversion.client.GUI.Controllers;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -20,21 +23,30 @@ public class LoginController extends GUIController {
     @FXML
     private Button connect;
 
-    public LoginController(Client client) {
-        this.client = client;
+    public LoginController(Stage stage, Client client, Scene scene) {
+        super(stage, client, scene);
     }
 
     public void login() throws IOException {
         Platform.runLater(() -> {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("org/example/myversion/FXML/Login.fxml"));
+            try{
+                Parent root = fxmlLoader.load();
+            }catch(IOException e){
+            }
+
             String nickname = username.getText();
-            Button connect = new Button("Connect");
-                connect.setOnAction(event -> {
-                    try {
-                        client.sendMessage(new Message("Login", nickname));
-                    } catch (IOException e) {
-                    }
-                    connect.setDisable(true);
-                });
+            connect.setOnAction(event -> {
+                try {
+                    client.sendMessage(new Message("Login", nickname));
+                } catch (IOException e) {
+                }
+                connect.setDisable(true);
+            });
+
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
         });
     }
 }

@@ -1,10 +1,14 @@
 package org.example.myversion.client.GUI.Controllers;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 import org.example.myversion.client.Client;
 import org.example.myversion.client.GUI.GUIController;
 import org.example.myversion.messages.Message;
@@ -24,23 +28,26 @@ public class ChooseObjectiveController extends GUIController {
 
     private Client client;
 
-    public ChooseObjectiveController(Client client) {
-        this.client = client;
+    public ChooseObjectiveController(Stage stage, Client client, Scene scene) {
+        super(stage, client, scene);
     }
 
     public void initialize(List<ObjectiveCard> objectiveCards) throws IOException {
         Platform.runLater(() -> {
-            objectives = new HBox();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("org/example/myversion/FXML/Login.fxml"));
+            try{
+                Parent root = fxmlLoader.load();
+            }catch(IOException e){
+            }
+
             for(ObjectiveCard card : objectiveCards){
                 Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + card.getId().toString() + ".png").toExternalForm());
                 ImageView imgView = new ImageView(img);
                 objectives.getChildren().add(imgView);
             }
-            Button button0 = new Button("Card 0");
-            Button button1 = new Button("Card 1");
             button0.setOnAction(event -> {
                 try{
-                    client.sendMessage(new Message("ObjectiveCardChoice", objectiveCards.get(1)));
+                    client.sendMessage(new Message("ObjectiveCardChoice", objectiveCards.get(0)));
                 }catch(IOException e){
                 }
                 button0.setDisable(true);
@@ -54,6 +61,10 @@ public class ChooseObjectiveController extends GUIController {
                 button0.setDisable(true);
                 button1.setDisable(true);
             });
+
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
         });
     }
 }
