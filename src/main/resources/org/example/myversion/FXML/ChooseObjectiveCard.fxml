@@ -11,7 +11,7 @@
    <children>
       <ImageView fitHeight="400.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@IdeaProjects/IS24-AM44/target/classes/org/example/myversion/Images/EndGame/sfondo_parquet-1.png" />
+            <Image url="@../Images/EndGame/sfondo_parquet-1.png" />
          </image>
       </ImageView>
       <AnchorPane layoutX="79.0" layoutY="100.0" prefHeight="200.0" prefWidth="200.0">
