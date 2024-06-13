@@ -1,5 +1,6 @@
 package org.example.myversion.client.GUI;
 
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -100,15 +101,16 @@ public class GUI extends GameView{
 
     @Override
     public void waitForOtherPlayers() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("org/example/myversion/FXML/WaitForOtherPlayers.fxml"));
-        try{
-            root = fxmlLoader.load();
-        }catch(IOException e){
-        }
-
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        Platform.runLater(() -> {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("org/example/myversion/FXML/WaitForOtherPlayers.fxml"));
+            try {
+                root = fxmlLoader.load();
+                scene.setRoot(root);
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {
+            }
+        });
     }
 
     @Override
@@ -128,6 +130,8 @@ public class GUI extends GameView{
 
     @Override
     public void secretObjectiveCardChoice(List<ObjectiveCard> objectiveCards) throws IOException {
+        chooseObjectiveController = new ChooseObjectiveController(stage, client, scene);
+        chooseObjectiveController.initialize(objectiveCards);
     }
 
     @Override
