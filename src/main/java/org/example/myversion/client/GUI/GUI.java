@@ -66,7 +66,7 @@ public class GUI extends GameView{
     public void start(Stage stage) throws IOException {
         //this.stage = stage;
         URL fxmlLocation = (new File("src/main/resources/org/example/myversion/FXML/Login.fxml")).toURI().toURL();
-        
+
         Parent root = FXMLLoader.load(fxmlLocation);
         stage.setTitle("Codex Naturalis");
         stage.setScene(new Scene(root));
