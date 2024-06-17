@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import org.example.myversion.client.Client;
@@ -24,7 +25,7 @@ public class ChooseObjectiveController extends GUIController {
     @FXML
     private Button button1;
     @FXML
-    private HBox objectives;
+    private AnchorPane objectives; // Utilizziamo AnchorPane al posto di HBox
 
     private Client client;
 
@@ -32,39 +33,41 @@ public class ChooseObjectiveController extends GUIController {
         super(stage, client, scene);
     }
 
-    public void initialize(List<ObjectiveCard> objectiveCards) throws IOException {
+    public void initialize(List<ObjectiveCard> objectiveCards) {
         Platform.runLater(() -> {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("org/example/myversion/FXML/Login.fxml"));
-            try{
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/myversion/FXML/ChooseObjective.fxml"));
+            try {
                 Parent root = fxmlLoader.load();
-            }catch(IOException e){
+                scene.setRoot(root);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
-            for(ObjectiveCard card : objectiveCards){
+            for (ObjectiveCard card : objectiveCards) {
                 Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + card.getId().toString() + ".png").toExternalForm());
                 ImageView imgView = new ImageView(img);
                 objectives.getChildren().add(imgView);
             }
+
+            // Settiamo l'azione per i pulsanti
             button0.setOnAction(event -> {
-                try{
+                try {
                     client.sendMessage(new Message("ObjectiveCardChoice", objectiveCards.get(0)));
-                }catch(IOException e){
+                    button0.setDisable(true);
+                    button1.setDisable(true);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                button0.setDisable(true);
-                button1.setDisable(true);
             });
             button1.setOnAction(event -> {
-                try{
+                try {
                     client.sendMessage(new Message("ObjectiveCardChoice", objectiveCards.get(1)));
-                }catch (IOException e){
+                    button0.setDisable(true);
+                    button1.setDisable(true);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                button0.setDisable(true);
-                button1.setDisable(true);
             });
-
-            scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
         });
     }
 }

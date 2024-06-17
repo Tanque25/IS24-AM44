@@ -11,7 +11,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.myversion.client.Client;
-import org.example.myversion.client.GUI.GUI;
 import org.example.myversion.client.GUI.GUIController;
 import org.example.myversion.messages.Message;
 
@@ -23,8 +22,6 @@ import java.util.Objects;
 public class LoginController extends GUIController {
     @FXML
     private TextField username;
-
-    private Client client;
     @FXML
     private Button connect;
 
@@ -32,26 +29,29 @@ public class LoginController extends GUIController {
         super(stage, client, scene);
     }
 
-    public void login() throws IOException {
+    @FXML
+    private void handleLogin() {
+        String nickname = username.getText();
+        try {
+            client.sendMessage(new Message("Login", nickname));
+            connect.setDisable(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void login() {
         Platform.runLater(() -> {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("org/example/myversion/FXML/Login.fxml"));
-            try{
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/myversion/FXML/Login.fxml"));
+            try {
                 Parent root = fxmlLoader.load();
-            }catch(IOException e){
+                scene.setRoot(root);
+                connect.setOnAction(event -> handleLogin());
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            String nickname = username.getText();
-            connect.setOnAction(event -> {
-                try {
-                    client.sendMessage(new Message("Login", nickname));
-                } catch (IOException e) {
-                }
-                connect.setDisable(true);
-            });
-
-            scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
         });
     }
 

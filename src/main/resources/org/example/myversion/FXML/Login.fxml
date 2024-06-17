@@ -12,6 +12,7 @@
 <?import javafx.scene.text.Font?>
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="445.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="445.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.myversion.client.GUI.Controllers.LoginController">
    <children>
       <ImageView fitHeight="460.0" fitWidth="647.0" layoutX="-9.0" layoutY="-7.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -33,16 +34,12 @@
                   <Font name="System Bold" size="20.0" />
                </font>
             </Label>
-            <TextField />
+            <TextField fx:id="username" />
          </children>
       </HBox>
       <HBox layoutX="264.0" layoutY="304.0" prefHeight="24.0" prefWidth="53.0">
          <children>
-            <Button mnemonicParsing="false" text="Login!">
-               <effect>
-                  <Blend mode="RED" />
-               </effect>
-            </Button>
+            <Button fx:id="connect" mnemonicParsing="false" text="Login!" />
          </children>
       </HBox>
    </children>
