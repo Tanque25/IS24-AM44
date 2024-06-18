@@ -221,37 +221,6 @@ public class Game {
     }
 
     /**
-     * Retrieves the list of cards that the player can choose from for drawing.
-     * The list consists of the four visible cards and the top cards from both the resource deck and the gold deck.
-     *
-     * @return A list containing the available draw options.
-     * @throws EmptyDeckException If either the resource deck or the gold deck is empty.
-     */
-    public List<PlayableCard> getDrawOptions() throws EmptyDeckException {
-        List<PlayableCard> drawOptions = new ArrayList<>();
-
-        // Add the four visible cards
-        drawOptions.addAll(visibleResourceCards);
-        drawOptions.addAll(visibleGoldCards);
-
-        // Add the card on the top of the resourceDeck
-        if (!resourceDeck.getResourceDeck().empty()) {
-            drawOptions.add(resourceDeck.getResourceDeck().peek());
-        } else {
-            throw new EmptyDeckException("The resource deck is empty.");
-        }
-
-        // Add the card on the top of the resourceDeck
-        if (!goldDeck.getGoldDeck().empty()) {
-            drawOptions.add(goldDeck.getGoldDeck().peek());
-        } else {
-            throw new EmptyDeckException("The gold deck is empty.");
-        }
-
-        return drawOptions;
-    }
-
-    /**
      * Draws a card for the player and manages card replacement for visible and top deck cards.
      *
      * @param player The player who draws the card.
@@ -342,7 +311,7 @@ public class Game {
      * @return The player with the highest score. Returns null if there are no players or if the scores map is empty.
      */
     public Player winner() {
-        return board.findWinner();
+        return board.findWinner(commonObjectives);
     }
 
     /**

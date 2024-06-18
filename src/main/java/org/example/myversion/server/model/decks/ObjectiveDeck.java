@@ -55,12 +55,14 @@ public class ObjectiveDeck {
 
         addPatternObjectiveCard(3, new Resource[][]{
                 {Resource.FUNGI_KINGDOM, null, null},
+                {null, null, null},
                 {Resource.FUNGI_KINGDOM, null, null},
                 { null, Resource.PLANT_KINGDOM, null}
         }, 91); // 91
 
         addPatternObjectiveCard(3, new Resource[][]{
                 {null, Resource.PLANT_KINGDOM, null},
+                {null, null, null},
                 {null, Resource.PLANT_KINGDOM, null},
                 {Resource.INSECT_KINGDOM, null, null}
         }, 92); // 92
@@ -68,12 +70,14 @@ public class ObjectiveDeck {
         addPatternObjectiveCard(3, new Resource[][]{
                 { null, Resource.FUNGI_KINGDOM, null},
                 {Resource.ANIMAL_KINGDOM, null, null},
+                {null, null, null},
                 {Resource.ANIMAL_KINGDOM, null, null}
         }, 93); // 93
 
         addPatternObjectiveCard(3, new Resource[][]{
                 {Resource.ANIMAL_KINGDOM, null, null},
                 {null, Resource.INSECT_KINGDOM, null},
+                {null, null, null},
                 {null, Resource.INSECT_KINGDOM, null}
         }, 94); // 94
 

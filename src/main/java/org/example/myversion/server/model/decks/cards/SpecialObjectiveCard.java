@@ -3,22 +3,29 @@ package org.example.myversion.server.model.decks.cards;
 import org.example.myversion.server.model.enumerations.CornerContent;
 import org.example.myversion.server.model.enumerations.Resource;
 import org.example.myversion.server.model.enumerations.SpecialObject;
+
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.lang.Math;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static org.example.myversion.server.model.enumerations.SpecialObject.*;
 
 /**
  * Represents a special object objective card.
  * It specifies which and how many special objects the player needs to have in his play area.
  */
-public class SpecialObjectiveCard extends ObjectiveCard{
+public class SpecialObjectiveCard extends ObjectiveCard {
     private final SpecialObject[] objective;
 
     /**
      * Constructs a SpecialObjectiveCard with specified points and objective.
      *
      * @param cardPoints specifies the points awarded to the player upon accomplishing its objective.
-     * @param objective specifies which and how many special objects the player needs to have in his play area.
+     * @param objective  specifies which and how many special objects the player needs to have in his play area.
      */
     public SpecialObjectiveCard(int cardPoints, SpecialObject[] objective, int id) {
         super(cardPoints, id);
@@ -37,47 +44,40 @@ public class SpecialObjectiveCard extends ObjectiveCard{
 
     //Restituisce objective della carta con override
     @Override
-    public CornerContent[] getCardKey(){
+    public CornerContent[] getCardKey() {
         return objective;//devo fare un altro tipo che restituisca tutto
     }
 
     @Override
-    public int findObjectiveCard(Map<CornerContent, Integer> stock, Card[][] playArea,ObjectiveCard commonObjective) {
+    public int calculateObjectiveCardPoints(Map<CornerContent, Integer> stock, Card[][] playArea, ObjectiveCard objective) {
+        // Create a map with the count of each special object in the objective card array
+        Map<CornerContent, Integer> specialObjectCounts = Arrays.stream(objective.getCardKey())
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.summingInt(e -> 1)));
 
-        //count è punteggio assegnato che ritorni
-        int count;
-        int countINKWELL=0,countMANU=0;
-        // special Object che danno 2 punti
-        if(commonObjective.getCardKey().length>=2){
-            if (commonObjective.getCardKey()[0]==commonObjective.getCardKey()[1]){
-                //se ci sono piu di 2 MANUSCRIPT/QUILL/INKWELL
-                count = stock.getOrDefault(commonObjective.getCardKey()[0], 0);
-                if (count >= 2) {
-                    return count;
-                }
+        // Retrieve the points given each time the objective is achieved
+        int objectiveCardPoints = objective.getCardPoints();
 
-            }
-            // lo special Object che da 3 punti
-            else if(commonObjective.getCardKey()[0]==QUILL && commonObjective.getCardKey()[1]==INKWELL && commonObjective.getCardKey()[2]==MANUSCRIPT){
+        // Initialize the minimum count with a large number
+        int minCount = Integer.MAX_VALUE;
 
-                count=stock.getOrDefault(commonObjective.getCardKey()[0], 0);
-                //se c'è una QUILL nello stock
-                if (count>=1){
-                    countINKWELL=stock.getOrDefault(commonObjective.getCardKey()[1], 0);
-                    //se c'è una INKWELL nello stock
-                    if (countINKWELL>=1){
-                        countMANU=stock.getOrDefault(commonObjective.getCardKey()[2], 0);
-                        //se c'è un MANUSCRIPT nello stock
-                        if (countMANU>=1){
-                            //se ci sono piu di uno di tutti a questo punto ritorno il minimo
-                            int min=Math.min(count, Math.min(countINKWELL, countMANU));
-                            return (min*3);
-                        }
-                    }
-                }
+        // Iterate over each entry in the special object counts map
+        for (Map.Entry<CornerContent, Integer> entry : specialObjectCounts.entrySet()) {
+            CornerContent specialObject = entry.getKey();
+            int requiredCount = entry.getValue();
+
+            // Get the count of the current special object in the stock
+            int stockCount = stock.getOrDefault(specialObject, 0);
+
+            // Calculate how many times we can fulfill the requirement for the current special object
+            int objectCount = stockCount / requiredCount;
+
+            // Update the minimum count
+            if (objectCount < minCount) {
+                minCount = objectCount;
             }
         }
-        //altrimenti non ci sono Special
-        return 0;
+
+        // Calculate the total points by multiplying the minimum count by the objective card points
+        return minCount * objectiveCardPoints;
     }
 }

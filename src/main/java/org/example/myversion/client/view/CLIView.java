@@ -452,8 +452,6 @@ public class CLIView extends GameView {
 
     @Override
     public void showScores(Map<String, Integer> scores) {
-        showMessage("\nHere are the current scores:\n");
-
         for(String nickname : scores.keySet()) {
             System.out.println(nickname + ": " + scores.get(nickname));
         }

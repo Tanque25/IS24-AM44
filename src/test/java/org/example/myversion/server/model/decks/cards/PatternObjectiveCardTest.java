@@ -1,6 +1,5 @@
 package org.example.myversion.server.model.decks.cards;
 
-import org.example.myversion.server.model.Player;
 import org.example.myversion.server.model.enumerations.CornerPosition;
 import org.example.myversion.server.model.enumerations.CornerVisibility;
 import org.example.myversion.server.model.enumerations.Resource;
@@ -21,19 +20,23 @@ class PatternObjectiveCardTest {
     private PatternObjectiveCard OC_088;
     private PatternObjectiveCard OC_091;
     private PatternObjectiveCard OC_092;
-
     private PatternObjectiveCard OC_093;
     private PatternObjectiveCard OC_094;
 
     private Card [][] playArea1;
-
     private Card [][] playArea2;
     private Card [][] playArea3;
-
     private Card [][] playArea4;
+    private Card [][] playArea5;
+    private Card [][] playArea6;
+
     private PlayableCard RC_001;
     private PlayableCard RC_002;
     private PlayableCard RC_003;
+    private PlayableCard RC_021;
+    private PlayableCard RC_022;
+    private PlayableCard RC_031;
+    private PlayableCard RC_032;
     private PlayableCard GC_051;
 
     /**
@@ -56,36 +59,39 @@ class PatternObjectiveCardTest {
 
         OC_091 = new PatternObjectiveCard(3, new Resource[][]{
                 {null, Resource.FUNGI_KINGDOM, null},
-                {null,null,null},
+                {null, null, null},
                 {null, Resource.FUNGI_KINGDOM, null},
-                { null, null, Resource.PLANT_KINGDOM}
+                {null, null, Resource.PLANT_KINGDOM}
         }, 91);
 
         OC_092 = new PatternObjectiveCard(3, new Resource[][]{
                 {null, Resource.PLANT_KINGDOM, null},
+                {null, null, null},
                 {null, Resource.PLANT_KINGDOM, null},
                 {Resource.INSECT_KINGDOM, null, null}
         }, 92);
 
         OC_093 = new PatternObjectiveCard(3, new Resource[][]{
-                { null, Resource.FUNGI_KINGDOM, null},
+                {null, Resource.FUNGI_KINGDOM, null},
                 {Resource.ANIMAL_KINGDOM, null, null},
+                {null, null, null},
                 {Resource.ANIMAL_KINGDOM, null, null}
         }, 93);
 
         OC_094 = new PatternObjectiveCard(3, new Resource[][]{
                 {Resource.ANIMAL_KINGDOM, null, null},
                 {null, Resource.INSECT_KINGDOM, null},
-                {null, Resource.ANIMAL_KINGDOM, null}
+                {null, null, null},
+                {null, Resource.INSECT_KINGDOM, null}
         }, 94);
 
         RC_001 = new PlayableCard(
                 Resource.FUNGI_KINGDOM,
                 Map.of(
-                        CornerPosition.UP_LEFT,new Corner(Resource.FUNGI_KINGDOM),
-                        CornerPosition.UP_RIGHT,new Corner(CornerVisibility.EMPTY),
-                        CornerPosition.BOTTOM_LEFT,new Corner(Resource.FUNGI_KINGDOM),
-                        CornerPosition.BOTTOM_RIGHT,new Corner(CornerVisibility.EMPTY)
+                        CornerPosition.UP_LEFT, new Corner(Resource.FUNGI_KINGDOM),
+                        CornerPosition.UP_RIGHT, new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.BOTTOM_LEFT, new Corner(Resource.FUNGI_KINGDOM),
+                        CornerPosition.BOTTOM_RIGHT, new Corner(CornerVisibility.EMPTY)
                 ),
                 0, 001
         );
@@ -93,10 +99,10 @@ class PatternObjectiveCardTest {
         RC_002 = new PlayableCard(
                 Resource.FUNGI_KINGDOM,
                 Map.of(
-                        CornerPosition.UP_LEFT,new Corner(Resource.FUNGI_KINGDOM),
-                        CornerPosition.UP_RIGHT,new Corner(Resource.FUNGI_KINGDOM),
-                        CornerPosition.BOTTOM_LEFT,new Corner(CornerVisibility.EMPTY),
-                        CornerPosition.BOTTOM_RIGHT,new Corner(CornerVisibility.EMPTY)
+                        CornerPosition.UP_LEFT, new Corner(Resource.FUNGI_KINGDOM),
+                        CornerPosition.UP_RIGHT, new Corner(Resource.FUNGI_KINGDOM),
+                        CornerPosition.BOTTOM_LEFT, new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.BOTTOM_RIGHT, new Corner(CornerVisibility.EMPTY)
                 ),
                 0, 002
         );
@@ -104,12 +110,56 @@ class PatternObjectiveCardTest {
         RC_003 = new PlayableCard(
                 Resource.FUNGI_KINGDOM,
                 Map.of(
-                        CornerPosition.UP_LEFT,new Corner(CornerVisibility.EMPTY),
-                        CornerPosition.UP_RIGHT,new Corner(CornerVisibility.FULL),
-                        CornerPosition.BOTTOM_LEFT,new Corner(Resource.FUNGI_KINGDOM),
-                        CornerPosition.BOTTOM_RIGHT,new Corner(Resource.FUNGI_KINGDOM)
+                        CornerPosition.UP_LEFT, new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.UP_RIGHT, new Corner(CornerVisibility.FULL),
+                        CornerPosition.BOTTOM_LEFT, new Corner(Resource.FUNGI_KINGDOM),
+                        CornerPosition.BOTTOM_RIGHT, new Corner(Resource.FUNGI_KINGDOM)
                 ),
                 0, 003
+        );
+
+        RC_021 = new PlayableCard(
+                Resource.ANIMAL_KINGDOM,
+                Map.of(
+                        CornerPosition.UP_LEFT, new Corner(Resource.ANIMAL_KINGDOM),
+                        CornerPosition.UP_RIGHT, new Corner(Resource.ANIMAL_KINGDOM),
+                        CornerPosition.BOTTOM_LEFT, new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.BOTTOM_RIGHT, new Corner(CornerVisibility.FULL)
+                ),
+                0, 021
+        );
+
+        RC_022 = new PlayableCard(
+                Resource.ANIMAL_KINGDOM,
+                Map.of(
+                        CornerPosition.UP_LEFT, new Corner(CornerVisibility.FULL),
+                        CornerPosition.UP_RIGHT, new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.BOTTOM_LEFT, new Corner(Resource.ANIMAL_KINGDOM),
+                        CornerPosition.BOTTOM_RIGHT, new Corner(Resource.ANIMAL_KINGDOM)
+                ),
+                0, 022
+        );
+
+        RC_031 = new PlayableCard(
+                Resource.INSECT_KINGDOM,
+                Map.of(
+                        CornerPosition.UP_LEFT, new Corner(Resource.INSECT_KINGDOM),
+                        CornerPosition.UP_RIGHT, new Corner(Resource.INSECT_KINGDOM),
+                        CornerPosition.BOTTOM_LEFT, new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.BOTTOM_RIGHT, new Corner(CornerVisibility.FULL)
+                ),
+                0, 031
+        );
+
+        RC_032 = new PlayableCard(
+                Resource.INSECT_KINGDOM,
+                Map.of(
+                        CornerPosition.UP_LEFT, new Corner(CornerVisibility.FULL),
+                        CornerPosition.UP_RIGHT, new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.BOTTOM_LEFT, new Corner(Resource.INSECT_KINGDOM),
+                        CornerPosition.BOTTOM_RIGHT, new Corner(Resource.INSECT_KINGDOM)
+                ),
+                0, 032
         );
 
         GC_051 = new GoldCard(Resource.PLANT_KINGDOM,
@@ -142,15 +192,36 @@ class PatternObjectiveCardTest {
         };
 
         playArea4 = new Card[][]{
-                {null, null, null,null},
-                {null, RC_002, null,GC_051},
-                {null, null, RC_001,null},
+                {null, null, null, null},
+                {null, RC_002, null, GC_051},
+                {null, null, RC_001, null},
                 {null, RC_002, null, GC_051},
                 {null, null, GC_051, null},
-                {null, null, null,null},
+                {null, null, null, null},
         };
 
+        playArea5 = new Card[][]{
+                {RC_001, null, RC_002, null, RC_003, null, RC_001},
+                {null, RC_003, null, RC_001, null, GC_051, null},
+                {RC_002, null, GC_051, null, RC_001, null, RC_002},
+                {null, RC_001, null, RC_001, null, GC_051, null},
+                {RC_003, null, RC_001, null, RC_002, null, RC_003},
+                {null, RC_002, null, GC_051, null, RC_001, null},
+                {RC_001, null, RC_002, null, RC_003, null, GC_051}
+        };
 
+        playArea6 = new Card[][]{
+                {null, null, RC_001, null},
+                {null, RC_021, null, null},
+                {RC_002, null, RC_031, null},
+                {null, RC_002, null, null},
+                {null, null, RC_032, null},
+                {null, null, RC_001, null},
+                {null, RC_021, null, null},
+                {RC_002, null, RC_031, null},
+                {null, RC_002, null, null},
+                {null, null, RC_032, null}
+        };
     }
 
     /**
@@ -175,24 +246,24 @@ class PatternObjectiveCardTest {
     }
 
     @Test
-    void findObjectiveCard1() {
-        int point = OC_087.findObjectiveCard(null, playArea1, OC_087);
+    void calculateObjectiveCardPoints1() {
+        int point = OC_087.calculateObjectiveCardPoints(null, playArea1, OC_087);
 
         assertEquals(2, point);
 
     }
 
     @Test
-    void findObjectiveCard2() {
-        int point = OC_087.findObjectiveCard(null, playArea2, OC_087);
+    void calculateObjectiveCardPoints2() {
+        int point = OC_087.calculateObjectiveCardPoints(null, playArea2, OC_087);
 
         assertEquals(0, point);
 
     }
 
     @Test
-    void findObjectiveCard3() {
-        int point = OC_091.findObjectiveCard(null, playArea3, OC_091);
+    void calculateObjectiveCardPoints3() {
+        int point = OC_091.calculateObjectiveCardPoints(null, playArea3, OC_091);
 
         assertEquals(3, point);
 
@@ -200,11 +271,24 @@ class PatternObjectiveCardTest {
 
     //test in cui non solo quelle
     @Test
-    void findObjectiveCard4() {
-        int point = OC_091.findObjectiveCard(null, playArea4, OC_091);
+    void calculateObjectiveCardPoints4() {
+        int point = OC_091.calculateObjectiveCardPoints(null, playArea4, OC_091);
 
         assertEquals(3, point);
+    }
 
+    @Test
+    void calculateObjectiveCardPoints5() {
+        int point = OC_087.calculateObjectiveCardPoints(null, playArea5, OC_087);
+
+        assertEquals(6, point);
+    }
+
+    @Test
+    void calculateObjectiveCardPoints6() {
+        int point = OC_094.calculateObjectiveCardPoints(null, playArea6, OC_094);
+
+        assertEquals(6, point);
     }
 
 }

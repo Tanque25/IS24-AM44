@@ -45,7 +45,8 @@ public class TCPServer implements ServerInterface, CommunicationInterface {
                         executor.submit(handleClientSocket);
                         clients.add(handleClientSocket);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        // The server socket has been closed, this thread can be interrupted
+                        break;
                     }
                 }
             });
@@ -81,8 +82,17 @@ public class TCPServer implements ServerInterface, CommunicationInterface {
 
             // Ensure the thread is interrupted if blocked on accept()
             acceptThread.interrupt();
+
+            // Stop all client handlers
+            for (HandleClientSocket client : clients) {
+                client.stop();
+            }
+
+            // Shutdown the executor service
+            executor.shutdownNow();
+            System.out.println("TCP server stopped.");
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Socket already closed: " + e.getMessage());
         }
     }
 }

@@ -360,6 +360,8 @@ public interface CommunicationInterface extends Remote {
             sendMessageToAll(lastRound);
             startTurn();
         } else if (controller.getGameState() == GameState.END) {
+            Message finalScores = new Message("FinalScores", controller.getFinalScores());
+            sendMessageToAll(finalScores);
             Message endGame = new Message("EndGame", controller.findWinner());
             sendMessageToAll(endGame);
         }
