@@ -173,10 +173,15 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 gameView.showUpdatedHand(nickname);
             }
             case "Scores" -> {
+                gameView.showMessage("\nCurrent scores:\n");
                 gameView.showScores(message.getScores());
             }
             case "LastRound" -> {
                 gameView.showMessage("\nLast round\n");
+            }
+            case "FinalScores" -> {
+                gameView.showMessage("\nFinal scores:\n");
+                gameView.showScores(message.getScores());
             }
             case "EndGame" -> {
                 gameView.showEndGame(message.getArgument());

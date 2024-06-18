@@ -2,21 +2,21 @@ package org.example.myversion.server.model.decks.cards;
 
 import org.example.myversion.server.model.enumerations.CornerContent;
 import org.example.myversion.server.model.enumerations.Resource;
-import org.example.myversion.server.model.enumerations.SpecialObject;
 
 import java.util.Map;
+
 /**
  * Represents a pattern objective card.
  * It specifies the pattern that the player has to recreate in his play area to get the points.
  */
-public class PatternObjectiveCard extends ObjectiveCard{
+public class PatternObjectiveCard extends ObjectiveCard {
     private final Resource[][] objectives;
 
     /**
      * Constructs a PatternObjectiveCard with specified points and objective.
      *
      * @param cardPoints specifies the points awarded to the player upon accomplishing its objective.
-     * @param objective specifies the pattern that the player has to recreate in his play area.
+     * @param objective  specifies the pattern that the player has to recreate in his play area.
      */
     public PatternObjectiveCard(int cardPoints, Resource[][] objective, int id) {
         super(cardPoints, id);
@@ -32,62 +32,66 @@ public class PatternObjectiveCard extends ObjectiveCard{
         return objectives;
     }
 
-    //solo di prova
+    /**
+     * Retrieves the key resources of the card.
+     *
+     * @return An array of CornerContent representing the key resources.
+     */
     @Override
-    public CornerContent[] getCardKey(){
-        return objectives[0];//devo fare un altro tipo che restituisca
+    public CornerContent[] getCardKey() {
+        return objectives[0];
     }
 
     /**
-     * Retrieves the number of point
+     * Calculates the number of points based on how many times the pattern in the objective card is matched in the play area.
      *
-     * @param stock is the map that count the Resource or SpecialObject in the play area
-     * @param playArea is the matrix of card of the player
+     * @param stock     is the map that counts the Resource or SpecialObject in the play area.
+     * @param playArea  is the matrix of cards of the player.
      * @param objective specifies the pattern that the player has to recreate in his play area.
+     * @return The total points awarded based on the number of times the pattern is matched.
      */
     @Override
-    public int findObjectiveCard(Map<CornerContent, Integer> stock, Card[][] playArea,ObjectiveCard objective) {
+    public int calculateObjectiveCardPoints(Map<CornerContent, Integer> stock, Card[][] playArea, ObjectiveCard objective) {
+        PatternObjectiveCard objectiveCard = (PatternObjectiveCard) objective;
 
-        int count=0;//contatore di volte in cui trovi la sotto matrice nella matrice
-        int rows = playArea.length;
-        int cols = playArea[0].length;
-        int subRows = objectives.length;
-        int subCols = objectives.length;
+        // Retrieve the 3x3 resource pattern from the objective
+        Resource[][] pattern = objectiveCard.getObjective();
+        int patternRows = pattern.length;
+        int patternCols = pattern[0].length;
 
+        // Retrieve the points given each time the objective is achieved
+        int objectiveCardPoints = objectiveCard.getCardPoints();
 
-        for (int i = 0; i <= rows - subRows; i++) {
-            for (int j = 0; j <= cols - subCols; j++) {
-                //per ogni elemento della matrice:
-                System.out.println("riga: "+i);
-                System.out.println("colonna: "+j);
-                if (isSubMatrix(playArea, objectives, i, j)) {
-                    //contatore aumenta ogni volta che trova la sotto-matrice nella play area
-                    count++;
+        int matches = 0;
+
+        // Iterate through the playArea
+        for (int i = 0; i <= playArea.length - patternRows; i++) {
+            for (int j = 0; j <= playArea[i].length - patternCols; j++) {
+                if (matchesPattern(playArea, pattern, i, j)) {
+                    matches++;
                 }
             }
         }
 
-        // nel caso sia una PatternObjectiveCard da 2 punti (quelle in diagonale):
-        if(objectives[0][2]!=null && objectives[1][1]!=null && objectives[2][0]!=null){
-            return count*2;
-        }
-        //altrimenti in tutti gli altri casi restituisco count*3
-        return count*3;//tanto nel caso in cui sia 0 nessuno trovato e quindi 0*3 =0
+        // Calculate the total points by multiplying the matches count by the objective card points
+        return matches * objectiveCardPoints;
     }
 
-    //metodo privato che controlla se è sotto matrice, ritorna un booleano: si o no
-    private static boolean isSubMatrix(Card[][] playArea, Resource[][] subMatrix, int row, int col) {
-        //scannerizza tutte le posizioni
-        for (int i = 0; i < subMatrix.length; i++) {
-            System.out.println("è entrata-riga: "+i);
-            for (int j = 0; j < subMatrix[0].length; j++) {
-                //se la casella della play area è diversa da null allora:
-                System.out.println("colonna: "+j);
-                if (playArea[row + i][col + j]!=null && subMatrix[i][j]!=null) {
-                    System.out.println("colonna non è null: ");
-                    //se la submatrice
-                    if (playArea[row + i][col + j].getPlayableResource() != subMatrix[i][j]) {
-                        System.out.println("è diversa");
+    /**
+     * Checks if the pattern matches the submatrix in the play area starting from the specified coordinates.
+     *
+     * @param playArea the player's play area matrix.
+     * @param pattern  the 3x3 resource pattern to match.
+     * @param startX   the starting X coordinate in the play area.
+     * @param startY   the starting Y coordinate in the play area.
+     * @return true if the pattern matches the submatrix, false otherwise.
+     */
+    private boolean matchesPattern(Card[][] playArea, Resource[][] pattern, int startX, int startY) {
+        for (int i = 0; i < pattern.length; i++) {
+            for (int j = 0; j < pattern[i].length; j++) {
+                if (pattern[i][j] != null) {
+                    Card card = playArea[startX + i][startY + j];
+                    if (card == null || !pattern[i][j].equals(card.getPlayableResource())) {
                         return false;
                     }
                 }

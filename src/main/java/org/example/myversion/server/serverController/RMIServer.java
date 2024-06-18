@@ -1,5 +1,6 @@
 package org.example.myversion.server.serverController;
 
+import java.rmi.NotBoundException;
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
@@ -42,7 +43,6 @@ public class RMIServer implements ServerInterface, CommunicationInterface {
             System.out.println("RMI Server started on port " + RMI_PORT + ".");
         } catch (RemoteException e) {
             System.err.println("Another server is already running. Closing this instance...");
-            e.printStackTrace();
             System.exit(0);
         }
     }
@@ -53,9 +53,13 @@ public class RMIServer implements ServerInterface, CommunicationInterface {
     @Override
     public void stop() {
         try {
-            // Remove the binding of the stub from the RMI registry
             if (registry != null) {
-                registry.unbind("MyRemoteObject");
+                // Check if the remote object is bound before unbinding
+                try {
+                    registry.unbind("CommunicationInterface");
+                } catch (NotBoundException e) {
+                    System.out.println("Remote object not bound: " + e.getMessage());
+                }
                 UnicastRemoteObject.unexportObject(serverInterface, true);
             }
             System.out.println("RMI Server stopped.");

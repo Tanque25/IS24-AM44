@@ -12,6 +12,7 @@ import org.example.myversion.server.Server;
 
 import java.io.*;
 import java.net.Socket;
+
 import jakarta.json.*;
 
 import java.rmi.RemoteException;
@@ -23,15 +24,11 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
 
     private final Socket clientSocket;
     private GameController controller;
-
     public Thread listenThread;
-
     public final BufferedReader reader;
     public BufferedWriter writer;
-
-    private Server server;
-
     private String nickname;
+
 
     public HandleClientSocket(Socket clientSocket, GameController controller) {
         this.clientSocket = clientSocket;
@@ -59,21 +56,59 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
 
                         Message message = new Message(jsonObject);
 
-                        receiveMessageTCP(message,this);
+                        receiveMessageTCP(message, this);
                     }
                 } catch (IOException | IllegalAccessException | InvalidNicknameException | InvalidMoveException |
-                         InvalidChoiceException  e) {
+                         InvalidChoiceException e) {
                     System.err.println("Error while reading from client. IO");
                     break;
                 }
-
             }
         });
-
     }
 
     public void run() {
         listenThread.start();
+    }
+
+    /**
+     * Stops the client handler by closing the socket and associated streams.
+     */
+    public void stop() {
+        try {
+            // Close the client socket
+            if (clientSocket != null && !clientSocket.isClosed()) {
+                clientSocket.close();
+            }
+
+            // Close the input and output streams
+            if (reader != null) {
+                reader.close();
+            }
+            if (writer != null) {
+                writer.close();
+            }
+
+            // Interrupt the listening thread if it's still running
+            if (listenThread != null && listenThread.isAlive()) {
+                listenThread.interrupt();
+            }
+
+            System.out.println("Stopped handling client: " + nickname);
+        } catch (IOException e) {
+            System.err.println("Error stopping client handler: " + e.getMessage());
+        }
+    }
+
+    public void sendMessageToClient(Message message) {
+        try {
+            System.out.println("Sending " + message.getMessageCode() + " " + nickname);
+            String jsonString = message.getJson().toString() + "\n";
+            writer.write(jsonString);
+            writer.flush();
+        } catch (IOException e) {
+            System.err.println("Error sending message to client: " + e.getMessage());
+        }
     }
 
     /**
@@ -89,7 +124,7 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
     public void receiveMessageTCP(Message message, HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException {
         String messageCode = message.getMessageCode();
 
-        if(!messageCode.equals("Ping"))
+        if (!messageCode.equals("Ping"))
             System.out.println("Received TCP message: with messageCode " + messageCode);
 
         switch (messageCode) {
@@ -135,7 +170,7 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
                 controller.updateReadyPlayersNumber();
 
                 // When all the players are ready, the servers sends every player the other players' hands and play areas and starts the turns cycle
-                if(controller.getReadyPlayersNumber() == controller.getPlayersNumber()){
+                if (controller.getReadyPlayersNumber() == controller.getPlayersNumber()) {
                     sendStartCondition();
                 }
             }
@@ -151,7 +186,7 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
                         updateClientsPlayedCard(message.getGoldCard(), message.getCoordinates());
                     }
 
-                    if(controller.isLastRound()) {
+                    if (controller.isLastRound()) {
                         updateScores();
                         changeTurn();
                     } else {
@@ -184,7 +219,7 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
                     }
                     case 2, 3 -> {
                         try {
-                            GoldCard chosenCard = controller.getVisibleGoldCards().get(cardToDrawChoice-2);
+                            GoldCard chosenCard = controller.getVisibleGoldCards().get(cardToDrawChoice - 2);
                             controller.drawCard(client.nickname, chosenCard);
                             updateClientsDrawnCard(chosenCard);
                         } catch (InvalidGameStateException e) {
@@ -221,21 +256,10 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
         }
     }
 
-    public void sendMessageToClient(Message message) {
-        try {
-            System.out.println("Sending " + message.getMessageCode() + " " + nickname);
-            String jsonString = message.getJson().toString() + "\n";
-            writer.write(jsonString);
-            writer.flush();
-        } catch (IOException e) {
-            System.err.println("Error sending message to client: " + e.getMessage());
-        }
-    }
-
     public void checkNickname(HandleClientSocket client, String nickname, int checkNicknameStatus) throws RemoteException {
         switch (checkNicknameStatus) {
             case 1 -> {
-                if(controller.getGameState().equals(GameState.IN_GAME)) {
+                if (controller.getGameState().equals(GameState.IN_GAME)) {
                     client.sendMessageToClient(new Message("GameAlreadyStarted"));
                 } else {
                     client.sendMessageToClient(new Message("Nickname", nickname));

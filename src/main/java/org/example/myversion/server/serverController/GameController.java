@@ -16,7 +16,6 @@ import java.util.*;
  * Manages the game dynamics including the lobby, player interactions, and connections.
  */
 public class GameController {
-    private Server server;
     public static Game game;
     public List<String> disconnectedPlayers;
     public HashMap<String, Integer> pongLost;
@@ -27,15 +26,8 @@ public class GameController {
     public int roundsPlayed;
     public int playersNumber;
     private static int readyPlayersNumber = 0;
-    private boolean isGameLoaded;
     private Player lastPlayer;
     private HashMap <Player, Integer> playerRoundsPlayed;
-
-    //private final List<Thread> checkThreads;
-    //public static final String BACKUP_FILE = "backUp.json";
-    //private final List<String> players;
-    //public HashMap<String, Integer> winners;
-    //public HashMap<String, Integer> losers;
 
     public GameController() {
         this.game = new Game();
@@ -45,7 +37,6 @@ public class GameController {
         this.tcpClients = new HashMap<>();
         this.rmiClients = new HashMap<>();
         this.playersNumber = 0;
-        this.isGameLoaded = false;
         this.playerRoundsPlayed= new HashMap<>();
         this.gameState = GameState.LOGIN;
         this.lastPlayer = null;
@@ -398,29 +389,6 @@ public class GameController {
     }
 
     /**
-     * Checks if the game state is saved.
-     * @return True if the game state is saved, false otherwise.
-     */
-    public boolean isGameSaved() {
-        return isGameSaved();
-    }
-
-    /**
-     * If isGameSaved is false this method starts a new game, resetting the game state.
-     */
-
-    /**
-     * Loads the last saved game state.
-     */
-    public void loadLastGame() {
-    }
-
-    public boolean isValidMove(){
-        //da togliere???
-        return true;
-    }
-
-    /**
      * Checks if the game has started.
      *
      * @return True if the game has started, false otherwise.
@@ -449,6 +417,19 @@ public class GameController {
 
         // Returns a map of the scores by nickname
         return scoresByNickname;
+    }
+
+    /**
+     * Calculate and get the final scores
+     *
+     * @return map with each player's score
+     */
+    public Map<String, Integer> getFinalScores() {
+        Map<String, Integer> scoresByNickname = new HashMap<>();
+
+        game.getBoard().calculateFinalScores(game.getCommonObjectives());
+
+        return getScores();
     }
 
     public boolean checkScores() {
@@ -487,13 +468,6 @@ public class GameController {
      */
     public boolean isGameOver() {
         return gameState.equals(GameState.END);
-    }
-
-    /**
-     * Resets the saved game state.
-     * This method will be called to reset the saved game state.
-     */
-    public void resetSavedGame() {
     }
 
     /**
