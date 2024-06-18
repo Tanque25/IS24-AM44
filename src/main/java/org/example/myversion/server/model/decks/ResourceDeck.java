@@ -53,7 +53,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(Resource.FUNGI_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT,new Corner(CornerVisibility.FULL)
                 ),
-                0, 001
+                0, 1
         )); // 1
 
         resourceDeck.push(new PlayableCard(
@@ -64,7 +64,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(CornerVisibility.FULL),
                         CornerPosition.BOTTOM_RIGHT,new Corner(CornerVisibility.EMPTY)
                 ),
-                0, 002
+                0, 2
         )); // 2
 
         resourceDeck.push(new PlayableCard(
@@ -75,7 +75,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(Resource.FUNGI_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT,new Corner(Resource.FUNGI_KINGDOM)
                 ),
-                0, 003
+                0, 3
         )); // 3
 
         resourceDeck.push(new PlayableCard(
@@ -86,7 +86,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(CornerVisibility.EMPTY),
                         CornerPosition.BOTTOM_RIGHT,new Corner(Resource.FUNGI_KINGDOM)
                 ),
-                0, 004
+                0, 4
         )); // 4
 
         resourceDeck.push(new PlayableCard(
@@ -97,7 +97,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(Resource.PLANT_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT,new Corner(Resource.FUNGI_KINGDOM)
                 ),
-                0, 005
+                0, 5
         )); // 5
 
         resourceDeck.push(new PlayableCard(
@@ -108,7 +108,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(CornerVisibility.FULL),
                         CornerPosition.BOTTOM_RIGHT,new Corner(Resource.ANIMAL_KINGDOM)
                 ),
-                0, 006
+                0, 6
         )); // 6
 
         resourceDeck.push(new PlayableCard(
@@ -119,7 +119,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(SpecialObject.MANUSCRIPT),
                         CornerPosition.BOTTOM_RIGHT,new Corner(CornerVisibility.EMPTY)
                 ),
-                0, 007
+                0, 7
         )); // 7
 
         resourceDeck.push(new PlayableCard(
@@ -152,7 +152,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(Resource.FUNGI_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT,new Corner(CornerVisibility.EMPTY)
                 ),
-                1, 010
+                1, 10
         )); // 10
 
         resourceDeck.push(new PlayableCard(
@@ -163,7 +163,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(Resource.PLANT_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT,new Corner(CornerVisibility.FULL)
                 ),
-                0, 011
+                0, 11
         )); // 11
 
         resourceDeck.push(new PlayableCard(
@@ -174,7 +174,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(CornerVisibility.FULL),
                         CornerPosition.BOTTOM_RIGHT,new Corner(CornerVisibility.EMPTY)
                 ),
-                0, 012
+                0, 12
         )); // 12
 
         resourceDeck.push(new PlayableCard(
@@ -185,7 +185,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(Resource.PLANT_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT,new Corner(Resource.PLANT_KINGDOM)
                 ),
-                0, 013
+                0, 13
         )); // 13
 
         resourceDeck.push(new PlayableCard(
@@ -196,7 +196,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(CornerVisibility.EMPTY),
                         CornerPosition.BOTTOM_RIGHT,new Corner(Resource.PLANT_KINGDOM)
                 ),
-                0, 014
+                0, 14
         )); // 14
 
         resourceDeck.push(new PlayableCard(
@@ -207,7 +207,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(SpecialObject.QUILL),
                         CornerPosition.BOTTOM_RIGHT,new Corner(Resource.PLANT_KINGDOM)
                 ),
-                0, 015
+                0, 15
         )); // 15
 
         resourceDeck.push(new PlayableCard(
@@ -218,7 +218,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(CornerVisibility.FULL),
                         CornerPosition.BOTTOM_RIGHT,new Corner(SpecialObject.INKWELL)
                 ),
-                0, 016
+                0, 16
         )); // 16
 
         resourceDeck.push(new PlayableCard(
@@ -229,7 +229,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(Resource.PLANT_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT,new Corner(Resource.ANIMAL_KINGDOM)
                 ),
-                0, 017
+                0, 17
         )); // 17
 
         resourceDeck.push(new PlayableCard(
@@ -262,7 +262,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(CornerVisibility.EMPTY),
                         CornerPosition.BOTTOM_RIGHT,new Corner(CornerVisibility.EMPTY)
                 ),
-                1, 020
+                1, 20
         )); // 20
 
         resourceDeck.push(new PlayableCard(
@@ -273,7 +273,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(CornerVisibility.EMPTY),
                         CornerPosition.BOTTOM_RIGHT,new Corner(CornerVisibility.FULL)
                 ),
-                0, 021
+                0, 21
         )); // 21
 
         resourceDeck.push(new PlayableCard(
@@ -284,7 +284,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(Resource.ANIMAL_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT,new Corner(Resource.ANIMAL_KINGDOM)
                 ),
-                0, 022
+                0, 22
         )); // 22
 
         resourceDeck.push(new PlayableCard(
@@ -295,7 +295,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(Resource.ANIMAL_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT,new Corner(CornerVisibility.EMPTY)
                 ),
-                0, 023
+                0, 23
         )); // 23
 
         resourceDeck.push(new PlayableCard(
@@ -306,7 +306,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(CornerVisibility.FULL),
                         CornerPosition.BOTTOM_RIGHT,new Corner(Resource.ANIMAL_KINGDOM)
                 ),
-                0, 024
+                0, 24
         )); // 24
 
         resourceDeck.push(new PlayableCard(
@@ -317,7 +317,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(SpecialObject.INKWELL),
                         CornerPosition.BOTTOM_RIGHT,new Corner(Resource.ANIMAL_KINGDOM)
                 ),
-                0, 025
+                0, 25
         )); // 25
 
         resourceDeck.push(new PlayableCard(
@@ -328,7 +328,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(CornerVisibility.FULL),
                         CornerPosition.BOTTOM_RIGHT,new Corner(SpecialObject.MANUSCRIPT)
                 ),
-                0, 026
+                0, 26
         )); // 26
 
         resourceDeck.push(new PlayableCard(
@@ -339,7 +339,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(Resource.ANIMAL_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT,new Corner(Resource.FUNGI_KINGDOM)
                 ),
-                0, 027
+                0, 27
         )); // 27
 
         resourceDeck.push(new PlayableCard(
@@ -372,7 +372,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(CornerVisibility.EMPTY),
                         CornerPosition.BOTTOM_RIGHT,new Corner(CornerVisibility.FULL)
                 ),
-                1, 030
+                1, 30
         )); // 30
 
         resourceDeck.push(new PlayableCard(
@@ -383,7 +383,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(CornerVisibility.EMPTY),
                         CornerPosition.BOTTOM_RIGHT,new Corner(CornerVisibility.FULL)
                 ),
-                0, 031
+                0, 31
         )); // 31
 
         resourceDeck.push(new PlayableCard(
@@ -394,7 +394,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(Resource.INSECT_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT,new Corner(Resource.INSECT_KINGDOM)
                 ),
-                0, 032
+                0, 32
         )); // 32
 
         resourceDeck.push(new PlayableCard(
@@ -405,7 +405,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(Resource.INSECT_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT,new Corner(CornerVisibility.EMPTY)
                 ),
-                0, 033
+                0, 33
         )); // 33
 
         resourceDeck.push(new PlayableCard(
@@ -416,7 +416,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(CornerVisibility.FULL),
                         CornerPosition.BOTTOM_RIGHT,new Corner(Resource.INSECT_KINGDOM)
                 ),
-                0, 034
+                0, 34
         )); // 34
 
         resourceDeck.push(new PlayableCard(
@@ -427,7 +427,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(Resource.ANIMAL_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT,new Corner(Resource.INSECT_KINGDOM)
                 ),
-                0, 035
+                0, 35
         )); // 35
 
         resourceDeck.push(new PlayableCard(
@@ -438,7 +438,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(CornerVisibility.FULL),
                         CornerPosition.BOTTOM_RIGHT,new Corner(Resource.FUNGI_KINGDOM)
                 ),
-                0, 036
+                0, 36
         )); // 36
 
         resourceDeck.push(new PlayableCard(
@@ -449,7 +449,7 @@ public class ResourceDeck {
                         CornerPosition.BOTTOM_LEFT,new Corner(SpecialObject.INKWELL),
                         CornerPosition.BOTTOM_RIGHT,new Corner(CornerVisibility.FULL)
                 ),
-                0, 037
+                0, 37
         )); // 37
 
         resourceDeck.push(new PlayableCard(
