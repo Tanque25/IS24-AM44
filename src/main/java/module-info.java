@@ -15,4 +15,5 @@ module org.example.myversion {
     exports org.example.myversion.messages to java.rmi;
     exports  org.example.myversion.server.model.decks.cards to java.rmi;
     exports  org.example.myversion.server.model to java.rmi;
+    exports  org.example.myversion.client.GUI;
 }
