@@ -44,7 +44,7 @@ public class ChooseObjectiveController extends GUIController {
             }
 
             for (ObjectiveCard card : objectiveCards) {
-                Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + card.getId().toString() + ".png").toExternalForm());
+                Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_front/front" + card.getId().toString() + ".png").toExternalForm());
                 ImageView imgView = new ImageView(img);
                 objectives.getChildren().add(imgView);
             }

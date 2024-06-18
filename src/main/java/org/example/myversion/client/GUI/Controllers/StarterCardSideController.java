@@ -49,8 +49,8 @@ public class StarterCardSideController extends GUIController {
             }
 
             // Load images
-            String imgFrontPath = String.format("/org/example/myversion/cards_gold_front%d.png", starterCard.getId());
-            String imgBackPath = String.format("/org/example/myversion/cards_gold_back%d.png", starterCard.getId());
+            String imgFrontPath = String.format("/org/example/myversion/cards_gold_front/front%d.png", starterCard.getId());
+            String imgBackPath = String.format("/org/example/myversion/cards_gold_back/back%d.png", starterCard.getId());
 
             Image imgFront = new Image(Objects.requireNonNull(getClass().getResource(imgFrontPath)).toExternalForm());
             imgViewFront.setImage(imgFront);
