@@ -35,15 +35,15 @@ import static javafx.application.Application.launch;
 
 public class GUI extends GameView{
 
-    private static Client client;
-    public static GamePhaseController gameController;
-    private static LoginController loginController;
-    private static StarterCardSideController starterCardSideController;
-    private static ChooseObjectiveController chooseObjectiveController;
-    private static ChosePlayerNumberController chosePlayerNumberController;
+    private Client client;
+    public GamePhaseController gameController;
+    private LoginController loginController;
+    private StarterCardSideController starterCardSideController;
+    private ChooseObjectiveController chooseObjectiveController;
+    private ChosePlayerNumberController chosePlayerNumberController;
 
-    private static Stage stage;
-    private static Parent root;
+    private Stage stage;
+    private Parent root;
 
     public GUI(){
         CodexNaturalis.setParameters("localhost", "tcp", this);
@@ -56,11 +56,11 @@ public class GUI extends GameView{
         this.client = client;
     }
 
-    public static Client getClient() {
+    public Client getClient() {
         return client;
     }
 
-    public static Stage getStage() {
+    public Stage getStage() {
         return stage;
     }
 

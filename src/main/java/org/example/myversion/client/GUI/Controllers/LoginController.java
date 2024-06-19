@@ -44,7 +44,7 @@ public class LoginController extends GUIController {
     }
 
     public void login() {
-        this.stage = GUI.getStage();
+        this.stage = gui.getStage();
         Platform.runLater(() -> {
             try {
                 URL fxmlLocation = (new File("src/main/resources/org/example/myversion/FXML/Login.fxml")).toURI().toURL();
