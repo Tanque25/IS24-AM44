@@ -29,8 +29,8 @@ public class ChooseObjectiveController extends GUIController {
 
     private Client client;
 
-    public ChooseObjectiveController(Stage stage, Client client, Scene scene) {
-        super(stage, client, scene);
+    public ChooseObjectiveController() {
+        super();
     }
 
     public void initialize(List<ObjectiveCard> objectiveCards) {
@@ -38,7 +38,9 @@ public class ChooseObjectiveController extends GUIController {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/myversion/FXML/ChooseObjective.fxml"));
             try {
                 Parent root = fxmlLoader.load();
-                scene.setRoot(root);
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
             }

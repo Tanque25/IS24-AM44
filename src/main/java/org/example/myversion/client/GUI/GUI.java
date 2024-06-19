@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 import org.example.myversion.client.Client;
+import org.example.myversion.client.CodexNaturalis;
 import org.example.myversion.client.GUI.Controllers.*;
 import org.example.myversion.client.view.GameView;
 import org.example.myversion.server.model.Board;
@@ -42,10 +43,10 @@ public class GUI extends GameView{
     private static ChosePlayerNumberController chosePlayerNumberController;
 
     private static Stage stage;
-    private static Scene scene;
     private static Parent root;
 
     public GUI(){
+        CodexNaturalis.setParameters("localhost", "tcp", this);
     }
 
     //private static final String GOLD_BACK_PATH = "org/example/myversion/cards_gold_back/";
@@ -54,23 +55,20 @@ public class GUI extends GameView{
     public void setClient(Client client) {
         this.client = client;
     }
+
     public static Client getClient() {
         return client;
     }
+
     public static Stage getStage() {
         return stage;
     }
 
+
     @Override
     public void start(Stage stage) throws IOException {
-        //this.stage = stage;
-        URL fxmlLocation = (new File("src/main/resources/org/example/myversion/FXML/Login.fxml")).toURI().toURL();
-
-        Parent root = FXMLLoader.load(fxmlLocation);
-        stage.setTitle("Codex Naturalis");
-        stage.setScene(new Scene(root));
-        stage.show();
-        //clientLogin();
+        this.stage = stage;
+        clientLogin();
     }
     public static void main(String[] args) {
         launch(args);
@@ -91,7 +89,9 @@ public class GUI extends GameView{
 
     @Override
     public void clientLogin() throws IOException {
-        loginController = new LoginController(stage, client, scene);
+        loginController = new LoginController();
+        loginController.setGui(this);
+        loginController.setClient(client);
         loginController.login();
     }
 
@@ -102,7 +102,8 @@ public class GUI extends GameView{
 
     @Override
     public void playersNumberChoice() throws IOException {
-        chosePlayerNumberController = new ChosePlayerNumberController(stage, client, scene);
+        chosePlayerNumberController = new ChosePlayerNumberController();
+        chosePlayerNumberController.setClient(client);
         chosePlayerNumberController.choseNumberOfPlayer();
     }
 
@@ -117,7 +118,7 @@ public class GUI extends GameView{
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("org/example/myversion/FXML/WaitForOtherPlayers.fxml"));
             try {
                 root = fxmlLoader.load();
-                scene.setRoot(root);
+                Scene scene = new Scene(root);
                 stage.setScene(scene);
                 stage.show();
             } catch (IOException e) {
@@ -142,7 +143,8 @@ public class GUI extends GameView{
 
     @Override
     public void secretObjectiveCardChoice(List<ObjectiveCard> objectiveCards) throws IOException {
-        chooseObjectiveController = new ChooseObjectiveController(stage, client, scene);
+        chooseObjectiveController = new ChooseObjectiveController();
+        chooseObjectiveController.setClient(client);
         chooseObjectiveController.initialize(objectiveCards);
     }
 
@@ -152,7 +154,8 @@ public class GUI extends GameView{
 
     @Override
     public void starterCardSideChoice(StarterCard starterCard) throws IOException {
-        starterCardSideController = new StarterCardSideController(stage, client, scene);
+        starterCardSideController = new StarterCardSideController();
+        starterCardSideController.setClient(client);
         starterCardSideController.sideChoice(starterCard);
     }
 

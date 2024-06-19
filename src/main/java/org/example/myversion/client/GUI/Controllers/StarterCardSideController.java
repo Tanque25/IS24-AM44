@@ -33,8 +33,8 @@ public class StarterCardSideController extends GUIController {
     @FXML
     private ImageView imgViewBack;
 
-    public StarterCardSideController(Stage stage, Client client, Scene scene) {
-        super(stage, client, scene);
+    public StarterCardSideController() {
+        super();
     }
 
     public void sideChoice(StarterCard starterCard) {
@@ -42,23 +42,21 @@ public class StarterCardSideController extends GUIController {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/myversion/FXML/StarterCardSide.fxml"));
             try {
                 root = fxmlLoader.load();
-                scene.setRoot(root);
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
                 return; // Exit method if FXML loading fails
             }
 
-            // Load images
             String imgFrontPath = String.format("/org/example/myversion/cards_gold_front/front%d.png", starterCard.getId());
             String imgBackPath = String.format("/org/example/myversion/cards_gold_back/back%d.png", starterCard.getId());
-
             Image imgFront = new Image(Objects.requireNonNull(getClass().getResource(imgFrontPath)).toExternalForm());
             imgViewFront.setImage(imgFront);
-
             Image imgBack = new Image(Objects.requireNonNull(getClass().getResource(imgBackPath)).toExternalForm());
             imgViewBack.setImage(imgBack);
 
-            // Set up button actions
             playedFront.setOnAction(event -> starterCard.setPlayedBack(false));
             playedBack.setOnAction(event -> starterCard.setPlayedBack(true));
             send.setOnAction(event -> {
@@ -71,11 +69,6 @@ public class StarterCardSideController extends GUIController {
                     e.printStackTrace();
                 }
             });
-
-            // Set new scene and show stage
-
-            stage.setScene(scene);
-            stage.show();
         });
     }
 }
