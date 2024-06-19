@@ -1,8 +1,11 @@
 package org.example.myversion.server.model;
 
+import org.example.myversion.server.model.decks.cards.ObjectiveCard;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents the board for tracking players' scores in the game.
@@ -12,7 +15,6 @@ public class Board {
 
     private HashMap<Player, Integer> scores;
 
-
     /**
      * Constructs a new Board object with an empty score mapping.
      */
@@ -20,23 +22,35 @@ public class Board {
         this.scores = new HashMap<Player, Integer>();
     }
 
+    /**
+     * Retrieves the map of player scores.
+     *
+     * @return The map containing players and their respective scores.
+     */
     public HashMap<Player, Integer> getScores() {
         return scores;
     }
 
+    /**
+     * Initializes the scores for each player to 0.
+     *
+     * @param players The list of players to initialize scores for.
+     */
     public void initializePlayerScores(List<Player> players) {
         for (Player player : players) {
             scores.put(player, 0);
         }
     }
+
     /**
      * Update the score for the given player.
+     *
      * @param player The player whose score needs to be updated.
      * @param points The points to add to the player's score.
      */
-    public void updateScore(Player player, Integer points){
-        int currentScore=0;
-        if(scores!=null)
+    public void updateScore(Player player, Integer points) {
+        int currentScore = 0;
+        if (scores != null)
             currentScore = scores.get(player);
 
         int newScore = currentScore + points;
@@ -50,31 +64,50 @@ public class Board {
      * @param player The player whose score is to be retrieved.
      * @return The score of the specified player.
      */
-    public Integer getScore(Player player){
+    public Integer getScore(Player player) {
         return scores.get(player);
     }
 
     /**
-     * Finds the player with the highest score on the board.
+     * Calculate the final scores for each player.
      *
-     * @return The player with the highest score. Returns null if there are no players or if the scores map is empty.
+     * @param commonObjectives common objectives of the current game
+     * @return game winner
      */
-    public Player findWinner() {
+    public Player findWinner(List<ObjectiveCard> commonObjectives) {
         Player winner = null;
         int highestScore = 0;
 
-        // Iterate through the entries in the scores map
-        for (Map.Entry<Player, Integer> entry : scores.entrySet()) {
-            Player player = entry.getKey();
-            int score = entry.getValue();
+        // Get the set of keys (players)
+        Set<Player> players = scores.keySet();
 
-            // Update playerWithHighestScore if current player's score is higher
-            if (score > highestScore) {
-                highestScore = score;
+        // Iterate through the set of keys
+        for (Player player : players) {
+            int finalScore = scores.get(player);
+
+            if (finalScore > highestScore) {
+                highestScore = finalScore;
                 winner = player;
             }
         }
 
         return winner;
+    }
+
+    /**
+     * Calculates the final scores for each player based on their current scores and the points from objectives.
+     *
+     * @param commonObjectives The list of common objectives of the current game.
+     */
+    public void calculateFinalScores(List<ObjectiveCard> commonObjectives) {
+        for (Player player : scores.keySet()) {
+            int currentScore = scores.get(player);
+
+            int objectiveScore = player.objectiveScoreCalculator(commonObjectives, player.getSecretObjective());
+
+            int finalScore = currentScore + objectiveScore;
+
+            scores.put(player, finalScore);
+        }
     }
 }

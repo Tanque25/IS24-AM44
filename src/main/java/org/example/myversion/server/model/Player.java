@@ -41,7 +41,7 @@ public class Player {
      * Initializes the stock map with default values for each resource and special object enum value.
      */
     private void initializeStock() {
-        stock=new HashMap<>();
+        stock = new HashMap<>();
         for (Resource resource : Resource.values()) {
             stock.put(resource, 0);
         }
@@ -77,7 +77,7 @@ public class Player {
         return connected;
     }
 
-    public Map<CornerContent, Integer> getStock(){
+    public Map<CornerContent, Integer> getStock() {
         return stock;
     }
 
@@ -99,12 +99,12 @@ public class Player {
      */
     public void initializePlayArea(StarterCard starterCard) {
         this.playArea[41][41] = starterCard;
-        if(starterCard.getCorners() != null) {
+        if (starterCard.getCorners() != null) {
             // updating the player stock with the corner contents
             for (CornerPosition cornerPosition : starterCard.getCorners().keySet()) {
                 CornerContent cornerContent = starterCard.getCorners().get(cornerPosition).getCornerContent();
 
-                if (cornerContent!=null) {//messo io
+                if (cornerContent != null) {//messo io
                     // updating the value only where it exists
                     if (cornerContent != CornerVisibility.EMPTY && cornerContent != CornerVisibility.FULL) {
                         stock.compute(cornerContent, (k, v) -> {
@@ -119,7 +119,7 @@ public class Player {
         }
         // updating the player stock with the starter card resources
         if (!starterCard.isPlayedBack()) {
-            for(CornerContent cornerContent : starterCard.getResource()) {
+            for (CornerContent cornerContent : starterCard.getResource()) {
                 stock.compute(cornerContent, (k, v) -> {
                     if (v == null) {
                         throw new NullPointerException("Value 'v' is null while computing stock.");
@@ -170,8 +170,8 @@ public class Player {
      * @param coordinates The x-coordinate and y-coordinate position.
      */
     public void placeCard(PlayableCard placedCard, Coordinates coordinates) {
-        if (hand==null)
-            hand=new ArrayList<>();
+        if (hand == null)
+            hand = new ArrayList<>();
 
         // Retrieve the coordinates
         int x = coordinates.getX();
@@ -182,14 +182,14 @@ public class Player {
         updateStock(placedCard);
 
         // Update corner status of adjacent cards
-        if(playArea[x-1][y-1] != null)
-            playArea[x-1][y-1].getCorners().get(CornerPosition.BOTTOM_RIGHT).setCovered(true);
-        if(playArea[x-1][y+1] != null)
-            playArea[x-1][y+1].getCorners().get(CornerPosition.BOTTOM_LEFT).setCovered(true);
-        if(playArea[x+1][y-1] != null)
-            playArea[x+1][y-1].getCorners().get(CornerPosition.UP_RIGHT).setCovered(true);
-        if(playArea[x+1][y+1] != null)
-            playArea[x+1][y+1].getCorners().get(CornerPosition.UP_LEFT).setCovered(true);
+        if (playArea[x - 1][y - 1] != null)
+            playArea[x - 1][y - 1].getCorners().get(CornerPosition.BOTTOM_RIGHT).setCovered(true);
+        if (playArea[x - 1][y + 1] != null)
+            playArea[x - 1][y + 1].getCorners().get(CornerPosition.BOTTOM_LEFT).setCovered(true);
+        if (playArea[x + 1][y - 1] != null)
+            playArea[x + 1][y - 1].getCorners().get(CornerPosition.UP_RIGHT).setCovered(true);
+        if (playArea[x + 1][y + 1] != null)
+            playArea[x + 1][y + 1].getCorners().get(CornerPosition.UP_LEFT).setCovered(true);
     }
 
     public boolean hasEnoughStock(GoldCard playedCard) throws InvalidMoveException {
@@ -252,15 +252,15 @@ public class Player {
         // Check if there's a card above, beneath, to the left, or to the right of the specified coordinates
         // If any adjacent position contains a card, return true
         return !(isCardPresent(new Coordinates(x, y)) ||
-                    isCardPresent(new Coordinates(x, y-1)) ||
-                    isCardPresent(new Coordinates(x, y+1)) ||
-                    isCardPresent(new Coordinates(x-1, y)) ||
-                    isCardPresent(new Coordinates(x+1, y))) &&
+                isCardPresent(new Coordinates(x, y - 1)) ||
+                isCardPresent(new Coordinates(x, y + 1)) ||
+                isCardPresent(new Coordinates(x - 1, y)) ||
+                isCardPresent(new Coordinates(x + 1, y))) &&
                 // Check if the chosen card can be connected to a placed card
-                (isCardPresent(new Coordinates(x-1, y-1)) ||
-                        isCardPresent(new Coordinates(x-1, y+1)) ||
-                        isCardPresent(new Coordinates(x+1, y-1)) ||
-                        isCardPresent(new Coordinates(x+1, y+1)));
+                (isCardPresent(new Coordinates(x - 1, y - 1)) ||
+                        isCardPresent(new Coordinates(x - 1, y + 1)) ||
+                        isCardPresent(new Coordinates(x + 1, y - 1)) ||
+                        isCardPresent(new Coordinates(x + 1, y + 1)));
     }
 
     /**
@@ -292,10 +292,10 @@ public class Player {
 
         // Check if the corners of the adjacent cards are full
         // Return true if any adjacent corner is full
-        return isCornerFull(playArea[x+1][y+1], CornerPosition.UP_LEFT) ||
-                isCornerFull(playArea[x+1][y-1], CornerPosition.UP_RIGHT) ||
-                isCornerFull(playArea[x-1][y+1], CornerPosition.BOTTOM_LEFT) ||
-                isCornerFull(playArea[x-1][y-1], CornerPosition.BOTTOM_RIGHT);
+        return isCornerFull(playArea[x + 1][y + 1], CornerPosition.UP_LEFT) ||
+                isCornerFull(playArea[x + 1][y - 1], CornerPosition.UP_RIGHT) ||
+                isCornerFull(playArea[x - 1][y + 1], CornerPosition.BOTTOM_LEFT) ||
+                isCornerFull(playArea[x - 1][y - 1], CornerPosition.BOTTOM_RIGHT);
     }
 
     /**
@@ -326,15 +326,14 @@ public class Player {
     private void updateStock(PlayableCard playedCard) {
         if (!playedCard.isPlayedBack()) {
             // updating the player stock with the corner contents
-            for (CornerPosition cornerPosition : playedCard.getCorners().keySet()){
+            for (CornerPosition cornerPosition : playedCard.getCorners().keySet()) {
                 CornerContent cornerContent = playedCard.getCorners().get(cornerPosition).getCornerContent();
 
                 // updating the value only where it exists
-                if(cornerContent!=CornerVisibility.EMPTY && cornerContent!=CornerVisibility.FULL)
+                if (cornerContent != CornerVisibility.EMPTY && cornerContent != CornerVisibility.FULL)
                     stock.compute(cornerContent, (k, v) -> v + 1);
             }
-        }
-        else {
+        } else {
             // updating the player stock with the card resource if played on the back
             stock.compute(playedCard.getResource(), (k, v) -> v + 1);
         }
@@ -345,91 +344,35 @@ public class Player {
      *
      * @param drawnCard The card drawn by the player.
      */
-    public void drawCard(PlayableCard drawnCard){
-        if(hand!=null)
+    public void drawCard(PlayableCard drawnCard) {
+        if (hand != null)
             hand.add(drawnCard);
         else {
             hand = new ArrayList<>();
             hand.add(drawnCard);
         }
     }
+
     /**
      * Calculates the final score of the player based on common objective cards and the resource stock.
      *
      * @param commonObjectives A list of common objective cards.
-     * @param stock            A map associating the content of the PlayArea with the quantity of resources owned.
-     * @param secretObjective is the secretObjective of the player
+     * @param secretObjective  is the secretObjective of the player
      * @return The player's final score calculated based on common objective cards and the resource stock.
      */
-
-    public int finalScoreCalculator(List<ObjectiveCard> commonObjectives,Map<CornerContent, Integer> stock,ObjectiveCard secretObjective) {
+    public int objectiveScoreCalculator(List<ObjectiveCard> commonObjectives, ObjectiveCard secretObjective) {
         int objectiveScore = 0;
 
-        //System.out.println("entro");
+        // Points given by common objective cards
         for (ObjectiveCard objective : commonObjectives) {
-            //System.out.println("obbiettivo: "+objective.getCardPoints());
-
-            if (objective.findObjectiveCard(stock, playArea,objective)!=0) {
-                objectiveScore=objective.findObjectiveCard(stock, playArea,objective);
-            }
+                int commonObjectiveScore = objective.calculateObjectiveCardPoints(stock, playArea, objective);
+                objectiveScore += commonObjectiveScore;
         }
 
-        //per secretObjective
-        objectiveScore=objectiveScore+secretObjective.findObjectiveCard(stock, playArea,secretObjective);
+        // Points given by secret objective card
+        int secretObjectiveScore = secretObjective.calculateObjectiveCardPoints(stock, playArea, secretObjective);
+        objectiveScore += secretObjectiveScore;
 
         return objectiveScore;
     }
-
-    /*
-    public int finalScoreCalculator (List<ObjectiveCard> commonObjective){
-    int ObjectiveScore=0;
-    FindObjectiveCard((PatternObjectiveCard) secretObjective);
-    FindObjectiveCard((ResourceObjectiveCard) secretObjective);
-    FindObjectiveCard((SpecialObjectiveCard) secretObjective);
-        return ObjectiveScore;
-    }*/
-
-    /**
-     * Search the Pattern in the play Area. This method will be called by the finalScoreCalculator
-     *
-     * @param  objectiveCard is the Objective Card Pattern that we want to search in the play area
-     */
-    /*
-    public boolean FindObjectiveCard(PatternObjectiveCard objectiveCard){
-
-        if()
-
-            return false;
-    }
-    */
-    /**
-     * Search the Pattern in the play Area. This method will be called by the finalScoreCalculator
-     *
-     * @param  objectiveCard is the Objective Card Pattern that we want to search in the play area
-     */
-    /*
-    public boolean FindObjectiveCard(ResourceObjectiveCard objectiveCard){
-        int count=0;
-        //stock deve contenere anche recources anche se una carta giocata di retro???
-        count = stock.get(objectiveCard); //il problema che Map COrner puo contenere non risorse, altro
-        if (count>=3) {
-            return true;
-        }
-        return false;
-    }*/
-    /**
-     * Search the Pattern in the play Area. This method will be called by the finalScoreCalculator
-     *
-     * // @param  objectiveCard is the Objective Card Pattern that we want to search in the play area
-     */
-    /*
-    public boolean FindObjectiveCard(SpecialObjectiveCard objectiveCard){
-        int count=0;
-
-        count = stock.get(objectiveCard.); //il problema che Map Corner puo contenere non risorse, altro
-        if (count>=3) {
-            return true;
-        }
-        return false;
-    }*/
 }

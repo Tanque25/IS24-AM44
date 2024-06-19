@@ -1,10 +1,12 @@
 package org.example.myversion.client.GUI;
 
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.scene.Node;
 import org.example.myversion.client.Client;
 import org.example.myversion.client.GUI.Controllers.*;
 import org.example.myversion.client.view.GameView;
@@ -22,10 +24,12 @@ import org.example.myversion.server.serverController.GameController;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+//import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Node;
 import static javafx.application.Application.launch;
 
 public class GUI extends GameView{
@@ -59,9 +63,17 @@ public class GUI extends GameView{
 
     @Override
     public void start(Stage stage) throws IOException {
-        this.stage = stage;
+        //this.stage = stage;
+        URL fxmlLocation = (new File("src/main/resources/org/example/myversion/FXML/Login.fxml")).toURI().toURL();
 
-        clientLogin();
+        Parent root = FXMLLoader.load(fxmlLocation);
+        stage.setTitle("Codex Naturalis");
+        stage.setScene(new Scene(root));
+        stage.show();
+        //clientLogin();
+    }
+    public static void main(String[] args) {
+        launch(args);
     }
 
 
@@ -213,4 +225,13 @@ public class GUI extends GameView{
     public void showEndGame(String winner) {
 
     }
+    /*public void switchToGameScene(ActionEvent event) throws IOException {
+        URL fxmlLocation = (new File("src/main/resources/org/example/myversion/FXML/Game.fxml")).toURI().toURL();
+        root = FXMLLoader.load(Objects.requireNonNull(fxmlLocation));
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }*/
+
 }

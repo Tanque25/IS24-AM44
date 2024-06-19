@@ -1,7 +1,6 @@
 package org.example.myversion.server.model.decks.cards;
 
 import org.example.myversion.server.model.enumerations.CornerContent;
-import org.example.myversion.server.model.enumerations.Resource;
 import org.example.myversion.server.model.enumerations.SpecialObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,13 +23,13 @@ class SpecialObjectiveCardTest {
 
     @BeforeEach
     void setUp() {
-        /*OC_099 = new SpecialObjectiveCard(3, new SpecialObject[]{
-                SpecialObject.QUILL, SpecialObject.INKWELL, SpecialObject.MANUSCRIPT
-        });
+        OC_099 = new SpecialObjectiveCard(3, new SpecialObject[]{
+                SpecialObject.QUILL, SpecialObject.INKWELL, SpecialObject.MANUSCRIPT}, 99
+        ); // 99
 
         OC_101 = new SpecialObjectiveCard(2, new SpecialObject[]{
-                SpecialObject.INKWELL, SpecialObject.INKWELL}
-        );
+                SpecialObject.INKWELL, SpecialObject.INKWELL}, 101
+        ); // 101
 
         stockCase1 = new HashMap<>();
         stockCase1.put(SpecialObject.QUILL, 1);
@@ -56,8 +55,6 @@ class SpecialObjectiveCardTest {
         stockCase5.put(SpecialObject.QUILL, 0);
         stockCase5.put(SpecialObject.INKWELL, 4);
         stockCase5.put(SpecialObject.MANUSCRIPT, 8);
-
-        */
     }
 
     @Test
@@ -91,9 +88,9 @@ class SpecialObjectiveCardTest {
     }
 
     @Test
-    void findObjectiveCard1() {
-        int points1 = OC_099.findObjectiveCard(stockCase1, null,OC_099 );
-        int points2 = OC_101.findObjectiveCard(stockCase1, null, OC_101);
+    void calculateObjectiveCardPoints1() {
+        int points1 = OC_099.calculateObjectiveCardPoints(stockCase1, null, OC_099 );
+        int points2 = OC_101.calculateObjectiveCardPoints(stockCase1, null, OC_101);
 
         assertEquals(3,points1);
         assertEquals(0,points2);
@@ -101,8 +98,8 @@ class SpecialObjectiveCardTest {
 
     @Test
     void findOjectiveCard2(){
-        int points1 = OC_099.findObjectiveCard(stockCase2, null,OC_099 );
-        int points2 = OC_101.findObjectiveCard(stockCase2, null, OC_101);
+        int points1 = OC_099.calculateObjectiveCardPoints(stockCase2, null,OC_099 );
+        int points2 = OC_101.calculateObjectiveCardPoints(stockCase2, null, OC_101);
 
         assertEquals(12,points1);
         assertEquals(4,points2);
@@ -111,8 +108,8 @@ class SpecialObjectiveCardTest {
 
     @Test
     void findOjectiveCard3(){
-        int points1 = OC_099.findObjectiveCard(stockCase3, null,OC_099 );
-        int points2 = OC_101.findObjectiveCard(stockCase3, null, OC_101);
+        int points1 = OC_099.calculateObjectiveCardPoints(stockCase3, null,OC_099 );
+        int points2 = OC_101.calculateObjectiveCardPoints(stockCase3, null, OC_101);
 
         assertEquals(0,points1);
         assertEquals(0,points2);
@@ -121,8 +118,8 @@ class SpecialObjectiveCardTest {
 
     @Test
     void findOjectiveCard4(){
-        int points1 = OC_099.findObjectiveCard(stockCase4, null,OC_099 );
-        int points2 = OC_101.findObjectiveCard(stockCase4, null, OC_101);
+        int points1 = OC_099.calculateObjectiveCardPoints(stockCase4, null,OC_099 );
+        int points2 = OC_101.calculateObjectiveCardPoints(stockCase4, null, OC_101);
 
         assertEquals(0,points1);
         assertEquals(0,points2);
@@ -131,8 +128,8 @@ class SpecialObjectiveCardTest {
 
     @Test
     void findOjectiveCard5(){
-        int points1 = OC_099.findObjectiveCard(stockCase5, null,OC_099 );
-        int points2 = OC_101.findObjectiveCard(stockCase5, null, OC_101);
+        int points1 = OC_099.calculateObjectiveCardPoints(stockCase5, null,OC_099 );
+        int points2 = OC_101.calculateObjectiveCardPoints(stockCase5, null, OC_101);
 
         assertEquals(0,points1);
         assertEquals(4,points2);

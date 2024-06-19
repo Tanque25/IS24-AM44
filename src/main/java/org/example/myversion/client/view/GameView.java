@@ -15,7 +15,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * This is the interface used for the view (cli or gui)
+ * This is the interface used for the view (CLI or GUI).
+ * It provides methods for interacting with the game and handling player actions.
  */
 public abstract class GameView extends Application{
     private List<PlayableCard> visibleResourceCards;

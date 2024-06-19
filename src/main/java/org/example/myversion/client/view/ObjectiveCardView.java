@@ -77,7 +77,12 @@ public class ObjectiveCardView {
 
     public void displayObjectiveCardMiddleLine(PatternObjectiveCard patternObjectiveCard) {
         StringBuilder stringBuilder = new StringBuilder();
-        Resource[] middleLineObjective = patternObjectiveCard.getObjective()[1];
+        Resource[] middleLineObjective = null;
+
+        if (patternObjectiveCard.getId() == 91 || patternObjectiveCard.getId() == 92)
+            middleLineObjective = patternObjectiveCard.getObjective()[2];
+        else
+            middleLineObjective = patternObjectiveCard.getObjective()[1];
 
         stringBuilder.append(patternObjectiveCard.getCardPoints());
         stringBuilder.append("  ");
@@ -93,11 +98,15 @@ public class ObjectiveCardView {
 
     public void displayObjectiveCardBottomLine(PatternObjectiveCard patternObjectiveCard) {
         StringBuilder stringBuilder = new StringBuilder();
-        Resource[] topLineObjective = patternObjectiveCard.getObjective()[2];
+        Resource[] bottomLineObjective = null;
+        if(patternObjectiveCard.getId() >= 87 && patternObjectiveCard.getId() <= 90)
+            bottomLineObjective = patternObjectiveCard.getObjective()[2];
+        else if (patternObjectiveCard.getId() >= 91 && patternObjectiveCard.getId() <= 94)
+            bottomLineObjective = patternObjectiveCard.getObjective()[3];
 
         stringBuilder.append("└――");
 
-        for (Resource resource : topLineObjective) {
+        for (Resource resource : bottomLineObjective) {
             stringBuilder.append(resource != null ? resource.getShortName() : "―");
         }
 

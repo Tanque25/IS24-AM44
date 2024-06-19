@@ -1,8 +1,10 @@
 package org.example.myversion.client.GUI.Controllers;
 
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -12,7 +14,10 @@ import org.example.myversion.client.Client;
 import org.example.myversion.client.GUI.GUIController;
 import org.example.myversion.messages.Message;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.util.Objects;
 
 public class LoginController extends GUIController {
     @FXML
@@ -49,4 +54,5 @@ public class LoginController extends GUIController {
             }
         });
     }
+
 }

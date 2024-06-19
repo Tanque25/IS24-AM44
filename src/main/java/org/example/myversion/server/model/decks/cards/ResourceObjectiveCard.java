@@ -2,21 +2,21 @@ package org.example.myversion.server.model.decks.cards;
 
 import org.example.myversion.server.model.enumerations.CornerContent;
 import org.example.myversion.server.model.enumerations.Resource;
-import org.example.myversion.server.model.enumerations.SpecialObject;
 
 import java.util.Map;
+
 /**
  * Represents a resource objective card.
  * It specifies which and how many resources the player needs to have in his play area.
  */
-public class ResourceObjectiveCard extends ObjectiveCard{
+public class ResourceObjectiveCard extends ObjectiveCard {
     private final Resource[] objective;
 
     /**
      * Constructs a ResourceObjectiveCard with specified points and objective.
      *
      * @param cardPoints specifies the points awarded to the player upon accomplishing its objective.
-     * @param objective specifies which and how many resources the player needs to have in his play area.
+     * @param objective  specifies which and how many resources the player needs to have in his play area.
      */
     public ResourceObjectiveCard(int cardPoints, Resource[] objective, int id) {
         super(cardPoints, id);
@@ -28,30 +28,36 @@ public class ResourceObjectiveCard extends ObjectiveCard{
      *
      * @return The array specifying which and how many resources the player needs to have in their play area.
      */
-
     @Override
-    public CornerContent[] getCardKey(){
-        return objective;//devo fare un altro tipo che restituisca
+    public CornerContent[] getCardKey() {
+        return objective;
     }
-
 
     public Resource[] getObjective() {
         return objective;
     }
 
+    /**
+     * Calculates the points gained by a player by achieving a resource objective.
+     *
+     * @param stock           resources stock of the player
+     * @param playArea        play area of the player
+     * @param objective objective card to consider
+     * @return points gained.
+     */
     @Override
-    public int findObjectiveCard(Map<CornerContent, Integer> stock, Card[][] playArea,ObjectiveCard commonObjective) {
-        // Implementazione per ResourceObjectiveCard
+    public int calculateObjectiveCardPoints(Map<CornerContent, Integer> stock, Card[][] playArea, ObjectiveCard objective) {
+        CornerContent[] objectiveResources = objective.getCardKey();
+        int objectiveCardPoints = objective.getCardPoints();
 
-        int count=0;
+        // find the player's stock of the objective's resource
+        int stockCount = stock.getOrDefault(objectiveResources[0], 0);
 
-        //trovo il numero di elementi che corrispondono a quella risorsa
-        count=stock.getOrDefault(commonObjective.getCardKey()[0],0);
-        //System.out.println("Stampo numero di elementi di quella risorsa cercata nello stock: : "+count);
-        //ritorna multiplo di 2 se il numero di risorse è > di 3 altrimenti 0
-        if(count>=3){
-            return ((count / 3) * 2);
+        // return the given points
+        if (stockCount >= objectiveResources.length) {
+            return ((stockCount / objectiveResources.length) * objectiveCardPoints);
         }
+
         return 0;
     }
 }

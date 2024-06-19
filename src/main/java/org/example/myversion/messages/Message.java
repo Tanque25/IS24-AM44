@@ -274,6 +274,16 @@ public class Message implements Serializable {
         this.json = jsonBuilder.build();
     }
 
+    /**
+     * Constructs a Message for a reconnected player.
+     */
+    public Message(String messageCode, Map<String, Integer> scores,
+                   ObjectiveCard secretObjectiveCard, ObjectiveCard commonObjectiveCard1, ObjectiveCard commonObjectiveCard2,
+                   List<PlayableCard> visibleResourceCards, PlayableCard coveredResourceCard, List<GoldCard> visibleGoldCards, GoldCard coveredGoldCard,
+                   Map<String, List<PlayableCard>> playersHands, Map<String, PlayableCard[][]> playAreas) {
+
+    }
+
 ///////////////////////////////////////////////////////UTILS////////////////////////////////////////////////////////
 
     /**

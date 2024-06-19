@@ -79,12 +79,12 @@ public class PlayAreaView {
                     else CardView.displayCardFrontTopLine((PlayableCard) playArea[row][col]);
                 } else if (row % 2 == 0 && col % 2 == 0 || (row % 2 == 1 && col % 2 == 1)) {
                     // Check if the adjacent cards have full corners
-                    if (playArea[row-1][col-1] != null && !playArea[row-1][col-1].getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().equals(CornerVisibility.FULL) ||
-                            playArea[row-1][col+1] != null && !playArea[row-1][col+1].getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().equals(CornerVisibility.FULL) ||
-                            playArea[row+1][col-1] != null && !playArea[row+1][col-1].getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().equals(CornerVisibility.FULL) ||
-                            playArea[row+1][col+1] != null && !playArea[row+1][col+1].getCorners().get(CornerPosition.UP_LEFT).getCornerContent().equals(CornerVisibility.FULL))
-                        CardView.displayOptionSlotTopBottomLine();
-                    else CardView.displayEmptySlotLine();
+                    if (playArea[row-1][col-1] != null && playArea[row-1][col-1].getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().equals(CornerVisibility.FULL) ||
+                            playArea[row-1][col+1] != null && playArea[row-1][col+1].getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().equals(CornerVisibility.FULL) ||
+                            playArea[row+1][col-1] != null && playArea[row+1][col-1].getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().equals(CornerVisibility.FULL) ||
+                            playArea[row+1][col+1] != null && playArea[row+1][col+1].getCorners().get(CornerPosition.UP_LEFT).getCornerContent().equals(CornerVisibility.FULL))
+                        CardView.displayEmptySlotLine();
+                    else CardView.displayOptionSlotTopBottomLine();
                 } else {
                     CardView.displayEmptySlotLine();
                 }
@@ -108,12 +108,12 @@ public class PlayAreaView {
                     else CardView.displayCardFrontMiddleLine((PlayableCard) playArea[row][col]);
                 } else if (row % 2 == 0 && col % 2 == 0 || (row % 2 == 1 && col % 2 == 1)) {
                     // Check if the adjacent cards have full corners
-                    if (playArea[row-1][col-1] != null && !playArea[row-1][col-1].getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().equals(CornerVisibility.FULL) ||
-                            playArea[row-1][col+1] != null && !playArea[row-1][col+1].getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().equals(CornerVisibility.FULL) ||
-                            playArea[row+1][col-1] != null && !playArea[row+1][col-1].getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().equals(CornerVisibility.FULL) ||
-                            playArea[row+1][col+1] != null && !playArea[row+1][col+1].getCorners().get(CornerPosition.UP_LEFT).getCornerContent().equals(CornerVisibility.FULL))
-                        CardView.displayOptionSlotMiddleLine(row, col);
-                    else CardView.displayEmptySlotLine();
+                    if (playArea[row-1][col-1] != null && playArea[row-1][col-1].getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().equals(CornerVisibility.FULL) ||
+                            playArea[row-1][col+1] != null && playArea[row-1][col+1].getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().equals(CornerVisibility.FULL) ||
+                            playArea[row+1][col-1] != null && playArea[row+1][col-1].getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().equals(CornerVisibility.FULL) ||
+                            playArea[row+1][col+1] != null && playArea[row+1][col+1].getCorners().get(CornerPosition.UP_LEFT).getCornerContent().equals(CornerVisibility.FULL))
+                        CardView.displayEmptySlotLine();
+                    else CardView.displayOptionSlotMiddleLine(row, col);
                 } else {
                     CardView.displayEmptySlotLine();
                 }
@@ -137,12 +137,12 @@ public class PlayAreaView {
                     else CardView.displayCardFrontBottomLine((PlayableCard) playArea[row][col]);
                 } else if ((row % 2 == 0 && col % 2 == 0) || (row % 2 == 1 && col % 2 == 1)) {
                     // Check if the adjacent cards have full corners
-                    if (playArea[row-1][col-1] != null && !playArea[row-1][col-1].getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().equals(CornerVisibility.FULL) ||
-                            playArea[row-1][col+1] != null && !playArea[row-1][col+1].getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().equals(CornerVisibility.FULL) ||
-                            playArea[row+1][col-1] != null && !playArea[row+1][col-1].getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().equals(CornerVisibility.FULL) ||
-                            playArea[row+1][col+1] != null && !playArea[row+1][col+1].getCorners().get(CornerPosition.UP_LEFT).getCornerContent().equals(CornerVisibility.FULL))
-                        CardView.displayOptionSlotTopBottomLine();
-                    else CardView.displayEmptySlotLine();
+                    if (playArea[row-1][col-1] != null && playArea[row-1][col-1].getCorners().get(CornerPosition.BOTTOM_RIGHT).getCornerContent().equals(CornerVisibility.FULL) ||
+                            playArea[row-1][col+1] != null && playArea[row-1][col+1].getCorners().get(CornerPosition.BOTTOM_LEFT).getCornerContent().equals(CornerVisibility.FULL) ||
+                            playArea[row+1][col-1] != null && playArea[row+1][col-1].getCorners().get(CornerPosition.UP_RIGHT).getCornerContent().equals(CornerVisibility.FULL) ||
+                            playArea[row+1][col+1] != null && playArea[row+1][col+1].getCorners().get(CornerPosition.UP_LEFT).getCornerContent().equals(CornerVisibility.FULL))
+                        CardView.displayEmptySlotLine();
+                    else CardView.displayOptionSlotTopBottomLine();
                 } else {
                     CardView.displayEmptySlotLine();
                 }
