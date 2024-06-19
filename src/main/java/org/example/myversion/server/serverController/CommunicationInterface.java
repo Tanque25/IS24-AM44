@@ -10,6 +10,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.example.myversion.server.model.Coordinates;
@@ -136,6 +137,7 @@ public interface CommunicationInterface extends Remote {
                         }
                     }
                 }
+                updateScores();
                 // The current turn is finished, it passes to the next player.
                 changeTurn();
 
@@ -388,6 +390,15 @@ public interface CommunicationInterface extends Remote {
         }
         sendMessageToAllExceptRMI(currentPlayerNickname,"OtherTurn");
     }
+
+    default void updateScores() throws RemoteException {
+        Map<String, Integer> scores = controller.getScores();
+
+        Message scoresMessage = new Message("Scores", scores);
+
+        sendMessageToAll(scoresMessage);
+    }
+
 
     default void sendMessageToAllExceptRMI (String currentPlayerNickname, String scelta) throws RemoteException {
 

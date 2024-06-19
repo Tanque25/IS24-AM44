@@ -240,6 +240,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 }
             }
 
+
             default -> throw new IllegalArgumentException("Invalid messageCode: ");
         }
     }
@@ -317,6 +318,16 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                     gameView.drawCard(nickname, message.getGoldCard());
                 }
             }
+            case "Scores" -> {
+                gameView.showScores(message.getScores());
+            }
+            case "LastRound" -> {
+                gameView.showMessage("\nLast round\n");
+            }
+            case "EndGame" -> {
+                gameView.showEndGame(message.getArgument());
+            }
+
         }
     }
 
