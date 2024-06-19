@@ -13,6 +13,7 @@ import org.example.myversion.client.GUI.GUI;
 import org.example.myversion.client.GUI.GUIController;
 import org.example.myversion.messages.Message;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
@@ -29,18 +30,20 @@ public class ChosePlayerNumberController extends GUIController {
 
     @FXML
     private void initialize() {
-        numberOfPlayers.getItems().addAll(2, 3, 4);
         confirmChoice.setOnAction(event -> handleChoice());
     }
 
     public void choseNumberOfPlayer(){
         Platform.runLater(() -> {
             try {
-                URL fxmlLocation = getClass().getResource("/org/example/myversion/FXML/ChosePlayerNumber.fxml");
-                Parent root = FXMLLoader.load(fxmlLocation);
-                Scene scene = new Scene(root);
-                stage.setScene(scene);
-                stage.show();
+                URL fxmlLocation = (new File("src/main/resources/org/example/myversion/FXML/ChoosePlayerNumber.fxml")).toURI().toURL();
+                FXMLLoader loader = new FXMLLoader(fxmlLocation);
+                loader.setController(this);
+                Parent root = loader.load();
+                numberOfPlayers.getItems().addAll(2, 3, 4);
+                gui.getStage().setTitle("Codex Naturalis");
+                gui.getStage().setScene(new Scene(root));
+                gui.getStage().show();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -52,7 +55,7 @@ public class ChosePlayerNumberController extends GUIController {
         Integer number = numberOfPlayers.getValue();
         if (number != null) {
             try {
-                client.sendMessage(new Message("NumberOfPlayers", number));
+                gui.getClient().sendMessage(new Message("NumberOfPlayers", number));
                 confirmChoice.setDisable(true);
             } catch (IOException e) {
                 e.printStackTrace();

@@ -91,7 +91,6 @@ public class GUI extends GameView{
     public void clientLogin() throws IOException {
         loginController = new LoginController();
         loginController.setGui(this);
-        loginController.setClient(client);
         loginController.login();
     }
 
@@ -103,7 +102,7 @@ public class GUI extends GameView{
     @Override
     public void playersNumberChoice() throws IOException {
         chosePlayerNumberController = new ChosePlayerNumberController();
-        chosePlayerNumberController.setClient(client);
+        chosePlayerNumberController.setGui(this);
         chosePlayerNumberController.choseNumberOfPlayer();
     }
 
@@ -115,11 +114,12 @@ public class GUI extends GameView{
     @Override
     public void waitForOtherPlayers() {
         Platform.runLater(() -> {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("org/example/myversion/FXML/WaitForOtherPlayers.fxml"));
             try {
-                root = fxmlLoader.load();
-                Scene scene = new Scene(root);
-                stage.setScene(scene);
+                URL fxmlLocation = (new File("src/main/resources/org/example/myversion/FXML/WaitForOtherPlayers.fxml")).toURI().toURL();
+                FXMLLoader loader = new FXMLLoader(fxmlLocation);
+                Parent root = loader.load();
+                stage.setTitle("Codex Naturalis");
+                stage.setScene(new Scene(root));
                 stage.show();
             } catch (IOException e) {
             }

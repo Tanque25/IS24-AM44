@@ -36,7 +36,7 @@ public class LoginController extends GUIController {
     private void handleLogin() {
         String nickname = username.getText();
         try {
-            client.sendMessage(new Message("Login", nickname));
+            gui.getClient().sendMessage(new Message("Login", nickname));
             connect.setDisable(true);
         } catch (IOException e) {
             e.printStackTrace();
@@ -44,14 +44,15 @@ public class LoginController extends GUIController {
     }
 
     public void login() {
-        this.stage = gui.getStage();
         Platform.runLater(() -> {
             try {
                 URL fxmlLocation = (new File("src/main/resources/org/example/myversion/FXML/Login.fxml")).toURI().toURL();
-                Parent root = FXMLLoader.load(fxmlLocation);
-                stage.setTitle("Codex Naturalis");
-                stage.setScene(new Scene(root));
-                stage.show();
+                FXMLLoader loader = new FXMLLoader(fxmlLocation);
+                loader.setController(this);
+                Parent root = loader.load();
+                gui.getStage().setTitle("Codex Naturalis");
+                gui.getStage().setScene(new Scene(root));
+                gui.getStage().show();
             } catch (IOException e) {
                 e.printStackTrace();
             }
