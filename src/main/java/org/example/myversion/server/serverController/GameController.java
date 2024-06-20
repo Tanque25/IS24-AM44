@@ -1,7 +1,7 @@
 package org.example.myversion.server.serverController;
 
 import org.example.myversion.client.ClientCommunicationInterface;
-import org.example.myversion.server.Server;
+import org.example.myversion.messages.Message;
 import org.example.myversion.server.model.Coordinates;
 import org.example.myversion.server.model.Game;
 import org.example.myversion.server.model.Player;
@@ -28,6 +28,7 @@ public class GameController {
     private static int readyPlayersNumber = 0;
     private Player lastPlayer;
     private HashMap <Player, Integer> playerRoundsPlayed;
+    public static final String BACKUP_FILE = "backUp.json";
 
     public GameController() {
         this.game = new Game();
@@ -425,8 +426,6 @@ public class GameController {
      * @return map with each player's score
      */
     public Map<String, Integer> getFinalScores() {
-        Map<String, Integer> scoresByNickname = new HashMap<>();
-
         game.getBoard().calculateFinalScores(game.getCommonObjectives());
 
         return getScores();
@@ -487,5 +486,40 @@ public class GameController {
      */
     public boolean isLastRound() {
         return gameState.equals(GameState.LAST_ROUND) || gameState.equals(GameState.END);
+    }
+
+    /**
+     * Saves the current game in the json backup file
+     */
+    public void saveGame() {
+        new Message("Backup", getScores(),
+                game.getCommonObjectives().get(0), game.getCommonObjectives().get(1),
+                getSecretObjectives(),
+                game.getVisibleResourceCards(), game.getResourceDeckPeek(),
+                game.getVisibleGoldCards(), game.getGoldDeckPeek(),
+                getPlayersHandsMap(), getPlayAreas(),
+                game.getCurrentPlayer().getNickname(), lastPlayer.getNickname(), game.isLastTurn()
+        );
+        System.out.println("Game saved.");
+    }
+
+    private Map<String, ObjectiveCard> getSecretObjectives() {
+        Map<String, ObjectiveCard> secretObjectives = new HashMap<>();
+
+        for (Player player : game.getPlayers()) {
+            secretObjectives.put(player.getNickname(), player.getSecretObjective());
+        }
+
+        return secretObjectives;
+    }
+
+    private Map<String, Card[][]> getPlayAreas() {
+        Map<String, Card[][]> playAreas = new HashMap<>();
+
+        for (Player player : game.getPlayers()) {
+            playAreas.put(player.getNickname(), player.getPlayArea());
+        }
+
+        return playAreas;
     }
 }
