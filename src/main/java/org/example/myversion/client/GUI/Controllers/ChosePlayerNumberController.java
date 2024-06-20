@@ -57,6 +57,8 @@ public class ChosePlayerNumberController extends GUIController {
             try {
                 gui.getClient().sendMessage(new Message("NumberOfPlayers", number));
                 confirmChoice.setDisable(true);
+                gui.setPlayerNumberChoosen(true);
+                gui.waitForOtherPlayers();
             } catch (IOException e) {
                 e.printStackTrace();
             }

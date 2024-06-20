@@ -14,10 +14,7 @@ import org.example.myversion.client.GUI.Controllers.*;
 import org.example.myversion.client.view.GameView;
 import org.example.myversion.server.model.Board;
 import org.example.myversion.server.model.Player;
-import org.example.myversion.server.model.decks.cards.Card;
-import org.example.myversion.server.model.decks.cards.ObjectiveCard;
-import org.example.myversion.server.model.decks.cards.PlayableCard;
-import org.example.myversion.server.model.decks.cards.StarterCard;
+import org.example.myversion.server.model.decks.cards.*;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -38,11 +35,18 @@ public class GUI extends GameView{
 
     private Client client;
     private WaitForOtherPlayersController waitForOtherPlayersController;
+    private ShowCommonObjectivesController showCommonObjectivesController;
     public GamePhaseController gameController;
     private LoginController loginController;
     private StarterCardSideController starterCardSideController;
     private ChooseObjectiveController chooseObjectiveController;
     private ChosePlayerNumberController chosePlayerNumberController;
+
+    private boolean playerNumberChoosen = true;
+    private boolean playerStarterChosen = false;
+    private boolean playerObjectiveSeen = false;
+    List<ObjectiveCard> objectiveCards;
+    StarterCard starterCard;
 
     private Stage stage;
     private Parent root;
@@ -58,6 +62,18 @@ public class GUI extends GameView{
         this.client = client;
     }
 
+    public void setPlayerStarterChosen(boolean playerStarterChosen) {
+        this.playerStarterChosen = playerStarterChosen;
+    }
+
+    public void setPlayerObjectiveSeen(boolean playerObjectiveSeen) {
+        this.playerObjectiveSeen = playerObjectiveSeen;
+    }
+
+    public void setPlayerNumberChoosen(boolean playerNumberChoosen) {
+        this.playerNumberChoosen = playerNumberChoosen;
+    }
+
     public Client getClient() {
         return client;
     }
@@ -66,6 +82,13 @@ public class GUI extends GameView{
         return stage;
     }
 
+    public StarterCard getStarterCard() {
+        return starterCard;
+    }
+
+    public List<ObjectiveCard> getObjectiveCards() {
+        return objectiveCards;
+    }
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -103,6 +126,7 @@ public class GUI extends GameView{
 
     @Override
     public void playersNumberChoice() throws IOException {
+        playerNumberChoosen = false;
         chosePlayerNumberController = new ChosePlayerNumberController();
         chosePlayerNumberController.setGui(this);
         chosePlayerNumberController.choseNumberOfPlayer();
@@ -115,13 +139,20 @@ public class GUI extends GameView{
 
     @Override
     public void waitForOtherPlayers() {
-        waitForOtherPlayersController = new WaitForOtherPlayersController();
-        waitForOtherPlayersController.setGui(this);
-        waitForOtherPlayersController.waitScreen();
+        if (playerNumberChoosen){
+            waitForOtherPlayersController = new WaitForOtherPlayersController();
+            waitForOtherPlayersController.setGui(this);
+            waitForOtherPlayersController.waitScreen();
+        }
     }
 
     @Override
-    public void showVisibleCards() {
+    public void showVisibleCards(){
+        List<PlayableCard> visiblePlayableCards = getVisibleResourceCards();
+        List<GoldCard> visibleGoldCards = getVisibleGoldCards();
+        showCommonObjectivesController = new ShowCommonObjectivesController();
+        showCommonObjectivesController.setGui(this);
+        showCommonObjectivesController.displayCards(visiblePlayableCards, visibleGoldCards);
 
     }
 
@@ -137,9 +168,12 @@ public class GUI extends GameView{
 
     @Override
     public void secretObjectiveCardChoice(List<ObjectiveCard> objectiveCards) throws IOException {
-        chooseObjectiveController = new ChooseObjectiveController();
-        chooseObjectiveController.setGui(this);
-        chooseObjectiveController.initialize(objectiveCards);
+        this.objectiveCards = objectiveCards;
+        if(playerStarterChosen){
+            chooseObjectiveController = new ChooseObjectiveController();
+            chooseObjectiveController.setGui(this);
+            chooseObjectiveController.initialize(objectiveCards);
+        }
     }
 
     @Override
@@ -148,9 +182,12 @@ public class GUI extends GameView{
 
     @Override
     public void starterCardSideChoice(StarterCard starterCard) throws IOException {
-        starterCardSideController = new StarterCardSideController();
-        starterCardSideController.setGui(this);
-        starterCardSideController.sideChoice(starterCard);
+        this.starterCard = starterCard;
+        if(playerObjectiveSeen){
+            starterCardSideController = new StarterCardSideController();
+            starterCardSideController.setGui(this);
+            starterCardSideController.sideChoice(starterCard);
+        }
     }
 
     @Override
