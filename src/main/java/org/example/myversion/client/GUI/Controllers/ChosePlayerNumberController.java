@@ -30,7 +30,7 @@ public class ChosePlayerNumberController extends GUIController {
 
     @FXML
     private void initialize() {
-        confirmChoice.setOnAction(event -> handleChoice());
+        confirmChoice.setOnMouseClicked(event -> handleChoice());
     }
 
     public void choseNumberOfPlayer(){

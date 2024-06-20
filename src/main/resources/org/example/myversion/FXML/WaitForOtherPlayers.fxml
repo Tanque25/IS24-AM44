@@ -4,12 +4,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.myversion.FXML.WaitForOtherPlayers">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="background" stylesheets="@../Style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <AnchorPane layoutX="1.0" layoutY="1.0" prefHeight="393.0" prefWidth="592.0">
          <children>
-            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="29.0" layoutY="43.0" prefHeight="67.0" prefWidth="539.0" text="Wait for other players to join the game" textAlignment="CENTER">
+            <Label fx:id="waitingForPlayers" alignment="CENTER" contentDisplay="CENTER" layoutX="26.0" layoutY="105.0" prefHeight="67.0" prefWidth="539.0" style="-fx-background-color: white;" text="Wait for other players to join the game" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>

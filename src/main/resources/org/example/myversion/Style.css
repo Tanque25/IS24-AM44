@@ -1,0 +1,5 @@
+.background{
+    -fx-background-image: url("Images/CreateOrJoinGame/CreateOrJoinGameBackround.png");
+    -fx-background-repeat: stretch;
+    -fx-background-size: cover;
+}

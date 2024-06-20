@@ -1,5 +1,6 @@
 package org.example.myversion.client.GUI;
 
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -36,6 +37,7 @@ import static javafx.application.Application.launch;
 public class GUI extends GameView{
 
     private Client client;
+    private WaitForOtherPlayersController waitForOtherPlayersController;
     public GamePhaseController gameController;
     private LoginController loginController;
     private StarterCardSideController starterCardSideController;
@@ -113,17 +115,9 @@ public class GUI extends GameView{
 
     @Override
     public void waitForOtherPlayers() {
-        Platform.runLater(() -> {
-            try {
-                URL fxmlLocation = (new File("src/main/resources/org/example/myversion/FXML/WaitForOtherPlayers.fxml")).toURI().toURL();
-                FXMLLoader loader = new FXMLLoader(fxmlLocation);
-                Parent root = loader.load();
-                stage.setTitle("Codex Naturalis");
-                stage.setScene(new Scene(root));
-                stage.show();
-            } catch (IOException e) {
-            }
-        });
+        waitForOtherPlayersController = new WaitForOtherPlayersController();
+        waitForOtherPlayersController.setGui(this);
+        waitForOtherPlayersController.waitScreen();
     }
 
     @Override
@@ -144,7 +138,7 @@ public class GUI extends GameView{
     @Override
     public void secretObjectiveCardChoice(List<ObjectiveCard> objectiveCards) throws IOException {
         chooseObjectiveController = new ChooseObjectiveController();
-        chooseObjectiveController.setClient(client);
+        chooseObjectiveController.setGui(this);
         chooseObjectiveController.initialize(objectiveCards);
     }
 
@@ -155,7 +149,7 @@ public class GUI extends GameView{
     @Override
     public void starterCardSideChoice(StarterCard starterCard) throws IOException {
         starterCardSideController = new StarterCardSideController();
-        starterCardSideController.setClient(client);
+        starterCardSideController.setGui(this);
         starterCardSideController.sideChoice(starterCard);
     }
 

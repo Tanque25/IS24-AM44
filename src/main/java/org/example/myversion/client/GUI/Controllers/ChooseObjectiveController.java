@@ -15,8 +15,11 @@ import org.example.myversion.client.GUI.GUIController;
 import org.example.myversion.messages.Message;
 import org.example.myversion.server.model.decks.cards.ObjectiveCard;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ChooseObjectiveController extends GUIController {
@@ -27,7 +30,10 @@ public class ChooseObjectiveController extends GUIController {
     @FXML
     private AnchorPane objectives; // Utilizziamo AnchorPane al posto di HBox
 
-    private Client client;
+    @FXML
+    private ImageView objective1;
+    @FXML
+    private ImageView objective2;
 
     public ChooseObjectiveController() {
         super();
@@ -35,26 +41,29 @@ public class ChooseObjectiveController extends GUIController {
 
     public void initialize(List<ObjectiveCard> objectiveCards) {
         Platform.runLater(() -> {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/myversion/FXML/ChooseObjective.fxml"));
             try {
-                Parent root = fxmlLoader.load();
-                Scene scene = new Scene(root);
-                stage.setScene(scene);
-                stage.show();
+                URL fxmlLocation = (new File("src/main/resources/org/example/myversion/FXML/ChooseObjectiveCard.fxml")).toURI().toURL();
+                FXMLLoader loader = new FXMLLoader(fxmlLocation);
+                loader.setController(this);
+                Parent root = loader.load();
+
+                Image img1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + objectiveCards.getFirst().getId() +".png"));
+                objective1.setImage(img1);
+
+                Image img2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + objectiveCards.get(1).getId() +".png"));
+                objective2.setImage(img2);
+
+
+                gui.getStage().setTitle("Codex Naturalis");
+                gui.getStage().setScene(new Scene(root));
+                gui.getStage().show();
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            for (ObjectiveCard card : objectiveCards) {
-                Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_front/front" + card.getId().toString() + ".png").toExternalForm());
-                ImageView imgView = new ImageView(img);
-                objectives.getChildren().add(imgView);
-            }
-
-            // Settiamo l'azione per i pulsanti
-            button0.setOnAction(event -> {
+            button0.setOnMouseClicked(event -> {
                 try {
-                    client.sendMessage(new Message("ObjectiveCardChoice", objectiveCards.get(0)));
+                    gui.getClient().sendMessage(new Message("ObjectiveCardChoice", objectiveCards.get(0)));
                     button0.setDisable(true);
                     button1.setDisable(true);
                 } catch (IOException e) {
@@ -63,7 +72,7 @@ public class ChooseObjectiveController extends GUIController {
             });
             button1.setOnAction(event -> {
                 try {
-                    client.sendMessage(new Message("ObjectiveCardChoice", objectiveCards.get(1)));
+                    gui.getClient().sendMessage(new Message("ObjectiveCardChoice", objectiveCards.get(1)));
                     button0.setDisable(true);
                     button1.setDisable(true);
                 } catch (IOException e) {

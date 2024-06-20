@@ -8,9 +8,6 @@ import javafx.scene.Scene;
 
 public abstract class GUIController {
     protected GUI gui;
-    protected Stage stage;
-    protected Client client;
-    protected Parent root;
 
 
     public GUIController() {
@@ -18,10 +15,6 @@ public abstract class GUIController {
 
     public void setGui(GUI gui) {
         this.gui = gui;
-    }
-
-    public void setClient(Client client){
-        this.client = client;
     }
 
 }

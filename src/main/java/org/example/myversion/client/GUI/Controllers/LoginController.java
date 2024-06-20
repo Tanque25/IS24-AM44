@@ -29,7 +29,7 @@ public class LoginController extends GUIController {
 
     @FXML
     private void initialize() {
-        connect.setOnAction(event -> handleLogin());
+        connect.setOnMouseClicked(event -> handleLogin());
     }
 
     @FXML
