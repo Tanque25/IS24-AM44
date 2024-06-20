@@ -6,19 +6,19 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.myversion.client.GUI.Controllers.StarterCardSideController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ImageView fitHeight="400.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../Images/EndGame/sfondo_parquet-1.png" />
          </image>
       </ImageView>
-      <AnchorPane fx:id="starterSides" layoutX="93.0" layoutY="80.0" mouseTransparent="true" prefHeight="200.0" prefWidth="200.0">
+      <AnchorPane fx:id="starterSides" layoutX="75.0" layoutY="80.0" mouseTransparent="true" prefHeight="200.0" prefWidth="200.0">
          <children>
             <!-- ImageView for front side -->
             <ImageView fx:id="imgViewFront" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
             <!-- ImageView for back side -->
-            <ImageView fx:id="imgViewBack" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="imgViewBack" fitHeight="200.0" fitWidth="200.0" layoutX="250.0" pickOnBounds="true" preserveRatio="true" />
          </children>
       </AnchorPane>
       <Button fx:id="playedFront" layoutX="159.0" layoutY="306.0" mnemonicParsing="false" text="Frontside" />

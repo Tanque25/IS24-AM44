@@ -15,7 +15,9 @@ import org.example.myversion.client.GUI.GUIController;
 import org.example.myversion.messages.Message;
 import org.example.myversion.server.model.decks.cards.StarterCard;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Objects;
 
 public class StarterCardSideController extends GUIController {
@@ -33,49 +35,51 @@ public class StarterCardSideController extends GUIController {
     @FXML
     private ImageView imgViewBack;
 
-    public StarterCardSideController(Stage stage, Client client, Scene scene) {
-        super(stage, client, scene);
+    public StarterCardSideController() {
+        super();
+    }
+
+    public void initialize(){
+
     }
 
     public void sideChoice(StarterCard starterCard) {
         Platform.runLater(() -> {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/myversion/FXML/StarterCardSide.fxml"));
             try {
-                root = fxmlLoader.load();
-                scene.setRoot(root);
+                URL fxmlLocation = (new File("src/main/resources/org/example/myversion/FXML/StarterCardSide.fxml")).toURI().toURL();
+                FXMLLoader loader = new FXMLLoader(fxmlLocation);
+                loader.setController(this);
+                Parent root = loader.load();
+
+                //String imgFrontPath = String.format("/org/example/myversion/cards_gold_front/front" + starterCard.getId() +".png");
+                //String imgBackPath = String.format("resources/org/example/myversion/cards_gold_back/back" + starterCard.getId() + ".png");
+                Image imgFront = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + starterCard.getId() +".png"));
+                imgViewFront.setImage(imgFront);
+                Image imgBack = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + starterCard.getId() +".png"));
+                imgViewBack.setImage(imgBack);
+
+                gui.getStage().setTitle("Codex Naturalis");
+                gui.getStage().setScene(new Scene(root));
+                gui.getStage().show();
             } catch (IOException e) {
                 e.printStackTrace();
                 return; // Exit method if FXML loading fails
             }
 
-            // Load images
-            String imgFrontPath = String.format("/org/example/myversion/cards_gold_front/front%d.png", starterCard.getId());
-            String imgBackPath = String.format("/org/example/myversion/cards_gold_back/back%d.png", starterCard.getId());
-
-            Image imgFront = new Image(Objects.requireNonNull(getClass().getResource(imgFrontPath)).toExternalForm());
-            imgViewFront.setImage(imgFront);
-
-            Image imgBack = new Image(Objects.requireNonNull(getClass().getResource(imgBackPath)).toExternalForm());
-            imgViewBack.setImage(imgBack);
-
-            // Set up button actions
-            playedFront.setOnAction(event -> starterCard.setPlayedBack(false));
-            playedBack.setOnAction(event -> starterCard.setPlayedBack(true));
-            send.setOnAction(event -> {
+            playedFront.setOnMouseClicked(event -> starterCard.setPlayedBack(false));
+            playedBack.setOnMouseClicked(event -> starterCard.setPlayedBack(true));
+            send.setOnMouseClicked(event -> {
                 try {
-                    client.sendMessage(new Message("StarterCard", starterCard));
+                    gui.getClient().sendMessage(new Message("StarterCard", starterCard));
                     playedBack.setDisable(true);
                     playedFront.setDisable(true);
                     send.setDisable(true);
+                    gui.setPlayerStarterChosen(true);
+                    gui.secretObjectiveCardChoice(gui.getObjectiveCards());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             });
-
-            // Set new scene and show stage
-
-            stage.setScene(scene);
-            stage.show();
         });
     }
 }

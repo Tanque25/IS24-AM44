@@ -356,8 +356,10 @@ public interface CommunicationInterface extends Remote {
         controller.changeTurn();
 
         if(controller.getGameState() == GameState.IN_GAME) {
+            controller.saveGame();
             startTurn();
         } else if (controller.getGameState() == GameState.LAST_ROUND) {
+            controller.saveGame();
             Message lastRound = new Message("LastRound");
             sendMessageToAll(lastRound);
             startTurn();

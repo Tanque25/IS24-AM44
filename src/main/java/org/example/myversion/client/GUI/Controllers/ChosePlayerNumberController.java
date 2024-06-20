@@ -9,44 +9,59 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import org.example.myversion.client.Client;
+import org.example.myversion.client.GUI.GUI;
 import org.example.myversion.client.GUI.GUIController;
 import org.example.myversion.messages.Message;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 public class ChosePlayerNumberController extends GUIController {
 
     @FXML
-    ComboBox numberOfPlayers;
+    private ComboBox<Integer> numberOfPlayers;
     @FXML
-    Button confirmChoice;
+    private Button confirmChoice;
 
-    public ChosePlayerNumberController(Stage stage, Client client, Scene scene) {
-        super(stage, client, scene);
-        numberOfPlayers.getItems().addAll(2, 3, 4);
+    public ChosePlayerNumberController() {
+        super();
+    }
+
+    @FXML
+    private void initialize() {
+        confirmChoice.setOnMouseClicked(event -> handleChoice());
     }
 
     public void choseNumberOfPlayer(){
-        Platform.runLater(()->{
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("org/example/myversion/FXML/ChosePlayerNumber.fxml"));
+        Platform.runLater(() -> {
             try {
-                Parent root = fxmlLoader.load();
+                URL fxmlLocation = (new File("src/main/resources/org/example/myversion/FXML/ChoosePlayerNumber.fxml")).toURI().toURL();
+                FXMLLoader loader = new FXMLLoader(fxmlLocation);
+                loader.setController(this);
+                Parent root = loader.load();
+                numberOfPlayers.getItems().addAll(2, 3, 4);
+                gui.getStage().setTitle("Codex Naturalis");
+                gui.getStage().setScene(new Scene(root));
+                gui.getStage().show();
             } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            int number = (int) numberOfPlayers.getValue();
-            confirmChoice.setOnAction(event -> {
-                try {
-                    client.sendMessage(new Message("NumberOfPlayers", number));
-                } catch (IOException e) {
-                }
-                confirmChoice.setDisable(true);
-            });
-
-            scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
         });
     }
 
+    @FXML
+    private void handleChoice() {
+        Integer number = numberOfPlayers.getValue();
+        if (number != null) {
+            try {
+                gui.getClient().sendMessage(new Message("NumberOfPlayers", number));
+                confirmChoice.setDisable(true);
+                gui.setPlayerNumberChoosen(true);
+                gui.waitForOtherPlayers();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
