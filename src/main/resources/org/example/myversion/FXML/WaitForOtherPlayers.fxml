@@ -2,18 +2,16 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Arc?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="background" stylesheets="@../Style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <AnchorPane layoutX="1.0" layoutY="1.0" prefHeight="393.0" prefWidth="592.0">
-         <children>
-            <Label fx:id="waitingForPlayers" alignment="CENTER" contentDisplay="CENTER" layoutX="26.0" layoutY="105.0" prefHeight="67.0" prefWidth="539.0" style="-fx-background-color: white;" text="Wait for other players to join the game" textAlignment="CENTER">
-               <font>
-                  <Font name="System Bold" size="24.0" />
-               </font>
-            </Label>
-         </children>
-      </AnchorPane>
+      <Label fx:id="waitingForPlayers" alignment="CENTER" contentDisplay="CENTER" layoutY="34.0" opacity="0.8" prefHeight="67.0" prefWidth="611.0" style="-fx-background-color: black;" text="Wait for other players to join the game" textAlignment="CENTER" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+      <Arc fx:id="waitingAnimation" fill="#23527d" layoutX="311.0" layoutY="315.0" length="270.0" radiusX="40.0" radiusY="40.0" startAngle="45.0" stroke="BLACK" strokeType="INSIDE" style="-fx-smooth: true;" type="ROUND" />
    </children>
 </AnchorPane>

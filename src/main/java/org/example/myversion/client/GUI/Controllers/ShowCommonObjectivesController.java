@@ -59,7 +59,7 @@ public class ShowCommonObjectivesController extends GUIController {
                 Image img3 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + visiblePlayableCards.get(1).getId() + ".png"));
                 imageView3.setImage(img3);
 
-                Image img4 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredResourceCard().getId() + ".png"));
+                Image img4 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredGoldCard().getId() + ".png"));
                 imageView4.setImage(img4);
                 Image img5 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + visibleGoldCards.get(0).getId() + ".png"));
                 imageView5.setImage(img5);
