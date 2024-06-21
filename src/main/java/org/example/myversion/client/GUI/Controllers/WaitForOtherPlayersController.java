@@ -1,5 +1,6 @@
 package org.example.myversion.client.GUI.Controllers;
 
+import javafx.animation.RotateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -7,6 +8,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Arc;
+import javafx.scene.shape.ArcType;
+import javafx.util.Duration;
 import org.example.myversion.client.GUI.GUIController;
 
 import java.io.File;
@@ -18,6 +23,8 @@ public class WaitForOtherPlayersController extends GUIController {
     @FXML
     private Label waitingForPlayers;
     @FXML
+    Arc waitingAnimation;
+    @FXML
     private void initialize() {
     }
     public void waitScreen(){
@@ -27,7 +34,18 @@ public class WaitForOtherPlayersController extends GUIController {
                 FXMLLoader loader = new FXMLLoader(fxmlLocation);
                 loader.setController(this);
                 Parent root = loader.load();
+
+
+                waitingAnimation.setFill(Color.TRANSPARENT);
+                waitingAnimation.setStroke(Color.BLUE);
+                waitingAnimation.setStrokeWidth(5);
+                RotateTransition rotateTransition = new RotateTransition(Duration.seconds(1), waitingAnimation);
+                rotateTransition.setByAngle(360);
+                rotateTransition.setCycleCount(RotateTransition.INDEFINITE);
+                rotateTransition.play();
+
                 waitingForPlayers.setAccessibleText("Waiting for other players to join the game");
+
                 gui.getStage().setTitle("Codex Naturalis");
                 gui.getStage().setScene(new Scene(root));
                 gui.getStage().show();

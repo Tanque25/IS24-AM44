@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.image.Image?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="background" stylesheets="@../Style1.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ImageView fitHeight="400.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../Images/EndGame/sfondo_parquet-1.png" />
-         </image>
-      </ImageView>
       <AnchorPane fx:id="starterSides" layoutX="75.0" layoutY="80.0" mouseTransparent="true" prefHeight="200.0" prefWidth="200.0">
          <children>
             <!-- ImageView for front side -->
@@ -24,5 +19,6 @@
       <Button fx:id="playedFront" layoutX="159.0" layoutY="306.0" mnemonicParsing="false" text="Frontside" />
       <Button fx:id="playedBack" layoutX="377.0" layoutY="306.0" mnemonicParsing="false" text="Backside" />
       <Button fx:id="send" layoutX="284.0" layoutY="332.0" mnemonicParsing="false" text="Ok" />
+      <Label alignment="CENTER" layoutX="1.0" layoutY="14.0" opacity="0.8" prefHeight="34.0" prefWidth="600.0" style="-fx-background-color: black;" text="CHOSE THE SIDE TO PLAY YOUR STARTER CARD" textAlignment="CENTER" textFill="WHITE" />
    </children>
 </Pane>
