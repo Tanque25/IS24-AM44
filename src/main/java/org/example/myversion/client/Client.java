@@ -1,9 +1,7 @@
 package org.example.myversion.client;
 
 import jakarta.json.Json;
-import org.example.myversion.client.view.CardView;
 import org.example.myversion.client.view.GameView;
-import org.example.myversion.client.view.HandView;
 import org.example.myversion.messages.Message;
 import org.example.myversion.server.model.Coordinates;
 

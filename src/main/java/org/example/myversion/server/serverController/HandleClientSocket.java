@@ -168,9 +168,10 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
 
                 // When the server receives the player's secret objective choice, the readyPlayersNumber is updated
                 controller.updateReadyPlayersNumber();
-
+                System.out.println("ReadyPlayersNumber: " +controller.getReadyPlayersNumber());
+                System.out.println("getPlayersNumber: " +controller.getPlayersNumber());
                 // When all the players are ready, the servers sends every player the other players' hands and play areas and starts the turns cycle
-                if (controller.getReadyPlayersNumber() == controller.getPlayersNumber()) {
+                if (controller.getReadyPlayersNumber() == controller.getPlayersNumber() ) {
                     sendStartCondition();
                 }
             }

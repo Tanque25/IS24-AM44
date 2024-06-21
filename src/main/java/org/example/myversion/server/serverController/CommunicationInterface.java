@@ -71,6 +71,7 @@ public interface CommunicationInterface extends Remote {
                 System.out.println("Starter card side from: "+client.getNickname());
                 controller.playStarterCard(controller.getPlayerFromNickname(client.getNickname()), message.getStarterCard());
             }
+
             case "CardToPlayChoice"->{
                 String nickname = client.getNickname();
                 System.out.println("Playing card from: "+nickname);
@@ -94,6 +95,18 @@ public interface CommunicationInterface extends Remote {
                     // The nickname will always be valid
                     // The game state will always be valid
                     // sendMessageToClient(new Message("InvalidMove"));
+                }
+            }
+            case "ObjectiveCardChoice" -> {
+
+                controller.chooseObjectiveCard(controller.getPlayerFromNickname( client.getNickname()), message.getObjectiveCard());
+                // When the server receives the player's secret objective choice, the readyPlayersNumber is updated
+                controller.updateReadyPlayersNumber();
+                System.out.println("ReadyPlayersNumber: " +controller.getReadyPlayersNumber());
+                System.out.println("getPlayersNumber: " +controller.getPlayersNumber());
+                // When all the players are ready, the servers sends every player the other players' hands and play areas and starts the turns cycle
+                if (controller.getReadyPlayersNumber() == controller.getPlayersNumber() ) {
+                    sendStartCondition();
                 }
             }
             case "CardToDrawChoice" -> {
@@ -193,7 +206,6 @@ public interface CommunicationInterface extends Remote {
             if (controller.gameIsFull()) {
                 controller.newGame();
                 startGame();
-                sendStartCondition();
                 //System.out.println("devo inviare le started card...");
             } else {
                 try {
@@ -228,7 +240,6 @@ public interface CommunicationInterface extends Remote {
                         if(controller.gameIsFull()){//partita piena
                             System.out.println("starting game");
                             startGame();
-                            sendStartCondition();
                         }
                     }
                 }else{//gioco gia iniziato
