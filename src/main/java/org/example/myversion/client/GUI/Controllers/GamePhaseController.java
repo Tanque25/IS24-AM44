@@ -134,11 +134,16 @@ public class GamePhaseController extends GUIController {
         Platform.runLater(()->{
             try {
                 URL fxmlLocation = getClass().getResource("/org/example/myversion/FXML/GamePhase.fxml");
+                //System.out.println("FXML Location: " + fxmlLocation); // Log
 
                 FXMLLoader loader = new FXMLLoader(fxmlLocation);
 
-                Parent root = loader.load();
 
+                //loader.setController(this);
+                //loader.setRoot(mainAnchor);
+
+                Parent root = loader.load();
+                //System.out.println("Root loaded successfully."); // Log
 
                 //Common Objective
                 Image CommonObjective1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + gui.getCommonObjectiveCards().get(0).getId() + ".png"));
@@ -183,6 +188,57 @@ public class GamePhaseController extends GUIController {
         });
     }
 
+    //player
+
+    public void assignFirstPlayer(String nickname) {
+        Platform.runLater(() -> {
+            try {
+                Message message = new Message("FirstPlayer", nickname);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+
+    public void setPlayersNickname() {
+        Platform.runLater(() -> {
+            try { gui.getClient().startGame();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+
+
+
+
+    public void viewStarterCard() {
+        //TODO
+    }
+
+
+    //play area
+    public void viewOtherPlayArea(MouseEvent event){
+        Platform.runLater(()->{
+            try {
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
+        });
+    }
+
+    public void showCoordinate(MouseEvent event){
+
+    }
+
+    //chat
+
+    //turn
 
 
 
