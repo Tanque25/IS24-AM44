@@ -6,6 +6,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 import org.example.myversion.client.Client;
@@ -43,6 +45,7 @@ public class GUI extends GameView{
     private ChooseObjectiveController chooseObjectiveController;
     private ChosePlayerNumberController chosePlayerNumberController;
     private GamePhaseController gamePhaseController;
+    private ChatController chatController;
 
     private boolean playerNumberChoosen = true;
     private boolean playerStarterChosen = false;
@@ -113,8 +116,9 @@ public class GUI extends GameView{
 
     @Override
     public void showMessage(String message) {
-
     }
+
+    public void showAlert(String title, String content){}
 
     @Override
     public void startView() throws IOException {
@@ -177,6 +181,23 @@ public class GUI extends GameView{
         //List<ObjectiveCard> secretObjectiveCards = this.objectiveCards;
     }
 
+    // metodo che viene chiamato quando si clicca sul bottone chat
+    public void openChat(){
+        if(chatController == null){
+            chatController = new ChatController();
+            chatController.setGui(this);
+        }
+        chatController.showChat();
+    }
+    // metodo che viene chiamato quando si riceve un nuovo messaggio
+    public void updateChat(){
+        if(chatController == null){
+            chatController = new ChatController();
+            chatController.setGui(this);
+        }
+        chatController.updateChat();
+    }
+
 
     @Override
     public void secretObjectiveCardChoice(List<ObjectiveCard> objectiveCards) throws IOException {
@@ -200,6 +221,9 @@ public class GUI extends GameView{
             starterCardSideController.setGui(this);
             starterCardSideController.sideChoice(starterCard);
         }
+    }
+
+    public void activateChatButton(){
     }
 
     @Override
