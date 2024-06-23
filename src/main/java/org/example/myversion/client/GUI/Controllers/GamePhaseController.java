@@ -136,20 +136,21 @@ public class GamePhaseController extends GUIController {
                 URL fxmlLocation = getClass().getResource("/org/example/myversion/FXML/GamePhase.fxml");
 
                 FXMLLoader loader = new FXMLLoader(fxmlLocation);
+                loader.setController(this);
 
                 Parent root = loader.load();
 
 
                 //Common Objective
-                Image CommonObjective1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + gui.getCommonObjectiveCards().get(0).getId() + ".png"));
+                Image CommonObjective1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredResourceCard().getId() + ".png"));
                 co01.setImage(CommonObjective1);
-                Image CommonObjective2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + gui.getCommonObjectiveCards().get(1).getId() + ".png"));
+                Image CommonObjective2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredResourceCard().getId() + ".png"));
                 co02.setImage(CommonObjective2);
 
                 //Personal Objective
-                Image PersonalObjective1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + gui.getObjectiveCards().get(0).getId() + ".png"));
+                Image PersonalObjective1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredResourceCard().getId() + ".png"));
                 co03.setImage(PersonalObjective1);
-                Image PersonalObjective2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + gui.getObjectiveCards().get(1).getId() + ".png"));
+                Image PersonalObjective2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredResourceCard().getId() + ".png"));
                 co04.setImage(PersonalObjective2);
 
                 //Hand cards
