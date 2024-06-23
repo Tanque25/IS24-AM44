@@ -1,28 +1,16 @@
 package org.example.myversion.client;
 
 import jakarta.json.Json;
-import org.example.myversion.client.view.CardView;
 import org.example.myversion.client.view.GameView;
-import org.example.myversion.client.view.HandView;
 import org.example.myversion.messages.Message;
 import org.example.myversion.server.model.Coordinates;
-import org.example.myversion.server.model.Game;
-import org.example.myversion.server.model.decks.ObjectiveDeck;
-import org.example.myversion.server.model.decks.cards.Card;
-import org.example.myversion.server.model.decks.cards.GoldCard;
-import org.example.myversion.server.model.decks.cards.PlayableCard;
-import org.example.myversion.server.model.decks.cards.StarterCard;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.rmi.NotBoundException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -169,7 +157,6 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 } else {
                     gameView.drawCard(nickname, message.getGoldCard());
                 }
-
                 gameView.showUpdatedHand(nickname);
             }
             case "Scores" -> {
@@ -220,6 +207,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
             case "LobbyNotFull" ->{
                 System.out.println("In attesa di altri giocatori...");
             }
+
             case "WaitForOtherPlayers" ->
                     gameView.waitForOtherPlayers();
             case "MyTurn" -> {
@@ -233,6 +221,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 System.out.println("Choose the card to draw.");
                 try {
                     gameView.chooseCardToDraw();
+
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -244,7 +233,6 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                     throw new RuntimeException(e);
                 }
             }
-
             default -> throw new IllegalArgumentException("Invalid messageCode: ");
         }
     }
@@ -322,6 +310,28 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                     gameView.drawCard(nickname, message.getGoldCard());
                 }
             }
+            case "VisibleCards" ->{
+                gameView.setVisibleResourceCards(message.getResourceCards());
+                gameView.setCoveredResourceCard(message.getPlayableCard());
+                gameView.setVisibleGoldCards(message.getGoldCards());
+                gameView.setCoveredGoldCard(message.getGoldCard());
+
+                gameView.showVisibleCards();
+            }
+            case "Scores" -> {
+                gameView.showScores(message.getScores());
+            }
+            case "LastRound" -> {
+                gameView.showMessage("\nLast round\n");
+            }
+            case "FinalScores" -> {
+                gameView.showMessage("\nFinal scores:\n");
+                gameView.showScores(message.getScores());
+            }
+            case "EndGame" -> {
+                gameView.showEndGame(message.getArgument());
+            }
+
         }
     }
 

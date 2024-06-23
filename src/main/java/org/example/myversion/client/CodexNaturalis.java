@@ -16,12 +16,12 @@ public class CodexNaturalis {
     public static GameView gameView;
 
     public static void main(String[] args) throws IOException {
-        gameView = new GUI();
+        gameView = new CLIView();
         gameView.startView();
     }
 
     public static void setParameters(String hostname, String communicationProtocol, GameView gameView) {
-        //System.out.println("bella\n");
+
         CodexNaturalis.hostname = hostname;
         CodexNaturalis.communicationProtocol = communicationProtocol;
         CodexNaturalis.gameView = gameView;
@@ -49,9 +49,8 @@ public class CodexNaturalis {
         }
 
         client.setGameView(gameView);
-        //System.out.println("qui passa2");
+
         gameView.setClient(client);
-        //System.out.println("qui passa3");
     }
 
     /**
