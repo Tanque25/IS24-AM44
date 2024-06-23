@@ -42,7 +42,7 @@ public class GUI extends GameView{
     private StarterCardSideController starterCardSideController;
     private ChooseObjectiveController chooseObjectiveController;
     private ChosePlayerNumberController chosePlayerNumberController;
-    private GamePhaseController gameController;
+    private GamePhaseController gamePhaseController;
 
     private boolean playerNumberChoosen = true;
     private boolean playerStarterChosen = false;
@@ -211,11 +211,10 @@ public class GUI extends GameView{
     public void showMyPlayArea() {
         playerHand = getHandsMap();
 
-        gameController =  new GamePhaseController();
-        gameController.setGui(this);
+        gamePhaseController =  new GamePhaseController();
+        gamePhaseController.setGui(this);
         //playerHand, commonObjectiveCards, (secret)objectiveCards, deckG, deckRes,
-        gameController.showGame(playerHand, objectiveCards, commonObjectiveCards, visibleGoldCards, visiblePlayableCards);
-
+        gamePhaseController.showGame(playerHand, objectiveCards, commonObjectiveCards, visibleGoldCards, visiblePlayableCards);
     }
 
     @Override
