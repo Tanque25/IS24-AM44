@@ -66,6 +66,7 @@ public class ChooseObjectiveController extends GUIController {
                     gui.getClient().sendMessage(new Message("ObjectiveCardChoice", objectiveCards.get(0)));
                     button0.setDisable(true);
                     button1.setDisable(true);
+                    gui.showMyPlayArea();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -75,6 +76,7 @@ public class ChooseObjectiveController extends GUIController {
                     gui.getClient().sendMessage(new Message("ObjectiveCardChoice", objectiveCards.get(1)));
                     button0.setDisable(true);
                     button1.setDisable(true);
+                    gui.showMyPlayArea();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

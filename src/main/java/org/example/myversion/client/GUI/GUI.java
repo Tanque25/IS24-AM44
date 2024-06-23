@@ -24,6 +24,7 @@ import org.example.myversion.server.serverController.GameController;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -36,20 +37,27 @@ public class GUI extends GameView{
     private Client client;
     private WaitForOtherPlayersController waitForOtherPlayersController;
     private ShowCommonObjectivesController showCommonObjectivesController;
-    public GamePhaseController gameController;
+    //public GamePhaseController gameController;
     private LoginController loginController;
     private StarterCardSideController starterCardSideController;
     private ChooseObjectiveController chooseObjectiveController;
     private ChosePlayerNumberController chosePlayerNumberController;
+    private GamePhaseController gameController;
 
     private boolean playerNumberChoosen = true;
     private boolean playerStarterChosen = false;
     private boolean playerObjectiveSeen = false;
-    List<ObjectiveCard> objectiveCards;
+    List<ObjectiveCard> objectiveCards; //secretObjectiveCards
     StarterCard starterCard;
+    List<PlayableCard> visiblePlayableCards;
+    List<GoldCard> visibleGoldCards;
 
     private Stage stage;
     private Parent root;
+    Map<String, List<PlayableCard>> playerHand;
+    List<ObjectiveCard> commonObjectiveCards;
+
+
 
     public GUI(){
         CodexNaturalis.setParameters("localhost", "tcp", this);
@@ -89,6 +97,9 @@ public class GUI extends GameView{
     public List<ObjectiveCard> getObjectiveCards() {
         return objectiveCards;
     }
+    public List<ObjectiveCard> getCommonObjectiveCards() {
+        return commonObjectiveCards;
+    }
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -104,8 +115,6 @@ public class GUI extends GameView{
     public void showMessage(String message) {
 
     }
-
-
 
     @Override
     public void startView() throws IOException {
@@ -148,8 +157,10 @@ public class GUI extends GameView{
 
     @Override
     public void showVisibleCards(){
-        List<PlayableCard> visiblePlayableCards = getVisibleResourceCards();
-        List<GoldCard> visibleGoldCards = getVisibleGoldCards();
+        //List<PlayableCard> visiblePlayableCards = getVisibleResourceCards();
+        //List<GoldCard> visibleGoldCards = getVisibleGoldCards();
+        visibleGoldCards = getVisibleGoldCards();
+        visiblePlayableCards = getVisibleResourceCards();
         showCommonObjectivesController = new ShowCommonObjectivesController();
         showCommonObjectivesController.setGui(this);
         showCommonObjectivesController.displayCards(visiblePlayableCards, visibleGoldCards);
@@ -158,13 +169,14 @@ public class GUI extends GameView{
 
     @Override
     public void showCommonObjectives(List<ObjectiveCard> objectiveCards) {
-
+        List<ObjectiveCard> commonObjectiveCards = this.objectiveCards;
     }
 
     @Override
     public void showSecretObjectives(List<ObjectiveCard> objectiveCards) {
-
+        //List<ObjectiveCard> secretObjectiveCards = this.objectiveCards;
     }
+
 
     @Override
     public void secretObjectiveCardChoice(List<ObjectiveCard> objectiveCards) throws IOException {
@@ -195,28 +207,14 @@ public class GUI extends GameView{
 
     }
 
-    public HBox showMyHand(List<PlayableCard> hand) {
-        HBox hbox = new HBox();
-        for (PlayableCard card : hand) {
-            Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + Objects.toString(card.getId()) + ".png").toExternalForm());
-            ImageView imgView = new ImageView(img);
-            hbox.getChildren().add(imgView);
-        }
-        return hbox;
-    }
-
-    public HBox showMyHandBack(List<PlayableCard> hand) {
-        HBox hbox = new HBox();
-        for (PlayableCard card : hand) {
-            Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_back" + Objects.toString(card.getId()) + ".png").toExternalForm());
-            ImageView imgView = new ImageView(img);
-            hbox.getChildren().add(imgView);
-        }
-        return hbox;
-    }
-
     @Override
     public void showMyPlayArea() {
+        playerHand = getHandsMap();
+
+        gameController =  new GamePhaseController();
+        gameController.setGui(this);
+        //playerHand, commonObjectiveCards, (secret)objectiveCards, deckG, deckRes,
+        gameController.showGame(playerHand, objectiveCards, commonObjectiveCards, visibleGoldCards, visiblePlayableCards);
 
     }
 
@@ -259,13 +257,80 @@ public class GUI extends GameView{
     public void showEndGame(String winner) {
 
     }
-    /*public void switchToGameScene(ActionEvent event) throws IOException {
-        URL fxmlLocation = (new File("src/main/resources/org/example/myversion/FXML/Game.fxml")).toURI().toURL();
-        root = FXMLLoader.load(Objects.requireNonNull(fxmlLocation));
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+
+    /*public HBox showMyHand(List<PlayableCard> hand) {
+        HBox hbox = new HBox();
+        for (PlayableCard card : hand) {
+            Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + Objects.toString(card.getId()) + ".png").toExternalForm());
+            ImageView imgView = new ImageView(img);
+            hbox.getChildren().add(imgView);
+        }
+        return hbox;
+    }
+
+    public HBox showMyHandBack(List<PlayableCard> hand) {
+        HBox hbox = new HBox();
+        for (PlayableCard card : hand) {
+            Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_back" + Objects.toString(card.getId()) + ".png").toExternalForm());
+            ImageView imgView = new ImageView(img);
+            hbox.getChildren().add(imgView);
+        }
+        return hbox;
     }*/
 
+    /*public void loadScene(GameScene sceneType) throws IOException {
+        Platform.runLater(() -> {
+            String path;
+
+            switch (sceneType) {
+                case LOGIN:
+                    path = "/Login.fxml";
+                    break;
+                case WAIT_FOR_OTHER_PLAYERS:
+                    path = "/WaitForOtherPlayers.fxml";
+                    break;
+                case SHOW_COMMON_OBJECTIVES:
+                    path = "/ShowCommonObjective.fxml";
+                    break;
+                case GAME_PHASE:
+                    path = "/GamePhase.fxml";
+                    break;
+                case CHOOSE_OBJECTIVE:
+                    path = "/ChooseObjectiveCard.fxml";
+                    break;
+                case CHOOSE_PLAYER_NUMBER:
+                    path = "/ChoosePlayerNumber.fxml";
+                    break;
+                case CHOOSE_STARTER:
+                    path = "/StarterCardSide.fxml";
+                    break;
+                case END_GAME:
+                    path = "/EndGame.fxml";
+                    break;
+                default:
+                    path = "/Login.fxml";
+            }
+
+            try {
+               // URL fxmlLocation = new File("src/main/resources/org/example/myversion/FXML" + path).toURI().toURL();
+                FXMLLoader loader = new FXMLLoader(GUI.class.getResource("/FXML/"+path));
+                loader.setController(this);
+                Parent root = loader.load();
+                scene.setRoot(root);
+
+                /*this.getStage().setTitle("Codex Naturalis");
+                this.getStage().setScene(new Scene(root));
+                this.getStage().show();
+
+                genericController = loader.getController();
+                genericController.setStage(stage);
+                stage.setScene(scene);
+                stage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+    }*/
 }
