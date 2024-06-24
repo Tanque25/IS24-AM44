@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.example.myversion.server.model.Coordinates;
+import org.example.myversion.server.model.decks.cards.Card;
 import org.example.myversion.server.model.decks.cards.GoldCard;
 import org.example.myversion.server.model.decks.cards.ObjectiveCard;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
@@ -313,6 +314,47 @@ public interface CommunicationInterface extends Remote {
                 System.err.println("Error while sending game to " + nickname);
             }
         }
+    }
+
+    default void startRestoredGame() throws RemoteException {
+        System.out.println("Starting restored game.");
+
+        controller.setGameState(GameState.IN_GAME);
+
+        HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
+        HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
+
+        // Getting the drawable cards
+        List<PlayableCard> visibleResourceCards = controller.getVisibleResourceCards();
+        PlayableCard coveredResourceCard = controller.getRsourceDeckPeek();
+        List<GoldCard> visibleGoldCards = controller.getVisibleGoldCards();
+        GoldCard coveredGoldCard = controller.getGoldDeckPeek();
+
+        // Getting the common objectives
+        List<ObjectiveCard> commonObjectiveCards = controller.getCommonObjectiveCards();
+
+        // Getting the scores
+        Map<String, Integer> scores = controller.getScores();
+
+        // Getting the hands map
+        Map<String, List<PlayableCard>> handsMap = controller.getHandsMap();
+
+        // Getting the play areas map
+        Map<String, Card[][]> playAreasMap = controller.getPlayAreasMap();
+
+        // Send restored game to all tcp clients
+        for (String nickname : tcpClients.keySet()) {
+            Message visibleCardsMessage = new Message("VisibleCards", visibleResourceCards, coveredResourceCard, visibleGoldCards, coveredGoldCard);
+            tcpClients.get(nickname).sendMessageToClient(visibleCardsMessage);
+            Message commmonObjectiveCardsMessage = new Message("CommonObjectiveCards", commonObjectiveCards.get(0), commonObjectiveCards.get(1));
+            tcpClients.get(nickname).sendMessageToClient(commmonObjectiveCardsMessage);
+            Message gameDataMessage = new Message("GameData", scores, handsMap, playAreasMap);
+            tcpClients.get(nickname).sendMessageToClient(gameDataMessage);
+        }
+
+        // TODO: same logic for RMI clients
+
+        startTurn();
     }
 
     default void sendMessage(Message message,ClientCommunicationInterface client) throws RemoteException{

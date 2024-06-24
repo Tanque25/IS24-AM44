@@ -2,12 +2,17 @@ package org.example.myversion.server.serverController;
 
 import org.example.myversion.client.ClientCommunicationInterface;
 import org.example.myversion.messages.Message;
+import org.example.myversion.server.model.Board;
 import org.example.myversion.server.model.Coordinates;
 import org.example.myversion.server.model.Game;
 import org.example.myversion.server.model.Player;
+import org.example.myversion.server.model.decks.GoldDeck;
+import org.example.myversion.server.model.decks.ResourceDeck;
 import org.example.myversion.server.model.decks.cards.*;
 import org.example.myversion.server.model.exceptions.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.*;
@@ -17,7 +22,6 @@ import java.util.*;
  */
 public class GameController {
     public static Game game;
-    public List<String> disconnectedPlayers;
     public HashMap<String, Integer> pongLost;
     public List<String> pongReceived;
     private HashMap<String, HandleClientSocket> tcpClients;
@@ -28,24 +32,33 @@ public class GameController {
     private static int readyPlayersNumber = 0;
     private Player lastPlayer;
     private HashMap <Player, Integer> playerRoundsPlayed;
+
+    // Game backup attributes
+    public List<String> disconnectedPlayers;
     public static final String BACKUP_FILE = "backUp.json";
+    private Map<String, List<PlayableCard>> handsMap;
+    private Map<String, Card[][]> playAreasMap;
 
     public GameController() {
         this.game = new Game();
-        this.disconnectedPlayers = new ArrayList<>();
         this.pongLost = new HashMap<>();
         this.pongReceived = new ArrayList<>();
         this.tcpClients = new HashMap<>();
         this.rmiClients = new HashMap<>();
         this.playersNumber = 0;
-        this.playerRoundsPlayed= new HashMap<>();
+        this.playerRoundsPlayed = new HashMap<>();
         this.gameState = GameState.LOGIN;
         this.lastPlayer = null;
+
+        this.disconnectedPlayers = new ArrayList<>();
+        this.handsMap = new HashMap<>();
+        this.playAreasMap = new HashMap<>();
     }
 
     /**
      * Checks if the nickname is already present in the list of players or among the disconnected players
      * and returns 0, -1 respectively. If the username is available it returns 1.
+     *
      * @param nickname the username chosen by the player
      * @return a number representing the availability of the username
      */
@@ -66,7 +79,6 @@ public class GameController {
     }
 
     public void addPlayer(String nickname){
-        System.out.println("---addPlayer: " + nickname);
         if (gameIsEmpty()) {
             game.newPlayer(nickname);
         } else {
@@ -314,7 +326,6 @@ public class GameController {
             if(game.getCurrentPlayer().getNickname().equals(nickname)){
 
                 game.drawCard(game.getCurrentPlayer(), chosenCard);
-                playerRoundsPlayed.put(game.getCurrentPlayer(), playerRoundsPlayed.get(game.getCurrentPlayer()) + 1);
 
                 if (game.getCurrentPlayer().equals(lastPlayer)) {
                     roundsPlayed++;
@@ -340,10 +351,7 @@ public class GameController {
     }
 
     public boolean gameIsEmpty(){
-        if(game.getPlayers().isEmpty()){
-            return true;
-        }
-        return false;
+        return game.getPlayers().isEmpty();
     }
 
     /**
@@ -495,12 +503,101 @@ public class GameController {
         new Message("Backup", getScores(),
                 game.getCommonObjectives().get(0), game.getCommonObjectives().get(1),
                 getSecretObjectives(),
+                game.getResourceDeck(), game.getGoldDeck(),
                 game.getVisibleResourceCards(), game.getResourceDeckPeek(),
                 game.getVisibleGoldCards(), game.getGoldDeckPeek(),
                 getPlayersHandsMap(), getPlayAreas(),
-                game.getCurrentPlayer().getNickname(), lastPlayer.getNickname(), game.isLastTurn()
+                game.getCurrentPlayer().getNickname(), lastPlayer.getNickname(), gameState
         );
         System.out.println("Game saved.");
+    }
+
+    /**
+     * Checks whether the game has been saved or not. This is done by
+     * checking if the JSON that contains the state of the game exists.
+     *
+     * @return true if the game has been saved, false otherwise
+     */
+    public boolean isGameSaved() {
+        File jsonGame = new File(BACKUP_FILE);
+        return jsonGame.exists();
+    }
+
+    /**
+     * Loads the game saved in the JSON file.
+     *
+     * @throws IOException if the file does not exist
+     */
+    public void loadLastGame() throws IOException {
+        File jsonGame = new File(BACKUP_FILE);
+
+        // Parse the JsonObject into a Message
+        Message lastGame = new Message(jsonGame);
+
+        // Restore the game resource and gold deck
+        game.setResourceDeck(new ResourceDeck(lastGame.getResourceDeck()));
+        game.setGoldDeck(new GoldDeck(lastGame.getGoldDeck()));
+
+        // Restore the common objectives
+        game.setCommonObjectives(lastGame.getObjectiveCards());
+
+        // Restore the visible cards
+        game.setVisibleResourceCards(lastGame.getResourceCards());
+        game.setVisibleGoldCards(lastGame.getGoldCards());
+
+        // Initialize the game players and their scores
+        Map<String, Integer> scores = lastGame.getScores();
+        Map<String, ObjectiveCard> secretObjectiveCards = lastGame.getSecretObjectiveCards();
+        Board board = game.getBoard();
+
+        for (String playerNickname : scores.keySet()) {
+            game.newPlayer(playerNickname);
+            Player player = getPlayerFromNickname(playerNickname);
+            if (player != null) {
+                board.getScores().put(player, scores.get(playerNickname));
+                disconnectedPlayers.add(playerNickname); // Add the game players to the disconnected players so that they can rejoin
+            }
+        }
+
+        // Set the game players number
+        playersNumber = game.getPlayers().size();
+
+        // Restore the secret objectives
+        Map<String, ObjectiveCard> secretObjectives = lastGame.getSecretObjectiveCards();
+        for (Player player : game.getPlayers()) {
+            if (secretObjectives.containsKey(player.getNickname())) {
+                game.setPlayerSecretObjective(player, secretObjectives.get(player.getNickname()));
+            }
+        }
+
+        // Restore the players' hands
+        game.restorePlayersHands(lastGame.getPlayersHandsMap());
+        this.handsMap = lastGame.getPlayersHandsMap();
+
+        // Restore the players' play areas
+        game.restorePlayersPlayAreas(lastGame.getPlayAreasMap());
+        this.playAreasMap = lastGame.getPlayAreasMap();
+
+        // Restore the current player
+        String currentPlayerNickname = lastGame.getJson().getString("currentPlayer");
+        if (currentPlayerNickname != null) {
+            game.setCurrentPlayer(getPlayerFromNickname(currentPlayerNickname));
+        }
+
+        // Restore the last player
+        String lastPlayerNickname = lastGame.getJson().getString("lastPlayer");
+        if (lastPlayerNickname != null) {
+            lastPlayer = getPlayerFromNickname(lastPlayerNickname);
+        }
+
+        // Restore the last turn status
+        String lastRoundState = lastGame.getJson().getString("lastRound");
+        if (lastRoundState != null) {
+            gameState = GameState.valueOf(lastRoundState);
+        }
+
+        System.out.println("Game loaded successfully.");
+
     }
 
     private Map<String, ObjectiveCard> getSecretObjectives() {
@@ -521,5 +618,17 @@ public class GameController {
         }
 
         return playAreas;
+    }
+
+    public List<String> getDisconnectedPlayers() {
+        return disconnectedPlayers;
+    }
+
+    public Map<String, List<PlayableCard>> getHandsMap() {
+        return handsMap;
+    }
+
+    public Map<String, Card[][]> getPlayAreasMap() {
+        return playAreasMap;
     }
 }

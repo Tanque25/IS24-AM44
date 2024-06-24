@@ -3,13 +3,11 @@ package org.example.myversion.messages;
 import org.example.myversion.server.model.Coordinates;
 import org.example.myversion.server.model.decks.cards.*;
 import org.example.myversion.server.model.enumerations.*;
+import org.example.myversion.server.serverController.GameState;
 
 import jakarta.json.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.example.myversion.server.serverController.GameController.BACKUP_FILE;
 
@@ -29,6 +27,17 @@ public class Message implements Serializable {
      */
     public Message(JsonObject jsonObject) {
         this.json = jsonObject;  // Assume jsonObject is valid and properly structured.
+    }
+
+    /**
+     * Constructor for a normal json message from a file.
+     *
+     * @param jsonFile the json file.
+     * @throws IOException if the file is not found.
+     */
+    public Message(File jsonFile) throws IOException {
+        FileReader reader = new FileReader(jsonFile);
+        this.json = Json.createReader(reader).readObject();
     }
 
     /**
@@ -282,10 +291,11 @@ public class Message implements Serializable {
     public Message(String messageCode, Map<String, Integer> scores,
                    ObjectiveCard commonObjectiveCard1, ObjectiveCard commonObjectiveCard2,
                    Map<String, ObjectiveCard> secretObjectiveCards,
+                   Stack<PlayableCard> resourceDeck, Stack<GoldCard> goldDeck,
                    List<PlayableCard> visibleResourceCards, PlayableCard coveredResourceCard,
                    List<GoldCard> visibleGoldCards, GoldCard coveredGoldCard,
                    Map<String, List<PlayableCard>> playersHands, Map<String, Card[][]> playAreas,
-                   String currentPlayer, String lastPlayer, boolean lastTurn) {
+                   String currentPlayer, String lastPlayer, GameState lastRound) {
         JsonObjectBuilder jsonBuilder = Json.createObjectBuilder()
                 .add("messageCode", messageCode);
 
@@ -303,21 +313,24 @@ public class Message implements Serializable {
         // Save secret objectives
         JsonObjectBuilder secretObjectivesBuilder = Json.createObjectBuilder();
         for (Map.Entry<String, ObjectiveCard> entry : secretObjectiveCards.entrySet()) {
+            System.out.println(entry.getValue());
             secretObjectivesBuilder.add(entry.getKey(), createObjectiveCardJson(entry.getValue()));
         }
         jsonBuilder.add("secretObjectives", secretObjectivesBuilder.build());
 
+        // Save resource deck
+        jsonBuilder.add("resourceDeck", createResourceDeckJson(resourceDeck));
+
+        // Save gold deck
+        jsonBuilder.add("goldDeck", createGoldDeckJson(goldDeck));
+
         // Save cards to draw options
-        JsonObjectBuilder visibleCardsBuilder = Json.createObjectBuilder();
         // Serialize the visible resource cards
-        visibleCardsBuilder.add("playableCard1", createPlayableCardJson(visibleResourceCards.getFirst()));
-        visibleCardsBuilder.add("playableCard2", createPlayableCardJson(visibleResourceCards.getLast()));
-        visibleCardsBuilder.add("playableCard", createPlayableCardJson(coveredResourceCard)); // Top card of the resource deck
+        jsonBuilder.add("playableCard1", createPlayableCardJson(visibleResourceCards.getFirst()));
+        jsonBuilder.add("playableCard2", createPlayableCardJson(visibleResourceCards.getLast()));
         // Serialize the visible gold cards
-        visibleCardsBuilder.add("goldCard1", createGoldCardJson(visibleGoldCards.getFirst()));
-        visibleCardsBuilder.add("goldCard2", createGoldCardJson(visibleGoldCards.getLast()));
-        visibleCardsBuilder.add("goldCard", createGoldCardJson(coveredGoldCard)); // Top card of the gold deck
-        jsonBuilder.add("visibleCards", visibleCardsBuilder.build());
+        jsonBuilder.add("goldCard1", createGoldCardJson(visibleGoldCards.getFirst()));
+        jsonBuilder.add("goldCard2", createGoldCardJson(visibleGoldCards.getLast()));
 
         // Save the players' hands
         JsonObjectBuilder playersHandsBuilder = Json.createObjectBuilder();
@@ -336,7 +349,7 @@ public class Message implements Serializable {
         // Save turn info
         jsonBuilder.add("currentPlayer", currentPlayer);
         jsonBuilder.add("lastPlayer", lastPlayer);
-        jsonBuilder.add("lastTurn", lastTurn);
+        jsonBuilder.add("lastRound", lastRound.name());
 
         this.json = jsonBuilder.build();
 
@@ -345,6 +358,37 @@ public class Message implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Constructs a message to send the restored game to all the players.
+     */
+    public Message(String messageCode, Map<String, Integer> scores, Map<String, List<PlayableCard>> playersHands, Map<String, Card[][]> playAreas) {
+        JsonObjectBuilder jsonBuilder = Json.createObjectBuilder()
+                .add("messageCode", messageCode);
+
+        // Send the scores
+        JsonObjectBuilder scoresBuilder = Json.createObjectBuilder();
+        for (Map.Entry<String, Integer> entry : scores.entrySet()) {
+            scoresBuilder.add(entry.getKey(), entry.getValue());
+        }
+        jsonBuilder.add("scores", scoresBuilder.build());
+
+        // Send the players' hands
+        JsonObjectBuilder playersHandsBuilder = Json.createObjectBuilder();
+        for (Map.Entry<String, List<PlayableCard>> entry : playersHands.entrySet()) {
+            playersHandsBuilder.add(entry.getKey(), createHandJson(entry.getValue()));
+        }
+        jsonBuilder.add("playersHands", playersHandsBuilder);
+
+        // Send players' play areas
+        JsonObjectBuilder playAreasBuilder = Json.createObjectBuilder();
+        for (Map.Entry<String, Card[][]> entry : playAreas.entrySet()) {
+            playAreasBuilder.add(entry.getKey(), createPlayAreaJson(entry.getValue()));
+        }
+        jsonBuilder.add("playAreas", playAreasBuilder.build());
+
+        this.json = jsonBuilder.build();
     }
 
 ///////////////////////////////////////////////////////UTILS////////////////////////////////////////////////////////
@@ -360,7 +404,11 @@ public class Message implements Serializable {
         for (Map.Entry<CornerPosition, Corner> entry : corners.entrySet()) {
             CornerPosition position = entry.getKey();
             Corner corner = entry.getValue();
-            cornerBuilder.add(position.toString(), corner.getCornerContent().toString());
+            JsonObject cornerJson = Json.createObjectBuilder()
+                    .add("content", corner.getCornerContent().toString())
+                    .add("covered", corner.isCovered())
+                    .build();
+            cornerBuilder.add(position.toString(), cornerJson);
         }
         return cornerBuilder.build();
     }
@@ -528,6 +576,22 @@ public class Message implements Serializable {
         return playAreaBuilder.build();
     }
 
+    private JsonArray createResourceDeckJson(Stack<PlayableCard> resourceDeck) {
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        for (PlayableCard card : resourceDeck) {
+            arrayBuilder.add(createPlayableCardJson(card));
+        }
+        return arrayBuilder.build();
+    }
+
+    private JsonArray createGoldDeckJson(Stack<GoldCard> goldDeck) {
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        for (GoldCard card : goldDeck) {
+            arrayBuilder.add(createGoldCardJson(card));
+        }
+        return arrayBuilder.build();
+    }
+
 ///////////////////////////////////////////////////////GETTERS////////////////////////////////////////////////////////
 
     /**
@@ -670,6 +734,19 @@ public class Message implements Serializable {
         objectiveCards.add(card2);
 
         return objectiveCards;
+    }
+
+    public Map<String, ObjectiveCard> getSecretObjectiveCards() {
+        Map<String, ObjectiveCard> secretObjectives = new HashMap<>();
+        JsonObject secretObjectivesJson = json.getJsonObject("secretObjectives");
+
+        for (String key : secretObjectivesJson.keySet()) {
+            JsonObject objectiveCardJson = secretObjectivesJson.getJsonObject(key);
+            ObjectiveCard objectiveCard = createObjectiveCardFromJson(objectiveCardJson);
+            secretObjectives.put(key, objectiveCard);
+        }
+
+        return secretObjectives;
     }
 
     private ObjectiveCard createObjectiveCardFromJson(JsonObject objectiveCardJson) {
@@ -856,9 +933,19 @@ public class Message implements Serializable {
     private Map<CornerPosition, Corner> getCornerMap(JsonObject jsonObject) {
         Map<CornerPosition, Corner> corners = new HashMap<>();
         for (String key : jsonObject.keySet()) {
-            corners.put(CornerPosition.valueOf(key), new Corner(createCornerContent(jsonObject.getString(key))));
+            JsonObject cornerJson = jsonObject.getJsonObject(key);
+            Corner corner = createCornerFromJson(cornerJson);
+            corners.put(CornerPosition.valueOf(key), corner);
         }
         return corners;
+    }
+
+    private Corner createCornerFromJson(JsonObject cornerJson) {
+        CornerContent cornerContent = createCornerContent(cornerJson.getString("content"));
+        boolean covered = cornerJson.getBoolean("covered");
+        Corner corner = new Corner(cornerContent);
+        corner.setCovered(covered);
+        return corner;
     }
 
     /**
@@ -903,8 +990,8 @@ public class Message implements Serializable {
      *
      * @return the scores map.
      */
-    public Map<String, Integer> getScores() {
-        Map<String, Integer> scores = new HashMap<>();
+    public HashMap<String, Integer> getScores() {
+        HashMap<String, Integer> scores = new HashMap<>();
         JsonObject scoresJson = json.getJsonObject("scores");
 
         for (String key : scoresJson.keySet()) {
@@ -914,7 +1001,9 @@ public class Message implements Serializable {
         return scores;
     }
 
-    // Add this method to deserialize the play areas
+    /**
+     * Method to deserialize the play areas
+     */
     private Card[][] createPlayAreaFromJson(JsonObject playAreaJson) {
         Card[][] playArea = new Card[81][81]; // Assuming 81x81 grid as per your model
         for (String key : playAreaJson.keySet()) {
@@ -925,15 +1014,76 @@ public class Message implements Serializable {
                 if (jsonValue != JsonValue.NULL) {
                     JsonObject cardJson = jsonValue.asJsonObject();
                     int id = cardJson.getInt("id");
-                    if (id <= 40) { // Assuming ids 1-40 are for PlayableCard
+                    if (id <= 40) {
                         playArea[x][y] = createPlayableCardFromJson(cardJson);
-                    } else { // Assuming ids 41 and above are for GoldCard
+                    } else if (id <= 80) {
                         playArea[x][y] = createGoldCardFromJson(cardJson);
+                    } else if (id <= 86) {
+                        playArea[x][y] = createStarterCardFromJson(cardJson);
                     }
                 }
             }
         }
         return playArea;
+    }
+
+    public Map<String, Card[][]> getPlayAreasMap() {
+        Map<String, Card[][]> playAreasMap = new HashMap<>();
+        JsonObject playAreasJson = json.getJsonObject("playAreas");
+
+        for (String key : playAreasJson.keySet()) {
+            JsonObject playAreaJson = playAreasJson.getJsonObject(key);
+            playAreasMap.put(key, createPlayAreaFromJson(playAreaJson));
+        }
+        return playAreasMap;
+    }
+
+    /**
+     * Method to deserialize the resource deck
+     */
+    public Stack<PlayableCard> createResourceDeckFromJson(JsonArray resourceDeckJson) {
+        Stack<PlayableCard> resourceDeck = new Stack<>();
+        for (JsonValue jsonValue : resourceDeckJson) {
+            JsonObject cardJson = jsonValue.asJsonObject();
+            PlayableCard card = createPlayableCardFromJson(cardJson);
+            resourceDeck.push(card);
+        }
+        return resourceDeck;
+    }
+
+    /**
+     * Method to deserialize the resource deck
+     */
+    public Stack<GoldCard> createGoldDeckFromJson(JsonArray goldDeckJson) {
+        Stack<GoldCard> goldDeck = new Stack<>();
+        for (JsonValue jsonValue : goldDeckJson) {
+            JsonObject cardJson = jsonValue.asJsonObject();
+            GoldCard card = createGoldCardFromJson(cardJson);
+            goldDeck.push(card);
+        }
+        return goldDeck;
+    }
+
+    public Stack<PlayableCard> getResourceDeck() {
+        Stack<PlayableCard> resourceDeck = new Stack<>();
+        JsonArray resourceDeckJson = json.getJsonArray("resourceDeck");
+
+        for (int i = 0; i < resourceDeckJson.size(); i++) {
+            JsonObject cardJson = resourceDeckJson.getJsonObject(i);
+            resourceDeck.push(createPlayableCardFromJson(cardJson));
+        }
+        return resourceDeck;
+    }
+
+    public Stack<GoldCard> getGoldDeck() {
+        Stack<GoldCard> goldDeck = new Stack<>();
+        JsonArray goldDeckJson = json.getJsonArray("goldDeck");
+
+        for (int i = 0; i < goldDeckJson.size(); i++) {
+            JsonObject cardJson = goldDeckJson.getJsonObject(i);
+            goldDeck.push(createGoldCardFromJson(cardJson));
+        }
+        return goldDeck;
     }
 
 }

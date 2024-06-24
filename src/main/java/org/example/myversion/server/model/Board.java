@@ -19,7 +19,7 @@ public class Board {
      * Constructs a new Board object with an empty score mapping.
      */
     public Board() {
-        this.scores = new HashMap<Player, Integer>();
+        this.scores = new HashMap<>();
     }
 
     /**

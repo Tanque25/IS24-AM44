@@ -130,6 +130,10 @@ public class Player {
         }
     }
 
+    public void initializePlayArea(Card[][] playArea) {
+        this.playArea = playArea;
+    }
+
     /**
      * Sets the secret objective card for the player.
      *
@@ -178,18 +182,37 @@ public class Player {
         int y = coordinates.getY();
 
         playArea[x][y] = placedCard;
-        hand.remove(placedCard);
+
+        // Remove the played card from the player's hand
+        for (PlayableCard card : hand)
+            if (card.getId() == placedCard.getId()) {
+                hand.remove(card);
+                break;
+            }
+
         updateStock(placedCard);
 
-        // Update corner status of adjacent cards
-        if (playArea[x - 1][y - 1] != null)
-            playArea[x - 1][y - 1].getCorners().get(CornerPosition.BOTTOM_RIGHT).setCovered(true);
-        if (playArea[x - 1][y + 1] != null)
-            playArea[x - 1][y + 1].getCorners().get(CornerPosition.BOTTOM_LEFT).setCovered(true);
-        if (playArea[x + 1][y - 1] != null)
-            playArea[x + 1][y - 1].getCorners().get(CornerPosition.UP_RIGHT).setCovered(true);
-        if (playArea[x + 1][y + 1] != null)
-            playArea[x + 1][y + 1].getCorners().get(CornerPosition.UP_LEFT).setCovered(true);
+        // Update corner status of adjacent cards and remove content from stock
+        if (playArea[x - 1][y - 1] != null) {
+            Corner corner = playArea[x - 1][y - 1].getCorners().get(CornerPosition.BOTTOM_RIGHT);
+            corner.setCovered(true);
+            removeFromStock(corner.getCornerContent());
+        }
+        if (playArea[x - 1][y + 1] != null) {
+            Corner corner = playArea[x - 1][y + 1].getCorners().get(CornerPosition.BOTTOM_LEFT);
+            corner.setCovered(true);
+            removeFromStock(corner.getCornerContent());
+        }
+        if (playArea[x + 1][y - 1] != null) {
+            Corner corner = playArea[x + 1][y - 1].getCorners().get(CornerPosition.UP_RIGHT);
+            corner.setCovered(true);
+            removeFromStock(corner.getCornerContent());
+        }
+        if (playArea[x + 1][y + 1] != null) {
+            Corner corner = playArea[x + 1][y + 1].getCorners().get(CornerPosition.UP_LEFT);
+            corner.setCovered(true);
+            removeFromStock(corner.getCornerContent());
+        }
     }
 
     public boolean hasEnoughStock(GoldCard playedCard) throws InvalidMoveException {
@@ -339,6 +362,14 @@ public class Player {
         }
     }
 
+    // This method removes the given corner content from the stock
+    private void removeFromStock(CornerContent cornerContent) {
+        // Only remove from stock if the cornerContent is not an instance of CornerVisibility
+        if (!(cornerContent instanceof CornerVisibility)) {
+            stock.computeIfPresent(cornerContent, (k, v) -> v > 0 ? v - 1 : 0);
+        }
+    }
+
     /**
      * Adds a drawn card to the player's hand.
      *
@@ -365,8 +396,8 @@ public class Player {
 
         // Points given by common objective cards
         for (ObjectiveCard objective : commonObjectives) {
-                int commonObjectiveScore = objective.calculateObjectiveCardPoints(stock, playArea, objective);
-                objectiveScore += commonObjectiveScore;
+            int commonObjectiveScore = objective.calculateObjectiveCardPoints(stock, playArea, objective);
+            objectiveScore += commonObjectiveScore;
         }
 
         // Points given by secret objective card

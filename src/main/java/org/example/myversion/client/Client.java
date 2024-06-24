@@ -52,21 +52,14 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
     public void handleMessage(Message message)throws RemoteException {
         String messageCode = message.getMessageCode();
 
-//        if(!messageCode.equals("Pong")) {
-//            System.out.println("Received TCP message: with messageCode " + messageCode);
-//        }
-
         switch (messageCode) {
-            case "Pong" -> {
-                serverConnection = true;
-            }
             case "Nickname" -> {
                 //setNickname(message.getArgument());
                 // TODO: Implement the connection check on a different channel on the server side
                 // checkServerConnection();
             }
             case "GameAlreadyStarted" ->
-                gameView.showGameAlreadyStartedMessage();
+                    gameView.showGameAlreadyStartedMessage();
             case "PlayersNumber" ->{
                 try{
                     gameView.playersNumberChoice();
@@ -82,7 +75,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 }
             }
             case "WaitForOtherPlayers" ->
-                gameView.waitForOtherPlayers();
+                    gameView.waitForOtherPlayers();
             case "VisibleCards" ->{
                 gameView.setVisibleResourceCards(message.getResourceCards());
                 gameView.setCoveredResourceCard(message.getPlayableCard());
@@ -100,7 +93,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 }
             }
             case "CommonObjectiveCards" ->
-                gameView.showCommonObjectives(message.getObjectiveCards());
+                    gameView.showCommonObjectives(message.getObjectiveCards());
             case "SecretObjectiveCardsOptions" -> {
                 try {
                     gameView.showSecretObjectives(message.getObjectiveCards());
@@ -113,6 +106,14 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 gameView.setHandsMap(message.getPlayersHandsMap());
 
                 gameView.initializePlayAreas(message.getStarterCardsMap());
+
+                gameView.showOthersHandsAndPlayAreas(); // Questi tre metodi verranno compattati in GUI, nel senso
+                gameView.showMyHand();                  // che uno solo farà tutte e tre le cose. Si potrebbe mettere in CLI
+                gameView.showMyPlayArea();              // un metodo che le chiama tutte e 3 per avere interfaccia comune
+            }
+            case "GameData" -> {
+                gameView.setHandsMap(message.getPlayersHandsMap());
+                gameView.setPlayAreasMap(message.getPlayAreasMap());
 
                 gameView.showOthersHandsAndPlayAreas(); // Questi tre metodi verranno compattati in GUI, nel senso
                 gameView.showMyHand();                  // che uno solo farà tutte e tre le cose. Si potrebbe mettere in CLI
