@@ -73,6 +73,12 @@ public abstract class GameView extends Application{
     public void setPlayAreasMap(Map<String, Card[][]> playAreasMap) {
         this.playAreasMap = playAreasMap;
     }
+    public Map<String, Player> getPlayers() {
+        return players;
+    }
+    public void setPlayers(Map<String, Player> players) {
+        this.players = players;
+    }
 
     public void initializePlayAreas(Map<String, StarterCard> starterCards) {
         for (String nickname : starterCards.keySet()) {

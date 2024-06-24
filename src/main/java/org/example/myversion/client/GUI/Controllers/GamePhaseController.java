@@ -6,10 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -26,6 +23,7 @@ import org.example.myversion.server.model.decks.cards.PlayableCard;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import javafx.fxml.Initializable;
+import org.example.myversion.server.model.decks.cards.StarterCard;
 
 import java.io.File;
 import java.net.URL;
@@ -40,6 +38,8 @@ public class GamePhaseController extends GUIController {
     private Label nicknameP1;
     @FXML
     private Label yourPoints;
+    @FXML
+    private ScrollPane myPlayArea;
 
 
     @FXML
@@ -133,6 +133,7 @@ public class GamePhaseController extends GUIController {
     private List<GoldCard> goldCards;
     private List<PlayableCard> playableCards;
     private List<PlayableCard> myHand = new ArrayList<>();
+    private StarterCard starterCard;
 
 
     public GamePhaseController() {
@@ -197,6 +198,26 @@ public class GamePhaseController extends GUIController {
         return myHand;
     }
 
+    //StarterCard
+    public void putStarterCard(StarterCard starterCard){
+        this.starterCard = starterCard;
+        ImageView imgStarterCard = new ImageView();
+        if (starterCard.isPlayedBack()){
+            Image imgBack = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + starterCard.getId() + ".png"));
+            imgStarterCard.setImage(imgBack);
+        } else {
+            Image imgFront = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + starterCard.getId() + ".png"));
+            imgStarterCard.setImage(imgFront);
+        }
+
+        imgStarterCard.setPreserveRatio(true);
+        imgStarterCard.setFitWidth(94);
+        imgStarterCard.setFitHeight(57);
+
+        myPlayArea.setContent(null);
+        myPlayArea.setContent(imgStarterCard);
+        myPlayArea.getContent();
+    }
     //player
     public void playerHandChanged(List<PlayableCard> hand){
             myHand.clear();
@@ -231,7 +252,16 @@ public class GamePhaseController extends GUIController {
 
 
     //play area
-
+    /*public void displayOtherPlayArea(){
+        //player2
+        player2Pane.setOnMouseClicked(event -> {
+            try {
+                gui.getStage().setScene(PersonalPlayAreaController);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }*/
 
 
 

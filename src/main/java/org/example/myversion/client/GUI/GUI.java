@@ -249,7 +249,8 @@ public class GUI extends GameView{
         visibleGoldCards = getVisibleGoldCards();
         visiblePlayableCards = getVisibleResourceCards();
         commonObjectiveCards = getCommonObjectiveCards();
-        secretObjectiveCard = getSecretObjectiveCard(); //secretObjectiveCards
+        secretObjectiveCard = getSecretObjectiveCard();
+        starterCard = getStarterCard();
 
         String nick = client.getNickname();
         Map<String, List<PlayableCard>> Hands = getHandsMap();
@@ -261,6 +262,7 @@ public class GUI extends GameView{
         //playerHand, (secret)objectiveCards,commonObjectiveCards, deckG, deckRes,
         gamePhaseController.initialize(secretObjectiveCard, commonObjectiveCards, visibleGoldCards, visiblePlayableCards);
         gamePhaseController.playerHandChanged(hand);
+        gamePhaseController.putStarterCard(starterCard);
     }
 
     @Override
