@@ -164,9 +164,11 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
             case "UpdateChatSend" ->{
                 try {
                     Scanner scanner = new Scanner(System.in);
-                    System.out.print("Inserisci una stringa: "); // Richiesta di inserimento della stringa
+                    //PER CLI e debug
+                    System.out.print("Inserisci messaggio da inviare: "); //Richiesta di inserimento della stringa
                     String inputString = scanner.nextLine(); // Lettura della stringa inserita dall'utente
                     scanner.close();// Chiusura dello Scanner
+
                     sendChatMessage(new ChatMessage(inputString,this.getNickname()));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
