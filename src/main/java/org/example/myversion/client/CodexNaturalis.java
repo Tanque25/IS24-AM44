@@ -16,7 +16,7 @@ public class CodexNaturalis {
     public static GameView gameView;
 
     public static void main(String[] args) throws IOException {
-        gameView = new CLIView();
+        gameView = new GUI();
         gameView.startView();
     }
 
@@ -29,7 +29,6 @@ public class CodexNaturalis {
         switch (communicationProtocol) {
             case "rmi" -> {
                 try {
-                    //System.out.println("bella2\n");
                     client = new RMIClient();
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);

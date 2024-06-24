@@ -2,10 +2,12 @@ package org.example.myversion.client;
 
 import jakarta.json.Json;
 import org.example.myversion.client.view.GameView;
+import org.example.myversion.messages.ChatMessage;
 import org.example.myversion.messages.Message;
 import org.example.myversion.server.model.Coordinates;
 
 import java.io.IOException;
+import java.util.Scanner;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.rmi.NotBoundException;
@@ -159,6 +161,20 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 }
                 gameView.showUpdatedHand(nickname);
             }
+            case "UpdateChatSend" ->{
+                try {
+                    Scanner scanner = new Scanner(System.in);
+                    System.out.print("Inserisci una stringa: "); // Richiesta di inserimento della stringa
+                    String inputString = scanner.nextLine(); // Lettura della stringa inserita dall'utente
+                    scanner.close();// Chiusura dello Scanner
+                    sendChatMessage(new ChatMessage(inputString,this.getNickname()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            case "UpdateChatReceive" -> {
+
+            }
             case "Scores" -> {
                 gameView.showMessage("\nCurrent scores:\n");
                 gameView.showScores(message.getScores());
@@ -244,6 +260,8 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
      * @throws IOException if the message send fails.
      */
     public abstract void sendMessage(Message message) throws IOException;
+
+    public abstract void sendChatMessage(ChatMessage message) throws IOException;
 
     public void myTurn() {
         // TODO: implement myTurn thread launch

@@ -1,5 +1,6 @@
 package org.example.myversion.client;
 
+import org.example.myversion.messages.ChatMessage;
 import org.example.myversion.messages.Message;
 
 import jakarta.json.*;
@@ -75,6 +76,13 @@ public class TCPClient extends Client implements ClientCommunicationInterface {
      */
     @Override
     public void sendMessage(Message message) throws IOException {
+        String jsonString = message.getJson().toString(); // Convert message to JSON string
+        dataOutputStream.writeBytes(jsonString + "\n"); // Send the JSON string over the network
+        dataOutputStream.flush(); // Flush to ensure the message is sent immediately
+    }
+
+    @Override
+    public void sendChatMessage(ChatMessage message) throws IOException {
         String jsonString = message.getJson().toString(); // Convert message to JSON string
         dataOutputStream.writeBytes(jsonString + "\n"); // Send the JSON string over the network
         dataOutputStream.flush(); // Flush to ensure the message is sent immediately
