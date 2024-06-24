@@ -24,6 +24,10 @@ public class GoldDeck{
         initializeDeck();
     }
 
+    public GoldDeck(Stack<GoldCard> goldDeck) {
+        this.goldDeck = goldDeck;
+    }
+
     /**
      * Initializes the gold deck with a set of predefined gold cards.
      * Each gold card is created with a specific resource, corners, cost, and points parameter.
@@ -163,10 +167,10 @@ public class GoldDeck{
         goldDeck.push(new GoldCard(
                 Resource.PLANT_KINGDOM,
                 Map.of(
-                       CornerPosition.UP_LEFT, new Corner(SpecialObject.QUILL),
-                       CornerPosition.UP_RIGHT, new Corner(CornerVisibility.EMPTY),
-                       CornerPosition.BOTTOM_LEFT, new Corner(CornerVisibility.EMPTY),
-                       CornerPosition.BOTTOM_RIGHT, new Corner(CornerVisibility.FULL)
+                        CornerPosition.UP_LEFT, new Corner(SpecialObject.QUILL),
+                        CornerPosition.UP_RIGHT, new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.BOTTOM_LEFT, new Corner(CornerVisibility.EMPTY),
+                        CornerPosition.BOTTOM_RIGHT, new Corner(CornerVisibility.FULL)
                 ),
                 1,
                 new Resource[]{Resource.PLANT_KINGDOM, Resource.PLANT_KINGDOM, Resource.INSECT_KINGDOM},

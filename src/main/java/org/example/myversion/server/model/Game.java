@@ -9,6 +9,8 @@ import org.example.myversion.server.model.exceptions.InvalidMoveException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
 /**
  * Represents the game logic.
@@ -209,7 +211,7 @@ public class Game {
 
             // updating the player score
             board.updateScore(player, playedCard.getCardPoints());
-            }
+        }
     }
 
     public PlayableCard getResourceDeckPeek() {
@@ -334,6 +336,51 @@ public class Game {
      */
     public boolean checkLastTurn(){
         return goldDeck.getGoldDeck().empty() || resourceDeck.getResourceDeck().empty();
+    }
 
+    public void restorePlayersHands(Map<String, List<PlayableCard>> playersHands) {
+        for (Player player : players) {
+            String nickname = player.getNickname();
+            if (playersHands.containsKey(nickname)) {
+                player.initializeHand(playersHands.get(nickname));
+            }
+        }
+    }
+
+    public void restorePlayersPlayAreas(Map<String, Card[][]> playersPlayAreas) {
+        for (Player player : players) {
+            String nickname = player.getNickname();
+            if (playersPlayAreas.containsKey(nickname)) {
+                player.initializePlayArea(playersPlayAreas.get(nickname));
+            }
+        }
+    }
+
+    public Stack<PlayableCard> getResourceDeck() {
+        return resourceDeck.getResourceDeck();
+    }
+
+    public void setResourceDeck(ResourceDeck resourceDeck) {
+        this.resourceDeck = resourceDeck;
+    }
+
+    public Stack<GoldCard> getGoldDeck() {
+        return goldDeck.getGoldDeck();
+    }
+
+    public void setGoldDeck(GoldDeck goldDeck) {
+        this.goldDeck = goldDeck;
+    }
+
+    public void setCommonObjectives(List<ObjectiveCard> objectiveCards) {
+        this.commonObjectives = objectiveCards;
+    }
+
+    public void setVisibleResourceCards(List<PlayableCard> visibleResourceCards) {
+        this.visibleResourceCards = visibleResourceCards;
+    }
+
+    public void setVisibleGoldCards(List<GoldCard> visibleGoldCards) {
+        this.visibleGoldCards = visibleGoldCards;
     }
 }

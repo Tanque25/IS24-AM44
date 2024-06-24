@@ -102,7 +102,6 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
 
     public void sendMessageToClient(Message message) {
         try {
-            System.out.println("Sending " + message.getMessageCode() + " " + nickname);
             String jsonString = message.getJson().toString() + "\n";
             writer.write(jsonString);
             writer.flush();
@@ -124,18 +123,7 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
     public void receiveMessageTCP(Message message, HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException {
         String messageCode = message.getMessageCode();
 
-        if (!messageCode.equals("Ping"))
-            System.out.println("Received TCP message: with messageCode " + messageCode);
-
         switch (messageCode) {
-
-            case "Ping" -> {
-                System.out.println("Received Ping from " + client.getNickname());
-                controller.pong(client.getNickname());
-                controller.addPongLost(client.getNickname());
-                client.sendMessageToClient(new Message("Pong"));
-            }
-
             // This case verifies the selected nickname and handles the different cases
             case "Login" -> {
                 String nickname = message.getArgument();
@@ -157,13 +145,11 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
 
             // This case is used to place the starter card in the Player's playArea on the selected side
             case "StarterCard" -> {
-                System.out.println("Starter card side received from " + nickname);
                 controller.playStarterCard(controller.getPlayerFromNickname(nickname), message.getStarterCard());
             }
 
             // This case is used to set the secret objective card in the game model
             case "ObjectiveCardChoice" -> {
-                System.out.println("Secret objective card received from " + nickname);
                 controller.chooseObjectiveCard(controller.getPlayerFromNickname(nickname), message.getObjectiveCard());
 
                 // When the server receives the player's secret objective choice, the readyPlayersNumber is updated
@@ -260,7 +246,7 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
     public void checkNickname(HandleClientSocket client, String nickname, int checkNicknameStatus) throws RemoteException {
         switch (checkNicknameStatus) {
             case 1 -> {
-                if (controller.getGameState().equals(GameState.IN_GAME)) {
+                if (!controller.getGameState().equals(GameState.LOGIN) && !controller.getGameState().equals(GameState.INITIALIZATION)) {
                     client.sendMessageToClient(new Message("GameAlreadyStarted"));
                 } else {
                     client.sendMessageToClient(new Message("Nickname", nickname));
@@ -270,8 +256,6 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
 
                     setNickname(nickname);
                     controller.addClientTCP(nickname, client);
-                    // TODO: Implement the connection check on a different channel
-                    // startPingThread(client);
 
                     if (controller.isFirst()) {
                         client.sendMessageToClient(new Message("PlayersNumber"));
@@ -286,6 +270,22 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
                             System.out.println("Game started.");
                         }
                     }
+                }
+            }
+            case -1 -> {
+                // The player is trying to reconnect to a saved game
+                System.out.println(nickname + " reconnected.");
+                setNickname(nickname);
+                controller.addClientTCP(nickname, client);
+
+                client.sendMessageToClient(new Message("WaitForOtherPlayers"));
+
+                // If this is the last player has reconnected, the game starts
+                if (controller.getDisconnectedPlayers().isEmpty()) {
+                    System.out.println("Game is full.");
+                    startRestoredGame();
+                    System.out.println("Game restored.");
+
                 }
             }
         }

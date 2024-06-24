@@ -5,6 +5,10 @@ import org.example.myversion.server.serverController.RMIServer;
 import org.example.myversion.server.serverController.ServerInterface;
 import org.example.myversion.server.serverController.TCPServer;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 /**
  * Manages the server component of the game application.
  * Handles client connections, communication and updates clients with the latest game state.
@@ -63,11 +67,31 @@ public class Server implements ServerInterface, CommunicationInterface {
     public void start(){
         // Start the TCP server
         servertcp.start();
-
         // Start the RMI server
         serverrmi.start();
-
         System.out.println("Server started.");
+
+        if (controller.isGameSaved()) {
+            System.out.println("A saved game has been found. Do you want to load it?");
+            System.out.print("Enter '0' to start a new game, '1' to load the saved game: ");
+
+            int load = 0;
+            try {
+                BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+                load = Integer.parseInt(in.readLine());
+            } catch (IOException e) {
+                System.err.println("An error occurred while reading the number.");
+            }
+
+            if(load == 1) {
+                try {
+                    controller.loadLastGame();
+                } catch (IOException e) {
+                    System.err.println("Unable to load the game.");
+                }
+            } else System.out.println("Starting a new game.");
+
+        }
     }
 
     /**

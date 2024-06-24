@@ -2,10 +2,12 @@ package org.example.myversion.client;
 
 import jakarta.json.Json;
 import org.example.myversion.client.view.GameView;
+import org.example.myversion.messages.ChatMessage;
 import org.example.myversion.messages.Message;
 import org.example.myversion.server.model.Coordinates;
 
 import java.io.IOException;
+import java.util.Scanner;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.rmi.NotBoundException;
@@ -50,21 +52,14 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
     public void handleMessage(Message message)throws RemoteException {
         String messageCode = message.getMessageCode();
 
-//        if(!messageCode.equals("Pong")) {
-//            System.out.println("Received TCP message: with messageCode " + messageCode);
-//        }
-
         switch (messageCode) {
-            case "Pong" -> {
-                serverConnection = true;
-            }
             case "Nickname" -> {
                 //setNickname(message.getArgument());
                 // TODO: Implement the connection check on a different channel on the server side
                 // checkServerConnection();
             }
             case "GameAlreadyStarted" ->
-                gameView.showGameAlreadyStartedMessage();
+                    gameView.showGameAlreadyStartedMessage();
             case "PlayersNumber" ->{
                 try{
                     gameView.playersNumberChoice();
@@ -80,7 +75,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 }
             }
             case "WaitForOtherPlayers" ->
-                gameView.waitForOtherPlayers();
+                    gameView.waitForOtherPlayers();
             case "VisibleCards" ->{
                 gameView.setVisibleResourceCards(message.getResourceCards());
                 gameView.setCoveredResourceCard(message.getPlayableCard());
@@ -98,7 +93,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 }
             }
             case "CommonObjectiveCards" ->
-                gameView.showCommonObjectives(message.getObjectiveCards());
+                    gameView.showCommonObjectives(message.getObjectiveCards());
             case "SecretObjectiveCardsOptions" -> {
                 try {
                     gameView.showSecretObjectives(message.getObjectiveCards());
@@ -111,6 +106,14 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 gameView.setHandsMap(message.getPlayersHandsMap());
 
                 gameView.initializePlayAreas(message.getStarterCardsMap());
+
+                gameView.showOthersHandsAndPlayAreas(); // Questi tre metodi verranno compattati in GUI, nel senso
+                gameView.showMyHand();                  // che uno solo farà tutte e tre le cose. Si potrebbe mettere in CLI
+                gameView.showMyPlayArea();              // un metodo che le chiama tutte e 3 per avere interfaccia comune
+            }
+            case "GameData" -> {
+                gameView.setHandsMap(message.getPlayersHandsMap());
+                gameView.setPlayAreasMap(message.getPlayAreasMap());
 
                 gameView.showOthersHandsAndPlayAreas(); // Questi tre metodi verranno compattati in GUI, nel senso
                 gameView.showMyHand();                  // che uno solo farà tutte e tre le cose. Si potrebbe mettere in CLI
@@ -158,6 +161,22 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                     gameView.drawCard(nickname, message.getGoldCard());
                 }
                 gameView.showUpdatedHand(nickname);
+            }
+            case "UpdateChatSend" ->{
+                try {
+                    Scanner scanner = new Scanner(System.in);
+                    //PER CLI e debug
+                    System.out.print("Inserisci messaggio da inviare: "); //Richiesta di inserimento della stringa
+                    String inputString = scanner.nextLine(); // Lettura della stringa inserita dall'utente
+                    scanner.close();// Chiusura dello Scanner
+
+                    sendChatMessage(new ChatMessage(inputString,this.getNickname()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            case "UpdateChatReceive" -> {
+
             }
             case "Scores" -> {
                 gameView.showMessage("\nCurrent scores:\n");
@@ -244,6 +263,8 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
      * @throws IOException if the message send fails.
      */
     public abstract void sendMessage(Message message) throws IOException;
+
+    public abstract void sendChatMessage(ChatMessage message) throws IOException;
 
     public void myTurn() {
         // TODO: implement myTurn thread launch

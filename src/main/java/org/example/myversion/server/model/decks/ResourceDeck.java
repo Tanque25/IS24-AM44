@@ -30,6 +30,10 @@ public class ResourceDeck {
         initializeDeck();
     }
 
+    public ResourceDeck(Stack<PlayableCard> resourceDeck) {
+        this.resourceDeck = resourceDeck;
+    }
+
     /**
      * Retrieves the resource deck.
      *

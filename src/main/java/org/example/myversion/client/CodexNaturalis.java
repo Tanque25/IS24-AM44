@@ -29,7 +29,6 @@ public class CodexNaturalis {
         switch (communicationProtocol) {
             case "rmi" -> {
                 try {
-                    //System.out.println("bella2\n");
                     client = new RMIClient();
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);

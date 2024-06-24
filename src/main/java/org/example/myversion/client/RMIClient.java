@@ -1,5 +1,6 @@
 package org.example.myversion.client;
 
+import org.example.myversion.messages.ChatMessage;
 import org.example.myversion.messages.Message;
 import java.io.IOException;
 import java.io.Serializable;
@@ -48,11 +49,21 @@ public class RMIClient extends Client implements ClientCommunicationInterface {
     @Override
     public void sendMessage(Message message)  {
         try {
-
             String jsonString = message.getJson().toString();
             System.out.println(jsonString);
             server.receiveMessageRMInew(jsonString, this);
             // server.receiveMessageRMI(jsonString, this);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void sendChatMessage(ChatMessage message)  {
+        try {
+            String jsonString = message.getJson().toString();
+            System.out.println(jsonString);
+            server.receiveMessageRMInew(jsonString, this);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
