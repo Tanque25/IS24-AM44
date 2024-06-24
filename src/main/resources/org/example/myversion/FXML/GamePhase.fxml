@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -12,7 +13,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="mainAnchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="850.0" prefWidth="1500.0" styleClass="backGround_wood" stylesheets="@../CSS/Game.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.myversion.client.GUI.Controllers.GamePhaseController">
+<AnchorPane fx:id="mainAnchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="850.0" prefWidth="1500.0" styleClass="backGround_wood" stylesheets="@../CSS/Game.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
     <children>
       <Pane prefHeight="850.0" prefWidth="1500.0">
          <children>
@@ -32,7 +33,7 @@
             </Label>
             <ImageView fitHeight="40.0" fitWidth="1505.0" pickOnBounds="true">
                <image>
-                  <Image url="@../../../../../../../../ing-sw-2023-saccani-spangaro-sanvito-pedersoli/src/main/resources/img/img/misc/base_pagina2.jpg" />
+                  <Image url="@../Images/GamePhase/Background2.jpg" />
                </image>
             </ImageView>
             <ImageView fitHeight="40.0" fitWidth="40.0">
@@ -45,92 +46,26 @@
                   <Image url="@../Images/Login_images/logo.png" />
                </image>
             </ImageView>
-            <Label layoutX="309.0" layoutY="75.0" text="Common Object">
+            <Label layoutX="323.0" layoutY="74.0" text="Common Goal">
                <font>
                   <Font name="Arial Black" size="25.0" />
                </font>
             </Label>
             <Pane layoutX="640.0" layoutY="680.0" prefHeight="155.0" prefWidth="534.0" stylesheets="@../CSS/Game.css">
                <children>
-                  <Pane fx:id="pgGrab001" layoutX="126.0" layoutY="88.0" prefHeight="58.0" prefWidth="58.0" stylesheets="@../CSS/Game.css">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                     <styleClass>
-                        <String fx:value="pane_hand" />
-                        <String fx:value="roundBorder" />
-                     </styleClass>
-                     <children>
-                        <ImageView fx:id="cardBack1" fitHeight="58.0" fitWidth="58.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true" />
-                     </children>
-                  </Pane>
-                  <Pane fx:id="pgGrab011" layoutX="238.0" layoutY="88.0" prefHeight="58.0" prefWidth="58.0" stylesheets="@../CSS/Game.css">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                     <styleClass>
-                        <String fx:value="pane_hand" />
-                        <String fx:value="roundBorder" />
-                     </styleClass>
-                     <children>
-                        <ImageView fx:id="cardBack2" fitHeight="58.0" fitWidth="58.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true" />
-                     </children>
-                  </Pane>
-                  <Pane fx:id="pgGrab021" layoutX="348.0" layoutY="87.0" prefHeight="58.0" prefWidth="58.0" stylesheets="@../CSS/Game.css">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                     <styleClass>
-                        <String fx:value="pane_hand" />
-                        <String fx:value="roundBorder" />
-                     </styleClass>
-                     <children>
-                        <ImageView fx:id="cardBack3" fitHeight="58.0" fitWidth="58.0" pickOnBounds="true" preserveRatio="true" />
-                     </children>
-                  </Pane>
+                  <ImageView fx:id="cdf1" fitHeight="57.0" fitWidth="94.0" layoutX="96.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="cdb1" fitHeight="57.0" fitWidth="94.0" layoutX="96.0" layoutY="87.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="cardFront2" fitHeight="57.0" fitWidth="94.0" layoutX="219.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="cardFront3" fitHeight="57.0" fitWidth="94.0" layoutX="342.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="cardBack2" fitHeight="57.0" fitWidth="94.0" layoutX="219.0" layoutY="87.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="cardBack3" fitHeight="57.0" fitWidth="94.0" layoutX="342.0" layoutY="87.0" pickOnBounds="true" preserveRatio="true" />
                </children>
                <styleClass>
                   <String fx:value="roundBorder" />
                   <String fx:value="backGround_wallpaper" />
                </styleClass>
             </Pane>
-            <Pane fx:id="pgGrab00" layoutX="765.0" layoutY="690.0" prefHeight="58.0" prefWidth="58.0" stylesheets="@../CSS/Game.css">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-               <styleClass>
-                  <String fx:value="pane_hand" />
-                  <String fx:value="roundBorder" />
-               </styleClass>
-               <children>
-                  <ImageView fx:id="cardFront1" fitHeight="58.0" fitWidth="58.0" pickOnBounds="true" preserveRatio="true" />
-               </children>
-            </Pane>
-            <Pane layoutX="875.0" layoutY="690.0" prefHeight="58.0" prefWidth="58.0" stylesheets="@../CSS/Game.css">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-               <styleClass>
-                  <String fx:value="pane_hand" />
-                  <String fx:value="roundBorder" />
-               </styleClass>
-               <children>
-                  <ImageView fx:id="cardFront2" fitHeight="58.0" fitWidth="58.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true" />
-               </children>
-            </Pane>
-            <Pane fx:id="pgGrab02" layoutX="985.0" layoutY="690.0" prefHeight="58.0" prefWidth="58.0" stylesheets="@../CSS/Game.css">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-               <styleClass>
-                  <String fx:value="pane_hand" />
-                  <String fx:value="roundBorder" />
-               </styleClass>
-               <children>
-                  <ImageView fx:id="cardFront3" fitHeight="58.0" fitWidth="58.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true" />
-               </children>
-            </Pane>
-            <Label layoutX="366.0" layoutY="229.0" text="My Object">
+            <Label layoutX="323.0" layoutY="228.0" text="Personal Goal">
                <font>
                   <Font name="Arial Black" size="25.0" />
                </font>
@@ -180,13 +115,20 @@
             </Pane>
             <Pane layoutX="632.0" layoutY="57.0" prefHeight="571.0" prefWidth="555.0">
                <children>
-                  <AnchorPane layoutX="13.0" layoutY="20.0" prefHeight="524.0" prefWidth="532.0" styleClass="backGround_CD" stylesheets="@../CSS/Game.css" />
-                  <Label layoutX="184.0" layoutY="534.0" prefHeight="38.0" prefWidth="179.0" text="Your Points:">
+                  <AnchorPane layoutX="13.0" layoutY="20.0" prefHeight="524.0" prefWidth="532.0" styleClass="backGround_CD" stylesheets="@../CSS/Game.css">
+                     <children>
+                        <ScrollPane fx:id="myPlayArea" layoutX="27.0" layoutY="21.0" prefHeight="476.0" prefWidth="477.0" styleClass="backGround_trasparent" stylesheets="@../CSS/Game.css">
+                           <content>
+                              <ImageView fx:id="starterCard" fitHeight="73.0" fitWidth="93.0" pickOnBounds="true" preserveRatio="true" />
+                           </content>
+                        </ScrollPane>
+                     </children></AnchorPane>
+                  <Label fx:id="yourPoints" layoutX="350.0" layoutY="547.0" prefHeight="38.0" prefWidth="58.0" text="0">
                      <font>
                         <Font name="Arial Black" size="25.0" />
                      </font>
                   </Label>
-                  <Label fx:id="yourPoints" layoutX="351.0" layoutY="535.0" prefHeight="38.0" prefWidth="58.0" text="0">
+                  <Label layoutX="178.0" layoutY="546.0" prefHeight="38.0" prefWidth="179.0" text="Your Points:">
                      <font>
                         <Font name="Arial Black" size="25.0" />
                      </font>
@@ -199,41 +141,10 @@
                   <String fx:value="backGround_Plateau" />
                </styleClass>
             </Pane>
-            <Pane layoutX="273.0" layoutY="129.0" prefHeight="72.0" prefWidth="131.0" style="-fx-background-color: white;" styleClass="roundBorder" stylesheets="@../CSS/Game.css">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-               <children>
-                  <ImageView fx:id="co01" fitHeight="80.0" fitWidth="137.0" layoutX="-3.0" layoutY="-5.0" pickOnBounds="true" preserveRatio="true" />
-               </children>
-            </Pane>
-            <Pane layoutX="433.0" layoutY="130.0" prefHeight="72.0" prefWidth="131.0" style="-fx-background-color: white;" styleClass="roundBorder" stylesheets="@../CSS/Game.css">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-               <children>
-                  <ImageView fx:id="co02" fitHeight="80.0" fitWidth="137.0" layoutX="-4.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true" />
-               </children>
-            </Pane>
-            <Pane layoutX="275.0" layoutY="280.0" prefHeight="72.0" prefWidth="131.0" style="-fx-background-color: white;" styleClass="roundBorder" stylesheets="@../CSS/Game.css">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-               <children>
-                  <ImageView fx:id="co03" fitHeight="80.0" fitWidth="137.0" layoutX="-3.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true" />
-               </children>
-            </Pane>
-            <Pane layoutX="431.0" layoutY="280.0" prefHeight="72.0" prefWidth="131.0" style="-fx-background-color: white;" styleClass="roundBorder" stylesheets="@../CSS/Game.css">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-               <children>
-                  <ImageView fx:id="co04" fitHeight="80.0" fitWidth="137.0" layoutX="-2.0" layoutY="-4.0" pickOnBounds="true" preserveRatio="true" />
-               </children>
-            </Pane>
+            <ImageView fx:id="co03" fitHeight="80.0" fitWidth="137.0" layoutX="340.0" layoutY="286.0" pickOnBounds="true" preserveRatio="true" styleClass="roundBorder" />
             <Pane layoutX="849.0" layoutY="43.0" prefHeight="29.0" prefWidth="109.0" style="-fx-background-color: white;" styleClass="roundBorder" stylesheets="@../CSS/Game.css">
                <children>
-                  <Label fx:id="nicknameP1" alignment="CENTER" layoutX="10.0" layoutY="1.0" text="Player 1">
+                  <Label fx:id="nicknameP1" alignment="CENTER" layoutX="10.0" layoutY="1.0" text="Player 1" textAlignment="CENTER">
                      <font>
                         <Font name="Arial Black" size="20.0" />
                      </font>
@@ -242,7 +153,7 @@
             </Pane>
             <Pane fx:id="player4Pane" layoutX="1336.0" layoutY="440.0" prefHeight="29.0" prefWidth="109.0" style="-fx-background-color: white;" styleClass="roundBorder" stylesheets="@../CSS/Game.css">
                <children>
-                  <Label fx:id="nicknameP4" alignment="CENTER" layoutX="10.0" layoutY="1.0" text="Player 4">
+                  <Label fx:id="nicknameP4" alignment="CENTER" layoutX="10.0" layoutY="1.0" text="Player 4" textAlignment="CENTER">
                      <font>
                         <Font name="Arial Black" size="20.0" />
                      </font>
@@ -251,64 +162,17 @@
             </Pane>
             <Pane fx:id="player3Pane" layoutX="1333.0" layoutY="269.0" prefHeight="29.0" prefWidth="109.0" style="-fx-background-color: white;" styleClass="roundBorder" stylesheets="@../CSS/Game.css">
                <children>
-                  <Label fx:id="nicknameP3" alignment="CENTER" layoutX="10.0" layoutY="1.0" text="Player 3">
+                  <Label fx:id="nicknameP3" alignment="CENTER" layoutX="10.0" layoutY="1.0" text="Player 3" textAlignment="CENTER">
                      <font>
                         <Font name="Arial Black" size="20.0" />
                      </font>
                   </Label>
                </children>
             </Pane>
-            <Pane fx:id="pileR" layoutX="74.0" layoutY="433.0" prefHeight="72.0" prefWidth="131.0" style="-fx-background-color: white;" styleClass="roundBorder" stylesheets="@../CSS/Game.css">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-               <children>
-                  <ImageView fx:id="deckG" fitHeight="80.0" fitWidth="137.0" layoutX="-5.0" layoutY="-4.0" pickOnBounds="true" preserveRatio="true" />
-               </children>
-            </Pane>
-            <Pane fx:id="pileO" layoutX="74.0" layoutY="516.0" prefHeight="72.0" prefWidth="131.0" style="-fx-background-color: white;" styleClass="roundBorder" stylesheets="@../CSS/Game.css">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-               <children>
-                  <ImageView fx:id="DeckP" fitHeight="80.0" fitWidth="137.0" layoutY="-4.0" pickOnBounds="true" preserveRatio="true" />
-               </children>
-            </Pane>
-            <Pane fx:id="rc01" layoutX="225.0" layoutY="434.0" prefHeight="72.0" prefWidth="131.0" style="-fx-background-color: white;" styleClass="roundBorder" stylesheets="@../CSS/Game.css">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-               <children>
-                  <ImageView fx:id="gc01" fitHeight="80.0" fitWidth="137.0" layoutX="-3.0" layoutY="-3.0" pickOnBounds="true" preserveRatio="true" />
-               </children>
-            </Pane>
-            <Pane fx:id="oc01" layoutX="225.0" layoutY="518.0" prefHeight="72.0" prefWidth="131.0" style="-fx-background-color: white;" styleClass="roundBorder" stylesheets="@../CSS/Game.css">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-               <children>
-                  <ImageView fx:id="pc01" fitHeight="80.0" fitWidth="137.0" layoutX="-1.0" layoutY="-5.0" pickOnBounds="true" preserveRatio="true" />
-               </children>
-            </Pane>
-            <Pane fx:id="rs02" layoutX="372.0" layoutY="433.0" prefHeight="72.0" prefWidth="131.0" style="-fx-background-color: white;" styleClass="roundBorder" stylesheets="@../CSS/Game.css">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-               <children>
-                  <ImageView fx:id="gc02" fitHeight="80.0" fitWidth="137.0" layoutX="-3.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true" />
-               </children>
-            </Pane>
-            <Pane fx:id="oc02" layoutX="372.0" layoutY="520.0" prefHeight="72.0" prefWidth="131.0" style="-fx-background-color: white;" styleClass="roundBorder" stylesheets="@../CSS/Game.css">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-               <children>
-                  <ImageView fx:id="pc02" fitHeight="80.0" fitWidth="137.0" layoutX="-3.0" layoutY="-5.0" pickOnBounds="true" preserveRatio="true" />
-               </children>
-            </Pane>
+            <ImageView fx:id="deckG" fitHeight="80.0" fitWidth="137.0" layoutX="70.0" layoutY="415.0" pickOnBounds="true" preserveRatio="true" styleClass="roundBorder" />
             <Pane fx:id="player2Pane" layoutX="1329.0" layoutY="116.0" prefHeight="29.0" prefWidth="109.0" style="-fx-background-color: white;" styleClass="roundBorder" stylesheets="@../CSS/Game.css">
                <children>
-                  <Label fx:id="nicknameP2" alignment="CENTER" layoutX="10.0" layoutY="1.0" text="Player 2">
+                  <Label fx:id="nicknameP2" alignment="CENTER" layoutX="10.0" layoutY="1.0" text="Player 2" textAlignment="CENTER">
                      <font>
                         <Font name="Arial Black" size="20.0" />
                      </font>
@@ -332,6 +196,13 @@
             <Pane fx:id="playArea2" layoutX="1369.0" layoutY="214.0" prefHeight="34.0" prefWidth="34.0" />
             <Pane fx:id="playArea3" layoutX="1373.0" layoutY="369.0" prefHeight="34.0" prefWidth="34.0" />
             <Pane fx:id="playArea4" layoutX="1367.0" layoutY="541.0" prefHeight="34.0" prefWidth="34.0" />
+            <ImageView fx:id="co01" fitHeight="80.0" fitWidth="137.0" layoutX="271.0" layoutY="128.0" pickOnBounds="true" preserveRatio="true" styleClass="roundBorder" />
+            <ImageView fx:id="co02" fitHeight="80.0" fitWidth="137.0" layoutX="437.0" layoutY="128.0" pickOnBounds="true" preserveRatio="true" styleClass="roundBorder" />
+            <ImageView fx:id="gc01" fitHeight="80.0" fitWidth="137.0" layoutX="217.0" layoutY="415.0" pickOnBounds="true" preserveRatio="true" styleClass="roundBorder" />
+            <ImageView fx:id="gc02" fitHeight="80.0" fitWidth="137.0" layoutX="364.0" layoutY="415.0" pickOnBounds="true" preserveRatio="true" styleClass="roundBorder" />
+            <ImageView fx:id="deckP" fitHeight="80.0" fitWidth="137.0" layoutX="70.0" layoutY="505.0" pickOnBounds="true" preserveRatio="true" styleClass="roundBorder" />
+            <ImageView fx:id="pc01" fitHeight="80.0" fitWidth="137.0" layoutX="217.0" layoutY="505.0" pickOnBounds="true" preserveRatio="true" styleClass="roundBorder" />
+            <ImageView fx:id="pc02" fitHeight="80.0" fitWidth="137.0" layoutX="364.0" layoutY="505.0" pickOnBounds="true" preserveRatio="true" styleClass="roundBorder" />
          </children>
       </Pane>
     </children>

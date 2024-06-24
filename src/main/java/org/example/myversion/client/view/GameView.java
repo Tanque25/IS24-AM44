@@ -23,10 +23,9 @@ public abstract class GameView extends Application{
     private PlayableCard coveredResourceCard;
     private List<GoldCard> visibleGoldCards;
     private GoldCard coveredGoldCard;
-
+    private Map<String, Player> players = new HashMap<>();
     private Map<String, List<PlayableCard>> handsMap = new HashMap<>();
     private Map<String, Card[][]> playAreasMap = new HashMap<>();
-
     public List<PlayableCard> getVisibleResourceCards() {
         return visibleResourceCards;
     }

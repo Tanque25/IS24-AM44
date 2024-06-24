@@ -2,6 +2,7 @@ package org.example.myversion.client.GUI;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.beans.Observable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,6 +16,7 @@ import org.example.myversion.client.view.GameView;
 import org.example.myversion.server.model.Board;
 import org.example.myversion.server.model.Player;
 import org.example.myversion.server.model.decks.cards.*;
+import javafx.collections.ObservableList;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -43,6 +45,8 @@ public class GUI extends GameView{
     private ChooseObjectiveController chooseObjectiveController;
     private ChosePlayerNumberController chosePlayerNumberController;
     private GamePhaseController gamePhaseController;
+    private EndGame endGameController;
+    private PersonalPlayAreaController personalPlayAreaController;
 
     private boolean playerNumberChoosen = true;
     private boolean playerStarterChosen = false;
@@ -51,11 +55,14 @@ public class GUI extends GameView{
     StarterCard starterCard;
     List<PlayableCard> visiblePlayableCards;
     List<GoldCard> visibleGoldCards;
+    ObjectiveCard secretObjectiveCard;
 
     private Stage stage;
     private Parent root;
-    Map<String, List<PlayableCard>> playerHand;
+
+    //ObservableList<PlayableCard> myHand;
     List<ObjectiveCard> commonObjectiveCards;
+    //private Scene previousScene;
 
 
 
@@ -100,6 +107,13 @@ public class GUI extends GameView{
     public List<ObjectiveCard> getCommonObjectiveCards() {
         return commonObjectiveCards;
     }
+    public ObjectiveCard getSecretObjectiveCard() {
+        return secretObjectiveCard;
+    }
+    public void setSecretObjectiveCard(ObjectiveCard secretObjectiveCard) {
+        this.secretObjectiveCard = secretObjectiveCard;
+    }
+
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -169,7 +183,7 @@ public class GUI extends GameView{
 
     @Override
     public void showCommonObjectives(List<ObjectiveCard> objectiveCards) {
-        List<ObjectiveCard> commonObjectiveCards = this.objectiveCards;
+        this.commonObjectiveCards = objectiveCards;
     }
 
     @Override
@@ -209,12 +223,21 @@ public class GUI extends GameView{
 
     @Override
     public void showMyPlayArea() {
-        playerHand = getHandsMap();
+        visibleGoldCards = getVisibleGoldCards();
+        visiblePlayableCards = getVisibleResourceCards();
+        commonObjectiveCards = getCommonObjectiveCards();
+        secretObjectiveCard = getSecretObjectiveCard(); //secretObjectiveCards
+
+        String nick = client.getNickname();
+        Map<String, List<PlayableCard>> Hands = getHandsMap();
+        List<PlayableCard> hand = Hands.get(nick);
+        List<PlayableCard> handMine = Hands.entrySet().stream().filter(e -> e.getKey().equals(nick)).findFirst().get().getValue();
 
         gamePhaseController =  new GamePhaseController();
         gamePhaseController.setGui(this);
-        //playerHand, commonObjectiveCards, (secret)objectiveCards, deckG, deckRes,
-        gamePhaseController.showGame(playerHand, objectiveCards, commonObjectiveCards, visibleGoldCards, visiblePlayableCards);
+        //playerHand, (secret)objectiveCards,commonObjectiveCards, deckG, deckRes,
+        gamePhaseController.initialize(secretObjectiveCard, commonObjectiveCards, visibleGoldCards, visiblePlayableCards);
+        gamePhaseController.playerHandChanged(hand);
     }
 
     @Override
@@ -250,12 +273,25 @@ public class GUI extends GameView{
     @Override
     public void showScores(Map<String, Integer> scores) {
 
+        endGameController = new EndGame();
+        endGameController.setGui(this);
+        endGameController.showEndGame(scores);
     }
 
     @Override
     public void showEndGame(String winner) {
 
     }
+    /*public void saveCurrentScene() {
+        this.previousScene = stage.getScene();
+    }
+
+    public void restorePreviousScene() {
+        if (previousScene != null) {
+            stage.setScene(previousScene);
+            previousScene = null;
+        }
+    }*/
 
     /*public HBox showMyHand(List<PlayableCard> hand) {
         HBox hbox = new HBox();
@@ -332,4 +368,4 @@ public class GUI extends GameView{
         });
 
     }*/
-}
+    }

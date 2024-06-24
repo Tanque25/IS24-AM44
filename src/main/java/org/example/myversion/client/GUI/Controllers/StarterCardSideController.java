@@ -68,6 +68,7 @@ public class StarterCardSideController extends GUIController {
 
             playedFront.setOnMouseClicked(event -> starterCard.setPlayedBack(false));
             playedBack.setOnMouseClicked(event -> starterCard.setPlayedBack(true));
+
             send.setOnMouseClicked(event -> {
                 try {
                     gui.getClient().sendMessage(new Message("StarterCard", starterCard));

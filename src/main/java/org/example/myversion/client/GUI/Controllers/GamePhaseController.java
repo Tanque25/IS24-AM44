@@ -1,6 +1,7 @@
 package org.example.myversion.client.GUI.Controllers;
 
 import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,12 +23,13 @@ import org.example.myversion.messages.Message;
 import org.example.myversion.server.model.decks.cards.GoldCard;
 import org.example.myversion.server.model.decks.cards.ObjectiveCard;
 import org.example.myversion.server.model.decks.cards.PlayableCard;
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
+import javafx.fxml.Initializable;
 
 import java.io.File;
 import java.net.URL;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class GamePhaseController extends GUIController {
 
@@ -72,14 +74,14 @@ public class GamePhaseController extends GUIController {
 
     //hand cards
     @FXML
-    private ImageView cardFront1;
+    private ImageView cdf1;
     @FXML
     private ImageView cardFront2;
     @FXML
     private ImageView cardFront3;
 
     @FXML
-    private ImageView cardBack1;
+    private ImageView cdb1;
     @FXML
     private ImageView cardBack2;
     @FXML
@@ -107,9 +109,9 @@ public class GamePhaseController extends GUIController {
     private ImageView pc02;
 
     @FXML
-    private ImageView decKG;
+    private ImageView deckG;
     @FXML
-    private ImageView decKP;
+    private ImageView deckP;
 
     //chat
     @FXML
@@ -125,60 +127,27 @@ public class GamePhaseController extends GUIController {
     @FXML
     private ComboBox comboBoxMessage;
 
+    private Map<String, List<PlayableCard>> playerHand;
+    private List<ObjectiveCard> personalObjectiveCards;
+    private List<ObjectiveCard> commonObjectiveCards;
+    private List<GoldCard> goldCards;
+    private List<PlayableCard> playableCards;
+    private List<PlayableCard> myHand = new ArrayList<>();
+
 
     public GamePhaseController() {
         super();
     }
 
-    public void showGame(Map<String, List<PlayableCard>> playerHand, List<ObjectiveCard> personalObjectiveCards, List<ObjectiveCard> commonObjectiveCards, List<GoldCard> goldCards, List<PlayableCard> PlayableCards) {
+    public void initialize(ObjectiveCard personalObjectiveCard, List<ObjectiveCard> commonObjectiveCards, List<GoldCard> goldCards, List<PlayableCard> PlayableCards) {
         Platform.runLater(()->{
             try {
                 URL fxmlLocation = getClass().getResource("/org/example/myversion/FXML/GamePhase.fxml");
-                //System.out.println("FXML Location: " + fxmlLocation); // Log
-
                 FXMLLoader loader = new FXMLLoader(fxmlLocation);
                 loader.setController(this);
-
-
-                //loader.setController(this);
-                //loader.setRoot(mainAnchor);
-
                 Parent root = loader.load();
-                //System.out.println("Root loaded successfully."); // Log
 
-                //Common Objective
-                Image CommonObjective1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredResourceCard().getId() + ".png"));
-                co01.setImage(CommonObjective1);
-                Image CommonObjective2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredResourceCard().getId() + ".png"));
-                co02.setImage(CommonObjective2);
-
-                //Personal Objective
-                Image PersonalObjective1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredResourceCard().getId() + ".png"));
-                co03.setImage(PersonalObjective1);
-                Image PersonalObjective2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredResourceCard().getId() + ".png"));
-                co04.setImage(PersonalObjective2);
-
-                //Hand cards
-                /*nicknameP1.setText(gui.getClient().getNickname());
-                String nickname = nicknameP1.getText();
-
-                cardFront1.setImage(new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + playerHand.get(nickname).get(0).getId() + ".png")));
-                cardFront2.setImage(new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + playerHand.get(nickname).get(1).getId() + ".png")));
-                cardFront3.setImage(new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + playerHand.get(nickname).get(2).getId() + ".png")));
-
-                cardBack1.setImage(new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + playerHand.get(nickname).get(0).getId() + ".png")));
-                cardBack2.setImage(new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + playerHand.get(nickname).get(1).getId() + ".png")));
-                cardBack3.setImage(new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + playerHand.get(nickname).get(2).getId() + ".png")));
-
-                //Gold cards
-                decKG.setImage(new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredGoldCard() + ".png")));
-                gc01.setImage(new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + goldCards.get(0).getId() + ".png")));
-                gc02.setImage(new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + goldCards.get(1).getId() + ".png")));
-
-                //Playable cards
-                decKP.setImage(new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredResourceCard() + ".png")));
-                pc01.setImage(new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + PlayableCards.get(0).getId() + ".png")));
-                pc02.setImage(new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + PlayableCards.get(1).getId() + ".png")));*/
+                initializeGameScene(personalObjectiveCard, commonObjectiveCards, goldCards, PlayableCards);
 
                 gui.getStage().setTitle("Codex Naturalis");
                 gui.getStage().setScene(new Scene(root));
@@ -189,55 +158,87 @@ public class GamePhaseController extends GUIController {
         });
     }
 
+
+    public void initializeGameScene(ObjectiveCard personalObjectiveCard, List<ObjectiveCard> commonObjectiveCards, List<GoldCard> goldCards, List<PlayableCard> PlayableCards) {
+        //Common Objective
+        Image CommonObjective1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + commonObjectiveCards.get(0).getId() + ".png"));
+        co01.setImage(CommonObjective1);
+        Image CommonObjective2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + commonObjectiveCards.get(1).getId() + ".png"));
+        co02.setImage(CommonObjective2);
+
+        //Personal Objective
+        Image PersonalObjective1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + personalObjectiveCard.getId() + ".png"));
+        co03.setImage(PersonalObjective1);
+
+
+        //Gold cards
+        Image deckGold = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredGoldCard().getId() + ".png"));
+        deckG.setImage(deckGold);
+        Image visibleGold1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + goldCards.get(0).getId() + ".png"));
+        gc01.setImage(visibleGold1);
+        Image visibleGold2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + goldCards.get(1).getId() + ".png"));
+        gc02.setImage(visibleGold2);
+
+        //Playable cards
+        Image deckResource = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredResourceCard().getId() + ".png"));
+        deckP.setImage(deckResource);
+        Image visibleResource1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + PlayableCards.get(0).getId() + ".png"));
+        pc01.setImage(visibleResource1);
+        Image visibleResource2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + PlayableCards.get(1).getId() + ".png"));
+        pc02.setImage(visibleResource2);
+
+        updatePlayerHand();
+        nicknameP1.setText(gui.getClient().getNickname()); //farlo per gli altri giocatori
+
+
+    }
+
+    private List<PlayableCard> getMyHand() {
+        return myHand;
+    }
+
     //player
-
-    public void assignFirstPlayer(String nickname) {
-        Platform.runLater(() -> {
-            try {
-                Message message = new Message("FirstPlayer", nickname);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+    public void playerHandChanged(List<PlayableCard> hand){
+            myHand.clear();
+            myHand.addAll(hand);
+            updatePlayerHand();
     }
 
+    public void updatePlayerHand(){
+            //Hand cards
+            Image cardFront1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + myHand.get(0).getId() + ".png"));
+            cdf1.setImage(cardFront1);
+            /*cdf1.setOnMouseClicked(event -> {
+                try {
+                    gui.getClient().sendMessage(new Message("",));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });*/
+            Image cdf2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + myHand.get(1).getId() + ".png"));
+            cardFront2.setImage(cdf2);
+            Image cdf3 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + myHand.get(2).getId() + ".png"));
+            cardFront3.setImage(cdf3);
 
-    public void setPlayersNickname() {
-        Platform.runLater(() -> {
-            try { gui.getClient().startGame();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+            Image cardBack1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + myHand.get(0).getId() + ".png"));
+            cdb1.setImage(cardBack1);
+            Image cdb2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + myHand.get(1).getId() + ".png"));
+            cardBack2.setImage(cdb2);
+            Image cdb3 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + myHand.get(2).getId() + ".png"));
+            cardBack3.setImage(cdb3);
     }
 
-
-
-
-
-    public void viewStarterCard() {
-        //TODO
-    }
 
 
     //play area
-    public void viewOtherPlayArea(MouseEvent event){
-        Platform.runLater(()->{
-            try {
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                return;
-            }
-        });
-    }
 
-    public void showCoordinate(MouseEvent event){
 
-    }
 
-    //chat
+
+    //points
+
+
 
     //turn
 
