@@ -30,6 +30,18 @@ public class ChatMessage implements Serializable{
         return json;
     }
 
+    public Client getSender() {
+        return sender;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
+
     /**
      * Constructor
      */

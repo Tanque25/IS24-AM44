@@ -39,7 +39,7 @@ public class ChooseObjectiveController extends GUIController {
         super();
     }
 
-    public void initialize(List<ObjectiveCard> objectiveCards) {
+    public void choseObjective(List<ObjectiveCard> objectiveCards) {
         Platform.runLater(() -> {
             try {
                 URL fxmlLocation = (new File("src/main/resources/org/example/myversion/FXML/ChooseObjectiveCard.fxml")).toURI().toURL();

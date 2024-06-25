@@ -13,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.myversion.client.GUI.GUIController;
+import org.example.myversion.messages.ChatMessage;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,13 +46,14 @@ public class ChatController extends GUIController{
         chargeScene();
     }
 
-    public void updateChat(){
+    public void updateChatReceive(ChatMessage message){
         Label newLabel = new Label();
 
-        newLabel.setText("New Label");
-
-        newLabel.prefWidthProperty().setValue(300);
+        newLabel.setText(message.getSender().getNickname() + " sent you this message at " + message.getTime() + ": " + message.getText());
+        newLabel.prefWidthProperty().setValue(286);
         newLabel.prefHeightProperty().setValue(100);
+        newLabel.setStyle("-fx-background-color: grey; -fx-text-fill: black;");
+        newLabel.setOpacity(0.8);
 
         chatMessages.getChildren().add(newLabel);
 
@@ -60,7 +62,20 @@ public class ChatController extends GUIController{
         }else{
             chargeScene();
         }
+    }
 
+    public void updateChatSend(ChatMessage message){
+        Label newLabel = new Label();
+
+        newLabel.setText("You sent this message at " + message.getTime() + ": " + message.getText());
+        newLabel.prefWidthProperty().setValue(286);
+        newLabel.prefHeightProperty().setValue(100);
+        newLabel.setStyle("-fx-background-color: orange; -fx-text-fill: black;");
+        newLabel.setOpacity(0.8);
+
+        chatMessages.getChildren().add(newLabel);
+
+        chargeScene();
     }
 
     private void sendChatMessage(){

@@ -76,7 +76,7 @@ public class StarterCardSideController extends GUIController {
                     playedFront.setDisable(true);
                     send.setDisable(true);
                     gui.setPlayerStarterChosen(true);
-                    gui.secretObjectiveCardChoice(gui.getObjectiveCards());
+                    gui.showCommonObjectives(gui.getCommonObjectiveCards());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
