@@ -2,6 +2,7 @@ package org.example.myversion.client.GUI.Controllers;
 
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,8 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.example.myversion.client.Client;
 import org.example.myversion.client.GUI.GUI;
@@ -34,6 +34,8 @@ public class GamePhaseController extends GUIController {
     //public GUI gui;
     @FXML
     private AnchorPane mainAnchor;
+    @FXML
+    private GridPane gridPL;
     @FXML
     private Label nicknameP1;
     @FXML
@@ -134,6 +136,9 @@ public class GamePhaseController extends GUIController {
     private List<PlayableCard> playableCards;
     private List<PlayableCard> myHand = new ArrayList<>();
     private StarterCard starterCard;
+    private int xCard = 94;
+    private int yCard = 57;
+    private PlayableCard selectedCard;
 
 
     public GamePhaseController() {
@@ -200,8 +205,11 @@ public class GamePhaseController extends GUIController {
 
     //StarterCard
     public void putStarterCard(StarterCard starterCard){
+        Platform.runLater(()->{
+
         this.starterCard = starterCard;
         ImageView imgStarterCard = new ImageView();
+
         if (starterCard.isPlayedBack()){
             Image imgBack = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + starterCard.getId() + ".png"));
             imgStarterCard.setImage(imgBack);
@@ -211,57 +219,217 @@ public class GamePhaseController extends GUIController {
         }
 
         imgStarterCard.setPreserveRatio(true);
-        imgStarterCard.setFitWidth(94);
-        imgStarterCard.setFitHeight(57);
+        imgStarterCard.setFitWidth(xCard);
+        imgStarterCard.setFitHeight(yCard);
 
-        myPlayArea.setContent(null);
-        myPlayArea.setContent(imgStarterCard);
-        myPlayArea.getContent();
+        gridPL.setMinSize((81*xCard),(81*yCard));
+        gridPL.setMaxSize((81*xCard), (81*yCard));
+
+        for(int i=0; i<81; i++){
+            ColumnConstraints column = new ColumnConstraints();
+            column.setPercentWidth(100/81);
+            gridPL.getColumnConstraints().add(column);
+
+            RowConstraints row = new RowConstraints();
+            row.setPercentHeight(100/81);
+            gridPL.getRowConstraints().add(row);
+        }
+
+        //initialize matrix
+        for(int i=0; i<81; i++){
+            for(int j=0; j<81; j++){
+                ImageView img = new ImageView();
+                img.setPreserveRatio(true);
+                img.setFitWidth(xCard);
+                img.setFitHeight(yCard);
+
+                img.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        if(!selectedCard.isPlayedBack()) {
+                            Image sC = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + selectedCard.getId() + ".png"));
+                            img.setImage(sC);
+                        } else {
+                            Image sC = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + selectedCard.getId() + ".png"));
+                            img.setImage(sC);
+                        }
+                    }
+                });
+
+                gridPL.add(img, i, j);
+            }
+        }
+
+        gridPL.add(imgStarterCard, 40, 40);
+
+            Platform.runLater(() -> {
+                myPlayArea.layout();
+                double gridWidth = gridPL.getWidth();
+                double gridHeight = gridPL.getHeight();
+                double viewportWidth = myPlayArea.getViewportBounds().getWidth();
+                double viewportHeight = myPlayArea.getViewportBounds().getHeight();
+
+                // Adjust offsets
+                double horizontalOffset = xCard * (4);
+                double verticalOffset = yCard *(4);
+
+                double hValue = (40 * xCard - viewportWidth / 2 + horizontalOffset) / (gridWidth - viewportWidth);
+                double vValue = (40 * yCard - viewportHeight / 2 + verticalOffset) / (gridHeight - viewportHeight);
+
+                myPlayArea.setHvalue(hValue);
+                myPlayArea.setVvalue(vValue);
+            });
+
+        });
+
+
+
     }
     //player
     public void playerHandChanged(List<PlayableCard> hand){
+        Platform.runLater(()->{
             myHand.clear();
             myHand.addAll(hand);
+            clearPlayerHand();
             updatePlayerHand();
+        });
     }
 
+        public void clearPlayerHand(){
+            Platform.runLater(() -> {
+                // Cancella completamente l'immagine della carta giocata
+                if (selectedCard != null) {
+                    if (selectedCard == myHand.get(0)) {
+                        cdf1.setImage(null);  // Cancella il fronte della carta giocata
+                        cdb1.setImage(null);  // Cancella il retro della carta giocata
+                    } else if (selectedCard == myHand.get(1)) {
+                        cardFront2.setImage(null);
+                        cardBack2.setImage(null);
+                    } else if (selectedCard == myHand.get(2)) {
+                        cardFront3.setImage(null);
+                        cardBack3.setImage(null);
+                    }
+                }
+            });
+        }
+
+
+
+
     public void updatePlayerHand(){
+        Platform.runLater(()->{
             //Hand cards
             Image cardFront1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + myHand.get(0).getId() + ".png"));
             cdf1.setImage(cardFront1);
-            /*cdf1.setOnMouseClicked(event -> {
-                try {
-                    gui.getClient().sendMessage(new Message("",));
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+            cdf1.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    selectedCard = myHand.get(0);
+                    selectedCard.setPlayedBack(false);
+                    myHand.remove(selectedCard);
+
+                    List<PlayableCard> newHand = new ArrayList<>(myHand);
+
+                    playerHandChanged(newHand);
+
+                    ImageView k = cardBack2;
+                    ImageView h = cardBack3;
                 }
-            });*/
+            });
+
+
             Image cdf2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + myHand.get(1).getId() + ".png"));
             cardFront2.setImage(cdf2);
+            cardFront2.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    selectedCard = myHand.get(1);
+                    selectedCard.setPlayedBack(false);
+                    myHand.remove(selectedCard);
+                    List<PlayableCard> newHand = new ArrayList<>(myHand);
+                    playerHandChanged(newHand);
+                }
+            });
             Image cdf3 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + myHand.get(2).getId() + ".png"));
             cardFront3.setImage(cdf3);
+            cardFront3.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    selectedCard = myHand.get(2);
+                    selectedCard.setPlayedBack(false);
+                    myHand.remove(selectedCard);
+                    List<PlayableCard> newHand = new ArrayList<>(myHand);
+                    playerHandChanged(newHand);
+                }
+            });
 
             Image cardBack1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + myHand.get(0).getId() + ".png"));
             cdb1.setImage(cardBack1);
+            cdb1.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    selectedCard = myHand.get(0);
+                    selectedCard.setPlayedBack(true);
+                    myHand.remove(selectedCard);
+                    List<PlayableCard> newHand = new ArrayList<>(myHand);
+                    playerHandChanged(newHand);
+                }
+            });
             Image cdb2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + myHand.get(1).getId() + ".png"));
             cardBack2.setImage(cdb2);
+            cardBack2.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    selectedCard = myHand.get(1);
+                    selectedCard.setPlayedBack(true);
+                    myHand.remove(selectedCard);
+                    List<PlayableCard> newHand = new ArrayList<>(myHand);
+                    playerHandChanged(newHand);
+                }
+            });
             Image cdb3 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + myHand.get(2).getId() + ".png"));
             cardBack3.setImage(cdb3);
+            cardBack3.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    selectedCard = myHand.get(2);
+                    selectedCard.setPlayedBack(true);
+                    myHand.remove(selectedCard);
+                    List<PlayableCard> newHand = new ArrayList<>(myHand);
+                    playerHandChanged(newHand);
+                }
+            });
+        });
     }
+
+
+
 
 
 
     //play area
-    /*public void displayOtherPlayArea(){
+    public void displayOtherPlayArea(){
         //player2
-        player2Pane.setOnMouseClicked(event -> {
+        nicknameP2.setOnMouseClicked (event -> {
             try {
-                gui.getStage().setScene(PersonalPlayAreaController);
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/myversion/FXML/OtherPlayArea.fxml"));
+                Parent root = loader.load();
+
+                // Crea una nuova scena con il root caricato
+                Scene newScene = new Scene(root);
+
+                // Imposta una nuova stage
+                Stage newStage = new Stage();
+                newStage.setTitle("Other Play Area");
+                newStage.setScene(newScene);
+                newStage.show();
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
-    }*/
+    }
 
 
 

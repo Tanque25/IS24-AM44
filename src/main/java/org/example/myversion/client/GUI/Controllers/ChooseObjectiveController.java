@@ -67,7 +67,6 @@ public class ChooseObjectiveController extends GUIController {
                     button0.setDisable(true);
                     button1.setDisable(true);
                     gui.setSecretObjectiveCard(objectiveCards.get(0));
-                    //gui.showMyPlayArea();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -78,7 +77,6 @@ public class ChooseObjectiveController extends GUIController {
                     button0.setDisable(true);
                     button1.setDisable(true);
                     gui.setSecretObjectiveCard(objectiveCards.get(1));
-                    //gui.showMyPlayArea();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
