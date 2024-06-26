@@ -35,10 +35,7 @@ import java.util.*;
 
 public class GamePhaseController extends GUIController {
 
-    //ATTENZIONE manda mex if(selectedCard instanceof GoldCard)
-    //                        gui.getClient().sendMessage(new Message("CardToPlayChoice", (GoldCard)selectedCard , coordinates));
-    //                    else
-    //                        gui.getClient().sendMessage(new Message("CardToPlayChoice", selectedCard, coordinates));
+
     @FXML
     private AnchorPane mainAnchor;
     @FXML
@@ -135,6 +132,7 @@ public class GamePhaseController extends GUIController {
     private ListView importantEventsList;
     @FXML
     private ComboBox comboBoxMessage;
+    private ObjectiveCard personalObjectiveCard;
 
     private Map<String, List<PlayableCard>> playerHand;
     private List<ObjectiveCard> personalObjectiveCards;
@@ -148,6 +146,7 @@ public class GamePhaseController extends GUIController {
     private PlayableCard selectedCard;
     private PlayableCard drawnCard;
     private Point2D selectedCell;
+    private boolean isPlacingCard = false;
 
 
     public GamePhaseController() {
@@ -162,6 +161,7 @@ public class GamePhaseController extends GUIController {
      * @param playableCards
      */
     public void initialize(ObjectiveCard personalObjectiveCard, List<ObjectiveCard> commonObjectiveCards, List<GoldCard> goldCards, List<PlayableCard> playableCards) {
+        this.personalObjectiveCard = personalObjectiveCard;
         Platform.runLater(()->{
             try {
                 URL fxmlLocation = getClass().getResource("/org/example/myversion/FXML/GamePhase.fxml");
@@ -561,7 +561,7 @@ public class GamePhaseController extends GUIController {
         try {
             selectedCell = cell;
             gridPL.getChildren().removeIf(node -> node instanceof Button); //rimuovi gli altri bottoni
-            gui.getClient().sendMessage(new Message("CardToPlayChoice", selectedCard, new Coordinates((int)cell.getY(), (int)cell.getX())));
+            gui.getClient().sendMessage(new Message("CardToPlayChoice", selectedCard, new Coordinates((int)cell.getX(), (int)cell.getY())));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -586,8 +586,80 @@ public class GamePhaseController extends GUIController {
         labelMessage.setText("Invalid move. Please select a different position!");
     }
 
+    public void updateScene(){
+        Platform.runLater(()->{
+            try {
+                URL fxmlLocation = getClass().getResource("/org/example/myversion/FXML/GamePhase.fxml");
+                FXMLLoader loader = new FXMLLoader(fxmlLocation);
+                loader.setController(this);
+                Parent root = loader.load();
 
 
+                initializeGameScene(personalObjectiveCard, commonObjectiveCards, goldCards, playableCards);
+
+                gui.getStage().setTitle("Codex Naturalis");
+                gui.getStage().setScene(new Scene(root));
+                gui.getStage().show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public void activeHandButtons(){
+        Platform.runLater(()->{
+            if(!isPlacingCard){
+            cdf1.setOnMouseClicked(event -> {
+                selectedCard = myHand.get(0);
+                selectedCard.setPlayedBack(false);
+                //myHand.remove(selectedCard);
+                //playerHandChanged(new ArrayList<>(myHand));
+                isPlacingCard = true;
+            });
+            cdb1.setOnMouseClicked(event -> {
+                selectedCard = myHand.get(0);
+                selectedCard.setPlayedBack(true);
+                //myHand.remove(selectedCard);
+                //showPlacementOptions();
+                //playerHandChanged(new ArrayList<>(myHand));
+                isPlacingCard = true;
+            });
+            cardFront2.setOnMouseClicked(event -> {
+                selectedCard = myHand.get(1);
+                selectedCard.setPlayedBack(false);
+                //myHand.remove(selectedCard);
+                //showPlacementOptions();
+                //playerHandChanged(new ArrayList<>(myHand));
+                isPlacingCard = true;
+            });
+            cardBack2.setOnMouseClicked(event -> {
+                selectedCard = myHand.get(1);
+                selectedCard.setPlayedBack(true);
+                //myHand.remove(selectedCard);
+                //showPlacementOptions();
+                //playerHandChanged(new ArrayList<>(myHand));
+                isPlacingCard = true;
+            });
+            cardFront3.setOnMouseClicked(event -> {
+                selectedCard = myHand.get(2);
+                selectedCard.setPlayedBack(false);
+                //myHand.remove(selectedCard);
+                //showPlacementOptions();
+                //playerHandChanged(new ArrayList<>(myHand));
+                isPlacingCard = true;
+            });
+            cardBack3.setOnMouseClicked(event -> {
+                selectedCard = myHand.get(2);
+                selectedCard.setPlayedBack(true);
+                //myHand.remove(selectedCard);
+                //showPlacementOptions();
+                //playerHandChanged(new ArrayList<>(myHand));
+                isPlacingCard = true;
+            });
+            }
+
+        });
+    }
     //turn
 
 
