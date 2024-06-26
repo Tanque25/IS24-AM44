@@ -16,7 +16,6 @@ import java.util.Map;
  */
 public class Player {
     private final String nickname;
-    private boolean connected;
     private List<PlayableCard> hand;
     private Card[][] playArea;
     private ObjectiveCard secretObjective;
@@ -31,7 +30,6 @@ public class Player {
      */
     public Player(String nickname) {
         this.nickname = nickname;
-        this.connected = true;
         this.hand = new ArrayList<>();
         this.playArea = new Card[81][81];
         initializeStock();
@@ -59,26 +57,12 @@ public class Player {
         return nickname;
     }
 
-    /**
-     * Sets the connection status of the player.
-     *
-     * @param connected is used to set the Player's attribute value
-     */
-    public void setConnected(boolean connected) {
-        this.connected = connected;
-    }
-
-    /**
-     * Gets the connection status of the player.
-     *
-     * @return the player's attribute connected
-     */
-    public boolean isConnected() {
-        return connected;
-    }
-
     public Map<CornerContent, Integer> getStock() {
         return stock;
+    }
+
+    public void setStock(Map<CornerContent, Integer> stock) {
+        this.stock = stock;
     }
 
     /**
@@ -215,7 +199,7 @@ public class Player {
         }
     }
 
-    public boolean hasEnoughStock(GoldCard playedCard) throws InvalidMoveException {
+    public void hasEnoughStock(GoldCard playedCard) throws InvalidMoveException {
         Resource[] cost = playedCard.getCost();
 
         // Create a map to count the required quantities of each resource
@@ -236,8 +220,6 @@ public class Player {
                 throw new InvalidMoveException("The player doesn't have enough stock to play this card.");
             }
         }
-
-        return true; // All required resources are available in sufficient quantities
 
     }
 

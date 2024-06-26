@@ -106,6 +106,7 @@ public class ObjectiveCardView {
 
         stringBuilder.append("└――");
 
+        assert bottomLineObjective != null;
         for (Resource resource : bottomLineObjective) {
             stringBuilder.append(resource != null ? resource.getShortName() : "―");
         }

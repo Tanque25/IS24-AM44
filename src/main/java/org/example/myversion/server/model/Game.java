@@ -1,9 +1,7 @@
 package org.example.myversion.server.model;
 
-import org.example.myversion.client.view.HandView;
 import org.example.myversion.server.model.decks.*;
 import org.example.myversion.server.model.decks.cards.*;
-import org.example.myversion.server.model.exceptions.EmptyDeckException;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
 
@@ -68,7 +66,7 @@ public class Game {
      *
      * @param nickname The nickname of the new player.
      */
-    public void newPlayer(String nickname){
+    public void newPlayer(String nickname) {
         Player player = new Player(nickname);
 
         // Initializing the player's hand before adding it to the players list
@@ -102,7 +100,6 @@ public class Game {
         return players;
     }
 
-
     /**
      * Retrieves the current player whose turn it is.
      *
@@ -128,7 +125,7 @@ public class Game {
      * @param player      The player for whom the play area is initialized.
      * @param starterCard The starter card to be placed in the player's play area.
      */
-    public void placeStarterCard(Player player, StarterCard starterCard){
+    public void placeStarterCard(Player player, StarterCard starterCard) {
         player.initializePlayArea(starterCard);
     }
 
@@ -153,20 +150,20 @@ public class Game {
      *
      * @return the drawn starter card
      */
-    public StarterCard drawStarterCard(){
+    public StarterCard drawStarterCard() {
         StarterCard starterCard;
 
-        starterCard  = starterDeck.drawCard();
+        starterCard = starterDeck.drawCard();
         return starterCard;
     }
 
     /**
      * Sets the secret objective for the specified player.
      *
-     * @param player         The player whose secret objective is being set.
+     * @param player          The player whose secret objective is being set.
      * @param secretObjective The secret objective card to set for the player.
      */
-    public void setPlayerSecretObjective(Player player, ObjectiveCard secretObjective){
+    public void setPlayerSecretObjective(Player player, ObjectiveCard secretObjective) {
         player.setSecretObjective(secretObjective);
     }
 
@@ -193,24 +190,25 @@ public class Game {
      * Updates the player stock.
      * The player's score is updated on the board.
      *
-     * @param player                The player who is playing the card.
-     * @param playedCard            The card being played.
-     * @param coordinates           The coordinates on the board where the card will be placed.
+     * @param player      The player who is playing the card.
+     * @param playedCard  The card being played.
+     * @param coordinates The coordinates on the board where the card will be placed.
      * @throws InvalidMoveException If the move is not valid.
      */
     public void playCard(Player player, PlayableCard playedCard, Coordinates coordinates) throws InvalidMoveException {
         // Check if it's possible to place the card at the specified coordinates
-        if(player.isValidMove(coordinates)){
+        if (player.isValidMove(coordinates)) {
 
             // Check if the player has enough stock in case of GoldCard
-            if(playedCard instanceof GoldCard)
+            if (playedCard instanceof GoldCard)
                 player.hasEnoughStock((GoldCard) playedCard);
 
             // placing the card in the play area, removing it from the player's hand and updating his stock
             player.placeCard(playedCard, coordinates);
 
             // updating the player score
-            board.updateScore(player, playedCard.getCardPoints());
+            if(!playedCard.isPlayedBack())
+                board.updateScore(player, playedCard.getCardPoints());
         }
     }
 
@@ -225,7 +223,7 @@ public class Game {
     /**
      * Draws a card for the player and manages card replacement for visible and top deck cards.
      *
-     * @param player The player who draws the card.
+     * @param player     The player who draws the card.
      * @param chosenCard The card chosen by the player.
      * @throws InvalidChoiceException If the chosen card is invalid.
      */
@@ -298,16 +296,6 @@ public class Game {
     }
 
     /**
-     * Changes the connection status of a player.
-     *
-     * @param player The player whose connection status will be changed.
-     * @param status The new connection status.
-     */
-    public void changePlayerConnectionStatus(Player player, boolean status) {
-        player.setConnected(status);
-    }
-
-    /**
      * Finds the winner of the game based on the player with the highest score.
      *
      * @return The player with the highest score. Returns null if there are no players or if the scores map is empty.
@@ -334,7 +322,7 @@ public class Game {
      *
      * @return true if it is the last turn, false otherwise.
      */
-    public boolean checkLastTurn(){
+    public boolean checkLastTurn() {
         return goldDeck.getGoldDeck().empty() || resourceDeck.getResourceDeck().empty();
     }
 

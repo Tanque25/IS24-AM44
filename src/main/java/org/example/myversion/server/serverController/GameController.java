@@ -9,6 +9,7 @@ import org.example.myversion.server.model.Player;
 import org.example.myversion.server.model.decks.GoldDeck;
 import org.example.myversion.server.model.decks.ResourceDeck;
 import org.example.myversion.server.model.decks.cards.*;
+import org.example.myversion.server.model.enumerations.CornerContent;
 import org.example.myversion.server.model.exceptions.*;
 
 import java.io.File;
@@ -21,32 +22,26 @@ import java.util.*;
  * Manages the game dynamics including the lobby, player interactions, and connections.
  */
 public class GameController {
-    public static Game game;
-    public HashMap<String, Integer> pongLost;
-    public List<String> pongReceived;
+    public Game game;
     private HashMap<String, HandleClientSocket> tcpClients;
     private HashMap<String, ClientCommunicationInterface> rmiClients;
     private GameState gameState;
-    public int roundsPlayed;
-    public int playersNumber;
+    private int roundsPlayed;
+    private int playersNumber;
     private static int readyPlayersNumber = 0;
     private Player lastPlayer;
-    private HashMap <Player, Integer> playerRoundsPlayed;
 
     // Game backup attributes
-    public List<String> disconnectedPlayers;
     public static final String BACKUP_FILE = "backUp.json";
+    private List<String> disconnectedPlayers;
     private Map<String, List<PlayableCard>> handsMap;
     private Map<String, Card[][]> playAreasMap;
 
     public GameController() {
         this.game = new Game();
-        this.pongLost = new HashMap<>();
-        this.pongReceived = new ArrayList<>();
         this.tcpClients = new HashMap<>();
         this.rmiClients = new HashMap<>();
         this.playersNumber = 0;
-        this.playerRoundsPlayed = new HashMap<>();
         this.gameState = GameState.LOGIN;
         this.lastPlayer = null;
 
@@ -103,13 +98,7 @@ public class GameController {
         //game = new Game();
         gameState = GameState.INITIALIZATION;
         game.initializeGame();
-        initializeRoundMap();
         roundsPlayed = 0;
-    }
-
-    private void initializeRoundMap (){
-        for (Player player : game.getPlayers())
-            playerRoundsPlayed.put(player, 0);
     }
 
     /**
@@ -203,10 +192,6 @@ public class GameController {
         return playersNumber;
     }
 
-    public HashMap<Player, Integer> getPlayerRoundsPlayed() {
-        return playerRoundsPlayed;
-    }
-
     public int getRoundsPlayed() {
         return roundsPlayed;
     }
@@ -283,6 +268,16 @@ public class GameController {
         return playersHandsMap;
     }
 
+    public Map<String, Map<CornerContent, Integer>> getPlayersStock() {
+        Map<String, Map<CornerContent, Integer>> playersStock = new HashMap<>();
+
+        for(Player player : game.getPlayers()) {
+            playersStock.put(player.getNickname(), player.getStock());
+        }
+
+        return playersStock;
+    }
+
     /**
      * Allows a player to play a card, it will call the game's playCard
      * This method will be called by the client to play a card.
@@ -344,49 +339,12 @@ public class GameController {
     public boolean gameIsFull(){
         System.out.println("numero giocatori: "+game.getPlayers().size());
         System.out.println("numero giocatori settato: "+playersNumber);
-        if(game.getPlayers().size() == playersNumber){
-            return true;
-        }
-        return false;
+        return game.getPlayers().size() == playersNumber;
     }
 
     public boolean gameIsEmpty(){
         return game.getPlayers().isEmpty();
     }
-
-    /**
-     * Notifies the server that a client is still connected.
-     * This method is called periodically by the client to indicate its activity.
-     * @param nickname the name of the client that sent the pong.
-     */
-    public void pong(String nickname){
-        if(!pongReceived.contains(nickname)) {
-            pongReceived.add(nickname);
-        }
-        pongLost.remove(nickname);
-        pongLost.put(nickname, 0);
-    }
-
-    /**
-     * Adds a client that has lost connection to the list of disconnected clients.
-     * This method is called when a client disconnects from the server.
-     * @param nickname the name of the disconnected client.
-     *
-     */
-    public void addPongLost(String nickname){
-        int currentPongLost = pongLost.get(nickname);
-        pongLost.remove(nickname);
-        pongLost.put(nickname, currentPongLost + 1);
-    }
-
-    /**
-     * Checks if the specified player is the first player.
-     * If the player is not the first player, the method sets isFirstPlayer to false.
-     *
-     * @param nickname The name of the player to check.
-     * @return True if the player is the first player, false otherwise.
-     */
-
 
     /**
      * It checks if the player's number chosen by the first player is correct
@@ -458,17 +416,6 @@ public class GameController {
     }
 
     /**
-     * Handles the disconnection of a player.
-     * This method will be called when a player disconnects from the game.
-     * It removes the disconnected player from the list of active players and adds them to the list of disconnected players.
-     *
-     * @param nickname the name of the disconnected player.
-     */
-    public void disconnected(String nickname) {
-
-    }
-
-    /**
      * Checks if the game is over.
      * This method will be called to determine if the game has ended.
      * @return True if the game is over, false otherwise.
@@ -504,10 +451,11 @@ public class GameController {
                 game.getCommonObjectives().get(0), game.getCommonObjectives().get(1),
                 getSecretObjectives(),
                 game.getResourceDeck(), game.getGoldDeck(),
-                game.getVisibleResourceCards(), game.getResourceDeckPeek(),
-                game.getVisibleGoldCards(), game.getGoldDeckPeek(),
+                game.getVisibleResourceCards(),
+                game.getVisibleGoldCards(),
                 getPlayersHandsMap(), getPlayAreas(),
-                game.getCurrentPlayer().getNickname(), lastPlayer.getNickname(), gameState
+                game.getCurrentPlayer().getNickname(), lastPlayer.getNickname(), gameState,
+                getPlayersStock()
         );
         System.out.println("Game saved.");
     }
@@ -547,7 +495,6 @@ public class GameController {
 
         // Initialize the game players and their scores
         Map<String, Integer> scores = lastGame.getScores();
-        Map<String, ObjectiveCard> secretObjectiveCards = lastGame.getSecretObjectiveCards();
         Board board = game.getBoard();
 
         for (String playerNickname : scores.keySet()) {
@@ -577,6 +524,14 @@ public class GameController {
         // Restore the players' play areas
         game.restorePlayersPlayAreas(lastGame.getPlayAreasMap());
         this.playAreasMap = lastGame.getPlayAreasMap();
+
+        // Restore the players' stock
+        Map<String, Map<CornerContent, Integer>> playersStock = lastGame.getPlayersStock();
+        for (Player player : game.getPlayers()) {
+            if (playersStock.containsKey(player.getNickname())) {
+                player.setStock(playersStock.get(player.getNickname()));
+            }
+        }
 
         // Restore the current player
         String currentPlayerNickname = lastGame.getJson().getString("currentPlayer");

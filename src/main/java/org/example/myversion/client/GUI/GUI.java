@@ -110,6 +110,10 @@ public class GUI extends GameView{
         return starterCard;
     }
 
+    public boolean isPlayerStarterChosen() {
+        return playerStarterChosen;
+    }
+
     public List<ObjectiveCard> getObjectiveCards() {
         return objectiveCards;
     }
@@ -153,9 +157,15 @@ public class GUI extends GameView{
     }
 
     @Override
+    public void showTakenUsername() {
+        loginController.loginFailed();
+    }
+
+    @Override
     public void showGameAlreadyStartedMessage() {
 
     }
+
 
     @Override
     public void playersNumberChoice() throws IOException {
@@ -183,8 +193,10 @@ public class GUI extends GameView{
     public void showVisibleCards(){
         //List<PlayableCard> visiblePlayableCards = getVisibleResourceCards();
         //List<GoldCard> visibleGoldCards = getVisibleGoldCards();
-        showVisibleCardsController = new ShowVisibleCardsController();
-        showVisibleCardsController.setGui(this);
+        if(showVisibleCardsController == null) {
+            showVisibleCardsController = new ShowVisibleCardsController();
+            showVisibleCardsController.setGui(this);
+        }
         showVisibleCardsController.displayCards();
 
     }
@@ -269,7 +281,8 @@ public class GUI extends GameView{
         visibleGoldCards = getVisibleGoldCards();
         visiblePlayableCards = getVisibleResourceCards();
         commonObjectiveCards = getCommonObjectiveCards();
-        secretObjectiveCard = getSecretObjectiveCard(); //secretObjectiveCards
+        secretObjectiveCard = getSecretObjectiveCard();
+        starterCard = getStarterCard();
 
         String nick = client.getNickname();
         Map<String, List<PlayableCard>> Hands = getHandsMap();
@@ -281,6 +294,7 @@ public class GUI extends GameView{
         //playerHand, (secret)objectiveCards,commonObjectiveCards, deckG, deckRes,
         gamePhaseController.initialize(secretObjectiveCard, commonObjectiveCards, visibleGoldCards, visiblePlayableCards);
         gamePhaseController.playerHandChanged(hand);
+        gamePhaseController.putStarterCard(starterCard);
     }
 
     @Override
@@ -290,12 +304,12 @@ public class GUI extends GameView{
 
     @Override
     public void chooseCardToPlay() throws IOException {
-
+        gamePhaseController.addCardToPlayArea();
     }
 
     @Override
     public void invalidMove() throws IOException {
-
+        gamePhaseController.showMessageInvalidMove();
     }
 
     @Override
@@ -326,79 +340,4 @@ public class GUI extends GameView{
 
     }
 
-    /*public HBox showMyHand(List<PlayableCard> hand) {
-        HBox hbox = new HBox();
-        for (PlayableCard card : hand) {
-            Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + Objects.toString(card.getId()) + ".png").toExternalForm());
-            ImageView imgView = new ImageView(img);
-            hbox.getChildren().add(imgView);
-        }
-        return hbox;
-    }
-
-    public HBox showMyHandBack(List<PlayableCard> hand) {
-        HBox hbox = new HBox();
-        for (PlayableCard card : hand) {
-            Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_back" + Objects.toString(card.getId()) + ".png").toExternalForm());
-            ImageView imgView = new ImageView(img);
-            hbox.getChildren().add(imgView);
-        }
-        return hbox;
-    }*/
-
-    /*public void loadScene(GameScene sceneType) throws IOException {
-        Platform.runLater(() -> {
-            String path;
-
-            switch (sceneType) {
-                case LOGIN:
-                    path = "/Login.fxml";
-                    break;
-                case WAIT_FOR_OTHER_PLAYERS:
-                    path = "/WaitForOtherPlayers.fxml";
-                    break;
-                case SHOW_COMMON_OBJECTIVES:
-                    path = "/ShowCommonObjectives.fxml";
-                    break;
-                case GAME_PHASE:
-                    path = "/GamePhase.fxml";
-                    break;
-                case CHOOSE_OBJECTIVE:
-                    path = "/ChooseObjectiveCard.fxml";
-                    break;
-                case CHOOSE_PLAYER_NUMBER:
-                    path = "/ChoosePlayerNumber.fxml";
-                    break;
-                case CHOOSE_STARTER:
-                    path = "/StarterCardSide.fxml";
-                    break;
-                case END_GAME:
-                    path = "/EndGame.fxml";
-                    break;
-                default:
-                    path = "/Login.fxml";
-            }
-
-            try {
-               // URL fxmlLocation = new File("src/main/resources/org/example/myversion/FXML" + path).toURI().toURL();
-                FXMLLoader loader = new FXMLLoader(GUI.class.getResource("/FXML/"+path));
-                loader.setController(this);
-                Parent root = loader.load();
-                scene.setRoot(root);
-
-                /*this.getStage().setTitle("Codex Naturalis");
-                this.getStage().setScene(new Scene(root));
-                this.getStage().show();
-
-                genericController = loader.getController();
-                genericController.setStage(stage);
-                stage.setScene(scene);
-                stage.show();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-
-    }*/
     }

@@ -17,6 +17,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+/**
+ * Controller class for choosing the number of players in the game.
+ */
 public class ChosePlayerNumberController extends GUIController {
 
     @FXML
@@ -24,16 +27,25 @@ public class ChosePlayerNumberController extends GUIController {
     @FXML
     private Button confirmChoice;
 
+    /**
+     * Default constructor for the ChosePlayerNumberController class.
+     */
     public ChosePlayerNumberController() {
         super();
     }
 
+    /**
+     * Initializes the controller class. This method is automatically called after the FXML file has been loaded.
+     */
     @FXML
     private void initialize() {
         confirmChoice.setOnMouseClicked(event -> handleChoice());
     }
 
-    public void choseNumberOfPlayer(){
+    /**
+     * Sets up the GUI for choosing the number of players and displays the corresponding scene.
+     */
+    public void choseNumberOfPlayer() {
         Platform.runLater(() -> {
             try {
                 URL fxmlLocation = (new File("src/main/resources/org/example/myversion/FXML/ChoosePlayerNumber.fxml")).toURI().toURL();
@@ -50,6 +62,9 @@ public class ChosePlayerNumberController extends GUIController {
         });
     }
 
+    /**
+     * Handles the player's choice of the number of players. Sends the selected number to the server and updates the GUI accordingly.
+     */
     @FXML
     private void handleChoice() {
         Integer number = numberOfPlayers.getValue();
