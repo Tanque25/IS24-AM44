@@ -27,8 +27,8 @@ public interface CommunicationInterface extends Remote {
 
     GameController controller = new GameController();
 
-    int TCP_PORT = 8080;
-    int RMI_PORT = 70;
+    int TCP_PORT = 54321;
+    int RMI_PORT = 59666;
 
 
     default void receiveMessageTCP(Message message, HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException {

@@ -8,6 +8,7 @@ import org.example.myversion.server.serverController.TCPServer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Scanner;
 
 /**
  * Manages the server component of the game application.
@@ -22,12 +23,12 @@ public class Server implements ServerInterface, CommunicationInterface {
      * Constructor: It creates both new server.
      * In particular, it initializes both the RMI and the socket servers.
      */
-    public Server(){
+    public Server(String ip, int tcpPort, int rmiPort){
         // Initialize the TCP server
-        servertcp = new TCPServer();
+        servertcp = new TCPServer(ip, tcpPort);
 
         // Initialize the RMI server
-        serverrmi = new RMIServer();
+        serverrmi = new RMIServer(ip, rmiPort);
     }
 
     /**
@@ -36,7 +37,18 @@ public class Server implements ServerInterface, CommunicationInterface {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Server server = new Server();
+        String serverIp;
+
+        System.out.print("Insert remote ip (leave empty for localhost): ");
+        serverIp = new Scanner(System.in).nextLine();
+
+        Server server;
+        if (serverIp.isEmpty()) {
+            server = new Server("localhost", TCP_PORT, RMI_PORT);
+        }
+        else {
+            server = new Server(serverIp, TCP_PORT, RMI_PORT);
+        }
 
         // Start both TCP and RMI servers
         try {
