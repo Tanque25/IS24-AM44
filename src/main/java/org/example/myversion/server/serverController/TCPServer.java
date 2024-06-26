@@ -20,17 +20,18 @@ public class TCPServer implements ServerInterface, CommunicationInterface {
     public ExecutorService executor; // Executor service to manage client handler threads
 
     /**
-     * Constructor, it initializes a TCP server on the specified port.
+     * Constructor, it initializes a TCP server on the specified IP and port.
      */
-    public TCPServer() {
+    public TCPServer(String ip, int port) {
         clients = new ArrayList<>();
         executor = Executors.newCachedThreadPool();
 
         try {
             // The TCP Server starts running
-            serverSocket = new ServerSocket(TCP_PORT);
+            serverSocket = new ServerSocket();
+            serverSocket.bind(new InetSocketAddress(ip, port));
             running = true;
-            System.out.println("TCP server started on port " + serverSocket.getLocalPort() + ".");
+            System.out.println("TCP server started on " + ip + ": " + port + ".");
 
             // Starting a thread that accepts incoming connections
             acceptThread = new Thread(() -> {

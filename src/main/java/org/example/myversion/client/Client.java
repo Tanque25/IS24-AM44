@@ -24,16 +24,10 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
     private String nickname;
     private GameView gameView;
     private boolean serverConnection;
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
-    private final Object lock;
+    protected final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     public Client() throws RemoteException {
         super();
-
-        // TODO
-
-        lock = new Object();
     }
 
     /**
@@ -42,7 +36,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
      * @throws IOException       if the connection fails.
      * @throws NotBoundException if the server is not bound.
      */
-    public abstract void connect() throws IOException, NotBoundException;
+    public abstract void connect(String hostname) throws IOException, NotBoundException;
 
     /**
      * Parses and handles messages received from the server.
@@ -261,7 +255,6 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
     public abstract void sendChatMessage(ChatMessage message) throws IOException;
 
     public void myTurn() {
-        // TODO: implement myTurn thread launch
         try {
             gameView.chooseCardToPlay();
         } catch (IOException e) {

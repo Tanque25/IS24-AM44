@@ -36,16 +36,18 @@ public class CodexNaturalis {
         switch (communicationProtocol) {
             case "rmi" -> {
                 try {
-                    client = new RMIClient();
+                    client = new RMIClient(hostname);
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
                 }
             }
             case "tcp" -> {
                 try {
-                    client = new TCPClient();
+                    client = new TCPClient(hostname);
                 } catch (IOException e) {
+                    e.printStackTrace();
                     throw new RuntimeException(e);
+
                 }
             }
             default -> {

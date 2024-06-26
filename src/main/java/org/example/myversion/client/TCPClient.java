@@ -8,6 +8,8 @@ import java.io.*;
 import java.net.Socket;
 import java.rmi.RemoteException;
 
+import static org.example.myversion.server.serverController.CommunicationInterface.TCP_PORT;
+
 public class TCPClient extends Client implements ClientCommunicationInterface {
 
     // Used to send messages to the server.
@@ -22,9 +24,9 @@ public class TCPClient extends Client implements ClientCommunicationInterface {
     // The thread that listens for messages from the server.
     private Thread listenThread;
 
-    public TCPClient() throws IOException {
+    public TCPClient(String hostname) throws IOException {
         super();
-        connect();
+        connect(hostname);
     }
 
     /**
@@ -34,8 +36,8 @@ public class TCPClient extends Client implements ClientCommunicationInterface {
      * @throws IOException if the connection or stream creation fails.
      */
     @Override
-    public void connect() throws IOException {
-        socket = new Socket("127.0.0.1", 8080); // Connect to the server at localhost on port 8080
+    public void connect(String hostname) throws IOException {
+        socket = new Socket(hostname, TCP_PORT); // Connect to the server at localhost on port 8080
         dataOutputStream = new DataOutputStream(socket.getOutputStream()); // Set up stream for sending data to the server
         serverBufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream())); // Set up stream for receiving data from the server
         startListenerThread(); // Start the listener thread to handle incoming messages
@@ -60,6 +62,7 @@ public class TCPClient extends Client implements ClientCommunicationInterface {
                     handleMessage(receivedMessage);
                 } catch (IOException e) {
                     System.err.println("IOException in listener thread: " + e.getMessage());
+                    handleDisconnection(); // Handle disconnection
                     break; // Break the loop on IOException to avoid spinning
                 }
             }
@@ -76,9 +79,15 @@ public class TCPClient extends Client implements ClientCommunicationInterface {
      */
     @Override
     public void sendMessage(Message message) throws IOException {
-        String jsonString = message.getJson().toString(); // Convert message to JSON string
-        dataOutputStream.writeBytes(jsonString + "\n"); // Send the JSON string over the network
-        dataOutputStream.flush(); // Flush to ensure the message is sent immediately
+        try {
+            String jsonString = message.getJson().toString(); // Convert message to JSON string
+            dataOutputStream.writeBytes(jsonString + "\n"); // Send the JSON string over the network
+            dataOutputStream.flush(); // Flush to ensure the message is sent immediately
+        } catch (IOException e) {
+            System.err.println("Failed to send message: " + e.getMessage());
+            handleDisconnection(); // Handle disconnection
+            throw e; // Re-throw the exception if you need to notify higher layers
+        }
     }
 
     @Override
@@ -110,6 +119,48 @@ public class TCPClient extends Client implements ClientCommunicationInterface {
             System.err.println("Error parsing JSON, treating as raw message: " + e.getMessage());
             System.out.println(serverMessageString);
             return new Message(serverMessageString); // Return message as raw text
+        }
+    }
+
+    private void handleDisconnection() {
+        try {
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+            }
+            if (dataOutputStream != null) {
+                dataOutputStream.close();
+            }
+            if (serverBufferedReader != null) {
+                serverBufferedReader.close();
+            }
+        } catch (IOException e) {
+            System.err.println("Error closing resources: " + e.getMessage());
+        }
+
+        // Notify the user or attempt to reconnect
+        System.err.println("Disconnected from the server.");
+        // Optionally, you can implement reconnection logic here
+    }
+
+    @Override
+    public void stop() {
+        try {
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+            }
+            if (dataOutputStream != null) {
+                dataOutputStream.close();
+            }
+            if (serverBufferedReader != null) {
+                serverBufferedReader.close();
+            }
+            if (listenThread != null && !listenThread.isInterrupted()) {
+                listenThread.interrupt();
+            }
+            scheduler.shutdownNow();
+            System.out.println("Client stopped.");
+        } catch (IOException e) {
+            System.err.println("Error stopping client: " + e.getMessage());
         }
     }
 

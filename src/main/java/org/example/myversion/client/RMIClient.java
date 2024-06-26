@@ -2,6 +2,7 @@ package org.example.myversion.client;
 
 import org.example.myversion.messages.ChatMessage;
 import org.example.myversion.messages.Message;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.rmi.NotBoundException;
@@ -16,12 +17,12 @@ public class RMIClient extends Client implements ClientCommunicationInterface {
     private Registry registry;
     private CommunicationInterface server;
 
-    public RMIClient() throws RemoteException {
+    public RMIClient(String hostname) throws RemoteException {
         super();
         System.out.println("qui passa3");
         try {
 
-            connect();
+            connect(hostname);
             System.out.println("qui passa4");
         } catch (IOException | NotBoundException e) {
             throw new RuntimeException(e);
@@ -34,9 +35,8 @@ public class RMIClient extends Client implements ClientCommunicationInterface {
      * @throws IOException       if the connection fails.
      * @throws NotBoundException if the server is not bound.
      */
-    @Override
-    public void connect() throws IOException, NotBoundException {
-        registry = LocateRegistry.getRegistry("localhost",CommunicationInterface.RMI_PORT);
+    public void connect(String hostname) throws IOException, NotBoundException {
+        registry = LocateRegistry.getRegistry(hostname, CommunicationInterface.RMI_PORT);
         server = (CommunicationInterface) registry.lookup("CommunicationInterface");
     }
 
@@ -47,7 +47,7 @@ public class RMIClient extends Client implements ClientCommunicationInterface {
      * @throws IOException if the message send fails.
      */
     @Override
-    public void sendMessage(Message message)  {
+    public void sendMessage(Message message) {
         try {
             String jsonString = message.getJson().toString();
             System.out.println(jsonString);
@@ -59,7 +59,7 @@ public class RMIClient extends Client implements ClientCommunicationInterface {
     }
 
     @Override
-    public void sendChatMessage(ChatMessage message)  {
+    public void sendChatMessage(ChatMessage message) {
         try {
             String jsonString = message.getJson().toString();
             System.out.println(jsonString);

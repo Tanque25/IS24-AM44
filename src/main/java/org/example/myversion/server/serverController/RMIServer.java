@@ -13,12 +13,16 @@ import java.rmi.RemoteException;
 public class RMIServer implements ServerInterface, CommunicationInterface {
     private Registry registry; // RMI registry to bind the remote objects
     private CommunicationInterface serverInterface; // Reference to the server interface
+    private String ip; // Server IP address
+    private int port;
 
     /**
-     * Constructor: Initializes the RMIServer.
+     * Constructor: Initializes the RMIServer with IP.
      */
-    public RMIServer() {
+    public RMIServer(String ip, int port) {
         super();
+        this.ip = ip;
+        this.port = port;
     }
 
     /**
@@ -27,20 +31,20 @@ public class RMIServer implements ServerInterface, CommunicationInterface {
     @Override
     public void start() {
         try {
-            System.setProperty("java.rmi.server.hostname","127.0.0.1");
+            System.setProperty("java.rmi.server.hostname", ip);
             // Initialize the serverInterface
-            serverInterface = new RMIServer();
+            serverInterface = new RMIServer(ip, port);
 
             // Export the remote object and obtain the stub
             CommunicationInterface stub = (CommunicationInterface) UnicastRemoteObject.exportObject(serverInterface, 0);
 
             // Obtain the existing registry or create a new one on the specified port
-            registry = LocateRegistry.createRegistry(RMI_PORT);
+            registry = LocateRegistry.createRegistry(port);
 
             // Bind the stub in the registry with a unique name
             registry.rebind("CommunicationInterface", stub);
 
-            System.out.println("RMI Server started on port " + RMI_PORT + ".");
+            System.out.println("RMI Server started on " + ip + ": " + port + ".");
         } catch (RemoteException e) {
             System.err.println("Another server is already running. Closing this instance...");
             System.exit(0);
