@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
+import java.util.Random;
 import javafx.scene.Node;
 import org.example.myversion.client.Client;
 import org.example.myversion.client.CodexNaturalis;
@@ -150,6 +151,13 @@ public class GUI extends GameView{
 
     }
 
+
+    public boolean isMyTurn(){
+        List<String> nicknames = getHandsMap().entrySet().stream().map(Map.Entry::getKey).toList();
+        Random random = new Random();
+        return nicknames.get(random.nextInt(0, nicknames.size()-1)).equals(client.getNickname());
+    }
+
     @Override
     public void playersNumberChoice() throws IOException {
         playerNumberChoosen = false;
@@ -272,12 +280,12 @@ public class GUI extends GameView{
 
     @Override
     public void chooseCardToPlay() throws IOException {
-
+        gamePhaseController.addCardToPlayArea();
     }
 
     @Override
     public void invalidMove() throws IOException {
-
+        gamePhaseController.showMessageInvalidMove();
     }
 
     @Override
@@ -298,6 +306,10 @@ public class GUI extends GameView{
     @Override
     public void showScores(Map<String, Integer> scores) {
 
+
+
+
+
         endGameController = new EndGame();
         endGameController.setGui(this);
         endGameController.showEndGame(scores);
@@ -308,79 +320,4 @@ public class GUI extends GameView{
 
     }
 
-    /*public HBox showMyHand(List<PlayableCard> hand) {
-        HBox hbox = new HBox();
-        for (PlayableCard card : hand) {
-            Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_front" + Objects.toString(card.getId()) + ".png").toExternalForm());
-            ImageView imgView = new ImageView(img);
-            hbox.getChildren().add(imgView);
-        }
-        return hbox;
-    }
-
-    public HBox showMyHandBack(List<PlayableCard> hand) {
-        HBox hbox = new HBox();
-        for (PlayableCard card : hand) {
-            Image img = new Image(getClass().getResource("org/example/myversion/cards_gold_back" + Objects.toString(card.getId()) + ".png").toExternalForm());
-            ImageView imgView = new ImageView(img);
-            hbox.getChildren().add(imgView);
-        }
-        return hbox;
-    }*/
-
-    /*public void loadScene(GameScene sceneType) throws IOException {
-        Platform.runLater(() -> {
-            String path;
-
-            switch (sceneType) {
-                case LOGIN:
-                    path = "/Login.fxml";
-                    break;
-                case WAIT_FOR_OTHER_PLAYERS:
-                    path = "/WaitForOtherPlayers.fxml";
-                    break;
-                case SHOW_COMMON_OBJECTIVES:
-                    path = "/ShowCommonObjective.fxml";
-                    break;
-                case GAME_PHASE:
-                    path = "/GamePhase.fxml";
-                    break;
-                case CHOOSE_OBJECTIVE:
-                    path = "/ChooseObjectiveCard.fxml";
-                    break;
-                case CHOOSE_PLAYER_NUMBER:
-                    path = "/ChoosePlayerNumber.fxml";
-                    break;
-                case CHOOSE_STARTER:
-                    path = "/StarterCardSide.fxml";
-                    break;
-                case END_GAME:
-                    path = "/EndGame.fxml";
-                    break;
-                default:
-                    path = "/Login.fxml";
-            }
-
-            try {
-               // URL fxmlLocation = new File("src/main/resources/org/example/myversion/FXML" + path).toURI().toURL();
-                FXMLLoader loader = new FXMLLoader(GUI.class.getResource("/FXML/"+path));
-                loader.setController(this);
-                Parent root = loader.load();
-                scene.setRoot(root);
-
-                /*this.getStage().setTitle("Codex Naturalis");
-                this.getStage().setScene(new Scene(root));
-                this.getStage().show();
-
-                genericController = loader.getController();
-                genericController.setStage(stage);
-                stage.setScene(scene);
-                stage.show();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-
-    }*/
     }
