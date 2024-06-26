@@ -40,8 +40,8 @@ class BoardTest {
 
     @Test
     void updateScore() {
-        board.updateScore(player1, 10);
-        board.updateScore(player2, 20);
+        board.updateScore(player1, 10, 1);
+        board.updateScore(player2, 20, 1);
 
         assertEquals(10, board.getScore(player1));
         assertEquals(20, board.getScore(player2));

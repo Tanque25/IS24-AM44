@@ -352,9 +352,9 @@ class GameControllerTest{
         assertEquals(gameController.getGame().getBoard().getScore(gameController.getGame().getPlayers().get(1)), 0);
         assertEquals(gameController.getGame().getBoard().getScore(gameController.getGame().getPlayers().getLast()), 0);
 
-        gameController.getGame().getBoard().updateScore(gameController.getGame().getPlayers().getFirst(), 10);
-        gameController.getGame().getBoard().updateScore(gameController.getGame().getPlayers().get(1), 20);
-        gameController.getGame().getBoard().updateScore(gameController.getGame().getPlayers().getLast(), 19);
+        gameController.getGame().getBoard().updateScore(gameController.getGame().getPlayers().getFirst(), 10, 1);
+        gameController.getGame().getBoard().updateScore(gameController.getGame().getPlayers().get(1), 20, 1);
+        gameController.getGame().getBoard().updateScore(gameController.getGame().getPlayers().getLast(), 19, 1);
 
         assertTrue(gameController.checkScores());
     }

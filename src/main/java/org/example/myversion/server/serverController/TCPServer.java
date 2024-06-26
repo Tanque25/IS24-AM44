@@ -31,7 +31,7 @@ public class TCPServer implements ServerInterface, CommunicationInterface {
             serverSocket = new ServerSocket();
             serverSocket.bind(new InetSocketAddress(ip, port));
             running = true;
-            System.out.println("TCP server started on " + ip + ": " + port + ".");
+            System.out.println("TCP server started on " + ip + ":" + port + ".");
 
             // Starting a thread that accepts incoming connections
             acceptThread = new Thread(() -> {

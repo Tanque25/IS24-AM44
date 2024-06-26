@@ -40,7 +40,7 @@ public interface CommunicationInterface extends Remote {
             case "Login" -> {
                 String nickname = message.getArgument();
                 int checkNicknameStatus = controller.checkNickname(nickname);
-                checkNicknameNew(client, nickname, checkNicknameStatus);
+                checkNickname(client, nickname, checkNicknameStatus);
             }
             case "NumberOfPlayers" -> {
                 switch (message.getNumber()) {
@@ -64,9 +64,14 @@ public interface CommunicationInterface extends Remote {
                         updateClientsPlayedCard(message.getGoldCard(), message.getCoordinates());
                     }
 
-                    sendMessage(new Message("VisibleCards", controller.getVisibleResourceCards(), controller.getRsourceDeckPeek(), controller.getVisibleGoldCards(), controller.getGoldDeckPeek()), client);
+                    if (controller.isLastRound()) {
+                        updateScores();
+                        changeTurn();
+                    } else {
+                        sendMessage(new Message("VisibleCards", controller.getVisibleResourceCards(), controller.getRsourceDeckPeek(), controller.getVisibleGoldCards(), controller.getGoldDeckPeek()), client);
+                        client.handleMessageNew("DrawCard");
+                    }
 
-                    client.handleMessageNew("DrawCard");
                 } catch (InvalidMoveException e) {
                     System.out.println(e.getMessage());
                     client.handleMessageNew("InvalidMove");
@@ -137,8 +142,14 @@ public interface CommunicationInterface extends Remote {
     }
 
     default void updateClientsPlayedCard(PlayableCard playedCard, Coordinates coordinates) throws RemoteException {
-        HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
+        String nickname = controller.getCurrentPlayer().getNickname();
 
+        Message updateMessage = new Message("UpdatePlayedCard", nickname, playedCard, coordinates);
+
+        sendMessageToAll(updateMessage);
+    }
+
+    default void updateClientsPlayedCard(GoldCard playedCard, Coordinates coordinates) throws RemoteException {
         String nickname = controller.getCurrentPlayer().getNickname();
 
         Message updateMessage = new Message("UpdatePlayedCard", nickname, playedCard, coordinates);
@@ -147,8 +158,6 @@ public interface CommunicationInterface extends Remote {
     }
 
     default void updateClientsDrawnCard(PlayableCard drawnCard) throws RemoteException {
-        HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
-
         String nickname = controller.getCurrentPlayer().getNickname();
 
         Message updateMessage = new Message("UpdateDrawnCard", nickname, drawnCard, null);
@@ -157,8 +166,6 @@ public interface CommunicationInterface extends Remote {
     }
 
     default void updateClientsDrawnCard(GoldCard drawnCard) throws RemoteException {
-        HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
-
         String nickname = controller.getCurrentPlayer().getNickname();
 
         Message updateMessage = new Message("UpdateDrawnCard", nickname, drawnCard, null);
@@ -186,7 +193,7 @@ public interface CommunicationInterface extends Remote {
         }
     }
 
-    default void checkNicknameNew(ClientCommunicationInterface client, String nickname, int checkNicknameStatus) throws RemoteException {
+    default void checkNickname(ClientCommunicationInterface client, String nickname, int checkNicknameStatus) throws RemoteException {
         switch (checkNicknameStatus) {
             case 1 -> {
                 if (!controller.getGameState().equals(GameState.LOGIN) && !controller.getGameState().equals(GameState.INITIALIZATION)) {

@@ -2,6 +2,9 @@ package org.example.myversion.server.model;
 
 import org.example.myversion.server.model.decks.*;
 import org.example.myversion.server.model.decks.cards.*;
+import org.example.myversion.server.model.enumerations.ParameterType;
+import org.example.myversion.server.model.enumerations.PointsParameter;
+import org.example.myversion.server.model.enumerations.SpecialObject;
 import org.example.myversion.server.model.exceptions.InvalidChoiceException;
 import org.example.myversion.server.model.exceptions.InvalidMoveException;
 
@@ -210,20 +213,52 @@ public class Game {
      */
     public void playCard(Player player, PlayableCard playedCard, Coordinates coordinates) throws InvalidMoveException {
         // Check if it's possible to place the card at the specified coordinates
-        if (player.isValidMove(coordinates)) {
+        if(player.isValidMove(coordinates)){
 
             // Check if the player has enough stock in case of GoldCard
-            if (playedCard instanceof GoldCard)
+            if(playedCard instanceof GoldCard && !playedCard.isPlayedBack())
                 player.hasEnoughStock((GoldCard) playedCard);
 
             // placing the card in the play area, removing it from the player's hand and updating his stock
-            player.placeCard(playedCard, coordinates);
+            int coveredCorners = player.placeCard(playedCard, coordinates);
+
+            int pointsMultiplication = 1;
+
+            if(playedCard instanceof GoldCard) {
+                PointsParameter pointsParameter = ((GoldCard) playedCard).getPointsParameter();
+
+                switch (pointsParameter) {
+                    case ParameterType.EMPTY -> {
+                        break;
+                    }
+                    case ParameterType.CORNER -> {
+                        pointsMultiplication = coveredCorners;
+                        break;
+                    }
+                    case SpecialObject.INKWELL -> {
+                        pointsMultiplication = player.getStock().get(SpecialObject.INKWELL);
+                        break;
+                    }
+                    case SpecialObject.MANUSCRIPT -> {
+                        pointsMultiplication = player.getStock().get(SpecialObject.MANUSCRIPT);
+                        break;
+                    }
+                    case SpecialObject.QUILL -> {
+                        pointsMultiplication = player.getStock().get(SpecialObject.QUILL);
+                        break;
+                    }
+                    default -> throw new IllegalStateException("Unexpected value: " + pointsParameter);
+                }
+            }
 
             // updating the player score
-            if(!playedCard.isPlayedBack())
-                board.updateScore(player, playedCard.getCardPoints());
+            if(!playedCard.isPlayedBack()){
+                board.updateScore(player, playedCard.getCardPoints(), pointsMultiplication);
+            }
+
         }
     }
+
     /**
      * Retrieves the card on the peek of the resource card deck
      *

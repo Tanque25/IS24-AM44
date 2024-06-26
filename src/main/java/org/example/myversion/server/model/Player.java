@@ -157,7 +157,7 @@ public class Player {
      * @param placedCard  The card to be placed.
      * @param coordinates The x-coordinate and y-coordinate position.
      */
-    public void placeCard(PlayableCard placedCard, Coordinates coordinates) {
+    public int placeCard(PlayableCard placedCard, Coordinates coordinates) {
         if (hand == null)
             hand = new ArrayList<>();
 
@@ -176,27 +176,35 @@ public class Player {
 
         updateStock(placedCard);
 
+        int coveredCorners = 0;
+
         // Update corner status of adjacent cards and remove content from stock
         if (playArea[x - 1][y - 1] != null) {
             Corner corner = playArea[x - 1][y - 1].getCorners().get(CornerPosition.BOTTOM_RIGHT);
             corner.setCovered(true);
             removeFromStock(corner.getCornerContent());
+            coveredCorners++;
         }
         if (playArea[x - 1][y + 1] != null) {
             Corner corner = playArea[x - 1][y + 1].getCorners().get(CornerPosition.BOTTOM_LEFT);
             corner.setCovered(true);
             removeFromStock(corner.getCornerContent());
+            coveredCorners++;
         }
         if (playArea[x + 1][y - 1] != null) {
             Corner corner = playArea[x + 1][y - 1].getCorners().get(CornerPosition.UP_RIGHT);
             corner.setCovered(true);
             removeFromStock(corner.getCornerContent());
+            coveredCorners++;
         }
         if (playArea[x + 1][y + 1] != null) {
             Corner corner = playArea[x + 1][y + 1].getCorners().get(CornerPosition.UP_LEFT);
             corner.setCovered(true);
             removeFromStock(corner.getCornerContent());
+            coveredCorners++;
         }
+
+        return coveredCorners;
     }
 
     public void hasEnoughStock(GoldCard playedCard) throws InvalidMoveException {

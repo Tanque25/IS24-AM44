@@ -44,7 +44,7 @@ public class RMIServer implements ServerInterface, CommunicationInterface {
             // Bind the stub in the registry with a unique name
             registry.rebind("CommunicationInterface", stub);
 
-            System.out.println("RMI Server started on " + ip + ": " + port + ".");
+            System.out.println("RMI Server started on " + ip + ":" + port + ".");
         } catch (RemoteException e) {
             System.err.println("Another server is already running. Closing this instance...");
             System.exit(0);

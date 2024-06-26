@@ -48,13 +48,14 @@ public class Board {
      * @param player The player whose score needs to be updated.
      * @param points The points to add to the player's score.
      */
-    public void updateScore(Player player, Integer points) {
+    public void updateScore(Player player, Integer points, int pointsMultiplication) {
         int currentScore = 0;
         if (scores != null)
             currentScore = scores.get(player);
 
-        int newScore = currentScore + points;
+        int newScore = currentScore + points*pointsMultiplication;
 
+        assert scores != null;
         scores.put(player, newScore);
     }
 

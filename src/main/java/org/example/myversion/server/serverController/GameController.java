@@ -57,7 +57,7 @@ public class GameController {
      * @param nickname the username chosen by the player
      * @return a number representing the availability of the username
      */
-    public int checkNickname(String nickname){
+    public int checkNickname(String nickname) {
         for (Player player : game.getPlayers()) {
             if (player.getNickname().equals(nickname)) {
                 if (disconnectedPlayers.contains(nickname)) {
@@ -73,14 +73,14 @@ public class GameController {
         return 1;
     }
 
-    public void addPlayer(String nickname){
+    public void addPlayer(String nickname) {
         if (gameIsEmpty()) {
             game.newPlayer(nickname);
         } else {
             if (!gameIsFull()) {
                 game.newPlayer(nickname);
-                if(game.getPlayers().size()== playersNumber){
-                    lastPlayer = game.getPlayers().get(playersNumber -1);
+                if (game.getPlayers().size() == playersNumber) {
+                    lastPlayer = game.getPlayers().get(playersNumber - 1);
                     newGame();
                 }
             }
@@ -132,10 +132,10 @@ public class GameController {
     /**
      * Sets the secret objective card for the selected player.
      *
-     * @param player who chose the objective card.
+     * @param player        who chose the objective card.
      * @param objectiveCard chosen objective card.
      */
-    public void chooseObjectiveCard(Player player, ObjectiveCard objectiveCard){
+    public void chooseObjectiveCard(Player player, ObjectiveCard objectiveCard) {
         game.setPlayerSecretObjective(player, objectiveCard);
     }
 
@@ -146,7 +146,7 @@ public class GameController {
     public Player getPlayerFromNickname(String nickname) {
         Player player = null;
 
-        for(Player p : game.getPlayers()) {
+        for (Player p : game.getPlayers()) {
             if (p.getNickname().equals(nickname))
                 player = p;
         }
@@ -250,7 +250,7 @@ public class GameController {
     public Map<String, StarterCard> getStarterCardsMap() {
         Map<String, StarterCard> starterCardsMap = new HashMap<>();
 
-        for(Player player : game.getPlayers()) {
+        for (Player player : game.getPlayers()) {
             Card[][] playArea = player.getPlayArea();
             starterCardsMap.put(player.getNickname(), (StarterCard) playArea[41][41]);
         }
@@ -261,7 +261,7 @@ public class GameController {
     public Map<String, List<PlayableCard>> getPlayersHandsMap() {
         Map<String, List<PlayableCard>> playersHandsMap = new HashMap<>();
 
-        for(Player player : game.getPlayers()) {
+        for (Player player : game.getPlayers()) {
             playersHandsMap.put(player.getNickname(), player.getHand());
         }
 
@@ -271,7 +271,7 @@ public class GameController {
     public Map<String, Map<CornerContent, Integer>> getPlayersStock() {
         Map<String, Map<CornerContent, Integer>> playersStock = new HashMap<>();
 
-        for(Player player : game.getPlayers()) {
+        for (Player player : game.getPlayers()) {
             playersStock.put(player.getNickname(), player.getStock());
         }
 
@@ -282,18 +282,18 @@ public class GameController {
      * Allows a player to play a card, it will call the game's playCard
      * This method will be called by the client to play a card.
      *
-     * @param nickname the name of the player who is playing the card.
-     * @param card the card to be played.
+     * @param nickname    the name of the player who is playing the card.
+     * @param card        the card to be played.
      * @param coordinates the coordinates on the board where the card will be placed.
      */
     public void playCard(String nickname, PlayableCard card, Coordinates coordinates) throws InvalidNicknameException, InvalidMoveException, InvalidGameStateException {
 
         if (gameState == GameState.IN_GAME || gameState == GameState.LAST_ROUND) {
-            if(game.getCurrentPlayer().getNickname().equals(nickname)){
+            if (game.getCurrentPlayer().getNickname().equals(nickname)) {
                 try {
                     game.playCard(game.getCurrentPlayer(), card, coordinates);
 
-                    if(isLastRound() && game.getCurrentPlayer().equals(lastPlayer)){
+                    if (isLastRound() && game.getCurrentPlayer().equals(lastPlayer)) {
                         roundsPlayed++;
                         gameState = GameState.END;
                     }
@@ -301,8 +301,7 @@ public class GameController {
                 } catch (InvalidMoveException e) {
                     throw new InvalidMoveException("Invalid move: " + e.getMessage());
                 }
-            }
-            else {
+            } else {
                 throw new InvalidNicknameException("Invalid nickname");
             }
         } else throw new InvalidGameStateException("Invalid game state");
@@ -312,19 +311,19 @@ public class GameController {
      * Allows a player to draw a card from the available options.
      * This method will be called by the client to draw a card.
      *
-     * @param nickname the name of the player who is drawing the card.
+     * @param nickname   the name of the player who is drawing the card.
      * @param chosenCard The card chosen by the player.
      */
     public void drawCard(String nickname, PlayableCard chosenCard) throws InvalidNicknameException, InvalidChoiceException, InvalidGameStateException {
-        if(gameState == GameState.IN_GAME) {
+        if (gameState == GameState.IN_GAME) {
 
-            if(game.getCurrentPlayer().getNickname().equals(nickname)){
+            if (game.getCurrentPlayer().getNickname().equals(nickname)) {
 
                 game.drawCard(game.getCurrentPlayer(), chosenCard);
 
                 if (game.getCurrentPlayer().equals(lastPlayer)) {
                     roundsPlayed++;
-                    if(checkScores())
+                    if (checkScores())
                         gameState = GameState.LAST_ROUND;
                 }
 
@@ -336,19 +335,20 @@ public class GameController {
         }
     }
 
-    public boolean gameIsFull(){
+    public boolean gameIsFull() {
         return game.getPlayers().size() == playersNumber;
     }
 
-    public boolean gameIsEmpty(){
+    public boolean gameIsEmpty() {
         return game.getPlayers().isEmpty();
     }
 
     /**
      * It checks if the player's number chosen by the first player is correct
+     *
      * @return true if the player's number chosen by the first player is correct
      */
-    public boolean checkNumberOfPlayer(int numPlayer){
+    public boolean checkNumberOfPlayer(int numPlayer) {
 
         return numPlayer >= 2 && numPlayer <= 4;//ritorna true se compreso
     }
@@ -358,7 +358,7 @@ public class GameController {
      *
      * @return True if the game has started, false otherwise.
      */
-    public boolean isGameStarted(){
+    public boolean isGameStarted() {
         return gameState.equals(GameState.IN_GAME) || gameState.equals(GameState.LAST_ROUND);
     }
 
@@ -396,8 +396,8 @@ public class GameController {
     }
 
     public boolean checkScores() {
-        for(Player player : game.getPlayers()){
-            if(game.getBoard().getScore(player)>=10){
+        for (Player player : game.getPlayers()) {
+            if (game.getBoard().getScore(player) >= 2) {
                 return true;
             }
         }
@@ -407,6 +407,7 @@ public class GameController {
     /**
      * Checks if the deck is empty.
      * This method will be called to check if the deck is empty.
+     *
      * @return True if the deck is empty, false otherwise.
      */
     public boolean checkEmptyDeck() {
@@ -416,6 +417,7 @@ public class GameController {
     /**
      * Checks if the game is over.
      * This method will be called to determine if the game has ended.
+     *
      * @return True if the game is over, false otherwise.
      */
     public boolean isGameOver() {
@@ -435,7 +437,7 @@ public class GameController {
      * or when both decks are empty. Players finish their current rounds and each plays an additional
      * turn, so they resolve the same number of turns by the end of the game.
      *
-     * @return  true if it is the last turn,  false otherwise.
+     * @return true if it is the last turn,  false otherwise.
      */
     public boolean isLastRound() {
         return gameState.equals(GameState.LAST_ROUND) || gameState.equals(GameState.END);
