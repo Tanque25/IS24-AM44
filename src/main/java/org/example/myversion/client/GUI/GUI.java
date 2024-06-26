@@ -110,6 +110,10 @@ public class GUI extends GameView{
         return starterCard;
     }
 
+    public boolean isPlayerStarterChosen() {
+        return playerStarterChosen;
+    }
+
     public List<ObjectiveCard> getObjectiveCards() {
         return objectiveCards;
     }
@@ -154,7 +158,7 @@ public class GUI extends GameView{
 
     @Override
     public void showTakenUsername() {
-
+        loginController.loginFailed();
     }
 
     @Override
@@ -188,8 +192,10 @@ public class GUI extends GameView{
     public void showVisibleCards(){
         //List<PlayableCard> visiblePlayableCards = getVisibleResourceCards();
         //List<GoldCard> visibleGoldCards = getVisibleGoldCards();
-        showVisibleCardsController = new ShowVisibleCardsController();
-        showVisibleCardsController.setGui(this);
+        if(showVisibleCardsController == null) {
+            showVisibleCardsController = new ShowVisibleCardsController();
+            showVisibleCardsController.setGui(this);
+        }
         showVisibleCardsController.displayCards();
 
     }
