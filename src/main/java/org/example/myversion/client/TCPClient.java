@@ -4,9 +4,13 @@ import org.example.myversion.messages.ChatMessage;
 import org.example.myversion.messages.Message;
 
 import jakarta.json.*;
+import org.example.myversion.server.model.Coordinates;
+
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.rmi.RemoteException;
+import java.util.Scanner;
 
 import static org.example.myversion.server.serverController.CommunicationInterface.TCP_PORT;
 
@@ -62,13 +66,168 @@ public class TCPClient extends Client implements ClientCommunicationInterface {
                     handleMessage(receivedMessage);
                 } catch (IOException e) {
                     System.err.println("IOException in listener thread: " + e.getMessage());
-                    handleDisconnection(); // Handle disconnection
+                    stop(); // Handle disconnection
                     break; // Break the loop on IOException to avoid spinning
                 }
             }
         }, "Server Listener Thread");
 
         listenThread.start();
+    }
+
+    /**
+     * Parses and handles messages received from the server.
+     *
+     * @param message the message received from the server.
+     */
+    public void handleMessage(Message message)throws RemoteException {
+        String messageCode = message.getMessageCode();
+
+        switch (messageCode) {
+            case "TakenUsername" -> {
+                try {
+                    gameView.showTakenUsername();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            case "GameAlreadyStarted" ->
+                    gameView.showGameAlreadyStartedMessage();
+            case "PlayersNumber" ->{
+                try{
+                    gameView.playersNumberChoice();
+                }catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            case "InvalidNumberOfPlayers" ->{
+                try{
+                    gameView.invalidPlayersNumberChoice();
+                }catch (IOException e){
+                    throw new RuntimeException(e);
+                }
+            }
+            case "WaitForOtherPlayers" ->
+                    gameView.waitForOtherPlayers();
+            case "VisibleCards" ->{
+                gameView.setVisibleResourceCards(message.getResourceCards());
+                gameView.setCoveredResourceCard(message.getPlayableCard());
+                gameView.setVisibleGoldCards(message.getGoldCards());
+                gameView.setCoveredGoldCard(message.getGoldCard());
+
+                gameView.showVisibleCards();
+            }
+            case "StarterCard" -> {
+                try {
+                    gameView.showStarterCard(message.getStarterCard());
+                    gameView.starterCardSideChoice(message.getStarterCard());
+                } catch (IOException e){
+                    throw new RuntimeException(e);
+                }
+            }
+            case "CommonObjectiveCards" ->
+                    gameView.showCommonObjectives(message.getObjectiveCards());
+            case "SecretObjectiveCardsOptions" -> {
+                try {
+                    gameView.showSecretObjectives(message.getObjectiveCards());
+                    gameView.secretObjectiveCardChoice(message.getObjectiveCards());
+                } catch (IOException e){
+                    throw new RuntimeException(e);
+                }
+            }
+            case "StartCondition" -> {
+                gameView.setHandsMap(message.getPlayersHandsMap());
+
+                //gameView.setPlayers(message.);
+                gameView.initializePlayAreas(message.getStarterCardsMap());
+
+                gameView.showOthersHandsAndPlayAreas(); // Questi tre metodi verranno compattati in GUI, nel senso
+                gameView.showMyHand();                  // che uno solo farà tutte e tre le cose. Si potrebbe mettere in CLI
+                gameView.showMyPlayArea();              // un metodo che le chiama tutte e 3 per avere interfaccia comune
+            }
+            case "GameData" -> {
+                gameView.setHandsMap(message.getPlayersHandsMap());
+                gameView.setPlayAreasMap(message.getPlayAreasMap());
+
+                gameView.showOthersHandsAndPlayAreas(); // Questi tre metodi verranno compattati in GUI, nel senso
+                gameView.showMyHand();                  // che uno solo farà tutte e tre le cose. Si potrebbe mettere in CLI
+                gameView.showMyPlayArea();              // un metodo che le chiama tutte e 3 per avere interfaccia comune
+            }
+            case "MyTurn" -> {
+                gameView.showMessage("\nIt's your turn.\n");
+                myTurn();
+            }
+            case "OtherTurn" -> {
+                gameView.showMessage("\nIt's " + message.getArgument() + "'s turn.\n");
+            }
+            case "InvalidMove" -> {
+                try {
+                    gameView.invalidMove();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            case "UpdatePlayedCard" -> {
+                String nickname = message.getArgument();
+                Coordinates coordinates = message.getCoordinates();
+
+                if (message.getJson().containsKey("playableCard")) {
+                    gameView.playCard(nickname, message.getPlayableCard(), coordinates);
+                } else {
+                    gameView.playCard(nickname, message.getGoldCard(), coordinates);
+                }
+
+                gameView.showUpdatedPlayArea(nickname, gameView.getPlayAreasMap().get(nickname));
+            }
+            case "DrawCard" -> {
+                try {
+                    gameView.chooseCardToDraw();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            case "UpdateDrawnCard" -> {
+                String nickname = message.getArgument();
+
+                if (message.getJson().containsKey("playableCard")) {
+                    gameView.drawCard(nickname, message.getPlayableCard());
+                } else {
+                    gameView.drawCard(nickname, message.getGoldCard());
+                }
+                gameView.showUpdatedHand(nickname);
+            }
+            case "UpdateChatSend" ->{
+                try {
+                    Scanner scanner = new Scanner(System.in);
+                    //PER CLI e debug
+                    System.out.print("Inserisci messaggio da inviare: "); //Richiesta di inserimento della stringa
+                    String inputString = scanner.nextLine(); // Lettura della stringa inserita dall'utente
+                    scanner.close();// Chiusura dello Scanner
+
+                    sendChatMessage(new ChatMessage(inputString,this.getNickname()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            case "UpdateChatReceive" -> {
+
+            }
+            case "Scores" -> {
+                gameView.showMessage("\nCurrent scores:\n");
+                gameView.showScores(message.getScores());
+            }
+            case "LastRound" -> {
+                gameView.showMessage("\nLast round\n");
+            }
+            case "FinalScores" -> {
+                gameView.showMessage("\nFinal scores:\n");
+                gameView.showScores(message.getScores());
+            }
+            case "EndGame" -> {
+                gameView.showEndGame(message.getArgument());
+            }
+            default -> throw new IllegalArgumentException("Invalid messageCode: " + messageCode);
+        }
     }
 
     /**
@@ -83,9 +242,12 @@ public class TCPClient extends Client implements ClientCommunicationInterface {
             String jsonString = message.getJson().toString(); // Convert message to JSON string
             dataOutputStream.writeBytes(jsonString + "\n"); // Send the JSON string over the network
             dataOutputStream.flush(); // Flush to ensure the message is sent immediately
+        } catch (SocketException e) {
+            System.err.println("Failed to send message: Broken pipe");
+            stop(); // Handle disconnection
         } catch (IOException e) {
             System.err.println("Failed to send message: " + e.getMessage());
-            handleDisconnection(); // Handle disconnection
+            stop(); // Handle disconnection
             throw e; // Re-throw the exception if you need to notify higher layers
         }
     }
@@ -109,6 +271,7 @@ public class TCPClient extends Client implements ClientCommunicationInterface {
     public Message receiveMessage() throws IOException {
         String serverMessageString = serverBufferedReader.readLine();
         if (serverMessageString == null) {
+            stop();
             return null; // Stream has ended, possibly because the server has closed the connection
         }
 
@@ -120,26 +283,6 @@ public class TCPClient extends Client implements ClientCommunicationInterface {
             System.out.println(serverMessageString);
             return new Message(serverMessageString); // Return message as raw text
         }
-    }
-
-    private void handleDisconnection() {
-        try {
-            if (socket != null && !socket.isClosed()) {
-                socket.close();
-            }
-            if (dataOutputStream != null) {
-                dataOutputStream.close();
-            }
-            if (serverBufferedReader != null) {
-                serverBufferedReader.close();
-            }
-        } catch (IOException e) {
-            System.err.println("Error closing resources: " + e.getMessage());
-        }
-
-        // Notify the user or attempt to reconnect
-        System.err.println("Disconnected from the server.");
-        // Optionally, you can implement reconnection logic here
     }
 
     @Override
@@ -157,11 +300,16 @@ public class TCPClient extends Client implements ClientCommunicationInterface {
             if (listenThread != null && !listenThread.isInterrupted()) {
                 listenThread.interrupt();
             }
-            scheduler.shutdownNow();
-            System.out.println("Client stopped.");
         } catch (IOException e) {
-            System.err.println("Error stopping client: " + e.getMessage());
+            System.err.println("Error closing resources: " + e.getMessage());
         }
+
+        // Notify the user
+        System.err.println("Disconnected from the server. Closing the client.");
+
+        scheduler.shutdownNow();
+        System.out.println("Client stopped.");
+        System.exit(0); // Exit the application
     }
 
     @Override
