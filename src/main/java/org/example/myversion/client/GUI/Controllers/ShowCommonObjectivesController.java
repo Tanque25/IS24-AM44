@@ -9,62 +9,53 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.example.myversion.client.GUI.GUIController;
-import org.example.myversion.server.model.decks.cards.GoldCard;
-import org.example.myversion.server.model.decks.cards.PlayableCard;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 
+/**
+ * Controller class for displaying the common objectives in the GUI.
+ */
 public class ShowCommonObjectivesController extends GUIController {
-    @FXML
-    ImageView imageView1;
-    @FXML
-    ImageView imageView2;
-    @FXML
-    ImageView imageView3;
-    @FXML
-    ImageView imageView4;
-    @FXML
-    ImageView imageView5;
-    @FXML
-    ImageView imageView6;
-    @FXML
-    Button ok;
 
-    public void initialize(){
-        ok.setOnMouseClicked(event ->{
-            try{
+    @FXML
+    private ImageView imageView1;
+    @FXML
+    private ImageView imageView2;
+    @FXML
+    private Button ok;
+
+    /**
+     * Initializes the controller class. This method is automatically called after the FXML file has been loaded.
+     * It sets the action executed when you press the ok button
+     */
+    public void initialize() {
+        ok.setOnMouseClicked(event -> {
+            try {
                 gui.setPlayerObjectiveSeen(true);
-                gui.starterCardSideChoice(gui.getStarterCard());
-            }catch(IOException e){
-
+                gui.secretObjectiveCardChoice(gui.getObjectiveCards());
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
     }
 
-    public void displayCards(List<PlayableCard> visiblePlayableCards, List<GoldCard> visibleGoldCards){
+    /**
+     * Displays the common objectives by loading the corresponding FXML and setting the images.
+     */
+    public void showObjectives() {
         Platform.runLater(() -> {
             try {
-                URL fxmlLocation = (new File("src/main/resources/org/example/myversion/FXML/ShowCommonObjective.fxml")).toURI().toURL();
+                URL fxmlLocation = (new File("src/main/resources/org/example/myversion/FXML/ShowCommonObjectives.fxml")).toURI().toURL();
                 FXMLLoader loader = new FXMLLoader(fxmlLocation);
                 loader.setController(this);
                 Parent root = loader.load();
 
-                Image img1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredResourceCard().getId() + ".png"));
+                Image img1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + gui.getCommonObjectiveCards().get(0).getId() + ".png"));
                 imageView1.setImage(img1);
-                Image img2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + visiblePlayableCards.get(0).getId() + ".png"));
+                Image img2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + gui.getCommonObjectiveCards().get(1).getId() + ".png"));
                 imageView2.setImage(img2);
-                Image img3 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + visiblePlayableCards.get(1).getId() + ".png"));
-                imageView3.setImage(img3);
-
-                Image img4 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredGoldCard().getId() + ".png"));
-                imageView4.setImage(img4);
-                Image img5 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + visibleGoldCards.get(0).getId() + ".png"));
-                imageView5.setImage(img5);
-                Image img6 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + visibleGoldCards.get(1).getId() + ".png"));
-                imageView6.setImage(img6);
 
                 gui.getStage().setTitle("Codex Naturalis");
                 gui.getStage().setScene(new Scene(root));

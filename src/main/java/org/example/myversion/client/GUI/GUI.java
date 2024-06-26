@@ -10,12 +10,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
-import java.util.Random;
 import javafx.scene.Node;
 import org.example.myversion.client.Client;
 import org.example.myversion.client.CodexNaturalis;
 import org.example.myversion.client.GUI.Controllers.*;
 import org.example.myversion.client.view.GameView;
+import org.example.myversion.messages.ChatMessage;
 import org.example.myversion.server.model.Board;
 import org.example.myversion.server.model.Player;
 import org.example.myversion.server.model.decks.cards.*;
@@ -44,6 +44,7 @@ public class GUI extends GameView{
     private ShowCommonObjectivesController showCommonObjectivesController;
     //public GamePhaseController gameController;
     private LoginController loginController;
+    private ShowVisibleCardsController showVisibleCardsController;
     private StarterCardSideController starterCardSideController;
     private ChooseObjectiveController chooseObjectiveController;
     private ChosePlayerNumberController chosePlayerNumberController;
@@ -55,6 +56,7 @@ public class GUI extends GameView{
     private boolean playerNumberChoosen = true;
     private boolean playerStarterChosen = false;
     private boolean playerObjectiveSeen = false;
+    private boolean playerVisibleseen = false;
     List<ObjectiveCard> objectiveCards; //secretObjectiveCards
     StarterCard starterCard;
     List<PlayableCard> visiblePlayableCards;
@@ -80,6 +82,10 @@ public class GUI extends GameView{
         this.client = client;
     }
 
+    public void setPlayerVisibleseen(boolean playerVisibleseen) {
+        this.playerVisibleseen = playerVisibleseen;
+    }
+
     public void setPlayerStarterChosen(boolean playerStarterChosen) {
         this.playerStarterChosen = playerStarterChosen;
     }
@@ -102,6 +108,10 @@ public class GUI extends GameView{
 
     public StarterCard getStarterCard() {
         return starterCard;
+    }
+
+    public boolean isPlayerStarterChosen() {
+        return playerStarterChosen;
     }
 
     public List<ObjectiveCard> getObjectiveCards() {
@@ -147,16 +157,15 @@ public class GUI extends GameView{
     }
 
     @Override
+    public void showTakenUsername() {
+        loginController.loginFailed();
+    }
+
+    @Override
     public void showGameAlreadyStartedMessage() {
 
     }
 
-
-    public boolean isMyTurn(){
-        List<String> nicknames = getHandsMap().entrySet().stream().map(Map.Entry::getKey).toList();
-        Random random = new Random();
-        return nicknames.get(random.nextInt(0, nicknames.size()-1)).equals(client.getNickname());
-    }
 
     @Override
     public void playersNumberChoice() throws IOException {
@@ -184,18 +193,26 @@ public class GUI extends GameView{
     public void showVisibleCards(){
         //List<PlayableCard> visiblePlayableCards = getVisibleResourceCards();
         //List<GoldCard> visibleGoldCards = getVisibleGoldCards();
-        visibleGoldCards = getVisibleGoldCards();
-        visiblePlayableCards = getVisibleResourceCards();
-        showCommonObjectivesController = new ShowCommonObjectivesController();
-        showCommonObjectivesController.setGui(this);
-        showCommonObjectivesController.displayCards(visiblePlayableCards, visibleGoldCards);
+        if(showVisibleCardsController == null) {
+            showVisibleCardsController = new ShowVisibleCardsController();
+            showVisibleCardsController.setGui(this);
+        }
+        showVisibleCardsController.displayCards();
 
     }
 
     @Override
     public void showCommonObjectives(List<ObjectiveCard> objectiveCards) {
-        this.commonObjectiveCards = objectiveCards;
+        if(playerStarterChosen){
+            showCommonObjectivesController = new ShowCommonObjectivesController();
+            showCommonObjectivesController.setGui(this);
+            showCommonObjectivesController.showObjectives();
+        }else{
+            this.commonObjectiveCards = objectiveCards;
+        }
     }
+
+
 
     @Override
     public void showSecretObjectives(List<ObjectiveCard> objectiveCards) {
@@ -211,22 +228,29 @@ public class GUI extends GameView{
         chatController.showChat();
     }
     // metodo che viene chiamato quando si riceve un nuovo messaggio
-    public void updateChat(){
+    public void updateChatReceive(ChatMessage message){
         if(chatController == null){
             chatController = new ChatController();
             chatController.setGui(this);
         }
-        chatController.updateChat();
+        chatController.updateChatReceive(message);
+    }
+    public void updateChatSend(ChatMessage message){
+        if(chatController == null){
+            chatController = new ChatController();
+            chatController.setGui(this);
+        }
+        chatController.updateChatSend(message);
     }
 
 
     @Override
     public void secretObjectiveCardChoice(List<ObjectiveCard> objectiveCards) throws IOException {
         this.objectiveCards = objectiveCards;
-        if(playerStarterChosen){
+        if(playerObjectiveSeen){
             chooseObjectiveController = new ChooseObjectiveController();
             chooseObjectiveController.setGui(this);
-            chooseObjectiveController.initialize(objectiveCards);
+            chooseObjectiveController.choseObjective(objectiveCards);
         }
     }
 
@@ -237,7 +261,7 @@ public class GUI extends GameView{
     @Override
     public void starterCardSideChoice(StarterCard starterCard) throws IOException {
         this.starterCard = starterCard;
-        if(playerObjectiveSeen){
+        if(playerVisibleseen){
             starterCardSideController = new StarterCardSideController();
             starterCardSideController.setGui(this);
             starterCardSideController.sideChoice(starterCard);
@@ -305,10 +329,6 @@ public class GUI extends GameView{
 
     @Override
     public void showScores(Map<String, Integer> scores) {
-
-
-
-
 
         endGameController = new EndGame();
         endGameController.setGui(this);

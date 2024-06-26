@@ -53,10 +53,12 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
         String messageCode = message.getMessageCode();
 
         switch (messageCode) {
-            case "Nickname" -> {
-                //setNickname(message.getArgument());
-                // TODO: Implement the connection check on a different channel on the server side
-                // checkServerConnection();
+            case "TakenUsername" -> {
+                try {
+                    gameView.showTakenUsername();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
             case "GameAlreadyStarted" ->
                     gameView.showGameAlreadyStartedMessage();
@@ -200,14 +202,6 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
     public void handleMessageNew(String scelta)throws RemoteException {
 
         switch (scelta) {
-            case "Pong" -> {
-                serverConnection = true;
-            }
-            case "Nickname" -> {
-                //setNickname(message.getArgument());
-                // TODO: Implement the connection check on a different channel on the server side
-                // checkServerConnection();
-            }
             case "GameAlreadyStarted" ->
                     gameView.showGameAlreadyStartedMessage();
             case "ChooseNumOfPlayer" ->{
@@ -366,33 +360,6 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
 
         // Exit the application
         System.exit(0);
-    }
-
-    /**
-     * Checks if the server is still connected.
-     * If it's not, exits the game.
-     */
-    public void checkServerConnection() {
-        System.out.println("Starting server connection check");
-        new Thread(() -> {
-            while (true) {
-                try {
-                    sendMessage(new Message("Ping"));
-                    synchronized (lock) {
-                        Thread.sleep(20000);
-                        if (!serverConnection) {
-                            System.err.println("Server is down. Exiting...");
-                            System.exit(0);
-                        }
-                        serverConnection = false;
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }).start();
     }
 
     ///////////////////////////////////////////////////////GETTERS AND SETTERS////////////////////////////////////////////////////////

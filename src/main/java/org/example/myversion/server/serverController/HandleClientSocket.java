@@ -249,8 +249,6 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
                 if (!controller.getGameState().equals(GameState.LOGIN) && !controller.getGameState().equals(GameState.INITIALIZATION)) {
                     client.sendMessageToClient(new Message("GameAlreadyStarted"));
                 } else {
-                    client.sendMessageToClient(new Message("Nickname", nickname));
-
                     controller.addPlayer(nickname);
                     System.out.println(nickname + " logged in.");
 
@@ -270,6 +268,14 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
                             System.out.println("Game started.");
                         }
                     }
+                }
+            }
+            case 0 -> {
+                // The username has already been taken, retry
+                checkNicknameStatus = controller.checkNickname(nickname);
+                if(checkNicknameStatus == 0) {
+                    System.out.println(nickname + " requested login, but the username is already taken.");
+                    client.sendMessageToClient(new Message("TakenUsername"));
                 }
             }
             case -1 -> {

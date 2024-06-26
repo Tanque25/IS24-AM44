@@ -6,6 +6,7 @@ import org.example.myversion.server.model.enumerations.*;
 import org.example.myversion.server.serverController.GameState;
 
 import jakarta.json.*;
+
 import java.io.*;
 import java.util.*;
 
@@ -16,7 +17,7 @@ import static org.example.myversion.server.serverController.GameController.BACKU
  * It provides constructors for creating various types of messages and methods for accessing their content.
  */
 public class Message implements Serializable {
-    private JsonObject json;
+    private final JsonObject json;
 
     ///////////////////////////////////////////////////////CONSTRUCTORS////////////////////////////////////////////////////////
 
@@ -53,12 +54,9 @@ public class Message implements Serializable {
 
     /**
      * Constructs a Message object representing a generic text message with the given message code and text.
-     * It is used by the server to ask for the nickname:
-     * It is used by the client to send the chosen nickname:
-     * It is used by the server to report an error:
      *
      * @param messageCode represents the identifier of the message.
-     * @param argument represents the body of the message.
+     * @param argument    represents the body of the message.
      */
     public Message(String messageCode, String argument) {
         json = Json.createObjectBuilder()
@@ -71,7 +69,7 @@ public class Message implements Serializable {
      * Constructs a Message object representing a player number message with the given message code and maximum number of players.
      *
      * @param messageCode the identifier of the message.
-     * @param number the int value associated with the message.
+     * @param number      the int value associated with the message.
      */
     public Message(String messageCode, int number) {
         json = Json.createObjectBuilder()
@@ -98,8 +96,8 @@ public class Message implements Serializable {
      * Constructs a Message object representing a message containing information about an objective card.
      * The objective card information includes its objective and card points.
      *
-     * @param messageCode    the identifier of the message.
-     * @param objectiveCard  the objective card for which the message is created.
+     * @param messageCode   the identifier of the message.
+     * @param objectiveCard the objective card for which the message is created.
      */
     public Message(String messageCode, ObjectiveCard objectiveCard) {
         json = Json.createObjectBuilder()
@@ -113,7 +111,7 @@ public class Message implements Serializable {
      * The objective card information includes its objective and card points.
      * Used both for sending common objectives and secret objectives options.
      *
-     * @param messageCode the identifier of the message: "CommonObjectives", "SecretObjectives"
+     * @param messageCode    the identifier of the message: "CommonObjectives", "SecretObjectives"
      * @param objectiveCard1 the first objective card.
      * @param objectiveCard2 the second objective card.
      */
@@ -129,8 +127,8 @@ public class Message implements Serializable {
      * Constructs a Message object representing a message containing a PlayableCard.
      * This constructor is used to send information about a PlayableCard.
      *
-     * @param messageCode   The identifier of the message.
-     * @param playableCard  The PlayableCard to include in the message.
+     * @param messageCode  The identifier of the message.
+     * @param playableCard The PlayableCard to include in the message.
      */
     public Message(String messageCode, PlayableCard playableCard) {
         json = Json.createObjectBuilder()
@@ -139,6 +137,13 @@ public class Message implements Serializable {
                 .build();
     }
 
+    /**
+     * Constructs a Message object representing a message containing a PlayableCard and its coordinates.
+     *
+     * @param messageCode The identifier of the message.
+     * @param playableCard The PlayableCard to include in the message.
+     * @param coordinates The coordinates of the PlayableCard.
+     */
     public Message(String messageCode, PlayableCard playableCard, Coordinates coordinates) {
         json = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
@@ -148,6 +153,14 @@ public class Message implements Serializable {
                 .build();
     }
 
+    /**
+     * Constructs a Message object representing a message containing a nickname, PlayableCard, and its coordinates.
+     *
+     * @param messageCode The identifier of the message.
+     * @param nickname The nickname associated with the message.
+     * @param playableCard The PlayableCard to include in the message.
+     * @param coordinates The coordinates of the PlayableCard.
+     */
     public Message(String messageCode, String nickname, PlayableCard playableCard, Coordinates coordinates) {
         JsonObjectBuilder jsonBuilder = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
@@ -166,8 +179,8 @@ public class Message implements Serializable {
      * Constructs a Message object representing a message containing a GoldCard.
      * This constructor is used to send information about a GoldCard.
      *
-     * @param messageCode   The identifier of the message.
-     * @param goldCard      The GoldCard to include in the message.
+     * @param messageCode The identifier of the message.
+     * @param goldCard    The GoldCard to include in the message.
      */
     public Message(String messageCode, GoldCard goldCard) {
         json = Json.createObjectBuilder()
@@ -176,6 +189,13 @@ public class Message implements Serializable {
                 .build();
     }
 
+    /**
+     * Constructs a Message object representing a message containing a GoldCard and its coordinates.
+     *
+     * @param messageCode The identifier of the message.
+     * @param goldCard The GoldCard to include in the message.
+     * @param coordinates The coordinates of the GoldCard.
+     */
     public Message(String messageCode, GoldCard goldCard, Coordinates coordinates) {
         json = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
@@ -185,6 +205,14 @@ public class Message implements Serializable {
                 .build();
     }
 
+    /**
+     * Constructs a Message object representing a message containing a nickname, GoldCard, and its coordinates.
+     *
+     * @param messageCode The identifier of the message.
+     * @param nickname The nickname associated with the message.
+     * @param goldCard The GoldCard to include in the message.
+     * @param coordinates The coordinates of the GoldCard.
+     */
     public Message(String messageCode, String nickname, GoldCard goldCard, Coordinates coordinates) {
         JsonObjectBuilder jsonBuilder = Json.createObjectBuilder()
                 .add("messageCode", messageCode)
@@ -199,6 +227,14 @@ public class Message implements Serializable {
         json = jsonBuilder.build();
     }
 
+    /**
+     * Constructs a Message object containing starter cards and player hands.
+     * Used when sending game start conditions.
+     *
+     * @param messageCode The identifier of the message.
+     * @param starterCards The map of starter cards.
+     * @param playersHands The map of player hands.
+     */
     public Message(String messageCode, Map<String, StarterCard> starterCards, Map<String, List<PlayableCard>> playersHands) {
         JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
         jsonBuilder.add("messageCode", messageCode);
@@ -217,21 +253,18 @@ public class Message implements Serializable {
         }
         jsonBuilder.add("playersHands", playersHandsJson);
 
-        // TODO: serialize the visible resource cards
-        // TODO: serialize the visible gold cards
-
         // Build the final JSON object
         json = jsonBuilder.build();
     }
 
     /**
-     * Message used to send the draw options
+     * Constructs a Message object representing the draw options.
      *
-     * @param messageCode
-     * @param visibleResourceCards
-     * @param coveredResourceCard
-     * @param coveredGoldCard
-     * @param visibleGoldCards
+     * @param messageCode The identifier of the message.
+     * @param visibleResourceCards The list of visible resource cards.
+     * @param coveredResourceCard The covered resource card.
+     * @param coveredGoldCard The covered gold card.
+     * @param visibleGoldCards The list of visible gold cards.
      */
     public Message(String messageCode, List<PlayableCard> visibleResourceCards, PlayableCard coveredResourceCard, List<GoldCard> visibleGoldCards, GoldCard coveredGoldCard) {
         JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
@@ -254,9 +287,9 @@ public class Message implements Serializable {
      * Constructs a Message object representing a message containing coordinates.
      * This constructor is used to send information about coordinates where to place the card.
      *
-     * @param messageCode   The identifier of the message.
-     * @param xCoordinate   The x-coordinate value.
-     * @param yCoordinate   The y-coordinate value.
+     * @param messageCode The identifier of the message.
+     * @param xCoordinate The x-coordinate value.
+     * @param yCoordinate The y-coordinate value.
      */
     public Message(String messageCode, int xCoordinate, int yCoordinate) {
         json = Json.createObjectBuilder()
@@ -287,15 +320,31 @@ public class Message implements Serializable {
 
     /**
      * Constructs a game backup message.
+     *
+     * @param messageCode The identifier of the message.
+     * @param scores The map of player scores.
+     * @param commonObjectiveCard1 The first common objective card.
+     * @param commonObjectiveCard2 The second common objective card.
+     * @param secretObjectiveCards The map of secret objective cards.
+     * @param resourceDeck The resource deck stack.
+     * @param goldDeck The gold deck stack.
+     * @param visibleResourceCards The list of visible resource cards.
+     * @param visibleGoldCards The list of visible gold cards.
+     * @param playersHands The map of players' hands.
+     * @param playAreas The map of players' play areas.
+     * @param currentPlayer The current player.
+     * @param lastPlayer The last player.
+     * @param lastRound The last game state.
      */
     public Message(String messageCode, Map<String, Integer> scores,
                    ObjectiveCard commonObjectiveCard1, ObjectiveCard commonObjectiveCard2,
                    Map<String, ObjectiveCard> secretObjectiveCards,
                    Stack<PlayableCard> resourceDeck, Stack<GoldCard> goldDeck,
-                   List<PlayableCard> visibleResourceCards, PlayableCard coveredResourceCard,
-                   List<GoldCard> visibleGoldCards, GoldCard coveredGoldCard,
+                   List<PlayableCard> visibleResourceCards,
+                   List<GoldCard> visibleGoldCards,
                    Map<String, List<PlayableCard>> playersHands, Map<String, Card[][]> playAreas,
-                   String currentPlayer, String lastPlayer, GameState lastRound) {
+                   String currentPlayer, String lastPlayer, GameState lastRound,
+                   Map<String, Map<CornerContent, Integer>> playersStock) {
         JsonObjectBuilder jsonBuilder = Json.createObjectBuilder()
                 .add("messageCode", messageCode);
 
@@ -313,7 +362,6 @@ public class Message implements Serializable {
         // Save secret objectives
         JsonObjectBuilder secretObjectivesBuilder = Json.createObjectBuilder();
         for (Map.Entry<String, ObjectiveCard> entry : secretObjectiveCards.entrySet()) {
-            System.out.println(entry.getValue());
             secretObjectivesBuilder.add(entry.getKey(), createObjectiveCardJson(entry.getValue()));
         }
         jsonBuilder.add("secretObjectives", secretObjectivesBuilder.build());
@@ -351,6 +399,9 @@ public class Message implements Serializable {
         jsonBuilder.add("lastPlayer", lastPlayer);
         jsonBuilder.add("lastRound", lastRound.name());
 
+        // Save players' stock
+        jsonBuilder.add("playersStock", createPlayersStockJson(playersStock));
+
         this.json = jsonBuilder.build();
 
         try (PrintWriter out = new PrintWriter(new FileWriter(BACKUP_FILE))) {
@@ -362,6 +413,11 @@ public class Message implements Serializable {
 
     /**
      * Constructs a message to send the restored game to all the players.
+     *
+     * @param messageCode The identifier of the message.
+     * @param scores The map of player scores.
+     * @param playersHands The map of players' hands.
+     * @param playAreas The map of players' play areas.
      */
     public Message(String messageCode, Map<String, Integer> scores, Map<String, List<PlayableCard>> playersHands, Map<String, Card[][]> playAreas) {
         JsonObjectBuilder jsonBuilder = Json.createObjectBuilder()
@@ -413,6 +469,12 @@ public class Message implements Serializable {
         return cornerBuilder.build();
     }
 
+    /**
+     * Creates a JSON object representing a starter card.
+     *
+     * @param starterCard the starter card to be represented in JSON format.
+     * @return the JSON object representing the starter card.
+     */
     private JsonObject createStarterCardJson(StarterCard starterCard) {
         return Json.createObjectBuilder()
                 .add("id", starterCard.getId())
@@ -423,6 +485,12 @@ public class Message implements Serializable {
                 .build();
     }
 
+    /**
+     * Creates a JSON object representing an objective card.
+     *
+     * @param objectiveCard the objective card to be represented in JSON format.
+     * @return the JSON object representing the objective card.
+     */
     private JsonObject createObjectiveCardJson(ObjectiveCard objectiveCard) {
         String objectiveType;
         JsonArray objectiveJsonArray;
@@ -504,6 +572,12 @@ public class Message implements Serializable {
         return objectiveObjectBuilder;
     }
 
+    /**
+     * Creates a JSON object representing a playable card.
+     *
+     * @param playableCard the playable card to be represented in JSON format.
+     * @return the JSON object representing the playable card.
+     */
     private JsonObject createPlayableCardJson(PlayableCard playableCard) {
         return Json.createObjectBuilder()
                 .add("id", playableCard.getId())
@@ -514,14 +588,12 @@ public class Message implements Serializable {
                 .build();
     }
 
-    private JsonArray createPlayableCardsJson(List<PlayableCard> playableCards) {
-        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-        for (PlayableCard playableCard : playableCards) {
-            arrayBuilder.add(createPlayableCardJson(playableCard));
-        }
-        return arrayBuilder.build();
-    }
-
+    /**
+     * Creates a JSON array representing a player's hand.
+     *
+     * @param cards the list of playable cards in the player's hand.
+     * @return the JSON array representing the player's hand.
+     */
     private JsonArray createHandJson(List<PlayableCard> cards) {
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         for (PlayableCard card : cards) {
@@ -533,6 +605,12 @@ public class Message implements Serializable {
         return arrayBuilder.build();
     }
 
+    /**
+     * Creates a JSON object representing a gold card.
+     *
+     * @param goldCard the gold card to be represented in JSON format.
+     * @return the JSON object representing the gold card.
+     */
     private JsonObject createGoldCardJson(GoldCard goldCard) {
         return Json.createObjectBuilder()
                 .add("id", goldCard.getId())
@@ -545,14 +623,12 @@ public class Message implements Serializable {
                 .build();
     }
 
-    private JsonArray createGoldCardsJson(List<GoldCard> goldCards) {
-        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-        for (GoldCard goldCard : goldCards) {
-            arrayBuilder.add(createGoldCardJson(goldCard));
-        }
-        return arrayBuilder.build();
-    }
-
+    /**
+     * Creates a JSON object representing a play area.
+     *
+     * @param playArea the play area to be represented in JSON format.
+     * @return the JSON object representing the play area.
+     */
     private JsonObject createPlayAreaJson(Card[][] playArea) {
         JsonObjectBuilder playAreaBuilder = Json.createObjectBuilder();
         for (int x = 0; x < playArea.length; x++) {
@@ -560,12 +636,12 @@ public class Message implements Serializable {
             for (int y = 0; y < playArea[x].length; y++) {
                 Card card = playArea[x][y];
                 if (card != null) {
-                    if (card instanceof StarterCard) {
-                        rowBuilder.add(createStarterCardJson((StarterCard) card));
-                    } else if (card instanceof GoldCard) {
-                        rowBuilder.add(createGoldCardJson((GoldCard) card));
-                    } else if (card instanceof PlayableCard) {
-                        rowBuilder.add(createPlayableCardJson((PlayableCard) card));
+                    switch (card) {
+                        case StarterCard starterCard -> rowBuilder.add(createStarterCardJson(starterCard));
+                        case GoldCard goldCard -> rowBuilder.add(createGoldCardJson(goldCard));
+                        case PlayableCard playableCard -> rowBuilder.add(createPlayableCardJson(playableCard));
+                        default -> {
+                        }
                     }
                 } else {
                     rowBuilder.add(JsonValue.NULL);
@@ -576,6 +652,12 @@ public class Message implements Serializable {
         return playAreaBuilder.build();
     }
 
+    /**
+     * Creates a JSON array representing a resource deck.
+     *
+     * @param resourceDeck the resource deck to be represented in JSON format.
+     * @return the JSON array representing the resource deck.
+     */
     private JsonArray createResourceDeckJson(Stack<PlayableCard> resourceDeck) {
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         for (PlayableCard card : resourceDeck) {
@@ -584,12 +666,36 @@ public class Message implements Serializable {
         return arrayBuilder.build();
     }
 
+    /**
+     * Creates a JSON array representing a gold deck.
+     *
+     * @param goldDeck the gold deck to be represented in JSON format.
+     * @return the JSON array representing the gold deck.
+     */
     private JsonArray createGoldDeckJson(Stack<GoldCard> goldDeck) {
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         for (GoldCard card : goldDeck) {
             arrayBuilder.add(createGoldCardJson(card));
         }
         return arrayBuilder.build();
+    }
+
+    /**
+     * Creates a JSON object representing the players' stock.
+     *
+     * @param playersStock the map of players' stock to be represented in JSON format.
+     * @return the JSON object representing the players' stock.
+     */
+    private JsonObject createPlayersStockJson(Map<String, Map<CornerContent, Integer>> playersStock) {
+        JsonObjectBuilder playersStockBuilder = Json.createObjectBuilder();
+        for (Map.Entry<String, Map<CornerContent, Integer>> entry : playersStock.entrySet()) {
+            JsonObjectBuilder stockBuilder = Json.createObjectBuilder();
+            for (Map.Entry<CornerContent, Integer> stockEntry : entry.getValue().entrySet()) {
+                stockBuilder.add(stockEntry.getKey().toString(), stockEntry.getValue());
+            }
+            playersStockBuilder.add(entry.getKey(), stockBuilder.build());
+        }
+        return playersStockBuilder.build();
     }
 
 ///////////////////////////////////////////////////////GETTERS////////////////////////////////////////////////////////
@@ -645,6 +751,11 @@ public class Message implements Serializable {
         return createStarterCardFromJson(starterCardJson);
     }
 
+    /**
+     * Retrieves the map of starter cards from the message.
+     *
+     * @return The map of starter cards.
+     */
     public Map<String, StarterCard> getStarterCardsMap() {
         Map<String, StarterCard> starterCards = new HashMap<>();
         JsonObject starterCardsJson = json.getJsonObject("starterCards");
@@ -665,6 +776,12 @@ public class Message implements Serializable {
         return starterCards;
     }
 
+    /**
+     * Creates a StarterCard object from its JSON representation.
+     *
+     * @param starterCardJson the JSON object representing a starter card.
+     * @return the StarterCard object.
+     */
     private StarterCard createStarterCardFromJson(JsonObject starterCardJson) {
         if (starterCardJson == null) {
             throw new IllegalArgumentException("Starter card data is missing in the JSON object");
@@ -683,6 +800,11 @@ public class Message implements Serializable {
         return starterCard;
     }
 
+    /**
+     * Retrieves a list of resource cards from the message.
+     *
+     * @return the list of resource cards.
+     */
     public List<PlayableCard> getResourceCards() {
         List<PlayableCard> resourceCards = new ArrayList<>();
 
@@ -699,6 +821,11 @@ public class Message implements Serializable {
         return resourceCards;
     }
 
+    /**
+     * Retrieves a list of gold cards from the message.
+     *
+     * @return the list of gold cards.
+     */
     public List<GoldCard> getGoldCards() {
         List<GoldCard> goldCards = new ArrayList<>();
 
@@ -715,11 +842,21 @@ public class Message implements Serializable {
         return goldCards;
     }
 
+    /**
+     * Retrieves an objective card from the message.
+     *
+     * @return the objective card.
+     */
     public ObjectiveCard getObjectiveCard() {
         JsonObject objectiveCard1 = json.getJsonObject("objectiveCard");
         return createObjectiveCardFromJson(objectiveCard1);
     }
 
+    /**
+     * Retrieves a list of objective cards from the message.
+     *
+     * @return the list of objective cards.
+     */
     public List<ObjectiveCard> getObjectiveCards() {
         List<ObjectiveCard> objectiveCards = new ArrayList<>();
 
@@ -736,6 +873,11 @@ public class Message implements Serializable {
         return objectiveCards;
     }
 
+    /**
+     * Retrieves a map of secret objective cards from the message.
+     *
+     * @return the map of secret objective cards.
+     */
     public Map<String, ObjectiveCard> getSecretObjectiveCards() {
         Map<String, ObjectiveCard> secretObjectives = new HashMap<>();
         JsonObject secretObjectivesJson = json.getJsonObject("secretObjectives");
@@ -749,6 +891,12 @@ public class Message implements Serializable {
         return secretObjectives;
     }
 
+    /**
+     * Creates an ObjectiveCard object from its JSON representation.
+     *
+     * @param objectiveCardJson the JSON object representing an objective card.
+     * @return the ObjectiveCard object.
+     */
     private ObjectiveCard createObjectiveCardFromJson(JsonObject objectiveCardJson) {
         if (objectiveCardJson == null) {
             throw new IllegalArgumentException("Card JSON object is missing");
@@ -781,6 +929,11 @@ public class Message implements Serializable {
         return createPlayableCardFromJson(playableCardJson);
     }
 
+    /**
+     * Retrieves the map of players' hands from the message.
+     *
+     * @return the map of players' hands.
+     */
     public Map<String, List<PlayableCard>> getPlayersHandsMap() {
         Map<String, List<PlayableCard>> playersHands = new HashMap<>();
         JsonObject playersHandsJson = json.getJsonObject("playersHands");
@@ -801,6 +954,12 @@ public class Message implements Serializable {
         return playersHands;
     }
 
+    /**
+     * Creates a list of PlayableCard objects from their JSON representation.
+     *
+     * @param jsonArray the JSON array representing a list of playable cards.
+     * @return the list of PlayableCard objects.
+     */
     private List<PlayableCard> createHandFromJson(JsonArray jsonArray) {
         List<PlayableCard> cards = new ArrayList<>();
 
@@ -814,6 +973,12 @@ public class Message implements Serializable {
         return cards;
     }
 
+    /**
+     * Creates a PlayableCard object from its JSON representation.
+     *
+     * @param playableCardJson the JSON object representing a playable card.
+     * @return the PlayableCard object.
+     */
     private PlayableCard createPlayableCardFromJson(JsonObject playableCardJson) {
         if (playableCardJson == null) {
             throw new IllegalArgumentException("Playable card data is missing in the JSON object");
@@ -843,6 +1008,12 @@ public class Message implements Serializable {
         return createGoldCardFromJson(goldCardJson);
     }
 
+    /**
+     * Creates a GoldCard object from its JSON representation.
+     *
+     * @param goldCardJson the JSON object representing a gold card.
+     * @return the GoldCard object.
+     */
     public GoldCard createGoldCardFromJson(JsonObject goldCardJson) {
         if (goldCardJson == null) {
             throw new IllegalArgumentException("Gold card data is missing in the JSON object");
@@ -940,6 +1111,12 @@ public class Message implements Serializable {
         return corners;
     }
 
+    /**
+     * Creates a Corner object from its JSON representation.
+     *
+     * @param cornerJson the JSON object representing a corner.
+     * @return the Corner object.
+     */
     private Corner createCornerFromJson(JsonObject cornerJson) {
         CornerContent cornerContent = createCornerContent(cornerJson.getString("content"));
         boolean covered = cornerJson.getBoolean("covered");
@@ -965,6 +1142,12 @@ public class Message implements Serializable {
         };
     }
 
+    /**
+     * Creates a PointsParameter object based on the provided string representation.
+     *
+     * @param pointsParameter The string representation of the points parameter.
+     * @return A PointsParameter object corresponding to the provided string representation.
+     */
     private PointsParameter createPointsParameter(String pointsParameter) {
         return switch (pointsParameter) {
             case "CORNER", "EMPTY" -> ParameterType.valueOf(pointsParameter);
@@ -1002,7 +1185,10 @@ public class Message implements Serializable {
     }
 
     /**
-     * Method to deserialize the play areas
+     * Method to deserialize the play areas.
+     *
+     * @param playAreaJson the JSON object representing a play area.
+     * @return the Card matrix representing the play area.
      */
     private Card[][] createPlayAreaFromJson(JsonObject playAreaJson) {
         Card[][] playArea = new Card[81][81]; // Assuming 81x81 grid as per your model
@@ -1027,6 +1213,11 @@ public class Message implements Serializable {
         return playArea;
     }
 
+    /**
+     * Retrieves the map of play areas from the message.
+     *
+     * @return the map of play areas.
+     */
     public Map<String, Card[][]> getPlayAreasMap() {
         Map<String, Card[][]> playAreasMap = new HashMap<>();
         JsonObject playAreasJson = json.getJsonObject("playAreas");
@@ -1039,31 +1230,10 @@ public class Message implements Serializable {
     }
 
     /**
-     * Method to deserialize the resource deck
+     * Retrieves the resource deck from the message.
+     *
+     * @return the stack of resource cards.
      */
-    public Stack<PlayableCard> createResourceDeckFromJson(JsonArray resourceDeckJson) {
-        Stack<PlayableCard> resourceDeck = new Stack<>();
-        for (JsonValue jsonValue : resourceDeckJson) {
-            JsonObject cardJson = jsonValue.asJsonObject();
-            PlayableCard card = createPlayableCardFromJson(cardJson);
-            resourceDeck.push(card);
-        }
-        return resourceDeck;
-    }
-
-    /**
-     * Method to deserialize the resource deck
-     */
-    public Stack<GoldCard> createGoldDeckFromJson(JsonArray goldDeckJson) {
-        Stack<GoldCard> goldDeck = new Stack<>();
-        for (JsonValue jsonValue : goldDeckJson) {
-            JsonObject cardJson = jsonValue.asJsonObject();
-            GoldCard card = createGoldCardFromJson(cardJson);
-            goldDeck.push(card);
-        }
-        return goldDeck;
-    }
-
     public Stack<PlayableCard> getResourceDeck() {
         Stack<PlayableCard> resourceDeck = new Stack<>();
         JsonArray resourceDeckJson = json.getJsonArray("resourceDeck");
@@ -1075,6 +1245,11 @@ public class Message implements Serializable {
         return resourceDeck;
     }
 
+    /**
+     * Retrieves the gold deck from the message.
+     *
+     * @return the stack of gold cards.
+     */
     public Stack<GoldCard> getGoldDeck() {
         Stack<GoldCard> goldDeck = new Stack<>();
         JsonArray goldDeckJson = json.getJsonArray("goldDeck");
@@ -1084,6 +1259,25 @@ public class Message implements Serializable {
             goldDeck.push(createGoldCardFromJson(cardJson));
         }
         return goldDeck;
+    }
+
+    /**
+     * Retrieves the map of players' stock from the message.
+     *
+     * @return the map of players' stock.
+     */
+    public Map<String, Map<CornerContent, Integer>> getPlayersStock() {
+        Map<String, Map<CornerContent, Integer>> playersStock = new HashMap<>();
+        JsonObject playersStockJson = json.getJsonObject("playersStock");
+        for (String key : playersStockJson.keySet()) {
+            JsonObject stockJson = playersStockJson.getJsonObject(key);
+            Map<CornerContent, Integer> stock = new HashMap<>();
+            for (String stockKey : stockJson.keySet()) {
+                stock.put(createCornerContent(stockKey), stockJson.getInt(stockKey));
+            }
+            playersStock.put(key, stock);
+        }
+        return playersStock;
     }
 
 }

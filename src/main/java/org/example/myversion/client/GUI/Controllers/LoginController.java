@@ -17,21 +17,26 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+/**
+ * Controller class for handling the login process in the GUI.
+ */
 public class LoginController extends GUIController {
+
     @FXML
     private TextField username;
     @FXML
     private Button connect;
 
+    /**
+     * Default constructor for the LoginController class.
+     */
     public LoginController() {
         super();
     }
 
-    @FXML
-    private void initialize() {
-        connect.setOnMouseClicked(event -> handleLogin());
-    }
-
+    /**
+     * Handles the login process by sending the username to the server.
+     */
     @FXML
     private void handleLogin() {
         String nickname = username.getText();
@@ -44,6 +49,9 @@ public class LoginController extends GUIController {
         }
     }
 
+    /**
+     * Sets up the login GUI and displays the corresponding scene.
+     */
     public void login() {
         Platform.runLater(() -> {
             try {
@@ -57,6 +65,33 @@ public class LoginController extends GUIController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            connect.setOnMouseClicked(event -> handleLogin());
         });
     }
+
+    /**
+     * Handles the scenario when the login fails, prompting the user to choose another username
+     * and allowing the client to send another one to the server
+     */
+    public void loginFailed() {
+        Platform.runLater(() -> {
+            try {
+                URL fxmlLocation = (new File("src/main/resources/org/example/myversion/FXML/Login.fxml")).toURI().toURL();
+                FXMLLoader loader = new FXMLLoader(fxmlLocation);
+                loader.setController(this);
+                Parent root = loader.load();
+                gui.getStage().setTitle("Codex Naturalis");
+                gui.getStage().setScene(new Scene(root));
+                gui.getStage().show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            showAlert("Invalid username", "Please chose another nickname");
+            connect.setOnMouseClicked(event -> {
+                handleLogin();
+                gui.waitForOtherPlayers();
+            });
+        });
+    }
+
 }
