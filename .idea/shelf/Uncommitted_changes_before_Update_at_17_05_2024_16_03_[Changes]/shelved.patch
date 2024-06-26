@@ -1,0 +1,162 @@
+Index: src/main/java/org/example/myversion/server/model/decks/cards/PatternObjectiveCard.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.example.myversion.server.model.decks.cards;\r\n\r\nimport org.example.myversion.server.model.enumerations.CornerContent;\r\nimport org.example.myversion.server.model.enumerations.Resource;\r\nimport org.example.myversion.server.model.enumerations.SpecialObject;\r\n\r\nimport java.util.Map;\r\n/**\r\n * Represents a pattern objective card.\r\n * It specifies the pattern that the player has to recreate in his play area to get the points.\r\n */\r\npublic class PatternObjectiveCard extends ObjectiveCard{\r\n    private final Resource[][] objective;\r\n\r\n    /**\r\n     * Constructs a PatternObjectiveCard with specified points and objective.\r\n     *\r\n     * @param cardPoints specifies the points awarded to the player upon accomplishing its objective.\r\n     * @param objective specifies the pattern that the player has to recreate in his play area.\r\n     */\r\n    public PatternObjectiveCard(int cardPoints, Resource[][] objective) {\r\n        super(cardPoints);\r\n        this.objective = objective;\r\n    }\r\n\r\n    /**\r\n     * Retrieves the pattern objective.\r\n     *\r\n     * @return The pattern that the player has to recreate in their play area.\r\n     */\r\n    public Resource[][] getObjective() {\r\n        return objective;\r\n    }\r\n\r\n    //solo di prova\r\n    @Override\r\n    public CornerContent[] getCardKey(){\r\n        return objective[0];//devo fare un altro tipo che restituisca\r\n    }\r\n\r\n    /**\r\n     * Retrieves the number of point\r\n     *\r\n     * @param stock is the map that count the Resource or SpecialObject in the play area\r\n     * @param playArea is the matrix of card of the player\r\n     * @param objective specifies the pattern that the player has to recreate in his play area.\r\n     */\r\n    @Override\r\n    public int findObjectiveCard(Map<CornerContent, Integer> stock, Card[][] playArea,ObjectiveCard objective) {\r\n\r\n        int count=0;//contatore di volte in cui trovi la sotto matrice nella matrice\r\n        int rows = playArea.length;\r\n        int cols = playArea[0].length;\r\n        int subRows = objective.getObjective().length;\r\n        int subCols = objective.getObjective()[0].length;\r\n\r\n\r\n        for (int i = 0; i <= rows - subRows; i++) {\r\n            for (int j = 0; j <= cols - subCols; j++) {\r\n                //per ogni elemento della matrice:\r\n                System.out.println(\"riga: \"+i);\r\n                System.out.println(\"colonna: \"+j);\r\n                if (isSubMatrix(playArea, objective.getObjective(), i, j)) {\r\n                    //contatore aumenta ogni volta che trova la sotto-matrice nella play area\r\n                    count++;\r\n                }\r\n            }\r\n        }\r\n\r\n        // nel caso sia una PatternObjectiveCard da 2 punti (quelle in diagonale):\r\n        if(objective.getObjective()[0][2]!=null && objective.getObjective()[1][1]!=null && objective.getObjective()[2][0]!=null){\r\n            return count*2;\r\n        }\r\n        //altrimenti in tutti gli altri casi restituisco count*3\r\n        return count*3;//tanto nel caso in cui sia 0 nessuno trovato e quindi 0*3 =0\r\n    }\r\n\r\n    //metodo privato che controlla se è sotto matrice, ritorna un booleano: si o no\r\n    private static boolean isSubMatrix(Card[][] playArea, Resource[][] subMatrix, int row, int col) {\r\n        //scannerizza tutte le posizioni\r\n        for (int i = 0; i < subMatrix.length; i++) {\r\n            System.out.println(\"è entrata-riga: \"+i);\r\n            for (int j = 0; j < subMatrix[0].length; j++) {\r\n                //se la casella della play area è diversa da null allora:\r\n                System.out.println(\"colonna: \"+j);\r\n                if (playArea[row + i][col + j]!=null && subMatrix[i][j]!=null) {\r\n                    System.out.println(\"colonna non è null: \");\r\n                    //se la submatrice\r\n                    if (playArea[row + i][col + j].getPlayableResource() != subMatrix[i][j]) {\r\n                        System.out.println(\"è diversa\");\r\n                        return false;\r\n                    }\r\n                }\r\n            }\r\n        }\r\n        return true;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/org/example/myversion/server/model/decks/cards/PatternObjectiveCard.java b/src/main/java/org/example/myversion/server/model/decks/cards/PatternObjectiveCard.java
+--- a/src/main/java/org/example/myversion/server/model/decks/cards/PatternObjectiveCard.java	
++++ b/src/main/java/org/example/myversion/server/model/decks/cards/PatternObjectiveCard.java	
+@@ -10,6 +10,7 @@
+  * It specifies the pattern that the player has to recreate in his play area to get the points.
+  */
+ public class PatternObjectiveCard extends ObjectiveCard{
++
+     private final Resource[][] objective;
+ 
+     /**
+@@ -18,8 +19,8 @@
+      * @param cardPoints specifies the points awarded to the player upon accomplishing its objective.
+      * @param objective specifies the pattern that the player has to recreate in his play area.
+      */
+-    public PatternObjectiveCard(int cardPoints, Resource[][] objective) {
+-        super(cardPoints);
++    public PatternObjectiveCard(int cardPoints, Resource[][] objective, int id) {
++        super(cardPoints, id);
+         this.objective = objective;
+     }
+ 
+@@ -28,9 +29,8 @@
+      *
+      * @return The pattern that the player has to recreate in their play area.
+      */
+-    public Resource[][] getObjective() {
+-        return objective;
+-    }
++
++
+ 
+     //solo di prova
+     @Override
+@@ -38,6 +38,10 @@
+         return objective[0];//devo fare un altro tipo che restituisca
+     }
+ 
++    public Resource[][] getObjective() {
++        return objective;
++    }
++
+     /**
+      * Retrieves the number of point
+      *
+Index: src/main/java/org/example/myversion/server/model/decks/cards/SpecialObjectiveCard.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.example.myversion.server.model.decks.cards;\r\n\r\nimport org.example.myversion.server.model.enumerations.CornerContent;\r\nimport org.example.myversion.server.model.enumerations.Resource;\r\nimport org.example.myversion.server.model.enumerations.SpecialObject;\r\nimport java.util.Map;\r\nimport java.lang.Math;\r\nimport static org.example.myversion.server.model.enumerations.SpecialObject.*;\r\n\r\n/**\r\n * Represents a special object objective card.\r\n * It specifies which and how many special objects the player needs to have in his play area.\r\n */\r\npublic class SpecialObjectiveCard extends ObjectiveCard{\r\n    private final SpecialObject[] objective;\r\n\r\n    /**\r\n     * Constructs a SpecialObjectiveCard with specified points and objective.\r\n     *\r\n     * @param cardPoints specifies the points awarded to the player upon accomplishing its objective.\r\n     * @param objective specifies which and how many special objects the player needs to have in his play area.\r\n     */\r\n    public SpecialObjectiveCard(int cardPoints, SpecialObject[] objective) {\r\n        super(cardPoints);\r\n        this.objective = objective;\r\n    }\r\n\r\n    /**\r\n     * Retrieves the special object objective.\r\n     *\r\n     * @return The array specifying which and how many special objects the player needs to have in their play area.\r\n     */\r\n\r\n    @Override\r\n    public Resource[][] getObjective() {\r\n        return null;\r\n    }\r\n\r\n    //Restituisce objective della carta con override\r\n    @Override\r\n    public CornerContent[] getCardKey(){\r\n        return objective;//devo fare un altro tipo che restituisca tutto\r\n    }\r\n\r\n    @Override\r\n    public int findObjectiveCard(Map<CornerContent, Integer> stock, Card[][] playArea,ObjectiveCard commonObjective) {\r\n\r\n        //count è punteggio assegnato che ritorni\r\n        int count;\r\n        int countINKWELL=0,countMANU=0;\r\n        // special Object che danno 2 punti\r\n        if(commonObjective.getCardKey().length>=2){\r\n            if (commonObjective.getCardKey()[0]==commonObjective.getCardKey()[1]){\r\n                //se ci sono piu di 2 MANUSCRIPT/QUILL/INKWELL\r\n                count = stock.getOrDefault(commonObjective.getCardKey()[0], 0);\r\n                if (count >= 2) {\r\n                    return count;\r\n                }\r\n\r\n            }\r\n            // lo special Object che da 3 punti\r\n            else if(commonObjective.getCardKey()[0]==QUILL && commonObjective.getCardKey()[1]==INKWELL && commonObjective.getCardKey()[2]==MANUSCRIPT){\r\n\r\n                count=stock.getOrDefault(commonObjective.getCardKey()[0], 0);\r\n                //se c'è una QUILL nello stock\r\n                if (count>=1){\r\n                    countINKWELL=stock.getOrDefault(commonObjective.getCardKey()[1], 0);\r\n                    //se c'è una INKWELL nello stock\r\n                    if (countINKWELL>=1){\r\n                        countMANU=stock.getOrDefault(commonObjective.getCardKey()[2], 0);\r\n                        //se c'è un MANUSCRIPT nello stock\r\n                        if (countMANU>=1){\r\n                            //se ci sono piu di uno di tutti a questo punto ritorno il minimo\r\n                            int min=Math.min(count, Math.min(countINKWELL, countMANU));\r\n                            return (min*3);\r\n                        }\r\n                    }\r\n                }\r\n            }\r\n        }\r\n        //altrimenti non ci sono Special\r\n        return 0;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/org/example/myversion/server/model/decks/cards/SpecialObjectiveCard.java b/src/main/java/org/example/myversion/server/model/decks/cards/SpecialObjectiveCard.java
+--- a/src/main/java/org/example/myversion/server/model/decks/cards/SpecialObjectiveCard.java	
++++ b/src/main/java/org/example/myversion/server/model/decks/cards/SpecialObjectiveCard.java	
+@@ -12,6 +12,7 @@
+  * It specifies which and how many special objects the player needs to have in his play area.
+  */
+ public class SpecialObjectiveCard extends ObjectiveCard{
++
+     private final SpecialObject[] objective;
+ 
+     /**
+@@ -20,8 +21,8 @@
+      * @param cardPoints specifies the points awarded to the player upon accomplishing its objective.
+      * @param objective specifies which and how many special objects the player needs to have in his play area.
+      */
+-    public SpecialObjectiveCard(int cardPoints, SpecialObject[] objective) {
+-        super(cardPoints);
++    public SpecialObjectiveCard(int cardPoints, SpecialObject[] objective, int id) {
++        super(cardPoints, id);
+         this.objective = objective;
+     }
+ 
+@@ -31,9 +32,8 @@
+      * @return The array specifying which and how many special objects the player needs to have in their play area.
+      */
+ 
+-    @Override
+-    public Resource[][] getObjective() {
+-        return null;
++    public SpecialObject[] getObjective() {
++        return objective;
+     }
+ 
+     //Restituisce objective della carta con override
+Index: src/main/java/org/example/myversion/server/model/decks/cards/ResourceObjectiveCard.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.example.myversion.server.model.decks.cards;\r\n\r\nimport org.example.myversion.server.model.enumerations.CornerContent;\r\nimport org.example.myversion.server.model.enumerations.Resource;\r\nimport org.example.myversion.server.model.enumerations.SpecialObject;\r\n\r\nimport java.util.Map;\r\n/**\r\n * Represents a resource objective card.\r\n * It specifies which and how many resources the player needs to have in his play area.\r\n */\r\npublic class ResourceObjectiveCard extends ObjectiveCard{\r\n    private final Resource[] objective;\r\n\r\n    /**\r\n     * Constructs a ResourceObjectiveCard with specified points and objective.\r\n     *\r\n     * @param cardPoints specifies the points awarded to the player upon accomplishing its objective.\r\n     * @param objective specifies which and how many resources the player needs to have in his play area.\r\n     */\r\n    public ResourceObjectiveCard(int cardPoints, Resource[] objective) {\r\n        super(cardPoints);\r\n        this.objective = objective;\r\n    }\r\n\r\n    /**\r\n     * Retrieves the resource objective.\r\n     *\r\n     * @return The array specifying which and how many resources the player needs to have in their play area.\r\n     */\r\n\r\n    @Override\r\n    public CornerContent[] getCardKey(){\r\n        return objective;//devo fare un altro tipo che restituisca\r\n    }\r\n\r\n    @Override\r\n    public Resource[][] getObjective() {\r\n        return null;\r\n    }\r\n\r\n    @Override\r\n    public int findObjectiveCard(Map<CornerContent, Integer> stock, Card[][] playArea,ObjectiveCard commonObjective) {\r\n        // Implementazione per ResourceObjectiveCard\r\n\r\n        int count=0;\r\n\r\n        //trovo il numero di elementi che corrispondono a quella risorsa\r\n        count=stock.getOrDefault(commonObjective.getCardKey()[0],0);\r\n        //System.out.println(\"Stampo numero di elementi di quella risorsa cercata nello stock: : \"+count);\r\n        //ritorna multiplo di 2 se il numero di risorse è > di 3 altrimenti 0\r\n        if(count>=3){\r\n            return ((count / 3) * 2);\r\n        }\r\n        return 0;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/org/example/myversion/server/model/decks/cards/ResourceObjectiveCard.java b/src/main/java/org/example/myversion/server/model/decks/cards/ResourceObjectiveCard.java
+--- a/src/main/java/org/example/myversion/server/model/decks/cards/ResourceObjectiveCard.java	
++++ b/src/main/java/org/example/myversion/server/model/decks/cards/ResourceObjectiveCard.java	
+@@ -18,8 +18,8 @@
+      * @param cardPoints specifies the points awarded to the player upon accomplishing its objective.
+      * @param objective specifies which and how many resources the player needs to have in his play area.
+      */
+-    public ResourceObjectiveCard(int cardPoints, Resource[] objective) {
+-        super(cardPoints);
++    public ResourceObjectiveCard(int cardPoints, Resource[] objective, int id) {
++        super(cardPoints, id);
+         this.objective = objective;
+     }
+ 
+Index: .idea/compiler.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"CompilerConfiguration\">\r\n    <annotationProcessing>\r\n      <profile name=\"Maven default annotation processors profile\" enabled=\"true\">\r\n        <sourceOutputDir name=\"target/generated-sources/annotations\" />\r\n        <sourceTestOutputDir name=\"target/generated-test-sources/test-annotations\" />\r\n        <outputRelativeToContentRoot value=\"true\" />\r\n        <module name=\"MyVersion\" />\r\n      </profile>\r\n    </annotationProcessing>\r\n    <bytecodeTargetLevel>\r\n      <module name=\"AM24-IS44\" target=\"21\" />\r\n    </bytecodeTargetLevel>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/compiler.xml b/.idea/compiler.xml
+--- a/.idea/compiler.xml	
++++ b/.idea/compiler.xml	
+@@ -7,10 +7,8 @@
+         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+         <outputRelativeToContentRoot value="true" />
+         <module name="MyVersion" />
++        <module name="AM24-IS44" />
+       </profile>
+     </annotationProcessing>
+-    <bytecodeTargetLevel>
+-      <module name="AM24-IS44" target="21" />
+-    </bytecodeTargetLevel>
+   </component>
+ </project>
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><project version=\"4\">\r\n  <component name=\"ExternalStorageConfigurationManager\" enabled=\"true\" />\r\n  <component name=\"MavenProjectsManager\">\r\n    <option name=\"originalFiles\">\r\n      <list>\r\n        <option value=\"$PROJECT_DIR$/pom.xml\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_21\" default=\"true\" project-jdk-name=\"openjdk-21\" project-jdk-type=\"JavaSDK\" />\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	
++++ b/.idea/misc.xml	
+@@ -1,3 +1,4 @@
++<?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="ExternalStorageConfigurationManager" enabled="true" />
+   <component name="MavenProjectsManager">
+@@ -6,6 +7,7 @@
+         <option value="$PROJECT_DIR$/pom.xml" />
+       </list>
+     </option>
++    <option name="workspaceImportForciblyTurnedOn" value="true" />
+   </component>
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="openjdk-21" project-jdk-type="JavaSDK" />
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" project-jdk-name="openjdk-21" project-jdk-type="JavaSDK" />
+ </project>
+\ No newline at end of file

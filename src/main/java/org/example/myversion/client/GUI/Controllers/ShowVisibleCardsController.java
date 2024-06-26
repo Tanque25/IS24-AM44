@@ -42,10 +42,7 @@ public class ShowVisibleCardsController extends GUIController {
         ok.setOnMouseClicked(event -> {
             try {
                 gui.setPlayerVisibleseen(true);
-
-                if(gui.isPlayerStarterChosen() == false){
-                    gui.starterCardSideChoice(gui.getStarterCard());
-                }
+                gui.starterCardSideChoice(gui.getStarterCard());
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -81,6 +81,11 @@ public class Game {
         }
     }
 
+    /**
+     * Generates the hand of a player
+     *
+     * @return The hand of the player
+     */
     private List<PlayableCard> generatePlayerHand() {
         List<PlayableCard> hand = new ArrayList<>();
 
@@ -175,11 +180,19 @@ public class Game {
     public List<ObjectiveCard> getCommonObjectives() {
         return commonObjectives;
     }
-
+    /**
+     * Retrieves the list of the visible gold cards
+     *
+     * @return The list of the visible gold cards
+     */
     public List<GoldCard> getVisibleGoldCards() {
         return visibleGoldCards;
     }
-
+    /**
+     * Retrieves the list of the visible resource cards
+     *
+     * @return The list of the visible resource cards
+     */
     public List<PlayableCard> getVisibleResourceCards() {
         return visibleResourceCards;
     }
@@ -211,11 +224,19 @@ public class Game {
                 board.updateScore(player, playedCard.getCardPoints());
         }
     }
-
+    /**
+     * Retrieves the card on the peek of the resource card deck
+     *
+     * @return The card on the peek of the resource card deck
+     */
     public PlayableCard getResourceDeckPeek() {
         return resourceDeck.getResourceDeck().peek();
     }
-
+    /**
+     * Retrieves the card on the peek of the gold card deck
+     *
+     * @return The card on the peek of the resource deck
+     */
     public GoldCard getGoldDeckPeek() {
         return goldDeck.getGoldDeck().peek();
     }
@@ -325,7 +346,10 @@ public class Game {
     public boolean checkLastTurn() {
         return goldDeck.getGoldDeck().empty() || resourceDeck.getResourceDeck().empty();
     }
-
+    /**
+     * When you upload an already started match this function is used to restore
+     * the hands of the players as they were when the match was interrupted
+     */
     public void restorePlayersHands(Map<String, List<PlayableCard>> playersHands) {
         for (Player player : players) {
             String nickname = player.getNickname();
@@ -334,7 +358,10 @@ public class Game {
             }
         }
     }
-
+    /**
+     * When you upload an already started match this function is used to restore
+     * the play areas of the players as they were when the match was interrupted
+     */
     public void restorePlayersPlayAreas(Map<String, Card[][]> playersPlayAreas) {
         for (Player player : players) {
             String nickname = player.getNickname();
@@ -344,30 +371,60 @@ public class Game {
         }
     }
 
+
+    /**
+     * Retrieves the resource deck of the game
+     *
+     * @return The resource deck of the game
+     */
     public Stack<PlayableCard> getResourceDeck() {
         return resourceDeck.getResourceDeck();
     }
-
+    /**
+     * Sets the resource deck
+     *
+     * @param resourceDeck The resource deck to set as the game resource deck
+     */
     public void setResourceDeck(ResourceDeck resourceDeck) {
         this.resourceDeck = resourceDeck;
     }
-
+    /**
+     * Retrieves the gold deck of the game
+     *
+     * @return The gold deck of the game
+     */
     public Stack<GoldCard> getGoldDeck() {
         return goldDeck.getGoldDeck();
     }
-
+    /**
+     * Sets the gold deck
+     *
+     * @param goldDeck The gold deck to set as the game resource deck
+     */
     public void setGoldDeck(GoldDeck goldDeck) {
         this.goldDeck = goldDeck;
     }
-
+    /**
+     * Sets the common objectives card
+     *
+     * @param objectiveCards The objective cards to set as the game common objective cards
+     */
     public void setCommonObjectives(List<ObjectiveCard> objectiveCards) {
         this.commonObjectives = objectiveCards;
     }
-
+    /**
+     * Sets the visible resource cards
+     *
+     * @param visibleResourceCards The visible resource cards to set as the game visible resource cards
+     */
     public void setVisibleResourceCards(List<PlayableCard> visibleResourceCards) {
         this.visibleResourceCards = visibleResourceCards;
     }
-
+    /**
+     * Sets the visible gold cards
+     *
+     * @param visibleGoldCards The visible gold cards to set as the game visible gold cards
+     */
     public void setVisibleGoldCards(List<GoldCard> visibleGoldCards) {
         this.visibleGoldCards = visibleGoldCards;
     }

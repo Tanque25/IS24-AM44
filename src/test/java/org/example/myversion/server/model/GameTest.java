@@ -41,7 +41,7 @@ class GameTest {
         game = new Game();
         board = new Board();
         players = new ArrayList<>();
-        /*
+
         SC_002 = new StarterCard(
                 // Resources of the card
                 new Resource[]{Resource.FUNGI_KINGDOM},
@@ -58,7 +58,7 @@ class GameTest {
                         CornerPosition.UP_RIGHT, new Corner(Resource.ANIMAL_KINGDOM),
                         CornerPosition.BOTTOM_LEFT, new Corner(Resource.FUNGI_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT, new Corner(Resource.INSECT_KINGDOM)
-                )
+                ),81
         );
 
         SC_003 = new StarterCard(
@@ -74,7 +74,7 @@ class GameTest {
                         CornerPosition.UP_RIGHT, new Corner(Resource.ANIMAL_KINGDOM),
                         CornerPosition.BOTTOM_LEFT, new Corner(Resource.FUNGI_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT, new Corner(Resource.PLANT_KINGDOM)
-                )
+                ),82
         );
 
         SC_004 = new StarterCard(
@@ -90,8 +90,8 @@ class GameTest {
                         CornerPosition.UP_RIGHT, new Corner(Resource.INSECT_KINGDOM),
                         CornerPosition.BOTTOM_LEFT, new Corner(Resource.ANIMAL_KINGDOM),
                         CornerPosition.BOTTOM_RIGHT, new Corner(Resource.FUNGI_KINGDOM)
-                )
-        );*/
+                ),83
+        );
     }
 
     @Test
