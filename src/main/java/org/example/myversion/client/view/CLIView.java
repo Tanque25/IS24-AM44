@@ -129,13 +129,22 @@ public class CLIView extends GameView {
      */
     private String readNickname() {
         String nickname = null;
+        boolean validInput = false;
 
-        try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-            nickname = in.readLine();
-            client.setNickname(nickname);
-        } catch (IOException e) {
-            System.err.println("An error occurred while reading the nickname.");
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+
+        while (!validInput) {
+            try {
+                nickname = in.readLine();
+                if (nickname == null || nickname.trim().isEmpty()) {
+                    System.err.print("Nickname cannot be empty. Please enter a valid nickname: ");
+                } else {
+                    client.setNickname(nickname);
+                    validInput = true;
+                }
+            } catch (IOException e) {
+                System.err.println("An error occurred while reading the nickname.");
+            }
         }
 
         return nickname;
@@ -196,12 +205,24 @@ public class CLIView extends GameView {
      */
     private int readNumber() {
         int number = 0;
+        boolean validInput = false;
 
-        try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-            number = Integer.parseInt(in.readLine());
-        } catch (IOException e) {
-            System.err.println("An error occurred while reading the number.");
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+
+        while (!validInput) {
+            try {
+                String input = in.readLine();
+                if (input == null || input.trim().isEmpty()) {
+                    System.err.print("Input cannot be empty. Please enter a valid number: ");
+                } else {
+                    number = Integer.parseInt(input);
+                    validInput = true;
+                }
+            } catch (NumberFormatException e) {
+                System.err.print("Invalid input. Please enter a valid number: ");
+            } catch (IOException e) {
+                System.err.println("An error occurred while reading the number.");
+            }
         }
 
         return number;

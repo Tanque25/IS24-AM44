@@ -22,27 +22,23 @@ import java.util.*;
  * Manages the game dynamics including the lobby, player interactions, and connections.
  */
 public class GameController {
-    public static Game game;
-    public HashMap<String, Integer> pongLost;
-    public List<String> pongReceived;
+    public Game game;
     private HashMap<String, HandleClientSocket> tcpClients;
     private HashMap<String, ClientCommunicationInterface> rmiClients;
     private GameState gameState;
-    public int roundsPlayed;
-    public int playersNumber;
+    private int roundsPlayed;
+    private int playersNumber;
     private static int readyPlayersNumber = 0;
     private Player lastPlayer;
 
     // Game backup attributes
-    public List<String> disconnectedPlayers;
     public static final String BACKUP_FILE = "backUp.json";
+    private List<String> disconnectedPlayers;
     private Map<String, List<PlayableCard>> handsMap;
     private Map<String, Card[][]> playAreasMap;
 
     public GameController() {
         this.game = new Game();
-        this.pongLost = new HashMap<>();
-        this.pongReceived = new ArrayList<>();
         this.tcpClients = new HashMap<>();
         this.rmiClients = new HashMap<>();
         this.playersNumber = 0;
