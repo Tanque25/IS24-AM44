@@ -58,7 +58,9 @@ public class ChatController extends GUIController{
         chatMessages.getChildren().add(newLabel);
 
         if(chatStage == null){
-            showAlert("New message", "You received a new message");
+            Platform.runLater(() -> {
+                showAlert("New message", "You received a new message");
+            });
         }else{
             chargeScene();
         }

@@ -42,16 +42,14 @@ public class PersonalPlayAreaController extends GUIController{
                 e.printStackTrace();
             }
 
-            goBack.setOnMouseClicked(event -> {
+            /*goBack.setOnMouseClicked(event -> {
                 //devo tornare alla schermata precedente
                 try {
-                    gui.getClient().sendMessage(new Message("GoBack"));
-                    goBack.setDisable(true);
-                    //gui.restorePreviousScene();
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-        });
+        });*/
     });
 
     }

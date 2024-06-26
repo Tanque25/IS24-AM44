@@ -9,8 +9,6 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
-import org.example.myversion.client.Client;
 import org.example.myversion.client.GUI.GUIController;
 import org.example.myversion.messages.Message;
 import org.example.myversion.server.model.decks.cards.StarterCard;
@@ -18,8 +16,10 @@ import org.example.myversion.server.model.decks.cards.StarterCard;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
 
+/**
+ * Controller class for choosing the side of the starter card in the GUI.
+ */
 public class StarterCardSideController extends GUIController {
 
     @FXML
@@ -35,14 +35,26 @@ public class StarterCardSideController extends GUIController {
     @FXML
     private ImageView imgViewBack;
 
+    /**
+     * Default constructor for the StarterCardSideController class.
+     */
     public StarterCardSideController() {
         super();
     }
 
-    public void initialize(){
-
+    /**
+     * Initializes the controller class. This method is automatically called after the FXML file has been loaded.
+     * It sets the action executed when you press the ok button.
+     */
+    public void initialize() {
+        // Initialization code, if any, goes here
     }
 
+    /**
+     * Sets up the GUI for choosing the side of the starter card and displays the corresponding scene.
+     * It sends the chosen side to the server
+     * @param starterCard the starter card to choose the side for
+     */
     public void sideChoice(StarterCard starterCard) {
         Platform.runLater(() -> {
             try {
@@ -51,11 +63,9 @@ public class StarterCardSideController extends GUIController {
                 loader.setController(this);
                 Parent root = loader.load();
 
-                //String imgFrontPath = String.format("/org/example/myversion/cards_gold_front/front" + starterCard.getId() +".png");
-                //String imgBackPath = String.format("resources/org/example/myversion/cards_gold_back/back" + starterCard.getId() + ".png");
-                Image imgFront = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + starterCard.getId() +".png"));
+                Image imgFront = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + starterCard.getId() + ".png"));
                 imgViewFront.setImage(imgFront);
-                Image imgBack = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + starterCard.getId() +".png"));
+                Image imgBack = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + starterCard.getId() + ".png"));
                 imgViewBack.setImage(imgBack);
 
                 gui.getStage().setTitle("Codex Naturalis");

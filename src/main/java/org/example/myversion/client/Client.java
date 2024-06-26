@@ -101,6 +101,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
             case "StartCondition" -> {
                 gameView.setHandsMap(message.getPlayersHandsMap());
 
+                //gameView.setPlayers(message.);
                 gameView.initializePlayAreas(message.getStarterCardsMap());
 
                 gameView.showOthersHandsAndPlayAreas(); // Questi tre metodi verranno compattati in GUI, nel senso
