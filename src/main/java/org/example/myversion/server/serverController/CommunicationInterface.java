@@ -2,7 +2,6 @@ package org.example.myversion.server.serverController;
 
 import jakarta.json.Json;
 import org.example.myversion.client.ClientCommunicationInterface;
-import org.example.myversion.client.view.HandView;
 import org.example.myversion.messages.Message;
 
 import java.io.StringReader;
@@ -11,7 +10,6 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.example.myversion.server.model.Coordinates;
 import org.example.myversion.server.model.decks.cards.Card;
@@ -34,48 +32,28 @@ public interface CommunicationInterface extends Remote {
     default void receiveMessageTCP(Message message, HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException {
     }
 
-    default void receiveMessageRMInew(String messageString,ClientCommunicationInterface client) throws RemoteException {
+    default void receiveMessageRMI(String messageString, ClientCommunicationInterface client) throws RemoteException {
         Message message = new Message(Json.createReader(new StringReader(messageString)).readObject());
         String messageType = message.getMessageCode();
 
         switch (messageType) {
             case "Login" -> {
-                System.out.println("Received Login request from " + client.getNickname());
                 String nickname = message.getArgument();
                 int checkNicknameStatus = controller.checkNickname(nickname);
                 checkNicknameNew(client, nickname, checkNicknameStatus);
             }
-            case "NumberOfPlayers" ->{
-                //controller.setPlayersNumber(message.getNumber());
-                switch (message.getNumber()){
-                    case 0 ->{
-                        System.out.println("Number of players isn't inizialized");
-                    }
-                    case 2 ->{
-                        numberOfPlayers(2,client);
-                        System.out.println("Impostato numero giocatori a 2");
-                    }
-                    case 3 ->{
-                        numberOfPlayers(3,client);
-                        System.out.println("Impostato numero giocatori a 3");
-                    }
-                    case 4 ->{
-                        numberOfPlayers(4,client);
-                        System.out.println("Impostato numero giocatori a 4");
-                    }
-                    default -> System.out.println("Number o");
+            case "NumberOfPlayers" -> {
+                switch (message.getNumber()) {
+                    case 2 -> numberOfPlayers(2, client);
+                    case 3 -> numberOfPlayers(3, client);
+                    case 4 -> numberOfPlayers(4, client);
+                    default -> System.err.println("Invalid number of players");
                 }
-
             }
-            case "StarterCard" ->{
-
-                System.out.println("Starter card side from: "+client.getNickname());
-                controller.playStarterCard(controller.getPlayerFromNickname(client.getNickname()), message.getStarterCard());
-            }
-
-            case "CardToPlayChoice"->{
+            case "StarterCard" ->
+                    controller.playStarterCard(controller.getPlayerFromNickname(client.getNickname()), message.getStarterCard());
+            case "CardToPlayChoice" -> {
                 String nickname = client.getNickname();
-                System.out.println("Playing card from: "+nickname);
                 try {
                     // If it's a PlayableCard call getPlayableCard(), otherwise call getGoldCard()
                     if (message.getJson().containsKey("playableCard")) {
@@ -86,7 +64,7 @@ public interface CommunicationInterface extends Remote {
                         updateClientsPlayedCard(message.getGoldCard(), message.getCoordinates());
                     }
 
-                    sendMessage(new Message("VisibleCards", controller.getVisibleResourceCards(), controller.getRsourceDeckPeek(), controller.getVisibleGoldCards(), controller.getGoldDeckPeek()),client);
+                    sendMessage(new Message("VisibleCards", controller.getVisibleResourceCards(), controller.getRsourceDeckPeek(), controller.getVisibleGoldCards(), controller.getGoldDeckPeek()), client);
 
                     client.handleMessageNew("DrawCard");
                 } catch (InvalidMoveException e) {
@@ -99,14 +77,13 @@ public interface CommunicationInterface extends Remote {
                 }
             }
             case "ObjectiveCardChoice" -> {
+                controller.chooseObjectiveCard(controller.getPlayerFromNickname(client.getNickname()), message.getObjectiveCard());
 
-                controller.chooseObjectiveCard(controller.getPlayerFromNickname( client.getNickname()), message.getObjectiveCard());
                 // When the server receives the player's secret objective choice, the readyPlayersNumber is updated
                 controller.updateReadyPlayersNumber();
-                System.out.println("ReadyPlayersNumber: " +controller.getReadyPlayersNumber());
-                System.out.println("getPlayersNumber: " +controller.getPlayersNumber());
+
                 // When all the players are ready, the servers sends every player the other players' hands and play areas and starts the turns cycle
-                if (controller.getReadyPlayersNumber() == controller.getPlayersNumber() ) {
+                if (controller.getReadyPlayersNumber() == controller.getPlayersNumber()) {
                     sendStartCondition();
                 }
             }
@@ -119,16 +96,16 @@ public interface CommunicationInterface extends Remote {
                             PlayableCard chosenCard = controller.getVisibleResourceCards().get(cardToDrawChoice);
                             controller.drawCard(nickname, chosenCard);
                             updateClientsDrawnCard(chosenCard);
-                        } catch (InvalidGameStateException | InvalidChoiceException  | InvalidNicknameException e) {
+                        } catch (InvalidGameStateException | InvalidChoiceException | InvalidNicknameException e) {
                             e.printStackTrace();
                         }
                     }
                     case 2, 3 -> {
                         try {
-                            GoldCard chosenCard = controller.getVisibleGoldCards().get(cardToDrawChoice-2);
+                            GoldCard chosenCard = controller.getVisibleGoldCards().get(cardToDrawChoice - 2);
                             controller.drawCard(nickname, chosenCard);
                             updateClientsDrawnCard(chosenCard);
-                        } catch (InvalidGameStateException | InvalidChoiceException  | InvalidNicknameException e) {
+                        } catch (InvalidGameStateException | InvalidChoiceException | InvalidNicknameException e) {
                             e.printStackTrace();
                         }
                     }
@@ -137,7 +114,7 @@ public interface CommunicationInterface extends Remote {
                             PlayableCard chosenCard = controller.getRsourceDeckPeek();
                             controller.drawCard(nickname, chosenCard);
                             updateClientsDrawnCard(chosenCard);
-                        } catch (InvalidGameStateException | InvalidChoiceException  | InvalidNicknameException e) {
+                        } catch (InvalidGameStateException | InvalidChoiceException | InvalidNicknameException e) {
                             e.printStackTrace();
                         }
                     }
@@ -146,7 +123,7 @@ public interface CommunicationInterface extends Remote {
                             GoldCard chosenCard = controller.getGoldDeckPeek();
                             controller.drawCard(nickname, chosenCard);
                             updateClientsDrawnCard(chosenCard);
-                        } catch (InvalidGameStateException | InvalidChoiceException  | InvalidNicknameException e) {
+                        } catch (InvalidGameStateException | InvalidChoiceException | InvalidNicknameException e) {
                             e.printStackTrace();
                         }
                     }
@@ -166,7 +143,7 @@ public interface CommunicationInterface extends Remote {
 
         Message updateMessage = new Message("UpdatePlayedCard", nickname, playedCard, coordinates);
 
-        sendMessageToAll( updateMessage);
+        sendMessageToAll(updateMessage);
     }
 
     default void updateClientsDrawnCard(PlayableCard drawnCard) throws RemoteException {
@@ -176,7 +153,7 @@ public interface CommunicationInterface extends Remote {
 
         Message updateMessage = new Message("UpdateDrawnCard", nickname, drawnCard, null);
 
-        sendMessageToAll( updateMessage);
+        sendMessageToAll(updateMessage);
     }
 
     default void updateClientsDrawnCard(GoldCard drawnCard) throws RemoteException {
@@ -186,13 +163,13 @@ public interface CommunicationInterface extends Remote {
 
         Message updateMessage = new Message("UpdateDrawnCard", nickname, drawnCard, null);
 
-        sendMessageToAll( updateMessage);
+        sendMessageToAll(updateMessage);
     }
 
 
-    default void numberOfPlayers (int num,ClientCommunicationInterface client) throws RemoteException{
+    default void numberOfPlayers(int num, ClientCommunicationInterface client) throws RemoteException {
         boolean isValidNumberOfPlayers = controller.checkNumberOfPlayer(num);
-        if(!isValidNumberOfPlayers){//non dovrebbe mai succedere perche abbiamo controllo pre chimamata metodo lato client
+        if (!isValidNumberOfPlayers) {//non dovrebbe mai succedere perche abbiamo controllo pre chimamata metodo lato client
             try {
                 client.handleMessageNew("InvalidNumberOfPlayers");
             } catch (RemoteException e) {
@@ -205,16 +182,10 @@ public interface CommunicationInterface extends Remote {
             if (controller.gameIsFull()) {
                 controller.newGame();
                 startGame();
-                //System.out.println("devo inviare le started card...");
-            } else {
-                try {
-                    client.handleMessageNew("LobbyNotFull");
-                } catch (RemoteException e) {
-                    System.err.println("Error while sending waitingRoom to client.");
-                }
             }
         }
     }
+
     default void checkNicknameNew(ClientCommunicationInterface client, String nickname, int checkNicknameStatus) throws RemoteException {
         switch (checkNicknameStatus) {
             case 1 -> {
@@ -226,22 +197,19 @@ public interface CommunicationInterface extends Remote {
                         throw new RemoteException();
                     }
                 } else {
-                    //client.sendMessageToClient(new Message("Nickname", nickname));
-
                     controller.addPlayer(nickname);
                     System.out.println(nickname + " logged in.");
 
-                    //setNickname(nickname);
                     controller.addClientRMI(nickname, client);
 
                     if (controller.isFirst()) {
-                        try {//chiedo numeri giocatori e gestisco eccezione
+                        try {
                             client.handleMessageNew("ChooseNumOfPlayer");
-
                         } catch (RemoteException e) {
                             System.err.println("Error 3 while sending message to " + nickname);
                             throw new RemoteException();
                         }
+
                         try {//chiedo numeri giocatori e gestisco eccezione
                             client.handleMessageNew("WaitForOtherPlayers");
 
@@ -257,7 +225,7 @@ public interface CommunicationInterface extends Remote {
                             System.err.println("Error 3 while sending message to " + nickname);
                             throw new RemoteException();
                         }
-                        System.out.println("Max number of players set to: " + controller.getPlayersNumber());
+
                         // If this is the last player to reach the max player number, the game starts
                         if (controller.getPlayersNumber() != 0 && controller.gameIsFull()) {
                             System.out.println("Game is full.");
@@ -292,47 +260,6 @@ public interface CommunicationInterface extends Remote {
         }
     }
 
-    /*default void checkNicknameNew(ClientCommunicationInterface client, String nickname, int checkNicknameStatus) throws RemoteException {
-        switch (checkNicknameStatus) {
-            case 1 -> {
-                if(!controller.getGameState().equals(GameState.LOGIN) && !controller.getGameState().equals(GameState.INITIALIZATION)){//se gioco non iniziato ancora
-
-
-                    System.out.println(nickname + " logged in.");
-
-                    controller.addPlayer(nickname);
-                    controller.addClientRMI(nickname, client);
-
-                    if(controller.isFirst()){//controllo se è il primo
-
-                        try {//chiedo numeri giocatori e gestisco eccezione
-                            client.handleMessageNew("ChooseNumOfPlayer");
-
-                        } catch (RemoteException e) {
-                            System.err.println("Error 3 while sending message to " + nickname);
-                            throw new RemoteException();
-                        }
-                    }else{
-
-                        if(controller.gameIsFull()){//partita piena
-                            System.out.println("starting game");
-                            startGame();
-                        }
-                    }
-                }else{//gioco gia iniziato
-                    try {//gestisco eccezione Remote
-                        client.handleMessageNew("GameAlreadyStarted");
-                    } catch (RemoteException e) {
-                        System.err.println("Error 2 while sending message to " + nickname);
-                        throw new RemoteException();
-                    }
-
-
-                }
-            }
-        }
-    }*/
-
     default void startGame() throws RemoteException {
         controller.setGameState(GameState.IN_GAME);
 
@@ -366,26 +293,26 @@ public interface CommunicationInterface extends Remote {
 
             Message starterCardMessage = new Message("StarterCard", controller.getStarterCard());
 
-            try{
-                sendMessage(starterCardMessage,rmiClients.get(nickname));
-            }catch (RemoteException e){
+            try {
+                sendMessage(starterCardMessage, rmiClients.get(nickname));
+            } catch (RemoteException e) {
                 e.printStackTrace();
                 System.err.println("Error while sending game to " + nickname);
             }
 
             Message commmonObjectiveCardsMessage = new Message("CommonObjective", commonObjectiveCards.get(0), commonObjectiveCards.get(1));
-            try{
-                sendMessage(commmonObjectiveCardsMessage,rmiClients.get(nickname));
-            }catch (RemoteException e){
+            try {
+                sendMessage(commmonObjectiveCardsMessage, rmiClients.get(nickname));
+            } catch (RemoteException e) {
                 e.printStackTrace();
                 System.err.println("Error while sending game to " + nickname);
             }
 
             List<ObjectiveCard> secretObjectiveCardsOptions = controller.getSecretObjectiveCardsOptions();
             Message secretObjectiveCardsOptionsMessage = new Message("SecretObjectiveCardsOptions", secretObjectiveCardsOptions.get(0), secretObjectiveCardsOptions.get(1));
-            try{
-                sendMessage(secretObjectiveCardsOptionsMessage,rmiClients.get(nickname));
-            }catch (RemoteException e){
+            try {
+                sendMessage(secretObjectiveCardsOptionsMessage, rmiClients.get(nickname));
+            } catch (RemoteException e) {
                 e.printStackTrace();
                 System.err.println("Error while sending game to " + nickname);
             }
@@ -431,23 +358,23 @@ public interface CommunicationInterface extends Remote {
         // Send restored game to all rmi clients
         for (String nickname : rmiClients.keySet()) {
             Message visibleCardsMessage = new Message("VisibleCards", visibleResourceCards, coveredResourceCard, visibleGoldCards, coveredGoldCard);
-            try{
-                sendMessage(visibleCardsMessage,rmiClients.get(nickname));
-            }catch (RemoteException e){
+            try {
+                sendMessage(visibleCardsMessage, rmiClients.get(nickname));
+            } catch (RemoteException e) {
                 e.printStackTrace();
                 System.err.println("Error while sending game to " + nickname);
             }
             Message commmonObjectiveCardsMessage = new Message("CommonObjectiveCards", commonObjectiveCards.get(0), commonObjectiveCards.get(1));
-            try{
-                sendMessage(commmonObjectiveCardsMessage,rmiClients.get(nickname));
-            }catch (RemoteException e){
+            try {
+                sendMessage(commmonObjectiveCardsMessage, rmiClients.get(nickname));
+            } catch (RemoteException e) {
                 e.printStackTrace();
                 System.err.println("Error while sending game to " + nickname);
             }
             Message gameDataMessage = new Message("GameData", scores, handsMap, playAreasMap);
-            try{
-                sendMessage(gameDataMessage,rmiClients.get(nickname));
-            }catch (RemoteException e){
+            try {
+                sendMessage(gameDataMessage, rmiClients.get(nickname));
+            } catch (RemoteException e) {
                 e.printStackTrace();
                 System.err.println("Error while sending game to " + nickname);
             }
@@ -456,9 +383,8 @@ public interface CommunicationInterface extends Remote {
         startTurn();
     }
 
-    default void sendMessage(Message message,ClientCommunicationInterface client) throws RemoteException{
+    default void sendMessage(Message message, ClientCommunicationInterface client) throws RemoteException {
         String jsonString = message.getJson().toString();
-        System.out.println(jsonString);
         try {
             client.receiveCard(jsonString);
         } catch (RemoteException e) {
@@ -467,7 +393,6 @@ public interface CommunicationInterface extends Remote {
     }
 
     default void sendStartCondition() throws RemoteException {
-        System.out.println("Entra in start");
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
         HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
 
@@ -477,14 +402,9 @@ public interface CommunicationInterface extends Remote {
         }
 
         for (String nickname : rmiClients.keySet()) {
-            System.out.println("nickname: " + nickname);
-            HandView handView = new HandView();
-            Set<String> nicknames = controller.getPlayersHandsMap().keySet();
-            for (String nick : nicknames)
-                handView.displayHand(controller.getPlayersHandsMap().get(nick));
-
-            sendMessage(new Message("StartCondition", controller.getStarterCardsMap(), controller.getPlayersHandsMap()),rmiClients.get(nickname));
+            sendMessage(new Message("StartCondition", controller.getStarterCardsMap(), controller.getPlayersHandsMap()), rmiClients.get(nickname));
         }
+
         startTurn();
     }
 
@@ -496,7 +416,7 @@ public interface CommunicationInterface extends Remote {
         if (controller.isTCP(nickname))
             controller.getTcpClients().get(nickname).sendMessageToClient(myTurn);
 
-        if(controller.isRMI(nickname))
+        if (controller.isRMI(nickname))
             controller.getRmiClients().get(nickname).handleMessageNew("MyTurn");
 
         Message otherTurn = new Message("OtherTurn", nickname);
@@ -507,7 +427,7 @@ public interface CommunicationInterface extends Remote {
         // Update the current player
         controller.changeTurn();
 
-        if(controller.getGameState() == GameState.IN_GAME) {
+        if (controller.getGameState() == GameState.IN_GAME) {
             controller.saveGame();
             startTurn();
         } else if (controller.getGameState() == GameState.LAST_ROUND) {
@@ -524,7 +444,7 @@ public interface CommunicationInterface extends Remote {
 
     }
 
-    default void sendMessageToAll (Message message) throws RemoteException {
+    default void sendMessageToAll(Message message) throws RemoteException {
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
         HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
 
@@ -532,24 +452,24 @@ public interface CommunicationInterface extends Remote {
             tcpClients.get(nickname).sendMessageToClient(message);
         }
         for (String nickname : rmiClients.keySet()) {
-            try{
-                sendMessage(message,rmiClients.get(nickname));
-            }catch (RemoteException e){
+            try {
+                sendMessage(message, rmiClients.get(nickname));
+            } catch (RemoteException e) {
                 e.printStackTrace();
                 System.err.println("Error while sending game to " + nickname);
             }
         }
     }
 
-    default void sendMessageToAllExcept (String currentPlayerNickname, Message message) throws RemoteException {
+    default void sendMessageToAllExcept(String currentPlayerNickname, Message message) throws RemoteException {
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
 
         for (String nickname : tcpClients.keySet()) {
-            if(!nickname.equals(currentPlayerNickname)) {
+            if (!nickname.equals(currentPlayerNickname)) {
                 tcpClients.get(nickname).sendMessageToClient(message);
             }
         }
-        sendMessageToAllExceptRMI(currentPlayerNickname,"OtherTurn");
+        sendMessageToAllExceptRMI(currentPlayerNickname, "OtherTurn");
     }
 
     default void updateScores() throws RemoteException {
@@ -561,12 +481,12 @@ public interface CommunicationInterface extends Remote {
     }
 
 
-    default void sendMessageToAllExceptRMI (String currentPlayerNickname, String scelta) throws RemoteException {
+    default void sendMessageToAllExceptRMI(String currentPlayerNickname, String scelta) throws RemoteException {
 
         HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
 
         for (String nickname : rmiClients.keySet()) {
-            if(!nickname.equals(currentPlayerNickname)) {
+            if (!nickname.equals(currentPlayerNickname)) {
                 rmiClients.get(nickname).handleMessageNew(scelta);
             }
         }

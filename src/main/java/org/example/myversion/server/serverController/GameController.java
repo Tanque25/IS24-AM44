@@ -337,8 +337,6 @@ public class GameController {
     }
 
     public boolean gameIsFull(){
-        System.out.println("numero giocatori: "+game.getPlayers().size());
-        System.out.println("numero giocatori settato: "+playersNumber);
         return game.getPlayers().size() == playersNumber;
     }
 
@@ -399,7 +397,7 @@ public class GameController {
 
     public boolean checkScores() {
         for(Player player : game.getPlayers()){
-            if(game.getBoard().getScore(player)>=2){
+            if(game.getBoard().getScore(player)>=10){
                 return true;
             }
         }
