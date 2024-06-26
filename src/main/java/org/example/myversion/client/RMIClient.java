@@ -19,11 +19,11 @@ public class RMIClient extends Client implements ClientCommunicationInterface {
 
     public RMIClient(String hostname) throws RemoteException {
         super();
-        System.out.println("qui passa3");
+
         try {
 
             connect(hostname);
-            System.out.println("qui passa4");
+
         } catch (IOException | NotBoundException e) {
             throw new RuntimeException(e);
         }
@@ -50,7 +50,6 @@ public class RMIClient extends Client implements ClientCommunicationInterface {
     public void sendMessage(Message message) {
         try {
             String jsonString = message.getJson().toString();
-            System.out.println(jsonString);
             server.receiveMessageRMInew(jsonString, this);
             // server.receiveMessageRMI(jsonString, this);
         } catch (RemoteException e) {
@@ -62,7 +61,6 @@ public class RMIClient extends Client implements ClientCommunicationInterface {
     public void sendChatMessage(ChatMessage message) {
         try {
             String jsonString = message.getJson().toString();
-            System.out.println(jsonString);
             server.receiveMessageRMInew(jsonString, this);
         } catch (RemoteException e) {
             e.printStackTrace();
