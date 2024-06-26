@@ -117,9 +117,4 @@ public class TCPClient extends Client implements ClientCommunicationInterface {
     public void startGame() throws RemoteException {
 
     }
-
-    //@Override
-    //public void receiveCard(String message) throws RemoteException {
-
-    //}
 }

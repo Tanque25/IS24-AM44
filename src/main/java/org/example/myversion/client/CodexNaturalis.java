@@ -16,10 +16,17 @@ public class CodexNaturalis {
     public static GameView gameView;
 
     public static void main(String[] args) throws IOException {
-        gameView = new GUI();
+        gameView = new CLIView();
         gameView.startView();
     }
 
+    /**
+     * Used to set the parameters of the client.
+     *
+     * @param hostname     the hostname of the server.
+     * @param communicationProtocol the protocol used to communicate with the server.
+     * @param gameView     the view used to display the game.
+     */
     public static void setParameters(String hostname, String communicationProtocol, GameView gameView) {
 
         CodexNaturalis.hostname = hostname;

@@ -153,6 +153,11 @@ public class GUI extends GameView{
     }
 
     @Override
+    public void showTakenUsername() {
+
+    }
+
+    @Override
     public void showGameAlreadyStartedMessage() {
 
     }

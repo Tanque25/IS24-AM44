@@ -8,11 +8,9 @@ import org.example.myversion.server.model.decks.cards.*;
 import org.example.myversion.server.model.enumerations.CornerPosition;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * This is the interface used for the view (CLI or GUI).
@@ -133,6 +131,8 @@ public abstract class GameView extends Application{
     public abstract void startView() throws IOException;
 
     public abstract void clientLogin() throws IOException;
+
+    public abstract void showTakenUsername() throws IOException;
 
     public abstract void showGameAlreadyStartedMessage();
 
