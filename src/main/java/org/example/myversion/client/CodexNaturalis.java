@@ -16,7 +16,7 @@ public class CodexNaturalis {
     public static GameView gameView;
 
     public static void main(String[] args) throws IOException {
-        gameView = new CLIView();
+        gameView = new GUI();
         gameView.startView();
     }
 

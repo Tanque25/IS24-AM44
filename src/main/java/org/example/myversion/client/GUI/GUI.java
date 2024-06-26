@@ -193,11 +193,13 @@ public class GUI extends GameView{
     public void showVisibleCards(){
         //List<PlayableCard> visiblePlayableCards = getVisibleResourceCards();
         //List<GoldCard> visibleGoldCards = getVisibleGoldCards();
-        if(showVisibleCardsController == null) {
-            showVisibleCardsController = new ShowVisibleCardsController();
-            showVisibleCardsController.setGui(this);
+        if(playerStarterChosen == false){
+            if (showVisibleCardsController == null) {
+                showVisibleCardsController = new ShowVisibleCardsController();
+                showVisibleCardsController.setGui(this);
+            }
+            showVisibleCardsController.displayCards();
         }
-        showVisibleCardsController.displayCards();
 
     }
 
@@ -304,17 +306,20 @@ public class GUI extends GameView{
 
     @Override
     public void chooseCardToPlay() throws IOException {
-        gamePhaseController.addCardToPlayArea();
+        gamePhaseController.activateTurn();
     }
 
     @Override
     public void invalidMove() throws IOException {
-        gamePhaseController.showMessageInvalidMove();
+        gamePhaseController.invalidMove();
+        // riattiva le immagini per giocare
+        // alert hai sbagliato mossa
     }
 
     @Override
     public void showUpdatedPlayArea(String nickname, Card[][] playArea) {
-
+        //
+        gamePhaseController.updateScene();
     }
 
     @Override
@@ -340,4 +345,4 @@ public class GUI extends GameView{
 
     }
 
-    }
+}

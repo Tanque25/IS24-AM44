@@ -148,10 +148,82 @@ public class GamePhaseController extends GUIController {
     private PlayableCard selectedCard;
     private PlayableCard drawnCard;
     private Point2D selectedCell;
+    private ObjectiveCard personalObjectiveCard;
+    private Boolean yourTurn = false;
+    private Boolean yourDraw = false;
 
 
     public GamePhaseController() {
         super();
+    }
+
+    public void activateTurn(){
+        yourTurn = true;
+        showAlert("Your turn", "Make your move");
+    }
+
+    public void clickedOnImageHand(){
+        if(yourTurn){
+            //Mostra i bottoni
+            //Salviamo carta
+        }
+    }
+
+    public void clickOnButton(){
+        yourTurn = false;
+        //Disattiva gli altri bottoni
+        // salva coordinate
+        // invia coordinate salvate e carta al server
+    }
+
+    public void invalidMove(){
+        yourTurn = true;
+        showAlert("Invalid move", "Please make another move");
+    }
+    public void updateScene(){
+        // Aggiungiamo la carta alle coordinate che ci siamo salvati nel gridpane
+        // Tolgo da myhand
+        Platform.runLater(()->{
+            try {
+                URL fxmlLocation = getClass().getResource("/org/example/myversion/FXML/GamePhase.fxml");
+                FXMLLoader loader = new FXMLLoader(fxmlLocation);
+                loader.setController(this);
+                Parent root = loader.load();
+
+                initializeGameScene(personalObjectiveCard, commonObjectiveCards, goldCards, playableCards);
+
+                gui.getStage().setTitle("Codex Naturalis");
+                gui.getStage().setScene(new Scene(root));
+                gui.getStage().show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+    public void drawPhase(){
+        yourDraw = true;
+    }
+    public void clickOnCardToDraw(){
+        if(yourDraw){
+            // Quando clicchi su una carta aggiorni myhand
+            // Mandi al server cosa hai pescato
+            Platform.runLater(()->{
+                try {
+                    URL fxmlLocation = getClass().getResource("/org/example/myversion/FXML/GamePhase.fxml");
+                    FXMLLoader loader = new FXMLLoader(fxmlLocation);
+                    loader.setController(this);
+                    Parent root = loader.load();
+
+                    initializeGameScene(personalObjectiveCard, commonObjectiveCards, goldCards, playableCards);
+
+                    gui.getStage().setTitle("Codex Naturalis");
+                    gui.getStage().setScene(new Scene(root));
+                    gui.getStage().show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 
     /**
@@ -162,6 +234,7 @@ public class GamePhaseController extends GUIController {
      * @param playableCards
      */
     public void initialize(ObjectiveCard personalObjectiveCard, List<ObjectiveCard> commonObjectiveCards, List<GoldCard> goldCards, List<PlayableCard> playableCards) {
+
         Platform.runLater(()->{
             try {
                 URL fxmlLocation = getClass().getResource("/org/example/myversion/FXML/GamePhase.fxml");
@@ -170,7 +243,7 @@ public class GamePhaseController extends GUIController {
                 Parent root = loader.load();
 
                 initializeGameScene(personalObjectiveCard, commonObjectiveCards, goldCards, playableCards);
-
+                this.personalObjectiveCard = personalObjectiveCard;
                 gui.getStage().setTitle("Codex Naturalis");
                 gui.getStage().setScene(new Scene(root));
                 gui.getStage().show();
@@ -582,9 +655,8 @@ public class GamePhaseController extends GUIController {
         });
     }
 
-    public void showMessageInvalidMove(){
-        labelMessage.setText("Invalid move. Please select a different position!");
-    }
+
+
 
 
 
