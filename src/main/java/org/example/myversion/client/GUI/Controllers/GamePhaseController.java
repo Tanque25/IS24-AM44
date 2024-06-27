@@ -370,6 +370,7 @@ public class GamePhaseController extends GUIController {
                 //goldCards.remove(drawnCard);
                 //goldCards.add(gui.getCoveredGoldCard());
                 //updateGoldCards();
+
             });
 
         gc02.setOnMouseClicked(event -> {
@@ -456,7 +457,7 @@ public class GamePhaseController extends GUIController {
             //Gold cards
             Image deckGold = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredGoldCard().getId() + ".png"));
             deckG.setImage(deckGold);
-            deckG.setOnMouseClicked(event -> {
+            /*deckG.setOnMouseClicked(event -> {
                 if (myHand.size() < 3) {
                     //GoldCard drawnCard = drawGoldCard(); // Implementa questa funzione per pescare una carta dal mazzo coperto
                     drawnCard = gui.getCoveredGoldCard();
@@ -471,11 +472,11 @@ public class GamePhaseController extends GUIController {
                         throw new RuntimeException(e);
                     }
                 }
-            });
+            });*/
 
             Image visibleGold1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + goldCards.get(0).getId() + ".png"));
             gc01.setImage(visibleGold1);
-            gc01.setOnMouseClicked(event -> {
+            /*gc01.setOnMouseClicked(event -> {
                 if (myHand.size() < 3) {
                     drawnCard = goldCards.get(0);
 
@@ -491,11 +492,11 @@ public class GamePhaseController extends GUIController {
                         throw new RuntimeException(e);
                     }
                 }
-            });
+            });*/
 
             Image visibleGold2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + goldCards.get(1).getId() + ".png"));
             gc02.setImage(visibleGold2);
-            gc02.setOnMouseClicked(event -> {
+            /*gc02.setOnMouseClicked(event -> {
                 if (myHand.size() < 3) {
                     drawnCard = goldCards.get(1);
 
@@ -509,10 +510,8 @@ public class GamePhaseController extends GUIController {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                }
+                }*/
             });
-
-        });
     }
 
     private void updatePlayableCards() {
@@ -520,7 +519,7 @@ public class GamePhaseController extends GUIController {
             //Playable cards
             Image deckResource = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredResourceCard().getId() + ".png"));
             deckP.setImage(deckResource);
-            deckP.setOnMouseClicked(event -> {
+            /*deckP.setOnMouseClicked(event -> {
                 if (myHand.size() < 3) {
                     //PlayableCard drawnCard = drawPlayableCard(); // Implementa questa funzione per pescare una carta dal mazzo coperto
                     drawnCard = gui.getCoveredResourceCard();
@@ -534,11 +533,11 @@ public class GamePhaseController extends GUIController {
                         throw new RuntimeException(e);
                     }
                 }
-            });
+            });*/
 
             Image visibleResource1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + playableCards.get(0).getId() + ".png"));
             pc01.setImage(visibleResource1);
-            pc01.setOnMouseClicked(event -> {
+            /*pc01.setOnMouseClicked(event -> {
                 if (myHand.size() < 3) {
                     drawnCard = playableCards.get(0);
 
@@ -553,11 +552,11 @@ public class GamePhaseController extends GUIController {
                         throw new RuntimeException(e);
                     }
                 }
-            });
+            });*/
 
             Image visibleResource2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + playableCards.get(1).getId() + ".png"));
             pc02.setImage(visibleResource2);
-            pc02.setOnMouseClicked(event -> {
+            /*pc02.setOnMouseClicked(event -> {
                 if (myHand.size() < 3) {
                     drawnCard = playableCards.get(1);
 
@@ -572,7 +571,7 @@ public class GamePhaseController extends GUIController {
                         throw new RuntimeException(e);
                     }
                 }
-            });
+            });*/
 
         });
     }

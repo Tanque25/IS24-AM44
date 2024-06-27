@@ -319,9 +319,6 @@ public class GUI extends GameView{
 
     @Override
     public void showUpdatedPlayArea(String nickname, Card[][] playArea) {
-        //
-        gamePhaseController.updateScene();
-        gamePhaseController.addCardToPlayArea();
         gamePhaseController.updateScene();
     }
 
