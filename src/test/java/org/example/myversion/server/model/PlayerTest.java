@@ -316,10 +316,6 @@ class PlayerTest {
         player.initializePlayArea(SC_002);
         player.getPlayArea()[41][41] = SC_002;
 
-        //player.initializeHand(new ArrayList<>());
-        //player.getHand().add(playableCard3);
-        //player.getHand().add(playableCard4);
-
         //gioco la carta PC_002 in una posizione già occupata e verifico che venga lanciata l'eccezione
         player.placeCard(playableCard3, new Coordinates(41, 41));
         player.getPlayArea()[41][41] = playableCard3;
@@ -337,8 +333,8 @@ class PlayerTest {
         //verifico che la carta invece possa essere giocata nella posizione corretta e che venga dunque aggiunta alla play area
         player.placeCard(playableCard4, new Coordinates(42, 40));
         Coordinates validCoordinates = new Coordinates(42, 40);
-        assertTrue(player.isValidMove(42, 40));
-        //player.getPlayArea()[40][42] = playableCard4;
+        assertTrue(player.isValidMove(validCoordinates));
+        player.getPlayArea()[40][42] = playableCard4;
     }
 
     @Test
