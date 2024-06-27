@@ -67,6 +67,16 @@ public class GUI extends GameView{
     private Parent root;
     Map<String, List<PlayableCard>> playerHand;
     List<ObjectiveCard> commonObjectiveCards;
+
+    public PlayableCard getSelectedCard() {
+        return selectedCard;
+    }
+
+    public void setSelectedCard(PlayableCard selectedCard) {
+        this.selectedCard = selectedCard;
+    }
+
+    private PlayableCard selectedCard;
     //private Scene previousScene;
 
 
@@ -291,14 +301,15 @@ public class GUI extends GameView{
         List<PlayableCard> hand = Hands.get(nick);
         List<PlayableCard> handMine = Hands.entrySet().stream().filter(e -> e.getKey().equals(nick)).findFirst().get().getValue();
 
-            gamePhaseController =  new GamePhaseController();
-            gamePhaseController.putStarterCard(starterCard);
+        gamePhaseController =  new GamePhaseController();
+        //gamePhaseController.putStarterCard(starterCard);
         gamePhaseController.setGui(this);
 
 
         //playerHand, (secret)objectiveCards,commonObjectiveCards, deckG, deckRes,
-        gamePhaseController.initialize(secretObjectiveCard, commonObjectiveCards, visibleGoldCards, visiblePlayableCards);
         //gamePhaseController.playerHandChanged(hand);
+        gamePhaseController.initializeScene(secretObjectiveCard, commonObjectiveCards, visibleGoldCards, visiblePlayableCards);
+
     }
 
     @Override

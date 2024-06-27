@@ -21,7 +21,9 @@ public abstract class GameView extends Application{
     private PlayableCard coveredResourceCard;
     private List<GoldCard> visibleGoldCards;
     private GoldCard coveredGoldCard;
-    private Map<String, Player> players = new HashMap<>();
+
+    protected Map<String, Player> players = new HashMap<>();
+
     private Map<String, List<PlayableCard>> handsMap = new HashMap<>();
     private Map<String, Card[][]> playAreasMap = new HashMap<>();
     public List<PlayableCard> getVisibleResourceCards() {
@@ -44,6 +46,8 @@ public abstract class GameView extends Application{
         return coveredGoldCard;
     }
 
+
+
     public void setCoveredGoldCard(GoldCard coveredGoldCard) {
         this.coveredGoldCard = coveredGoldCard;
     }
@@ -56,7 +60,7 @@ public abstract class GameView extends Application{
         this.visibleGoldCards = visibleGoldCards;
     }
 
-    protected Map<String, List<PlayableCard>> getHandsMap() {
+    public Map<String, List<PlayableCard>> getHandsMap() {
         return handsMap;
     }
 
