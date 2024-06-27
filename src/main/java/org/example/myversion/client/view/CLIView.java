@@ -28,31 +28,31 @@ public class CLIView extends GameView {
      * Prompts the user for the server IP address and protocol type.
      */
     public CLIView() {
-        String ip = null;
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        System.out.print("Insert server IP: ");
-        do {
-            try {
-                ip = reader.readLine();
-            } catch (IOException e) {
-                System.err.println(e.getMessage());
-                System.exit(1);
-            }
-            if (!CodexNaturalis.isIpValid(ip)) {
-                System.err.print("Insert a valid server IP: ");
-            }
-        } while (!CodexNaturalis.isIpValid(ip));
+//        String ip = null;
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+//        System.out.print("Insert server IP: ");
+//        do {
+//            try {
+//                ip = reader.readLine();
+//            } catch (IOException e) {
+//                System.err.println(e.getMessage());
+//                System.exit(1);
+//            }
+//            if (!CodexNaturalis.isIpValid(ip)) {
+//                System.err.print("Insert a valid server IP: ");
+//            }
+//        } while (!CodexNaturalis.isIpValid(ip));
+//
+//        String protocolType = null;
+//        showMessage("Choose a protocol (tcp '0' or rmi '1'): ");
+//        while (protocolType == null) {
+//            int protocolChoice = readNumber();
+//            if (protocolChoice == 0) protocolType = "tcp";
+//            else if (protocolChoice == 1) protocolType = "rmi";
+//            else System.err.print("Choose '0' or '1': ");
+//        }
 
-        String protocolType = null;
-        showMessage("Choose a protocol (tcp '0' or rmi '1'): ");
-        while (protocolType == null) {
-            int protocolChoice = readNumber();
-            if (protocolChoice == 0) protocolType = "tcp";
-            else if (protocolChoice == 1) protocolType = "rmi";
-            else System.err.print("Choose '0' or '1': ");
-        }
-
-        CodexNaturalis.setParameters(ip, protocolType, this);
+        CodexNaturalis.setParameters(this);
     }
 
     @Override

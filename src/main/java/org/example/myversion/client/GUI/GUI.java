@@ -72,7 +72,7 @@ public class GUI extends GameView{
 
 
     public GUI(){
-        CodexNaturalis.setParameters("localhost", "tcp", this);
+        CodexNaturalis.setParameters(this);
     }
 
     //private static final String GOLD_BACK_PATH = "org/example/myversion/cards_gold_back/";
