@@ -49,7 +49,10 @@ public class RMIClient extends Client implements ClientCommunicationInterface {
             String jsonString = message.getJson().toString();
             server.receiveMessageRMI(jsonString, this);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            System.err.println("Error while reading from Server");
+            System.out.println("Closing the client...");
+            stop();
+
         }
     }
 

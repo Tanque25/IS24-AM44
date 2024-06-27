@@ -32,6 +32,14 @@ public interface CommunicationInterface extends Remote {
     default void receiveMessageTCP(Message message, HandleClientSocket client) throws IllegalAccessException, InvalidNicknameException, InvalidMoveException, InvalidChoiceException, RemoteException {
     }
 
+    /**
+     * Handles incoming messages from a remote client via RMI (Remote Method Invocation).
+     * The method decodes the JSON string to a {@code Message} object and performs actions based on the message type.
+     *
+     * @param messageString The JSON string representing the message from the client.
+     * @param client        The {@code ClientCommunicationInterface} instance representing the remote client.
+     * @throws RemoteException If an RMI communication-related error occurs.
+     */
     default void receiveMessageRMI(String messageString, ClientCommunicationInterface client) throws RemoteException {
         Message message = new Message(Json.createReader(new StringReader(messageString)).readObject());
         String messageType = message.getMessageCode();
@@ -68,8 +76,17 @@ public interface CommunicationInterface extends Remote {
                         updateScores();
                         changeTurn();
                     } else {
-                        sendMessage(new Message("VisibleCards", controller.getVisibleResourceCards(), controller.getRsourceDeckPeek(), controller.getVisibleGoldCards(), controller.getGoldDeckPeek()), client);
-                        client.handleMessageNew("DrawCard");
+                        try {
+                            sendMessage(new Message("VisibleCards", controller.getVisibleResourceCards(), controller.getRsourceDeckPeek(), controller.getVisibleGoldCards(), controller.getGoldDeckPeek()), client);
+                            client.handleMessageNew("DrawCard");
+                        }catch (RemoteException e) {
+                            System.err.println("Error while sending message to " + nickname);
+                            try {
+                                sendMessageToAll(new Message("ClientDisconnected"));
+                            } catch (RemoteException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        }
                     }
 
                 } catch (InvalidMoveException e) {
@@ -141,6 +158,13 @@ public interface CommunicationInterface extends Remote {
         }
     }
 
+    /**
+     * Notifies all clients about a played {@code PlayableCard} with its coordinates.
+     *
+     * @param playedCard  The {@code PlayableCard} that was played.
+     * @param coordinates The {@code Coordinates} where the card was played.
+     * @throws RemoteException If an RMI communication-related error occurs.
+     */
     default void updateClientsPlayedCard(PlayableCard playedCard, Coordinates coordinates) throws RemoteException {
         String nickname = controller.getCurrentPlayer().getNickname();
 
@@ -149,6 +173,13 @@ public interface CommunicationInterface extends Remote {
         sendMessageToAll(updateMessage);
     }
 
+    /**
+     * Notifies all clients about a played {@code GoldCard} with its coordinates.
+     *
+     * @param playedCard  The {@code GoldCard} that was played.
+     * @param coordinates The {@code Coordinates} where the card was played.
+     * @throws RemoteException If an RMI communication-related error arrives.
+     */
     default void updateClientsPlayedCard(GoldCard playedCard, Coordinates coordinates) throws RemoteException {
         String nickname = controller.getCurrentPlayer().getNickname();
 
@@ -157,6 +188,12 @@ public interface CommunicationInterface extends Remote {
         sendMessageToAll(updateMessage);
     }
 
+    /**
+     * Notifies all clients about a drawn {@code PlayableCard}.
+     *
+     * @param drawnCard The {@code PlayableCard} that was drawn.
+     * @throws RemoteException If an RMI communication error arrives.
+     */
     default void updateClientsDrawnCard(PlayableCard drawnCard) throws RemoteException {
         String nickname = controller.getCurrentPlayer().getNickname();
 
@@ -165,6 +202,12 @@ public interface CommunicationInterface extends Remote {
         sendMessageToAll(updateMessage);
     }
 
+    /**
+     * Notifies all clients about a drawn {@code GoldCard}.
+     *
+     * @param drawnCard The {@code GoldCard} that was drawn.
+     * @throws RemoteException If an RMI communication error occurs.
+     */
     default void updateClientsDrawnCard(GoldCard drawnCard) throws RemoteException {
         String nickname = controller.getCurrentPlayer().getNickname();
 
@@ -173,7 +216,14 @@ public interface CommunicationInterface extends Remote {
         sendMessageToAll(updateMessage);
     }
 
-
+    /**
+     * Handles the number of players for the game.
+     * Validates the provided number of players and starts the game if the number is correct and the game is full.
+     *
+     * @param num    The number of players for the game.
+     * @param client The {@code ClientCommunicationInterface} instance representing the remote client.
+     * @throws RemoteException If an RMI communication error arrives.
+     */
     default void numberOfPlayers(int num, ClientCommunicationInterface client) throws RemoteException {
         boolean isValidNumberOfPlayers = controller.checkNumberOfPlayer(num);
         if (!isValidNumberOfPlayers) {//non dovrebbe mai succedere perche abbiamo controllo pre chimamata metodo lato client
@@ -181,6 +231,12 @@ public interface CommunicationInterface extends Remote {
                 client.handleMessageNew("InvalidNumberOfPlayers");
             } catch (RemoteException e) {
                 System.err.println("Error while sending numOfPlayersNotOK to client.");
+                try {
+                    sendMessageToAll(new Message("ClientDisconnected"));
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
+                stop();
             }
 
             //se il numero di giocatori è valido:
@@ -193,6 +249,18 @@ public interface CommunicationInterface extends Remote {
         }
     }
 
+    /**
+     * Handles the validation and processing of a client's nickname during login.
+     * Based on the status of the nickname check, it performs appropriate actions including handling game states,
+     * notifying clients, adding players, and starting or restoring the game.
+     *
+     *
+     * @param client              The {@code ClientCommunicationInterface} instance representing the remote client.
+     * @param nickname            The nickname of the player attempting to log in.
+     * @param checkNicknameStatus The status code indicating the result of the nickname check.
+     *
+     * @throws RemoteException If an RMI communication error arrives
+     */
     default void checkNickname(ClientCommunicationInterface client, String nickname, int checkNicknameStatus) throws RemoteException {
         switch (checkNicknameStatus) {
             case 1 -> {
@@ -200,8 +268,12 @@ public interface CommunicationInterface extends Remote {
                     try {//gestisco eccezione Remote
                         client.handleMessageNew("GameAlreadyStarted");
                     } catch (RemoteException e) {
-                        System.err.println("Error 2 while sending message to " + nickname);
-                        throw new RemoteException();
+                        System.err.println("Error while sending message to " + nickname);
+                        try {
+                            sendMessageToAll(new Message("ClientDisconnected"));
+                        } catch (RemoteException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     }
                 } else {
                     controller.addPlayer(nickname);
@@ -213,24 +285,36 @@ public interface CommunicationInterface extends Remote {
                         try {
                             client.handleMessageNew("ChooseNumOfPlayer");
                         } catch (RemoteException e) {
-                            System.err.println("Error 3 while sending message to " + nickname);
-                            throw new RemoteException();
+                            System.err.println("Error while sending message to " + nickname);
+                            try {
+                                sendMessageToAll(new Message("ClientDisconnected"));
+                            } catch (RemoteException ex) {
+                                throw new RuntimeException(ex);
+                            }
                         }
 
                         try {//chiedo numeri giocatori e gestisco eccezione
                             client.handleMessageNew("WaitForOtherPlayers");
 
                         } catch (RemoteException e) {
-                            System.err.println("Error 3 while sending message to " + nickname);
-                            throw new RemoteException();
+                            System.err.println("Error while sending message to " + nickname);
+                            try {
+                                sendMessageToAll(new Message("ClientDisconnected"));
+                            } catch (RemoteException ex) {
+                                throw new RuntimeException(ex);
+                            }
                         }
                     } else {
                         try {//chiedo numeri giocatori e gestisco eccezione
                             client.handleMessageNew("WaitForOtherPlayers");
 
                         } catch (RemoteException e) {
-                            System.err.println("Error 3 while sending message to " + nickname);
-                            throw new RemoteException();
+                            System.err.println("Error while sending message to " + nickname);
+                            try {
+                                sendMessageToAll(new Message("ClientDisconnected"));
+                            } catch (RemoteException ex) {
+                                throw new RuntimeException(ex);
+                            }
                         }
 
                         // If this is the last player to reach the max player number, the game starts
@@ -240,6 +324,13 @@ public interface CommunicationInterface extends Remote {
                             System.out.println("Game started.");
                         }
                     }
+                }
+            }case 0 -> {
+                // The username has already been taken, retry
+                checkNicknameStatus = controller.checkNickname(nickname);
+                if(checkNicknameStatus == 0) {
+                    System.out.println(nickname + " requested login, but the username is already taken.");
+                    sendMessage(new Message("TakenUsername"),client);
                 }
             }
             case -1 -> {
@@ -252,8 +343,12 @@ public interface CommunicationInterface extends Remote {
                     client.handleMessageNew("WaitForOtherPlayers");
 
                 } catch (RemoteException e) {
-                    System.err.println("Error 3 while sending message to " + nickname);
-                    throw new RemoteException();
+                    System.err.println("Error while sending message to " + nickname);
+                    try {
+                        sendMessageToAll(new Message("ClientDisconnected"));
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
 
                 // If this is the last player has reconnected, the game starts
@@ -267,6 +362,12 @@ public interface CommunicationInterface extends Remote {
         }
     }
 
+    /**
+     * Initializes and starts the game by setting the game state to {@code IN_GAME} and sending initial game data to all clients.
+     * This includes visible resource cards, starter cards, and common and secret objective cards.
+     *
+     * @throws RemoteException If an RMI communication-related error occurs.
+     */
     default void startGame() throws RemoteException {
         controller.setGameState(GameState.IN_GAME);
 
@@ -303,16 +404,24 @@ public interface CommunicationInterface extends Remote {
             try {
                 sendMessage(starterCardMessage, rmiClients.get(nickname));
             } catch (RemoteException e) {
-                e.printStackTrace();
-                System.err.println("Error while sending game to " + nickname);
+                System.err.println("Error while sending message to " + nickname);
+                try {
+                    sendMessageToAll(new Message("ClientDisconnected"));
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
 
             Message commmonObjectiveCardsMessage = new Message("CommonObjective", commonObjectiveCards.get(0), commonObjectiveCards.get(1));
             try {
                 sendMessage(commmonObjectiveCardsMessage, rmiClients.get(nickname));
             } catch (RemoteException e) {
-                e.printStackTrace();
-                System.err.println("Error while sending game to " + nickname);
+                System.err.println("Error while sending message to " + nickname);
+                try {
+                    sendMessageToAll(new Message("ClientDisconnected"));
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
 
             List<ObjectiveCard> secretObjectiveCardsOptions = controller.getSecretObjectiveCardsOptions();
@@ -320,12 +429,22 @@ public interface CommunicationInterface extends Remote {
             try {
                 sendMessage(secretObjectiveCardsOptionsMessage, rmiClients.get(nickname));
             } catch (RemoteException e) {
-                e.printStackTrace();
-                System.err.println("Error while sending game to " + nickname);
+                System.err.println("Error while sending message to " + nickname);
+                try {
+                    sendMessageToAll(new Message("ClientDisconnected"));
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         }
     }
 
+    /**
+     * Restores and starts a saved game by setting the game state to {@code IN_GAME} and sending the restored game data to all clients.
+     * This includes visible cards, common objectives, scores, hands, and play areas.
+     *
+     * @throws RemoteException If an RMI communication-related error arrives.
+     */
     default void startRestoredGame() throws RemoteException {
         System.out.println("Starting restored game.");
 
@@ -368,37 +487,64 @@ public interface CommunicationInterface extends Remote {
             try {
                 sendMessage(visibleCardsMessage, rmiClients.get(nickname));
             } catch (RemoteException e) {
-                e.printStackTrace();
-                System.err.println("Error while sending game to " + nickname);
+                System.err.println("Error while sending message to " + nickname);
+                try {
+                    sendMessageToAll(new Message("ClientDisconnected"));
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
             Message commmonObjectiveCardsMessage = new Message("CommonObjectiveCards", commonObjectiveCards.get(0), commonObjectiveCards.get(1));
             try {
                 sendMessage(commmonObjectiveCardsMessage, rmiClients.get(nickname));
             } catch (RemoteException e) {
-                e.printStackTrace();
-                System.err.println("Error while sending game to " + nickname);
+                System.err.println("Error while sending message to " + nickname);
+                try {
+                    sendMessageToAll(new Message("ClientDisconnected"));
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
             Message gameDataMessage = new Message("GameData", scores, handsMap, playAreasMap);
             try {
                 sendMessage(gameDataMessage, rmiClients.get(nickname));
             } catch (RemoteException e) {
-                e.printStackTrace();
-                System.err.println("Error while sending game to " + nickname);
+                System.err.println("Error while sending message to " + nickname);
+                try {
+                    sendMessageToAll(new Message("ClientDisconnected"));
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         }
 
         startTurn();
     }
 
+
+    /**
+     * Sends a message to a client using the Remote Method Invocation (RMI) mechanism.
+     * The message is converted to a JSON string and sent via the client's `receiveCard` method.
+
+     * @param message The {@code Message} object to be sent. This contains the data that needs to be transmitted to the client.
+     * @param client The {@code ClientCommunicationInterface} through which the message is to be sent.
+     * @throws RemoteException If an RMI communication-related error is presented
+     */
     default void sendMessage(Message message, ClientCommunicationInterface client) throws RemoteException {
         String jsonString = message.getJson().toString();
         try {
             client.receiveCard(jsonString);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            System.err.println("Error while sending message, client disconnected");
         }
     }
 
+    /**
+     * Sends the start condition of the game to all connected clients via both TCP and RMI.
+     * The start condition includes each player's starter cards and hands.
+     *
+     * @throws RemoteException If an RMI communication-related error occurs.
+     */
     default void sendStartCondition() throws RemoteException {
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
         HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
@@ -409,9 +555,17 @@ public interface CommunicationInterface extends Remote {
         }
 
         for (String nickname : rmiClients.keySet()) {
-            sendMessage(new Message("StartCondition", controller.getStarterCardsMap(), controller.getPlayersHandsMap()), rmiClients.get(nickname));
+            try{
+                sendMessage(new Message("StartCondition", controller.getStarterCardsMap(), controller.getPlayersHandsMap()), rmiClients.get(nickname));
+            }catch (RemoteException e){
+                System.err.println("Error while sending message, client disconnected");
+                try {
+                    sendMessageToAll(new Message("ClientDisconnected"));
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
         }
-
         startTurn();
     }
 
@@ -430,6 +584,14 @@ public interface CommunicationInterface extends Remote {
         sendMessageToAllExcept(nickname, otherTurn);
     }
 
+    /**
+     * Changes the turn in the game and handles game state transitions accordingly.
+     * Updates the current player and determines the next actions based on the game state:
+     * - Saves the game state and starts a new turn if the game is ongoing.
+     * - Sends a "LastRound" message to all clients if it is the last round.
+     * - Sends final scores and announces the game winner if the game has ended.
+     * @throws RemoteException If an RMI communication-related error occurs.
+     */
     default void changeTurn() throws RemoteException {
         // Update the current player
         controller.changeTurn();
@@ -451,6 +613,12 @@ public interface CommunicationInterface extends Remote {
 
     }
 
+    /**
+     * Sends a message to all connected clients, both TCP and RMI.
+     *
+     * @param message The message to be sent to all clients.
+     * @throws RemoteException If an RMI communication-related error occurs.
+     */
     default void sendMessageToAll(Message message) throws RemoteException {
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
         HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
@@ -459,15 +627,20 @@ public interface CommunicationInterface extends Remote {
             tcpClients.get(nickname).sendMessageToClient(message);
         }
         for (String nickname : rmiClients.keySet()) {
-            try {
                 sendMessage(message, rmiClients.get(nickname));
-            } catch (RemoteException e) {
-                e.printStackTrace();
-                System.err.println("Error while sending game to " + nickname);
-            }
+
         }
     }
 
+
+    /**
+     * Sends a message to all connected TCP clients except the specified player's client.
+     * Also sends a specific message to all RMI clients except the specified player.
+     *
+     * @param currentPlayerNickname The nickname of the current player whose client should not receive the message.
+     * @param message The message to be sent to all TCP clients except the specified player.
+     * @throws RemoteException If an RMI communication-related error occurs.
+     */
     default void sendMessageToAllExcept(String currentPlayerNickname, Message message) throws RemoteException {
         HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
 
@@ -479,6 +652,12 @@ public interface CommunicationInterface extends Remote {
         sendMessageToAllExceptRMI(currentPlayerNickname, "OtherTurn");
     }
 
+
+    /**
+     * Updates and broadcasts the scores to all connected clients.
+     *
+     * @throws RemoteException If an RMI communication-related error occurs.
+     */
     default void updateScores() throws RemoteException {
         Map<String, Integer> scores = controller.getScores();
 
@@ -487,15 +666,39 @@ public interface CommunicationInterface extends Remote {
         sendMessageToAll(scoresMessage);
     }
 
-
+    /**
+     * Sends a message to all connected RMI clients except the current player.
+     * This method is typically used to broadcast a message or notification to all clients,
+     * excluding the client whose nickname matches the current player's nickname.
+     *
+     * @param currentPlayerNickname The nickname of the current player whose client should not receive the message.
+     * @param scelta The choice or action represented by the message to be sent.
+     * @throws RemoteException If an RMI communication-related error occurs.
+     */
     default void sendMessageToAllExceptRMI(String currentPlayerNickname, String scelta) throws RemoteException {
 
         HashMap<String, ClientCommunicationInterface> rmiClients = controller.getRmiClients();
 
         for (String nickname : rmiClients.keySet()) {
             if (!nickname.equals(currentPlayerNickname)) {
-                rmiClients.get(nickname).handleMessageNew(scelta);
+                try {
+                    rmiClients.get(nickname).handleMessageNew(scelta);
+                }catch (RemoteException e){
+                    System.err.println("Error while sending message, client disconnected");
+                    try {
+                        sendMessageToAll(new Message("ClientDisconnected"));
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
             }
         }
+    }
+    
+    default void stop() throws RemoteException{
+
+        System.out.println("Server Closed.");
+        // Exit the application
+        System.exit(0);
     }
 }

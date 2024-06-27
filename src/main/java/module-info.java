@@ -8,7 +8,7 @@ module org.example.myversion {
 
     opens org.example.myversion to javafx.fxml;
 
-    exports org.example.myversion to java.rmi;
+    //exports org.example.myversion to java.rmi;
     exports org.example.myversion.client to java.rmi;
     exports org.example.myversion.client.view to java.rmi;
     exports org.example.myversion.server to java.rmi;

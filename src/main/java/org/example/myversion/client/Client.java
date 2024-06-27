@@ -42,6 +42,13 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
 
         switch (scelta) {
             case "GameAlreadyStarted" -> gameView.showGameAlreadyStartedMessage();
+            case "TakenUsername" -> {
+                try {
+                    gameView.showTakenUsername();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
             case "ChooseNumOfPlayer" -> {
                 try {
                     gameView.playersNumberChoice();
@@ -156,6 +163,15 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                     gameView.drawCard(nickname, message.getGoldCard());
                 }
             }
+            case "GameData" -> {
+                //ricevo game data come rmi
+                gameView.setHandsMap(message.getPlayersHandsMap());
+                gameView.setPlayAreasMap(message.getPlayAreasMap());
+
+                gameView.showOthersHandsAndPlayAreas();
+                gameView.showMyHand();
+                gameView.showMyPlayArea();
+            }
             case "VisibleCards" -> {
                 gameView.setVisibleResourceCards(message.getResourceCards());
                 gameView.setCoveredResourceCard(message.getPlayableCard());
@@ -176,6 +192,11 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 gameView.showScores(message.getScores());
             }
             case "EndGame" -> gameView.showEndGame(message.getArgument());
+            case "ClientDisconnected" -> {
+                gameView.showMessage("\nClient disconnected, ending game.\n");
+                stop();
+            }
+            default -> throw new IllegalArgumentException("Invalid messageCode.");
         }
     }
 
@@ -185,7 +206,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
     public void stop() {
         // Stop the scheduled executor service to prevent further scheduled tasks from running
         scheduler.shutdownNow();
-
+        System.out.println("Client Closed.");
         // Exit the application
         System.exit(0);
     }
