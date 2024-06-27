@@ -155,6 +155,7 @@ public class GamePhaseController extends GUIController {
         super();
     }
 
+    //phase: choose a card to play from the hand
     public void activateTurn(){
         yourTurn = true;
         showAlert("Your turn", "Make your move");
@@ -162,17 +163,146 @@ public class GamePhaseController extends GUIController {
 
     public void clickedOnImageHand(){
         if(yourTurn){
-            //Mostra i bottoni
+            //clicca su carta
             //Salviamo carta
+            //Mostra i bottoni
+            cdf1.setOnMouseClicked(event -> {
+                selectedCard = myHand.get(0);
+                selectedCard.setPlayedBack(false);
+                //myHand.remove(selectedCard);
+                //playerHandChanged(new ArrayList<>(myHand));
+                showPlacementOptions();
+            });
+            cdb1.setOnMouseClicked(event -> {
+                selectedCard = myHand.get(0);
+                selectedCard.setPlayedBack(true);
+                //myHand.remove(selectedCard);
+                //playerHandChanged(new ArrayList<>(myHand));
+                showPlacementOptions();
+            });
+            cardFront2.setOnMouseClicked(event -> {
+                selectedCard = myHand.get(1);
+                selectedCard.setPlayedBack(false);
+                //myHand.remove(selectedCard);
+                //playerHandChanged(new ArrayList<>(myHand));
+                showPlacementOptions();
+            });
+            cardBack2.setOnMouseClicked(event -> {
+                selectedCard = myHand.get(1);
+                selectedCard.setPlayedBack(true);
+                //myHand.remove(selectedCard);
+                //playerHandChanged(new ArrayList<>(myHand));
+                showPlacementOptions();
+            });
+            cardFront3.setOnMouseClicked(event -> {
+                selectedCard = myHand.get(2);
+                selectedCard.setPlayedBack(false);
+                //myHand.remove(selectedCard);
+                //playerHandChanged(new ArrayList<>(myHand));
+                showPlacementOptions();
+            });
+            cardBack3.setOnMouseClicked(event -> {
+                selectedCard = myHand.get(2);
+                selectedCard.setPlayedBack(true);
+                //myHand.remove(selectedCard);
+                //playerHandChanged(new ArrayList<>(myHand));
+                showPlacementOptions();
+            });
         }
     }
 
     public void clickOnButton(){
-        yourTurn = false;
         //Disattiva gli altri bottoni
         // salva coordinate
         // invia coordinate salvate e carta al server
+        yourTurn = false;
+        disableAllButtons();
+        sendCoordinatesToServer();
     }
+
+    private void disableAllButtons() {
+        for (Node node : gridPL.getChildren()) {
+            if (node instanceof Button) {
+                node.setDisable(true);
+            }
+        }
+    }
+
+    private void saveCoordinates(Point2D cell) {
+        selectedCell = cell;
+    }
+
+    private void sendCoordinatesToServer() {
+        try {
+            gridPL.getChildren().removeIf(node -> node instanceof Button); // Rimuovi gli altri bottoni
+            if (selectedCard instanceof GoldCard)
+                gui.getClient().sendMessage(new Message("CardToPlayChoice", (GoldCard) selectedCard, new Coordinates((int)selectedCell.getX(), (int)selectedCell.getY())));
+            else
+                gui.getClient().sendMessage(new Message("CardToPlayChoice", selectedCard, new Coordinates((int)selectedCell.getX(), (int)selectedCell.getY())));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void showPlacementOptions() {
+        List<Point2D> occupiedCells = getOccupiedCells(); // Ottieni le celle occupate
+        Set<Point2D> placementOptions = new HashSet<>();
+
+        for (Point2D cell : occupiedCells) {
+            // Controlla le celle diagonali
+            addIfValid(placementOptions, cell.add(1, 1)); // Basso-Destra
+            addIfValid(placementOptions, cell.add(-1, -1)); // Alto-Sinistra
+            addIfValid(placementOptions, cell.add(-1, 1)); // Basso-Sinistra
+            addIfValid(placementOptions, cell.add(1, -1)); // Alto-Destra
+        }
+
+        // Aggiungi bottoni alle celle di piazzamento
+        for (Point2D option : placementOptions) {
+            Button placeButton = new Button("Place");
+            placeButton.setOnMouseClicked(event ->{
+                saveCoordinates(option); // Salva le coordinate del bottone cliccato
+                clickOnButton(); // Gestisce il click sul bottone
+            });
+            gridPL.add(placeButton, (int) option.getX(), (int) option.getY());
+        }
+    }
+
+    private void addIfValid(Set<Point2D> options, Point2D cell) {
+        if (isValidCell(cell) && !isOccupied(cell)) {
+            options.add(cell);
+        }
+    }
+
+    private boolean isValidCell(Point2D cell) {
+        // Controlla che la cella sia all'interno dei limiti della griglia
+        return cell.getX() >= 0 && cell.getX() < gridPL.getColumnCount() &&
+                cell.getY() >= 0 && cell.getY() < gridPL.getRowCount();
+    }
+
+    private boolean isOccupied(Point2D cell) {
+        // Controlla se la cella è occupata
+        for (Node node : gridPL.getChildren()) {
+            if (GridPane.getColumnIndex(node) == (int) cell.getX() &&
+                    GridPane.getRowIndex(node) == (int) cell.getY()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private List<Point2D> getOccupiedCells() {
+        List<Point2D> occupiedCells = new ArrayList<>();
+        for (Node node : gridPL.getChildren()) {
+            Integer col = GridPane.getColumnIndex(node);
+            Integer row = GridPane.getRowIndex(node);
+            if (col != null && row != null) {
+                occupiedCells.add(new Point2D(col, row));
+            }
+        }
+        return occupiedCells;
+    }
+
+
 
     public void invalidMove(){
         yourTurn = true;
@@ -180,7 +310,9 @@ public class GamePhaseController extends GUIController {
     }
     public void updateScene(){
         // Aggiungiamo la carta alle coordinate che ci siamo salvati nel gridpane
+        addCardToPlayArea();
         // Tolgo da myhand
+        myHand.remove(selectedCard);
         Platform.runLater(()->{
             try {
                 URL fxmlLocation = getClass().getResource("/org/example/myversion/FXML/GamePhase.fxml");
@@ -204,7 +336,13 @@ public class GamePhaseController extends GUIController {
     public void clickOnCardToDraw(){
         if(yourDraw){
             // Quando clicchi su una carta aggiorni myhand
+            clickOnCardToD();
             // Mandi al server cosa hai pescato
+            try {
+                gui.getClient().sendMessage(new Message("CardToDrawChoice", drawnCard));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             Platform.runLater(()->{
                 try {
                     URL fxmlLocation = getClass().getResource("/org/example/myversion/FXML/GamePhase.fxml");
@@ -222,6 +360,38 @@ public class GamePhaseController extends GUIController {
                 }
             });
         }
+    }
+
+    public void clickOnCardToD(){
+        gc01.setOnMouseClicked(event -> {
+            drawnCard = goldCards.get(0);
+            myHand.add(drawnCard);
+                //playerHandChanged(new ArrayList<>(myHand));
+                //goldCards.remove(drawnCard);
+                //goldCards.add(gui.getCoveredGoldCard());
+                //updateGoldCards();
+            });
+
+        gc02.setOnMouseClicked(event -> {
+            drawnCard = goldCards.get(1);
+            myHand.add(drawnCard);
+            });
+        pc01.setOnMouseClicked(event -> {
+            drawnCard = playableCards.get(0);
+            myHand.add(drawnCard);
+            });
+        pc02.setOnMouseClicked(event -> {
+            drawnCard = playableCards.get(1);
+            myHand.add(drawnCard);
+            });
+        deckG.setOnMouseClicked(event -> {
+            drawnCard = gui.getCoveredGoldCard();
+            myHand.add(drawnCard);
+            });
+        deckP.setOnMouseClicked(event -> {
+            drawnCard = gui.getCoveredResourceCard();
+            myHand.add(drawnCard);
+            });
     }
 
     /**
@@ -271,7 +441,7 @@ public class GamePhaseController extends GUIController {
             updatePlayableCards();
 
             updatePlayerHand();
-            nicknameP1.setText(gui.getClient().getNickname()); //farlo per gli altri giocatori
+            nicknameP1.setText(gui.getClient().getNickname());
 
         });
     }
@@ -573,7 +743,7 @@ public class GamePhaseController extends GUIController {
     }
 
 
-    private void showPlacementOptions() {
+    /*private void showPlacementOptions() {
         List<Point2D> occupiedCells = getOccupiedCells(); // Ottieni le celle occupate
         Set<Point2D> placementOptions = new HashSet<>();
 
@@ -637,7 +807,7 @@ public class GamePhaseController extends GUIController {
             throw new RuntimeException(e);
         }
     }
-
+*/
     public void addCardToPlayArea() {
         Platform.runLater(() -> {
             Point2D coordinates = selectedCell;
@@ -652,15 +822,4 @@ public class GamePhaseController extends GUIController {
             gridPL.add(cardImageView, (int)coordinates.getX(), (int)coordinates.getY());
         });
     }
-
-
-
-
-
-
-    //turn
-
-
-
-
 }

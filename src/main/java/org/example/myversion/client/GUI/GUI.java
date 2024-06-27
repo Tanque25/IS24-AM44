@@ -307,19 +307,9 @@ public class GUI extends GameView{
     @Override
     public void chooseCardToPlay() throws IOException {
         gamePhaseController.activateTurn();
+        gamePhaseController.clickedOnImageHand();
     }
-        //ATTIVA LE CARTE GIOCABILI della MANO
-        gamePhaseController.activeHandButtons();
-        //mostra alert con messaggio "scegli una carta da giocare"
 
-        //clicca sulla carta
-        //disattiva le immagini mano
-        //schiaccio bottone playarea e mando messaggio al server
-        //
-        //gamePhaseController.activatePlayableCards();
-    }
-    //hai sbagliato mossa, fanne un'altra riattivare immagini
-    //clicchi su bottone
     @Override
     public void invalidMove() throws IOException {
         gamePhaseController.invalidMove();
@@ -337,7 +327,8 @@ public class GUI extends GameView{
 
     @Override
     public void chooseCardToDraw() {
-
+        gamePhaseController.drawPhase();
+        gamePhaseController.clickOnCardToDraw();
     }
 
     @Override
