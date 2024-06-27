@@ -58,7 +58,6 @@ public class GamePhaseController extends GUIController {
     private Pane playArea2;
 
 
-
     @FXML
     private Label nicknameP3;
     @FXML
@@ -156,84 +155,14 @@ public class GamePhaseController extends GUIController {
     }
 
     //phase: choose a card to play from the hand
-    public void activateTurn(){
+    public void activateTurn() {
         yourTurn = true;
-        showAlert("Your turn", "Make your move");
+        Platform.runLater(() -> {
+            showAlert("Your turn", "Make your move");
+        });
     }
 
-    public void initialize(){
-        //creo gridpane
-        gridPL.setMinSize((81*xCard),(81*yCard));
-        gridPL.setMaxSize((81*xCard), (81*yCard));
-
-        for(int i=0; i<81; i++){
-            ColumnConstraints column = new ColumnConstraints();
-            column.setPercentWidth(100/81);
-            gridPL.getColumnConstraints().add(column);
-
-            RowConstraints row = new RowConstraints();
-            row.setPercentHeight(100/81);
-            gridPL.getRowConstraints().add(row);
-        }
-
-        cdf1.setOnMouseClicked(event -> {
-            if(yourTurn){
-                selectedCard = myHand.get(0);
-                selectedCard.setPlayedBack(false);
-                //myHand.remove(selectedCard);
-                //playerHandChanged(new ArrayList<>(myHand));
-                showPlacementOptions();
-            }
-        });
-        cdb1.setOnMouseClicked(event -> {
-            if(yourTurn){
-                selectedCard = myHand.get(0);
-                selectedCard.setPlayedBack(true);
-                //myHand.remove(selectedCard);
-                //playerHandChanged(new ArrayList<>(myHand));
-                showPlacementOptions();
-            }
-        });
-        cardFront2.setOnMouseClicked(event -> {
-            if(yourTurn){
-                selectedCard = myHand.get(1);
-                selectedCard.setPlayedBack(false);
-                //myHand.remove(selectedCard);
-                //playerHandChanged(new ArrayList<>(myHand));
-                showPlacementOptions();
-            }
-        });
-        cardBack2.setOnMouseClicked(event -> {
-            if(yourTurn){
-                selectedCard = myHand.get(1);
-                selectedCard.setPlayedBack(true);
-                //myHand.remove(selectedCard);
-                //playerHandChanged(new ArrayList<>(myHand));
-                showPlacementOptions();
-            }
-        });
-        cardFront3.setOnMouseClicked(event -> {
-            if(yourTurn){
-                selectedCard = myHand.get(2);
-                selectedCard.setPlayedBack(false);
-                //myHand.remove(selectedCard);
-                //playerHandChanged(new ArrayList<>(myHand));
-                showPlacementOptions();
-            }
-        });
-        cardBack3.setOnMouseClicked(event -> {
-            if(yourTurn){
-                selectedCard = myHand.get(2);
-                selectedCard.setPlayedBack(true);
-                //myHand.remove(selectedCard);
-                //playerHandChanged(new ArrayList<>(myHand));
-                showPlacementOptions();
-            }
-        });
-
-    }
-
-    public void clickOnButton(){
+    public void clickOnButton() {
         //Disattiva gli altri bottoni
         // salva coordinate
         // invia coordinate salvate e carta al server
@@ -257,10 +186,10 @@ public class GamePhaseController extends GUIController {
     private void sendCoordinatesToServer() {
         try {
             gridPL.getChildren().removeIf(node -> node instanceof Button); // Rimuovi gli altri bottoni
-            if (selectedCard instanceof GoldCard)
-                gui.getClient().sendMessage(new Message("CardToPlayChoice", (GoldCard) selectedCard, new Coordinates((int)selectedCell.getX(), (int)selectedCell.getY())));
+            if (gui.getSelectedCard() instanceof GoldCard)
+                gui.getClient().sendMessage(new Message("CardToPlayChoice", (GoldCard)gui.getSelectedCard() , new Coordinates((int) selectedCell.getX(), (int) selectedCell.getY())));
             else
-                gui.getClient().sendMessage(new Message("CardToPlayChoice", selectedCard, new Coordinates((int)selectedCell.getX(), (int)selectedCell.getY())));
+                gui.getClient().sendMessage(new Message("CardToPlayChoice", gui.getSelectedCard(), new Coordinates((int) selectedCell.getX(), (int) selectedCell.getY())));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -281,7 +210,7 @@ public class GamePhaseController extends GUIController {
         // Aggiungi bottoni alle celle di piazzamento
         for (Point2D option : placementOptions) {
             Button placeButton = new Button("Place");
-            placeButton.setOnMouseClicked(event ->{
+            placeButton.setOnMouseClicked(event -> {
                 saveCoordinates(option); // Salva le coordinate del bottone cliccato
                 clickOnButton(); // Gestisce il click sul bottone
             });
@@ -324,21 +253,24 @@ public class GamePhaseController extends GUIController {
         return occupiedCells;
     }
 
-    public void invalidMove(){
+    public void invalidMove() {
         yourTurn = true;
-        showAlert("Invalid move", "Please make another move");
+        Platform.runLater(() -> {
+            showAlert("Invalid move", "Please make another move");
+        });
     }
-    public void updateScene(){
-        // Aggiungiamo la carta alle coordinate che ci siamo salvati nel gridpane
+
+    public void updateScene() {
         addCardToPlayArea();
-        // Tolgo da myhand
-        myHand.remove(selectedCard);
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
+
             try {
                 URL fxmlLocation = getClass().getResource("/org/example/myversion/FXML/GamePhase.fxml");
                 FXMLLoader loader = new FXMLLoader(fxmlLocation);
                 loader.setController(this);
                 Parent root = loader.load();
+
+                // Aggiungiamo la carta alle coordinate che ci siamo salvati nel gridpane
 
                 initializeGameScene(personalObjectiveCard, commonObjectiveCards, goldCards, playableCards);
 
@@ -350,11 +282,13 @@ public class GamePhaseController extends GUIController {
             }
         });
     }
-    public void drawPhase(){
+
+    public void drawPhase() {
         yourDraw = true;
     }
-    public void clickOnCardToDraw(){
-        if(yourDraw){
+
+    public void clickOnCardToDraw() {
+        if (yourDraw) {
             // Quando clicchi su una carta aggiorni myhand
             clickOnCardToD();
             // Mandi al server cosa hai pescato
@@ -363,7 +297,7 @@ public class GamePhaseController extends GUIController {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            Platform.runLater(()->{
+            Platform.runLater(() -> {
                 try {
                     URL fxmlLocation = getClass().getResource("/org/example/myversion/FXML/GamePhase.fxml");
                     FXMLLoader loader = new FXMLLoader(fxmlLocation);
@@ -382,50 +316,67 @@ public class GamePhaseController extends GUIController {
         }
     }
 
-    public void clickOnCardToD(){
+    public void clickOnCardToD() {
         gc01.setOnMouseClicked(event -> {
             drawnCard = goldCards.get(0);
             myHand.add(drawnCard);
-            });
+        });
 
         gc02.setOnMouseClicked(event -> {
             drawnCard = goldCards.get(1);
             myHand.add(drawnCard);
-            });
+        });
         pc01.setOnMouseClicked(event -> {
             drawnCard = playableCards.get(0);
             myHand.add(drawnCard);
-            });
+        });
         pc02.setOnMouseClicked(event -> {
             drawnCard = playableCards.get(1);
             myHand.add(drawnCard);
-            });
+        });
         deckG.setOnMouseClicked(event -> {
             drawnCard = gui.getCoveredGoldCard();
             myHand.add(drawnCard);
-            });
+        });
         deckP.setOnMouseClicked(event -> {
             drawnCard = gui.getCoveredResourceCard();
             myHand.add(drawnCard);
-            });
+        });
     }
 
     /**
      * Initialize the game scene
+     *
      * @param personalObjectiveCard
      * @param commonObjectiveCards
      * @param goldCards
      * @param playableCards
      */
-    public void initialize(ObjectiveCard personalObjectiveCard, List<ObjectiveCard> commonObjectiveCards, List<GoldCard> goldCards, List<PlayableCard> playableCards) {
-        Platform.runLater(()->{
+    public void initializeScene(ObjectiveCard personalObjectiveCard, List<ObjectiveCard> commonObjectiveCards, List<GoldCard> goldCards, List<PlayableCard> playableCards) {
+        Platform.runLater(() -> {
             try {
                 URL fxmlLocation = getClass().getResource("/org/example/myversion/FXML/GamePhase.fxml");
                 FXMLLoader loader = new FXMLLoader(fxmlLocation);
                 loader.setController(this);
                 Parent root = loader.load();
 
+                gridPL.setMinSize((81 * xCard), (81 * yCard));
+                gridPL.setMaxSize((81 * xCard), (81 * yCard));
+
+                for (int i = 0; i < 81; i++) {
+                    ColumnConstraints column = new ColumnConstraints();
+                    column.setPercentWidth(100 / 81);
+                    gridPL.getColumnConstraints().add(column);
+
+                    RowConstraints row = new RowConstraints();
+                    row.setPercentHeight(100 / 81);
+                    gridPL.getRowConstraints().add(row);
+                    updatePlayerHand();
+
+                }
+                putStarterCard(gui.getStarterCard());
                 initializeGameScene(personalObjectiveCard, commonObjectiveCards, goldCards, playableCards);
+
                 this.personalObjectiveCard = personalObjectiveCard;
                 gui.getStage().setTitle("Codex Naturalis");
                 gui.getStage().setScene(new Scene(root));
@@ -438,25 +389,26 @@ public class GamePhaseController extends GUIController {
 
 
     public void initializeGameScene(ObjectiveCard personalObjectiveCard, List<ObjectiveCard> commonObjectiveCards, List<GoldCard> goldCards, List<PlayableCard> playableCards) {
-            //Common Objective
-            Image CommonObjective1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + commonObjectiveCards.get(0).getId() + ".png"));
-            co01.setImage(CommonObjective1);
-            Image CommonObjective2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + commonObjectiveCards.get(1).getId() + ".png"));
-            co02.setImage(CommonObjective2);
 
-            //Personal Objective
-            Image PersonalObjective1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + personalObjectiveCard.getId() + ".png"));
-            co03.setImage(PersonalObjective1);
-            ;
+        //Common Objective
+        Image CommonObjective1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + gui.getCommonObjectiveCards().get(0).getId() + ".png"));
+        co01.setImage(CommonObjective1);
+        Image CommonObjective2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + gui.getCommonObjectiveCards().get(1).getId() + ".png"));
+        co02.setImage(CommonObjective2);
 
-            this.goldCards = goldCards;
-            updateGoldCards();
+        //Personal Objective
+        Image PersonalObjective1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + gui.getSecretObjectiveCard().getId() + ".png"));
+        co03.setImage(PersonalObjective1);
 
-            this.playableCards = playableCards;
-            updatePlayableCards();
+        this.goldCards = goldCards;
+        updateGoldCards();
 
-            updatePlayerHand();
-            nicknameP1.setText(gui.getClient().getNickname());
+        this.playableCards = playableCards;
+        updatePlayableCards();
+
+        updatePlayerHand();
+        nicknameP1.setText(gui.getClient().getNickname());
+
 
     }
 
@@ -465,40 +417,40 @@ public class GamePhaseController extends GUIController {
     }
 
     private void updateGoldCards() {
-            //Gold cards
-            Image deckGold = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredGoldCard().getId() + ".png"));
-            deckG.setImage(deckGold);
+        //Gold cards
+        Image deckGold = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredGoldCard().getId() + ".png"));
+        deckG.setImage(deckGold);
 
-            Image visibleGold1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + goldCards.get(0).getId() + ".png"));
-            gc01.setImage(visibleGold1);
+        Image visibleGold1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + goldCards.get(0).getId() + ".png"));
+        gc01.setImage(visibleGold1);
 
-            Image visibleGold2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + goldCards.get(1).getId() + ".png"));
-            gc02.setImage(visibleGold2);
+        Image visibleGold2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + goldCards.get(1).getId() + ".png"));
+        gc02.setImage(visibleGold2);
 
     }
 
     private void updatePlayableCards() {
-            //Playable cards
-            Image deckResource = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredResourceCard().getId() + ".png"));
-            deckP.setImage(deckResource);
+        //Playable cards
+        Image deckResource = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredResourceCard().getId() + ".png"));
+        deckP.setImage(deckResource);
 
 
-            Image visibleResource1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + playableCards.get(0).getId() + ".png"));
-            pc01.setImage(visibleResource1);
+        Image visibleResource1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + playableCards.get(0).getId() + ".png"));
+        pc01.setImage(visibleResource1);
 
 
-            Image visibleResource2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + playableCards.get(1).getId() + ".png"));
-            pc02.setImage(visibleResource2);
+        Image visibleResource2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + playableCards.get(1).getId() + ".png"));
+        pc02.setImage(visibleResource2);
     }
 
 
     //StarterCard
-    public void putStarterCard(StarterCard starterCard){
+    public void putStarterCard(StarterCard starterCard) {
 
         this.starterCard = starterCard;
         ImageView imgStarterCard = new ImageView();
 
-        if (starterCard.isPlayedBack()){
+        if (starterCard.isPlayedBack()) {
             Image imgBack = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + starterCard.getId() + ".png"));
             imgStarterCard.setImage(imgBack);
         } else {
@@ -509,19 +461,6 @@ public class GamePhaseController extends GUIController {
         imgStarterCard.setPreserveRatio(true);
         imgStarterCard.setFitWidth(xCard);
         imgStarterCard.setFitHeight(yCard);
-
-        /*gridPL.setMinSize((81*xCard),(81*yCard));
-        gridPL.setMaxSize((81*xCard), (81*yCard));
-
-        for(int i=0; i<81; i++){
-            ColumnConstraints column = new ColumnConstraints();
-            column.setPercentWidth(100/81);
-            gridPL.getColumnConstraints().add(column);
-
-            RowConstraints row = new RowConstraints();
-            row.setPercentHeight(100/81);
-            gridPL.getRowConstraints().add(row);
-        }*/
 
 
         gridPL.add(imgStarterCard, 41, 41);
@@ -547,124 +486,118 @@ public class GamePhaseController extends GUIController {
     }
 
     //player
-    public void playerHandChanged(List<PlayableCard> hand){
-        Platform.runLater(()->{
+    /*public void playerHandChanged(List<PlayableCard> hand){
             myHand.clear();
             myHand.addAll(hand);
             clearPlayerHand();
-            updatePlayerHand();
-        });
+            //updatePlayerHand();
     }
 
-        public void clearPlayerHand(){
-            Platform.runLater(() -> {
-                    cdf1.setImage(null);
-                    cardFront2.setImage(null);
-                    cardFront3.setImage(null);
-                    cdb1.setImage(null);
-                    cardBack2.setImage(null);
-                    cardBack3.setImage(null);
-            });
-        }
+    public void clearPlayerHand(){
+        Platform.runLater(() -> {
+            cdf1.setImage(null);
+            cardFront2.setImage(null);
+            cardFront3.setImage(null);
+            cdb1.setImage(null);
+            cardBack2.setImage(null);
+            cardBack3.setImage(null);
+        });
+    }*/
+
 
     public void updatePlayerHand() {
-        Platform.runLater(() -> {
-            // Controlla il numero di carte nella mano e aggiorna le immagini di conseguenza
-            if (myHand.size() > 0) {
-                Image cardFront1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + myHand.get(0).getId() + ".png"));
-                cdf1.setImage(cardFront1);
-                cdf1.setOnMouseClicked(event -> {
-                    selectedCard = myHand.get(0);
-                    selectedCard.setPlayedBack(false);
-                    myHand.remove(selectedCard);
+        // Controlla il numero di carte nella mano e aggiorna le immagini di conseguenza
+        myHand = gui.getHandsMap().get(gui.getClient().getNickname());
+        Image cardFront1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + myHand.get(0).getId() + ".png"));
+        cdf1.setImage(cardFront1);
+        Image cardBack1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + myHand.get(0).getId() + ".png"));
+        cdb1.setImage(cardBack1);
+        Image cdf2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + myHand.get(1).getId() + ".png"));
+        cardFront2.setImage(cdf2);
+        Image cdb2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + myHand.get(1).getId() + ".png"));
+        cardBack2.setImage(cdb2);
+        Image cdf3 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + myHand.get(2).getId() + ".png"));
+        cardFront3.setImage(cdf3);
+        Image cdb3 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + myHand.get(2).getId() + ".png"));
+        cardBack3.setImage(cdb3);
 
-                    showPlacementOptions();
-
-                    //trova le carte piazzate e mostrami le coordinate in cui posso piazzare la carta
-
-                    playerHandChanged(new ArrayList<>(myHand));
-                });
-
-                Image cardBack1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + myHand.get(0).getId() + ".png"));
-                cdb1.setImage(cardBack1);
-                cdb1.setOnMouseClicked(event -> {
-                    selectedCard = myHand.get(0);
-                    selectedCard.setPlayedBack(true);
-                    myHand.remove(selectedCard);
-
-                    showPlacementOptions();
-
-                    playerHandChanged(new ArrayList<>(myHand));
-                });
+        cdf1.setOnMouseClicked(event -> {
+            if (yourTurn) {
+                gui.setSelectedCard(myHand.get(0));
+                //selectedCard = myHand.get(0);
+                gui.getSelectedCard().setPlayedBack(false);
+                //myHand.remove(selectedCard);
+                //playerHandChanged(new ArrayList<>(myHand));
+                showPlacementOptions();
             }
-
-            if (myHand.size() > 1) {
-                Image cdf2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + myHand.get(1).getId() + ".png"));
-                cardFront2.setImage(cdf2);
-                cardFront2.setOnMouseClicked(event -> {
-                    selectedCard = myHand.get(1);
-                    selectedCard.setPlayedBack(false);
-                    myHand.remove(selectedCard);
-
-                    showPlacementOptions();
-
-                    playerHandChanged(new ArrayList<>(myHand));
-                });
-
-                Image cdb2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + myHand.get(1).getId() + ".png"));
-                cardBack2.setImage(cdb2);
-                cardBack2.setOnMouseClicked(event -> {
-                    selectedCard = myHand.get(1);
-                    selectedCard.setPlayedBack(true);
-                    myHand.remove(selectedCard);
-
-                    showPlacementOptions();
-
-                    playerHandChanged(new ArrayList<>(myHand));
-                });
+        });
+        cdb1.setOnMouseClicked(event -> {
+            if (yourTurn) {
+                gui.setSelectedCard(myHand.get(0));
+                //selectedCard = myHand.get(0);
+                gui.getSelectedCard().setPlayedBack(true);
+                //myHand.remove(selectedCard);
+                //playerHandChanged(new ArrayList<>(myHand));
+                showPlacementOptions();
             }
-
-            if (myHand.size() > 2) {
-                Image cdf3 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + myHand.get(2).getId() + ".png"));
-                cardFront3.setImage(cdf3);
-                cardFront3.setOnMouseClicked(event -> {
-                    selectedCard = myHand.get(2);
-                    selectedCard.setPlayedBack(false);
-                    myHand.remove(selectedCard);
-
-                    showPlacementOptions();
-
-                    playerHandChanged(new ArrayList<>(myHand));
-                });
-
-                Image cdb3 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + myHand.get(2).getId() + ".png"));
-                cardBack3.setImage(cdb3);
-                cardBack3.setOnMouseClicked(event -> {
-                    selectedCard = myHand.get(2);
-                    selectedCard.setPlayedBack(true);
-                    myHand.remove(selectedCard);
-
-                    showPlacementOptions();
-
-                    playerHandChanged(new ArrayList<>(myHand));
-                });
+        });
+        cardFront2.setOnMouseClicked(event -> {
+            if (yourTurn) {
+                gui.setSelectedCard(myHand.get(1));
+                //selectedCard = myHand.get(1);
+                gui.getSelectedCard().setPlayedBack(false);
+                //myHand.remove(selectedCard);
+                //playerHandChanged(new ArrayList<>(myHand));
+                showPlacementOptions();
+            }
+        });
+        cardBack2.setOnMouseClicked(event -> {
+            if (yourTurn) {
+                gui.setSelectedCard(myHand.get(1));
+                //selectedCard = myHand.get(1);
+                gui.getSelectedCard().setPlayedBack(true);
+                //myHand.remove(selectedCard);
+                //playerHandChanged(new ArrayList<>(myHand));
+                showPlacementOptions();
+            }
+        });
+        cardFront3.setOnMouseClicked(event -> {
+            if (yourTurn) {
+                gui.setSelectedCard(myHand.get(2));
+                //selectedCard = myHand.get(2);
+                gui.getSelectedCard().setPlayedBack(false);
+                //myHand.remove(selectedCard);
+                //playerHandChanged(new ArrayList<>(myHand));
+                showPlacementOptions();
+            }
+        });
+        cardBack3.setOnMouseClicked(event -> {
+            if (yourTurn) {
+                gui.setSelectedCard(myHand.get(2));
+                //selectedCard = myHand.get(2);
+                gui.getSelectedCard().setPlayedBack(true);
+                //myHand.remove(selectedCard);
+                //playerHandChanged(new ArrayList<>(myHand));
+                showPlacementOptions();
             }
         });
     }
 
     public void addCardToPlayArea() {
+        Platform.runLater(() -> {
             Point2D coordinates = selectedCell;
-            PlayableCard card = selectedCard;
 
             ImageView cardImageView = new ImageView();
-            Image cardImage = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + card.getId() + ".png"));
+            Image cardImage = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + gui.getSelectedCard().getId() + ".png"));
             cardImageView.setImage(cardImage);
             cardImageView.setFitWidth(xCard);
             cardImageView.setFitHeight(yCard);
 
-            gridPL.add(cardImageView, (int)coordinates.getX(), (int)coordinates.getY());
+            gridPL.add(cardImageView, (int) coordinates.getX(), (int) coordinates.getY());
+        });
     }
 }
+
 /*private void showPlacementOptions() {
         List<Point2D> occupiedCells = getOccupiedCells(); // Ottieni le celle occupate
         Set<Point2D> placementOptions = new HashSet<>();
