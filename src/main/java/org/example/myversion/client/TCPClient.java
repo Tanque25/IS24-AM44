@@ -226,6 +226,10 @@ public class TCPClient extends Client implements ClientCommunicationInterface {
             case "EndGame" -> {
                 gameView.showEndGame(message.getArgument());
             }
+            case "ClientDisconnected" -> {
+                gameView.showMessage("\nClient disconnected, ending game.\n");
+                stop();
+            }
             default -> throw new IllegalArgumentException("Invalid messageCode: " + messageCode);
         }
     }

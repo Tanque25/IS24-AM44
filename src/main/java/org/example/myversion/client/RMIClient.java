@@ -20,9 +20,7 @@ public class RMIClient extends Client implements ClientCommunicationInterface {
         super();
 
         try {
-
             connect(hostname);
-
         } catch (IOException | NotBoundException e) {
             throw new RuntimeException(e);
         }
@@ -50,7 +48,6 @@ public class RMIClient extends Client implements ClientCommunicationInterface {
         try {
             String jsonString = message.getJson().toString();
             server.receiveMessageRMI(jsonString, this);
-            // server.receiveMessageRMI(jsonString, this);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -70,18 +67,5 @@ public class RMIClient extends Client implements ClientCommunicationInterface {
     public void startGame() throws RemoteException {
 
     }
-
-    //@Override
-    //public void receiveCard(String message) throws RemoteException ;
-    /*public void sendMessage(Message message) throws IOException, RemoteException {
-        try {
-            String jsonString = message.getJson().toString();
-            System.out.println(jsonString);
-            server.receiveMessageRMI(jsonString, this);
-            // server.receiveMessageRMI(jsonString, this);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }*/
 
 }

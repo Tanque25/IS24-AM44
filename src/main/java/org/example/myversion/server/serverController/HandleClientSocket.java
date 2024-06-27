@@ -19,7 +19,6 @@ import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class HandleClientSocket implements CommunicationInterface, Runnable {
 
     private final Socket clientSocket;
@@ -28,7 +27,6 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
     public final BufferedReader reader;
     public BufferedWriter writer;
     private String nickname;
-
 
     public HandleClientSocket(Socket clientSocket, GameController controller) {
         this.clientSocket = clientSocket;
@@ -47,6 +45,9 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
                 try {
                     synchronized (reader) {
                         clientMessageString = reader.readLine();
+                        if (clientMessageString == null) {
+                            throw new IOException("Client disconnected");
+                        }
                         JsonObject jsonObject = null;
                         try (JsonReader jsonReader = Json.createReader(new StringReader(clientMessageString))) {
                             jsonObject = jsonReader.readObject();
@@ -55,12 +56,17 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
                         }
 
                         Message message = new Message(jsonObject);
-
                         receiveMessageTCP(message, this);
                     }
                 } catch (IOException | IllegalAccessException | InvalidNicknameException | InvalidMoveException |
                          InvalidChoiceException e) {
-                    System.err.println("Error while reading from client. IO");
+                    System.err.println("Error while reading from " + nickname + ".");
+                    try {
+                        sendMessageToAll(new Message("ClientDisconnected"));
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    stop();
                     break;
                 }
             }

@@ -720,6 +720,9 @@ public class Message implements Serializable {
      * @return The message code.
      */
     public String getMessageCode() {
+        if (json == null) {
+            throw new IllegalArgumentException("JSON object is null");
+        }
         return json.getString("messageCode");
     }
 
