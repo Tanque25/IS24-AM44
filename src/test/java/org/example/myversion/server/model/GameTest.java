@@ -328,9 +328,9 @@ class GameTest {
         }
 
         // Aggiungi punteggi ai giocatori
-        game.getBoard().updateScore(players.get(0), 10); // Player1
-        game.getBoard().updateScore(players.get(1), 15); // Player2
-        game.getBoard().updateScore(players.get(2), 20); // Player3
+        game.getBoard().updateScore(players.get(0), 10, 1); // Player1
+        game.getBoard().updateScore(players.get(1), 15, 1); // Player2
+        game.getBoard().updateScore(players.get(2), 20, 1); // Player3
 
         // Verifica che il giocatore con il punteggio più alto sia corretto
         Player winner = game.winner();
@@ -353,7 +353,7 @@ class GameTest {
         // Imposta il punteggio per tutti i giocatori allo stesso valore
         int sameScore = 10; // Puoi scegliere qualsiasi valore
         for (Player player : players) {
-            game.getBoard().updateScore(player, sameScore);
+            game.getBoard().updateScore(player, sameScore, 1);
         }
 
         // Verifica che non ci sia un vincitore

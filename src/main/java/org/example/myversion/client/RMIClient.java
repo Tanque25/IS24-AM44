@@ -4,7 +4,6 @@ import org.example.myversion.messages.ChatMessage;
 import org.example.myversion.messages.Message;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -50,7 +49,7 @@ public class RMIClient extends Client implements ClientCommunicationInterface {
     public void sendMessage(Message message) {
         try {
             String jsonString = message.getJson().toString();
-            server.receiveMessageRMInew(jsonString, this);
+            server.receiveMessageRMI(jsonString, this);
             // server.receiveMessageRMI(jsonString, this);
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -61,7 +60,7 @@ public class RMIClient extends Client implements ClientCommunicationInterface {
     public void sendChatMessage(ChatMessage message) {
         try {
             String jsonString = message.getJson().toString();
-            server.receiveMessageRMInew(jsonString, this);
+            server.receiveMessageRMI(jsonString, this);
         } catch (RemoteException e) {
             e.printStackTrace();
         }

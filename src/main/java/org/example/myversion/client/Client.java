@@ -38,31 +38,25 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
      */
     public abstract void connect(String hostname) throws IOException, NotBoundException;
 
-    public void handleMessageNew(String scelta)throws RemoteException {
+    public void handleMessageNew(String scelta) throws RemoteException {
 
         switch (scelta) {
-            case "GameAlreadyStarted" ->
-                    gameView.showGameAlreadyStartedMessage();
-            case "ChooseNumOfPlayer" ->{
-                try{
+            case "GameAlreadyStarted" -> gameView.showGameAlreadyStartedMessage();
+            case "ChooseNumOfPlayer" -> {
+                try {
                     gameView.playersNumberChoice();
-                }catch (IOException e) {
+                } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
-            case "InvalidNumberOfPlayers" ->{
-                try{
+            case "InvalidNumberOfPlayers" -> {
+                try {
                     gameView.invalidPlayersNumberChoice();
-                }catch (IOException e){
+                } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
-            case "LobbyNotFull" ->{
-                System.out.println("In attesa di altri giocatori...");
-            }
-
-            case "WaitForOtherPlayers" ->
-                    gameView.waitForOtherPlayers();
+            case "WaitForOtherPlayers" -> gameView.waitForOtherPlayers();
             case "MyTurn" -> {
                 gameView.showMessage("\nIt's your turn.\n");
                 myTurn();
@@ -108,33 +102,31 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
         }
     }
 
-    public void receiveCard(String messageString) throws RemoteException{
-        System.out.println("entra in receive card");
+    public void receiveCard(String messageString) throws RemoteException {
         Message message = new Message(Json.createReader(new StringReader(messageString)).readObject());
         String messageType = message.getMessageCode();
 
-        switch (messageType){
-            case "StarterCard"->{
+        switch (messageType) {
+            case "StarterCard" -> {
                 try {
                     gameView.showStarterCard(message.getStarterCard());
                     gameView.starterCardSideChoice(message.getStarterCard());
-                } catch (IOException e){
+                } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
-            case "CommonObjective" ->{
+            case "CommonObjective" -> {
                 gameView.showCommonObjectives(message.getObjectiveCards());
             }
             case "SecretObjectiveCardsOptions" -> {
                 try {
                     gameView.showSecretObjectives(message.getObjectiveCards());
                     gameView.secretObjectiveCardChoice(message.getObjectiveCards());
-                } catch (IOException e){
+                } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
-            case "StartCondition" ->{
-                System.out.println("é entrato in start condition");
+            case "StartCondition" -> {
                 gameView.setHandsMap(message.getPlayersHandsMap());
 
                 gameView.initializePlayAreas(message.getStarterCardsMap());
@@ -143,7 +135,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 gameView.showMyHand();
                 gameView.showMyPlayArea();
             }
-            case "UpdatePlayedCard" ->{
+            case "UpdatePlayedCard" -> {
                 String nickname = message.getArgument();
                 Coordinates coordinates = message.getCoordinates();
 
@@ -164,7 +156,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                     gameView.drawCard(nickname, message.getGoldCard());
                 }
             }
-            case "VisibleCards" ->{
+            case "VisibleCards" -> {
                 gameView.setVisibleResourceCards(message.getResourceCards());
                 gameView.setCoveredResourceCard(message.getPlayableCard());
                 gameView.setVisibleGoldCards(message.getGoldCards());
@@ -173,6 +165,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 gameView.showVisibleCards();
             }
             case "Scores" -> {
+                gameView.showMessage("\nCurrent scores:\n");
                 gameView.showScores(message.getScores());
             }
             case "LastRound" -> {
@@ -182,10 +175,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 gameView.showMessage("\nFinal scores:\n");
                 gameView.showScores(message.getScores());
             }
-            case "EndGame" -> {
-                gameView.showEndGame(message.getArgument());
-            }
-
+            case "EndGame" -> gameView.showEndGame(message.getArgument());
         }
     }
 

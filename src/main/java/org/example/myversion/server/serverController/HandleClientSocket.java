@@ -134,7 +134,6 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
             // This case verify the selected number of players and ank it again if necessary
             case "NumberOfPlayers" -> {
                 int numberOfPlayers = message.getNumber();
-                System.out.println("Number of players: " + numberOfPlayers);
 
                 // check the validity of the players' number
                 if (!controller.checkNumberOfPlayer(numberOfPlayers))
@@ -298,8 +297,6 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
     }
 
     public void updateClientsPlayedCard(PlayableCard playedCard, Coordinates coordinates) throws RemoteException {
-        HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
-
         String nickname = controller.getCurrentPlayer().getNickname();
 
         Message updateMessage = new Message("UpdatePlayedCard", nickname, playedCard, coordinates);
@@ -308,8 +305,6 @@ public class HandleClientSocket implements CommunicationInterface, Runnable {
     }
 
     public void updateClientsPlayedCard(GoldCard playedCard, Coordinates coordinates) throws RemoteException {
-        HashMap<String, HandleClientSocket> tcpClients = controller.getTcpClients();
-
         String nickname = controller.getCurrentPlayer().getNickname();
 
         Message updateMessage = new Message("UpdatePlayedCard", nickname, playedCard, coordinates);

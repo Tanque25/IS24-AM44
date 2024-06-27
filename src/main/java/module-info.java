@@ -4,6 +4,7 @@ module org.example.myversion {
     requires org.controlsfx.controls;
     requires jakarta.json;
     requires java.rmi;
+    requires commons.cli;
 
     opens org.example.myversion to javafx.fxml;
 
