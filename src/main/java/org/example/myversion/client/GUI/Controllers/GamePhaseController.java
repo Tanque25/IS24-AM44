@@ -167,8 +167,9 @@ public class GamePhaseController extends GUIController {
         // salva coordinate
         // invia coordinate salvate e carta al server
         yourTurn = false;
-        disableAllButtons();
         sendCoordinatesToServer();
+        disableAllButtons();
+
     }
 
     private void disableAllButtons() {
@@ -409,7 +410,6 @@ public class GamePhaseController extends GUIController {
         updatePlayerHand();
         nicknameP1.setText(gui.getClient().getNickname());
 
-
     }
 
     private List<PlayableCard> getMyHand() {
@@ -434,10 +434,8 @@ public class GamePhaseController extends GUIController {
         Image deckResource = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredResourceCard().getId() + ".png"));
         deckP.setImage(deckResource);
 
-
         Image visibleResource1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + playableCards.get(0).getId() + ".png"));
         pc01.setImage(visibleResource1);
-
 
         Image visibleResource2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + playableCards.get(1).getId() + ".png"));
         pc02.setImage(visibleResource2);
@@ -484,26 +482,6 @@ public class GamePhaseController extends GUIController {
 
 
     }
-
-    //player
-    /*public void playerHandChanged(List<PlayableCard> hand){
-            myHand.clear();
-            myHand.addAll(hand);
-            clearPlayerHand();
-            //updatePlayerHand();
-    }
-
-    public void clearPlayerHand(){
-        Platform.runLater(() -> {
-            cdf1.setImage(null);
-            cardFront2.setImage(null);
-            cardFront3.setImage(null);
-            cdb1.setImage(null);
-            cardBack2.setImage(null);
-            cardBack3.setImage(null);
-        });
-    }*/
-
 
     public void updatePlayerHand() {
         // Controlla il numero di carte nella mano e aggiorna le immagini di conseguenza
@@ -584,7 +562,7 @@ public class GamePhaseController extends GUIController {
     }
 
     public void addCardToPlayArea() {
-        Platform.runLater(() -> {
+    Platform.runLater(() -> {
             Point2D coordinates = selectedCell;
 
             ImageView cardImageView = new ImageView();
@@ -594,72 +572,8 @@ public class GamePhaseController extends GUIController {
             cardImageView.setFitHeight(yCard);
 
             gridPL.add(cardImageView, (int) coordinates.getX(), (int) coordinates.getY());
+
         });
     }
 }
 
-/*private void showPlacementOptions() {
-        List<Point2D> occupiedCells = getOccupiedCells(); // Ottieni le celle occupate
-        Set<Point2D> placementOptions = new HashSet<>();
-
-        for (Point2D cell : occupiedCells) {
-            // Controlla le celle diagonali
-            addIfValid(placementOptions, cell.add(1, 1)); // Basso-Destra
-            addIfValid(placementOptions, cell.add(-1, -1)); // Alto-Sinistra
-            addIfValid(placementOptions, cell.add(-1, 1)); // Basso-Sinistra
-            addIfValid(placementOptions, cell.add(1, -1)); // Alto-Destra
-        }
-
-        // Aggiungi bottoni alle celle di piazzamento
-        for (Point2D option : placementOptions) {
-            Button placeButton = new Button("Place");
-            placeButton.setOnMouseClicked(event -> placeCard(option));
-            gridPL.add(placeButton, (int) option.getX(), (int) option.getY());
-        }
-    }
-
-    private void addIfValid(Set<Point2D> options, Point2D cell) {
-        if (isValidCell(cell) && !isOccupied(cell)) {
-            options.add(cell);
-        }
-    }
-
-    private boolean isValidCell(Point2D cell) {
-        // Controlla che la cella sia all'interno dei limiti della griglia
-        return cell.getX() >= 0 && cell.getX() < gridPL.getColumnCount() &&
-                cell.getY() >= 0 && cell.getY() < gridPL.getRowCount();
-    }
-
-    private boolean isOccupied(Point2D cell) {
-        // Controlla se la cella è occupata
-        for (Node node : gridPL.getChildren()) {
-            if (GridPane.getColumnIndex(node) == (int) cell.getX() &&
-                    GridPane.getRowIndex(node) == (int) cell.getY()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private List<Point2D> getOccupiedCells() {
-        List<Point2D> occupiedCells = new ArrayList<>();
-        for (Node node : gridPL.getChildren()) {
-            Integer col = GridPane.getColumnIndex(node);
-            Integer row = GridPane.getRowIndex(node);
-            if (col != null && row != null) {
-                occupiedCells.add(new Point2D(col, row));
-            }
-        }
-        return occupiedCells;
-    }
-
-    private void placeCard(Point2D cell) {
-        try {
-            selectedCell = cell;
-            gridPL.getChildren().removeIf(node -> node instanceof Button); //rimuovi gli altri bottoni
-            gui.getClient().sendMessage(new Message("CardToPlayChoice", selectedCard, new Coordinates((int)cell.getX(), (int)cell.getY())));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-*/

@@ -308,7 +308,7 @@ public class GUI extends GameView{
 
         //playerHand, (secret)objectiveCards,commonObjectiveCards, deckG, deckRes,
         //gamePhaseController.playerHandChanged(hand);
-        gamePhaseController.initializeScene(secretObjectiveCard, commonObjectiveCards, visibleGoldCards, visiblePlayableCards);
+        gamePhaseController.initializeScene (secretObjectiveCard, commonObjectiveCards, visibleGoldCards, visiblePlayableCards);
 
     }
 
