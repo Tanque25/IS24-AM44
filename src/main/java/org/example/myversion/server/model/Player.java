@@ -207,6 +207,12 @@ public class Player {
         return coveredCorners;
     }
 
+    /**
+     * Checks if the player has enough stock to play the specified gold card.
+     *
+     * @param playedCard The card to be played.
+     * @throws InvalidMoveException If the player doesn't have enough stock to play the card.
+     */
     public void hasEnoughStock(GoldCard playedCard) throws InvalidMoveException {
         Resource[] cost = playedCard.getCost();
 
@@ -352,7 +358,10 @@ public class Player {
         }
     }
 
-    // This method removes the given corner content from the stock
+    /**
+     * This method removes the given corner content from the stock
+     * @param cornerContent
+     */
     private void removeFromStock(CornerContent cornerContent) {
         // Only remove from stock if the cornerContent is not an instance of CornerVisibility
         if (!(cornerContent instanceof CornerVisibility)) {

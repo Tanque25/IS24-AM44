@@ -73,6 +73,14 @@ public class GameController {
         return 1;
     }
 
+    /**
+     * Adds a player to the game.
+     * If the game is empty, the player is added to the game.
+     * If the game is not full, the player is added to the game.
+     * If the game is full, the player is added to the game and the game is started.
+     *
+     * @param nickname the nickname of the player
+     */
     public void addPlayer(String nickname) {
         if (gameIsEmpty()) {
             game.newPlayer(nickname);
@@ -94,8 +102,11 @@ public class GameController {
         return tcpClients.size() + rmiClients.size() == 1;
     }
 
+    /**
+     * Starts the game.
+     * The game is started when the number of players is equal to the number of players chosen by the first player.
+     */
     public void newGame() {
-        //game = new Game();
         gameState = GameState.INITIALIZATION;
         game.initializeGame();
         roundsPlayed = 0;
@@ -111,6 +122,11 @@ public class GameController {
         tcpClients.put(nickname, client);
     }
 
+    /**
+     * Method to check if a player is a TCP client
+     *
+     * @param nickname the nickname of the player
+     */
     public boolean isTCP(String nickname) {
         return tcpClients.containsKey(nickname);
     }
@@ -125,6 +141,11 @@ public class GameController {
         rmiClients.put(nickname, client);
     }
 
+    /**
+     * Method to check if a player is an RMI client
+     *
+     * @param nickname the nickname of the player
+     */
     public boolean isRMI(String nickname) {
         return rmiClients.containsKey(nickname);
     }
@@ -139,10 +160,21 @@ public class GameController {
         game.setPlayerSecretObjective(player, objectiveCard);
     }
 
+    /**
+     * Places the starter card on the player's play area.
+     *
+     * @param player      the player who is placing the starter card.
+     * @param starterCard the starter card to be placed.
+     */
     public void playStarterCard(Player player, StarterCard starterCard) {
         game.placeStarterCard(player, starterCard);
     }
 
+    /**
+     * Method to check if the player is in the game
+     *
+     * @param nickname the nickname of the player
+     */
     public Player getPlayerFromNickname(String nickname) {
         Player player = null;
 
@@ -154,10 +186,14 @@ public class GameController {
         return player;
     }
 
+
     public void updateReadyPlayersNumber() {
         readyPlayersNumber = readyPlayersNumber + 1;
     }
 
+    /**
+     * Method returns the current player
+     */
     public Player getCurrentPlayer() {
         return game.getCurrentPlayer();
     }
@@ -583,6 +619,9 @@ public class GameController {
         return handsMap;
     }
 
+    /**
+     * Method to get the play areas of the players
+     */
     public Map<String, Card[][]> getPlayAreasMap() {
         return playAreasMap;
     }

@@ -291,12 +291,14 @@ public class GUI extends GameView{
         List<PlayableCard> hand = Hands.get(nick);
         List<PlayableCard> handMine = Hands.entrySet().stream().filter(e -> e.getKey().equals(nick)).findFirst().get().getValue();
 
-        gamePhaseController =  new GamePhaseController();
+            gamePhaseController =  new GamePhaseController();
+            gamePhaseController.putStarterCard(starterCard);
         gamePhaseController.setGui(this);
+
+
         //playerHand, (secret)objectiveCards,commonObjectiveCards, deckG, deckRes,
         gamePhaseController.initialize(secretObjectiveCard, commonObjectiveCards, visibleGoldCards, visiblePlayableCards);
-        gamePhaseController.playerHandChanged(hand);
-        gamePhaseController.putStarterCard(starterCard);
+        //gamePhaseController.playerHandChanged(hand);
     }
 
     @Override
@@ -318,13 +320,13 @@ public class GUI extends GameView{
 
     @Override
     public void showUpdatedPlayArea(String nickname, Card[][] playArea) {
-        //
         gamePhaseController.updateScene();
     }
 
     @Override
     public void chooseCardToDraw() {
-
+        gamePhaseController.drawPhase();
+        gamePhaseController.clickOnCardToDraw();
     }
 
     @Override
