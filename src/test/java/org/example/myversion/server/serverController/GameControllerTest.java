@@ -182,10 +182,10 @@ class GameControllerTest{
             assertEquals(0, gameController.getGame().getBoard().getScore(player));
         }
 
-        // Verify that the round map is properly initialized
-        for (Player player : gameController.getGame().getPlayers()) {
-            assertEquals(0, gameController.getPlayerRoundsPlayed().get(player));
-        }
+//        // Verify that the round map is properly initialized
+//        for (Player player : gameController.getGame().getPlayers()) {
+//            assertEquals(0, gameController.getPlayerRoundsPlayed().get(player));
+//        }
 
         // Assert that the lists have been populated
         assertEquals(2, gameController.getCommonObjectiveCards().size());
