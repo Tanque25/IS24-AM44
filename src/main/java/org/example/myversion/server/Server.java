@@ -102,8 +102,7 @@ public class Server implements ServerInterface, CommunicationInterface {
                     System.err.println("Unable to load the game.");
                 }
             } else System.out.println("Starting a new game.");
-
-        }
+        } else System.out.println("No saved game has been found. Starting a new game.");
     }
 
     /**

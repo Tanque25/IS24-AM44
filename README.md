@@ -52,16 +52,14 @@ To play My Shelfie, follow these steps:
        java -jar AM13_Client_macOS.jar
         ```
 
-When launching the client, you can specify the following options (after `AM13_Client_*.jar`):
+When launching the client, you can specify the following options (after `AM44_Client_*.jar`):
 
-| Option           | Possible value(s) | Default value | Description                       |
-|------------------|:-----------------:|:-------------:|-----------------------------------|
-| `-h` or `--help` |         -         |       -       | Prints the help message and exits |
-| `-v` or `--view` |  `cli` or `gui`   |     `gui`     | Selects the view to use           |
-
-Options that require an argument must be followed by a space or an equal sign and the argument itself.
-The default values are set in the `settings.properties`
-in [src/main/resources/it/polimi/ingsw](src/main/resources/it/polimi/ingsw) folder.
+|         Option          | Possible value(s) | Default value | Description                       |
+|:-----------------------:|:-----------------:|:-------------:|-----------------------------------|
+|    `-h` or `--help`     |         -         |       -       | Prints the help message and exits |
+| `-host` or `--hostname` |     server ip     |  `localhost`  | Set the hostname                  |
+|  `-p` or `--protocol`   |  `tcp` or `rmi`   |     `tcp`     | Set the communication protocol    |
+|    `-v` or `--view`     |  `cli` or `gui`   |     `gui`     | Selects the view to use           |
 
 ## Notable Features
 
