@@ -7,8 +7,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="CodexNaturalis" />
-        <module name="MyVersion" />
         <module name="AM44" />
+        <module name="IS24-AM44" />
+        <module name="MyVersion" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
