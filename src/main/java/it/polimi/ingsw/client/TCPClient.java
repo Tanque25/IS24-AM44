@@ -223,7 +223,7 @@ public class TCPClient extends Client implements ClientCommunicationInterface {
                 gameView.showMessage("\nFinal scores:\n");
                 gameView.showScores(message.getScores());
             }
-            case "EndGame" -> {
+            case "EndGameController" -> {
                 gameView.showEndGame(message.getArgument());
             }
             case "ClientDisconnected" -> {

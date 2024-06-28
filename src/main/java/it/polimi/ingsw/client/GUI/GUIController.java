@@ -15,6 +15,10 @@ public abstract class GUIController {
     public GUIController() {
     }
 
+    public GUI getGui() {
+        return gui;
+    }
+
     public void setGui(GUI gui) {
         this.gui = gui;
     }

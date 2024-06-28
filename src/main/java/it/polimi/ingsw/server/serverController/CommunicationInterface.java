@@ -607,7 +607,7 @@ public interface CommunicationInterface extends Remote {
         } else if (controller.getGameState() == GameState.END) {
             Message finalScores = new Message("FinalScores", controller.getFinalScores());
             sendMessageToAll(finalScores);
-            Message endGame = new Message("EndGame", controller.findWinner());
+            Message endGame = new Message("EndGameController", controller.findWinner());
             sendMessageToAll(endGame);
         }
 

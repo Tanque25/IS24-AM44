@@ -1,43 +1,23 @@
 package it.polimi.ingsw.client.GUI;
 
-import javafx.animation.PauseTransition;
-import javafx.application.Platform;
-import javafx.beans.Observable;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
-import javafx.scene.Node;
 import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.CodexNaturalis;
 import it.polimi.ingsw.client.GUI.Controllers.*;
 import it.polimi.ingsw.client.view.GameView;
 import it.polimi.ingsw.messages.ChatMessage;
-import it.polimi.ingsw.server.model.Board;
-import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.decks.cards.*;
-import javafx.collections.ObservableList;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import it.polimi.ingsw.server.serverController.GameController;
-
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 //import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Node;
 import static javafx.application.Application.launch;
 
-public class GUI extends GameView {
+public class GUI extends GameView{
+
     private Client client;
     private WaitForOtherPlayersController waitForOtherPlayersController;
     private ShowCommonObjectivesController showCommonObjectivesController;
@@ -48,9 +28,10 @@ public class GUI extends GameView {
     private ChooseObjectiveController chooseObjectiveController;
     private ChosePlayerNumberController chosePlayerNumberController;
     private GamePhaseController gamePhaseController;
-    private EndGame endGameController;
+    private EndGameController endGameController;
     private PersonalPlayAreaController personalPlayAreaController;
     private ChatController chatController;
+    private Map<String, Integer> scores;
 
     private boolean playerNumberChoosen = true;
     private boolean playerStarterChosen = false;
@@ -84,11 +65,15 @@ public class GUI extends GameView {
         CodexNaturalis.setParameters(this);
     }
 
-    //private static final String GOLD_BACK_PATH = "org/example/myversion/cards_gold_back/";
-    //private static final String GOLD_FRONT_PATH = "org/example/myversion/cards_gold_front";
+    //private static final String GOLD_BACK_PATH = "it/polimi/ingsw/cards_gold_back/";
+    //private static final String GOLD_FRONT_PATH = "it/polimi/ingsw/cards_gold_front";
     @Override
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    public Map<String, Integer> getScores() {
+        return scores;
     }
 
     public void setPlayerVisibleseen(boolean playerVisibleseen) {
@@ -114,6 +99,7 @@ public class GUI extends GameView {
     public Stage getStage() {
         return stage;
     }
+
 
     public StarterCard getStarterCard() {
         return starterCard;
@@ -200,8 +186,7 @@ public class GUI extends GameView {
 
     @Override
     public void showVisibleCards(){
-        //List<PlayableCard> visiblePlayableCards = getVisibleResourceCards();
-        //List<GoldCard> visibleGoldCards = getVisibleGoldCards();
+
         if(playerStarterChosen == false){
             if (showVisibleCardsController == null) {
                 showVisibleCardsController = new ShowVisibleCardsController();
@@ -209,7 +194,9 @@ public class GUI extends GameView {
             }
             showVisibleCardsController.displayCards();
         }
-
+        if(gamePhaseController!=null){
+            gamePhaseController.updateScene();
+        }
     }
 
     @Override
@@ -289,25 +276,11 @@ public class GUI extends GameView {
 
     @Override
     public void showMyPlayArea() {
-        visibleGoldCards = getVisibleGoldCards();
-        visiblePlayableCards = getVisibleResourceCards();
-        commonObjectiveCards = getCommonObjectiveCards();
-        secretObjectiveCard = getSecretObjectiveCard();
-        starterCard = getStarterCard();
-
-        String nick = client.getNickname();
-        Map<String, List<PlayableCard>> Hands = getHandsMap();
-        List<PlayableCard> hand = Hands.get(nick);
-        List<PlayableCard> handMine = Hands.entrySet().stream().filter(e -> e.getKey().equals(nick)).findFirst().get().getValue();
-
-        gamePhaseController =  new GamePhaseController();
-        //gamePhaseController.putStarterCard(starterCard);
+        gamePhaseController = new GamePhaseController();
         gamePhaseController.setGui(this);
-
-
-        //playerHand, (secret)objectiveCards,commonObjectiveCards, deckG, deckRes,
-        //gamePhaseController.playerHandChanged(hand);
-        gamePhaseController.initializeScene (secretObjectiveCard, commonObjectiveCards, visibleGoldCards, visiblePlayableCards);
+        gamePhaseController.chargeScene();
+        //drawPhaseController = new DrawPhaseController();
+        //drawPhaseController.setGui(this);
 
     }
 
@@ -319,42 +292,42 @@ public class GUI extends GameView {
     @Override
     public void chooseCardToPlay() throws IOException {
         gamePhaseController.activateTurn();
+        gamePhaseController.gamePhase();
     }
 
     @Override
     public void invalidMove() throws IOException {
         gamePhaseController.invalidMove();
-        // riattiva le immagini per giocare
-        // alert hai sbagliato mossa
+        gamePhaseController.gamePhase();
     }
 
     @Override
     public void showUpdatedPlayArea(String nickname, Card[][] playArea) {
-        gamePhaseController.updateScene();
     }
 
     @Override
     public void chooseCardToDraw() {
+        gamePhaseController.activateDraw();
         gamePhaseController.drawPhase();
-        gamePhaseController.clickOnCardToDraw();
+
     }
 
     @Override
     public void showUpdatedHand(String nickname) {
-
     }
 
     @Override
-    public void showScores(Map<String, Integer> scores) {
+    public void showScores(Map<String, Integer> playerScores) {
+        scores = playerScores;
+        gamePhaseController.updateScene();
 
-        endGameController = new EndGame();
-        endGameController.setGui(this);
-        endGameController.showEndGame(scores);
     }
 
     @Override
     public void showEndGame(String winner) {
-
+        endGameController = new EndGameController();
+        endGameController.setGui(this);
+        endGameController.showEndGame(winner);
     }
 
 }

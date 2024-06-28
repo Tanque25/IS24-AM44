@@ -19,7 +19,8 @@ module it.polimi.ingsw {
     exports it.polimi.ingsw.server.model to java.rmi;
     exports it.polimi.ingsw.server.model.decks.cards to java.rmi;
 
-    exports it.polimi.ingsw.client.GUI to java.rmi;
-    exports it.polimi.ingsw.client.GUI.Controllers to java.rmi;
-    opens it.polimi.ingsw.client.GUI.Controllers to java.rmi;
+    exports  it.polimi.ingsw.client.GUI;
+    exports it.polimi.ingsw.client.GUI.Controllers to javafx.fxml;
+    opens it.polimi.ingsw.client.GUI.Controllers to javafx.fxml;
+
 }

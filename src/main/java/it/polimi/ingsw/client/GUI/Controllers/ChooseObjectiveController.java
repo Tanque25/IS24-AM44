@@ -54,15 +54,15 @@ public class ChooseObjectiveController extends GUIController {
     public void choseObjective(List<ObjectiveCard> objectiveCards) {
         Platform.runLater(() -> {
             try {
-                URL fxmlLocation = (new File("src/main/resources/org/example/myversion/FXML/ChooseObjectiveCard.fxml")).toURI().toURL();
+                URL fxmlLocation = (new File("src/main/resources/it/polimi/ingsw/FXML/ChooseObjectiveCard.fxml")).toURI().toURL();
                 FXMLLoader loader = new FXMLLoader(fxmlLocation);
                 loader.setController(this);
                 Parent root = loader.load();
 
-                Image img1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + objectiveCards.get(0).getId() + ".png"));
+                Image img1 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + objectiveCards.get(0).getId() + ".png"));
                 objective1.setImage(img1);
 
-                Image img2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + objectiveCards.get(1).getId() + ".png"));
+                Image img2 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + objectiveCards.get(1).getId() + ".png"));
                 objective2.setImage(img2);
 
                 gui.getStage().setTitle("Codex Naturalis");

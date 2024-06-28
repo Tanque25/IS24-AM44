@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="background" stylesheets="@../Style1.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="background" stylesheets="@../Style1.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <Button fx:id="ok" layoutX="280.0" layoutY="343.0" mnemonicParsing="false" prefWidth="40.0" text="OK" />
         <Label alignment="CENTER" contentDisplay="CENTER" layoutY="14.0" opacity="0.8" prefHeight="45.0" prefWidth="600.0" style="-fx-background-color: black;" text="THESE ARE THE COMMON OBJECTIVE CARD" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="346.66666666666663" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="14.0" />

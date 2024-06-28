@@ -47,14 +47,14 @@ public class ShowCommonObjectivesController extends GUIController {
     public void showObjectives() {
         Platform.runLater(() -> {
             try {
-                URL fxmlLocation = (new File("src/main/resources/org/example/myversion/FXML/ShowCommonObjectives.fxml")).toURI().toURL();
+                URL fxmlLocation = (new File("src/main/resources/it/polimi/ingsw/FXML/ShowCommonObjectives.fxml")).toURI().toURL();
                 FXMLLoader loader = new FXMLLoader(fxmlLocation);
                 loader.setController(this);
                 Parent root = loader.load();
 
-                Image img1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + gui.getCommonObjectiveCards().get(0).getId() + ".png"));
+                Image img1 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + gui.getCommonObjectiveCards().get(0).getId() + ".png"));
                 imageView1.setImage(img1);
-                Image img2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + gui.getCommonObjectiveCards().get(1).getId() + ".png"));
+                Image img2 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + gui.getCommonObjectiveCards().get(1).getId() + ".png"));
                 imageView2.setImage(img2);
 
                 gui.getStage().setTitle("Codex Naturalis");

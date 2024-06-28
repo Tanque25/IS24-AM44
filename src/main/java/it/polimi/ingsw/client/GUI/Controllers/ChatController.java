@@ -88,7 +88,7 @@ public class ChatController extends GUIController{
     private void chargeScene(){
         Platform.runLater( () -> {
             try {
-                URL fxmlLocation = (new File("src/main/resources/org/example/myversion/FXML/Chat.fxml")).toURI().toURL();
+                URL fxmlLocation = (new File("src/main/resources/it/polimi/ingsw/FXML/Chat.fxml")).toURI().toURL();
                 FXMLLoader loader = new FXMLLoader(fxmlLocation);
                 loader.setController(this);
                 Parent root = loader.load();

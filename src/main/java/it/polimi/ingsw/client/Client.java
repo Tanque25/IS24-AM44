@@ -193,7 +193,7 @@ public abstract class Client extends UnicastRemoteObject implements Serializable
                 gameView.showMessage("\nFinal scores:\n");
                 gameView.showScores(message.getScores());
             }
-            case "EndGame" -> gameView.showEndGame(message.getArgument());
+            case "EndGameController" -> gameView.showEndGame(message.getArgument());
             case "ClientDisconnected" -> {
                 gameView.showMessage("\nClient disconnected, ending game.\n");
                 stop();
