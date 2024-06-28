@@ -96,30 +96,6 @@ class GameControllerTest{
         });*/
 
     }
-
-    /*@Test
-    void addPlayer() {
-
-        gameController.setPlayersNumber(4);
-        gameController.addPlayer("Palacio");
-        assertEquals(1, gameController.getGame().getPlayers().size());
-        assertEquals(gameController.getGame().getPlayers().getFirst(), gameController.isFirst());
-        //assertEquals("Palacio", gameController.getFirstPlayer().getNickname());
-        gameController.addPlayer("Milito");
-        assertEquals(2, gameController.getGame().getPlayers().size());
-        assertEquals(gameController.getGame().getPlayers().get(1).getNickname(), "Milito");
-        gameController.addPlayer("Cambiasso");
-        assertEquals(3, gameController.getGame().getPlayers().size());
-        assertEquals(gameController.getGame().getPlayers().get(2).getNickname(), "Cambiasso");
-        gameController.addPlayer("Stankovic");
-        assertEquals(4, gameController.getGame().getPlayers().size());
-        assertEquals(gameController.getGame().getPlayers().getLast(), gameController.getLastPlayer());
-        assertEquals("Stankovic", gameController.getLastPlayer().getNickname());
-        gameController.addPlayer("Mancini");
-        assertEquals(4, gameController.getGame().getPlayers().size());
-
-    }*/
-
     @Test
     void availableNickname() {// Setup
         String nickname = "Giulio";
@@ -150,50 +126,6 @@ class GameControllerTest{
         assertTrue(result, "chooseNumberPlayer should return true for a valid number of players");
 
     }
-
-    /*@Test
-    void chooseNumberPlayer_caseFalse() {
-        int numPlayers = 100;
-
-        assertThrows(InvalidChoiceException.class, () -> {
-            gameController.checkNumberOfPlayer(numPlayers);
-        }, "chooseNumberPlayer should throw InvalidChoiceException for an invalid number of players");
-
-    }
-
-    @Test
-    void newGame() {
-        gameController.setGameState(GameState.LOGIN);
-        assertTrue(gameController.getGame().getCommonObjectives().isEmpty());
-        assertTrue(gameController.getGame().getVisibleResourceCards().isEmpty());
-        assertTrue(gameController.getGame().getVisibleGoldCards().isEmpty());
-
-
-        gameController.newGame();
-
-        // Verify that the game state is properly initialized
-        assertEquals(GameState.INITIALIZATION, gameController.getGameState());
-
-        // Verify that the rounds played counter is reset to 0
-        assertEquals(0, gameController.getRoundsPlayed());
-
-        // Verify that the game has been initialized
-        for (Player player : gameController.getGame().getPlayers()) {
-            assertEquals(0, gameController.getGame().getBoard().getScore(player));
-        }
-
-//        // Verify that the round map is properly initialized
-//        for (Player player : gameController.getGame().getPlayers()) {
-//            assertEquals(0, gameController.getPlayerRoundsPlayed().get(player));
-//        }
-
-        // Assert that the lists have been populated
-        assertEquals(2, gameController.getCommonObjectiveCards().size());
-        assertEquals(2, gameController.getGame().getVisibleResourceCards().size());
-        assertEquals(2, gameController.getGame().getVisibleGoldCards().size());
-
-
-    }*/
 
     @Test
     void gameIsStarted() {
@@ -228,31 +160,6 @@ class GameControllerTest{
         gameController.changeTurn();
         assertEquals("Lautaro", gameController.getGame().getCurrentPlayer().getNickname());
     }
-    /*@Test
-    void changeTurnException() {
-        gameController.setGameState(GameState.LOGIN);
-        // Verifica che il turno sia inizialmente sul primo giocatore
-        assertEquals("Pippo", gameController.getGame().getCurrentPlayer().getNickname());
-        // Verifica che venga lanciata un'eccezione quando si tenta di cambiare il turno
-        assertThrows(InvalidGameStateException.class, () -> gameController.changeTurn());
-
-    }
-
-    @Test
-    void isLastRound() {
-        gameController.setGameState(GameState.LAST_ROUND);
-        assertTrue(gameController.isLastRound());
-        gameController.setGameState(GameState.END);
-        assertFalse(gameController.isLastRound());
-    }
-
-    @Test
-    void isGameOver() {
-        gameController.setGameState(GameState.END);
-        assertTrue(gameController.isGameOver());
-        gameController.setGameState(GameState.LAST_ROUND);
-        assertFalse(gameController.isLastRound());
-    }*/
 
     @Test
     void setWinner() {
@@ -274,29 +181,6 @@ class GameControllerTest{
 
     }
 
-    /*@Test
-    public void testPlayStarterCard() {
-
-        // Aggiungiamo il giocatore al gioco:
-        assertTrue(gameController.getGame().getPlayers().isEmpty());
-        gameController.getGame().newPlayer("GiulioConiglio");
-
-        // Verifico che il giocatore sia stato aggiunto -->nopn è vuota
-        assertFalse(gameController.getGame().getPlayers().isEmpty());
-
-        // Giocatore corrente dovrebbe essere inizialmente nullo
-        assertNull(gameController.getLastPlayer());
-
-        // Aggiungo la startercard nella playa area
-        gameController.playStarterCard(gameController.getGame().getPlayers().get(0), SC_002);
-
-        // Ora verifichiamo che il giocatore corrente sia quello che ha giocato la carta iniziale
-        assertEquals("GiulioConiglio", gameController.getGame().getPlayers().get(0).getNickname());
-
-        assertEquals(SC_002,gameController.getGame().getPlayers().get(0).getPlayArea()[41][41]);
-        // Verifichiamo che lo stato del gioco sia IN_GAME dopo aver giocato la carta iniziale
-        assertEquals(GameState.LOGIN, gameController.getGameState());
-    }*/
 
     @Test
     void getLastPlayer() {
