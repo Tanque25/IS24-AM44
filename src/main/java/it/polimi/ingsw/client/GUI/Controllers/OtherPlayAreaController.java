@@ -29,11 +29,17 @@ public class OtherPlayAreaController extends GUIController {
     @FXML
     Button update;
     private Stage secondaryStage;
-
+    /**
+     * Gets the Stage used in this controller.
+     *
+     * @return the Stage.
+     */
     public Stage getSecondaryStage() {
         return secondaryStage;
     }
-
+    /**
+     * Sets the parameters and then charges the scene
+     */
     public void showPlayArea(String nickname){
         try {
             URL fxmlLocation = (new File("src/main/resources/it/polimi/ingsw/FXML/OtherPlayArea.fxml")).toURI().toURL();
@@ -58,7 +64,9 @@ public class OtherPlayAreaController extends GUIController {
             return; // Exit method if FXML loading fails
         }
     }
-
+    /**
+     * Configures the images in the GridPane representing the play area.
+     */
     public void setGridPaneImages(String nickname) {
         for (int i = 0; i < playArea.getColumnCount(); i++) {
             playArea.getColumnConstraints().get(i).setPrefWidth(100);
@@ -101,7 +109,9 @@ public class OtherPlayAreaController extends GUIController {
             }
         }
     }
-
+    /**
+     * Updates the scene
+     */
     public void update(String nickname){
         Platform.runLater(()->{
             setGridPaneImages(nickname);

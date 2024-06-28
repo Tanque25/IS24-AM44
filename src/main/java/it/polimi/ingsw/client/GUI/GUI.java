@@ -16,7 +16,10 @@ import java.util.Map;
 //import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Node;
 import static javafx.application.Application.launch;
 
-public class GUI extends GameView{
+/**
+ * GUI class that handles the graphical user interface for the game.
+ */
+public class GUI extends GameView {
 
     private Client client;
     private WaitForOtherPlayersController waitForOtherPlayersController;
@@ -48,109 +51,192 @@ public class GUI extends GameView{
     Map<String, List<PlayableCard>> playerHand;
     List<ObjectiveCard> commonObjectiveCards;
 
+    private PlayableCard selectedCard;
+
+    /**
+     * Gets the selected card.
+     *
+     * @return the selected card.
+     */
     public PlayableCard getSelectedCard() {
         return selectedCard;
     }
 
+    /**
+     * Sets the selected card.
+     *
+     * @param selectedCard the selected card to set.
+     */
     public void setSelectedCard(PlayableCard selectedCard) {
         this.selectedCard = selectedCard;
     }
 
-    private PlayableCard selectedCard;
-    //private Scene previousScene;
-
-
-
-    public GUI(){
+    /**
+     * Constructor for the GUI class.
+     */
+    public GUI() {
         CodexNaturalis.setParameters(this);
     }
-
-    //private static final String GOLD_BACK_PATH = "it/polimi/ingsw/cards_gold_back/";
-    //private static final String GOLD_FRONT_PATH = "it/polimi/ingsw/cards_gold_front";
+    /**
+     * Sets the client.
+     *
+     * @param client the selected card to set.
+     */
     @Override
     public void setClient(Client client) {
         this.client = client;
     }
 
+    /**
+     * Gets the scores of players.
+     *
+     * @return a map containing player names and their scores.
+     */
     public Map<String, Integer> getScores() {
         return scores;
     }
-
+    /**
+     * Sets the boolean that indicates if the player as seen the drawable
+     * cards at the beginning of the game.
+     *
+     * @param playerVisibleseen the selected card to set.
+     */
     public void setPlayerVisibleseen(boolean playerVisibleseen) {
         this.playerVisibleseen = playerVisibleseen;
     }
-
+    /**
+     * Sets the boolean that indicates if the player has chosen the starter
+     * card at the beginning of the game.
+     *
+     * @param playerStarterChosen the selected card to set.
+     */
     public void setPlayerStarterChosen(boolean playerStarterChosen) {
         this.playerStarterChosen = playerStarterChosen;
     }
-
+    /**
+     * Sets the boolean that indicates if the player as seen the common objective
+     * cards at the beginning of the game.
+     *
+     * @param playerObjectiveSeen the selected card to set.
+     */
     public void setPlayerObjectiveSeen(boolean playerObjectiveSeen) {
         this.playerObjectiveSeen = playerObjectiveSeen;
     }
-
+    /**
+     * Sets the boolean that indicates if the first player has chosen
+     * the number of players at the beginning of the game.
+     *
+     * @param playerNumberChoosen the selected card to set.
+     */
     public void setPlayerNumberChoosen(boolean playerNumberChoosen) {
         this.playerNumberChoosen = playerNumberChoosen;
     }
 
+    /**
+     * Gets the client instance.
+     *
+     * @return the client instance.
+     */
     public Client getClient() {
         return client;
     }
 
+    /**
+     * Gets the stage.
+     *
+     * @return the stage.
+     */
     public Stage getStage() {
         return stage;
     }
 
-
+    /**
+     * Gets the starter card.
+     *
+     * @return the starter card.
+     */
     public StarterCard getStarterCard() {
         return starterCard;
     }
 
+    /**
+     * Checks if the player starter is chosen.
+     *
+     * @return true if the player starter is chosen, false otherwise.
+     */
     public boolean isPlayerStarterChosen() {
         return playerStarterChosen;
     }
 
+    /**
+     * Gets the list of objective cards.
+     *
+     * @return the list of objective cards.
+     */
     public List<ObjectiveCard> getObjectiveCards() {
         return objectiveCards;
     }
+
+    /**
+     * Gets the list of common objective cards.
+     *
+     * @return the list of common objective cards.
+     */
     public List<ObjectiveCard> getCommonObjectiveCards() {
         return commonObjectiveCards;
     }
+
+    /**
+     * Gets the secret objective card.
+     *
+     * @return the secret objective card.
+     */
     public ObjectiveCard getSecretObjectiveCard() {
         return secretObjectiveCard;
     }
+
+    /**
+     * Sets the secret objective card.
+     *
+     * @param secretObjectiveCard the secret objective card to set.
+     */
     public void setSecretObjectiveCard(ObjectiveCard secretObjectiveCard) {
         this.secretObjectiveCard = secretObjectiveCard;
     }
-
 
     @Override
     public void start(Stage stage) throws IOException {
         this.stage = stage;
         clientLogin();
     }
+
     public static void main(String[] args) {
         launch(args);
     }
-
 
     @Override
     public void showMessage(String message) {
     }
 
-    public void showAlert(String title, String content){}
+    public void showAlert(String title, String content) {
+    }
 
     @Override
     public void startView() throws IOException {
         launch();
     }
-
+    /**
+     * Handle the login phase in the gui
+     */
     @Override
     public void clientLogin() throws IOException {
         loginController = new LoginController();
         loginController.setGui(this);
         loginController.login();
     }
-
+    /**
+     * Called when a player chose a nickname already used
+     */
     @Override
     public void showTakenUsername() {
         loginController.loginFailed();
@@ -158,10 +244,10 @@ public class GUI extends GameView{
 
     @Override
     public void showGameAlreadyStartedMessage() {
-
     }
-
-
+    /**
+     * Handle the chose of the player's number in the gui
+     */
     @Override
     public void playersNumberChoice() throws IOException {
         playerNumberChoosen = false;
@@ -172,45 +258,48 @@ public class GUI extends GameView{
 
     @Override
     public void invalidPlayersNumberChoice() throws IOException {
-
     }
-
+    /**
+     * Handle the wait for other players scene
+     */
     @Override
     public void waitForOtherPlayers() {
-        if (playerNumberChoosen){
+        if (playerNumberChoosen) {
             waitForOtherPlayersController = new WaitForOtherPlayersController();
             waitForOtherPlayersController.setGui(this);
             waitForOtherPlayersController.waitScreen();
         }
     }
-
+    /**
+     * Shows only the visible cards at the beginning of the game and
+     * update the game scene during the game phase
+     */
     @Override
-    public void showVisibleCards(){
-
-        if(playerStarterChosen == false){
+    public void showVisibleCards() {
+        if (!playerStarterChosen) {
             if (showVisibleCardsController == null) {
                 showVisibleCardsController = new ShowVisibleCardsController();
                 showVisibleCardsController.setGui(this);
             }
             showVisibleCardsController.displayCards();
         }
-        if(gamePhaseController!=null){
+        if (gamePhaseController != null) {
             gamePhaseController.updateScene();
         }
     }
-
+    /**
+     * Shows only the common objective cards at the beginning of the game
+     */
     @Override
     public void showCommonObjectives(List<ObjectiveCard> objectiveCards) {
-        if(playerStarterChosen){
+        if (playerStarterChosen) {
             showCommonObjectivesController = new ShowCommonObjectivesController();
             showCommonObjectivesController.setGui(this);
             showCommonObjectivesController.showObjectives();
-        }else{
+        } else {
             this.commonObjectiveCards = objectiveCards;
         }
     }
-
-
 
     @Override
     public void showSecretObjectives(List<ObjectiveCard> objectiveCards) {
@@ -218,34 +307,37 @@ public class GUI extends GameView{
     }
 
     // metodo che viene chiamato quando si clicca sul bottone chat
-    public void openChat(){
-        if(chatController == null){
+    public void openChat() {
+        if (chatController == null) {
             chatController = new ChatController();
             chatController.setGui(this);
         }
         chatController.showChat();
     }
+
     // metodo che viene chiamato quando si riceve un nuovo messaggio
-    public void updateChatReceive(ChatMessage message){
-        if(chatController == null){
+    public void updateChatReceive(ChatMessage message) {
+        if (chatController == null) {
             chatController = new ChatController();
             chatController.setGui(this);
         }
         chatController.updateChatReceive(message);
     }
-    public void updateChatSend(ChatMessage message){
-        if(chatController == null){
+
+    public void updateChatSend(ChatMessage message) {
+        if (chatController == null) {
             chatController = new ChatController();
             chatController.setGui(this);
         }
         chatController.updateChatSend(message);
     }
-
-
+    /**
+     * Shows two objective cards to the player and handle his choice
+     */
     @Override
     public void secretObjectiveCardChoice(List<ObjectiveCard> objectiveCards) throws IOException {
         this.objectiveCards = objectiveCards;
-        if(playerObjectiveSeen){
+        if (playerObjectiveSeen) {
             chooseObjectiveController = new ChooseObjectiveController();
             chooseObjectiveController.setGui(this);
             chooseObjectiveController.choseObjective(objectiveCards);
@@ -255,25 +347,29 @@ public class GUI extends GameView{
     @Override
     public void showStarterCard(StarterCard starterCard) {
     }
-
+    /**
+     * Shows the two sides of the starter card and handle the player choice
+     */
     @Override
     public void starterCardSideChoice(StarterCard starterCard) throws IOException {
         this.starterCard = starterCard;
-        if(playerVisibleseen){
+        if (playerVisibleseen) {
             starterCardSideController = new StarterCardSideController();
             starterCardSideController.setGui(this);
             starterCardSideController.sideChoice(starterCard);
         }
     }
 
-    public void activateChatButton(){
+    public void activateChatButton() {
     }
 
     @Override
     public void showMyHand() {
-
     }
-
+    /**
+     * Called when we pass from the setup phase to the game phase.
+     * Instanciate the gamephase controller and set up the initial scene
+     */
     @Override
     public void showMyPlayArea() {
         gamePhaseController = new GamePhaseController();
@@ -281,20 +377,22 @@ public class GUI extends GameView{
         gamePhaseController.chargeScene();
         //drawPhaseController = new DrawPhaseController();
         //drawPhaseController.setGui(this);
-
     }
 
     @Override
     public void showOthersHandsAndPlayAreas() {
-
     }
-
+    /**
+     * Called when it's the client time to play a card
+     */
     @Override
     public void chooseCardToPlay() throws IOException {
         gamePhaseController.activateTurn();
         gamePhaseController.gamePhase();
     }
-
+    /**
+     * Called when the client perform an invalid move
+     */
     @Override
     public void invalidMove() throws IOException {
         gamePhaseController.invalidMove();
@@ -304,7 +402,9 @@ public class GUI extends GameView{
     @Override
     public void showUpdatedPlayArea(String nickname, Card[][] playArea) {
     }
-
+    /**
+     * Called when it's the client time to draw a card
+     */
     @Override
     public void chooseCardToDraw() {
         gamePhaseController.activateDraw();
@@ -315,14 +415,19 @@ public class GUI extends GameView{
     @Override
     public void showUpdatedHand(String nickname) {
     }
-
+    /**
+     * Called when the client turn is finished. Updates the scoreBoard and
+     * sets up and charge the scene with the updated parameters
+     */
     @Override
     public void showScores(Map<String, Integer> playerScores) {
         scores = playerScores;
         gamePhaseController.updateScene();
 
     }
-
+    /**
+     * Called when the game is finished
+     */
     @Override
     public void showEndGame(String winner) {
         endGameController = new EndGameController();

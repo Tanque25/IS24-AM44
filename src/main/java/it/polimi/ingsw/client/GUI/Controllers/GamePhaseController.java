@@ -91,14 +91,20 @@ public class GamePhaseController extends GUIController {
     private OtherPlayAreaController otherPlayAreaController3;
 
 
-
+    /**
+     * Called when it's the player turn. Shows an alert to notify the player it's his
+     * turn to play a card and sets the yourTurn param to true
+     */
     public void activateTurn(){
         Platform.runLater(()->{
             showAlert("It's your turn", "Please make a move");
         });
         yourTurn = true;
     }
-
+    /**
+     * Called when it's the player turn. Shows an alert to notify the player it's his
+     * turn to draw a card and sets the yourDraw param to true
+     */
     public void activateDraw(){
         Platform.runLater(()->{
             showAlert("It's your turn", "Please draw a card");
@@ -107,7 +113,9 @@ public class GamePhaseController extends GUIController {
         cardDrawn = 7;
         drawingButton.setDisable(false);
     }
-
+    /**
+     * Sets the correct images and loads up the game scene.
+     */
     public void chargeScene(){
         try {
             URL fxmlLocation = (new File("src/main/resources/it/polimi/ingsw/FXML/GamePhase.fxml")).toURI().toURL();
@@ -129,18 +137,21 @@ public class GamePhaseController extends GUIController {
                 gui.getStage().show();
             });
         } catch (IOException e) {
-            e.printStackTrace();
-            return; // Exit method if FXML loading fails
+
         }
     }
-
+    /**
+     * Called when it's the player time to play a card, Allows him to effectively play it
+     */
     public void gamePhase(){
         Platform.runLater(() -> {
             setHandImages();
         });
 
     }
-
+    /**
+     * Refresh the scene by setting it up with the updated parameters
+     */
     public void updateScene(){
         Platform.runLater(()->{
             updateHandImages();
@@ -148,7 +159,10 @@ public class GamePhaseController extends GUIController {
             setScores();
         });
     }
-
+    /**
+     * Called when it's the player time to play a card, Allows him to effectively draw it
+     * and sets the updated playArea on the scene
+     */
     public void drawPhase(){
         drawingButton.setOnMouseClicked(event -> handleDrawButton());
         Platform.runLater(() -> {
@@ -156,7 +170,9 @@ public class GamePhaseController extends GUIController {
             setGridPaneImages();
         });
     }
-
+    /**
+     * Configures the images in the GridPane representing the play area.
+     */
     public void setGridPaneImages() {
         for (int i = 0; i < playArea.getColumnCount(); i++) {
             playArea.getColumnConstraints().get(i).setPrefWidth(100);
@@ -199,7 +215,10 @@ public class GamePhaseController extends GUIController {
             }
         }
     }
-
+    /**
+     * Sets the correct images for the drawable cards and sets the event
+     * that allows you to draw a card when you click on when it's your time to draw
+     */
     public void setDrawableCardsImages(){
         drawableCard1.setImage(null);
         drawableCard2.setImage(null);
@@ -223,41 +242,37 @@ public class GamePhaseController extends GUIController {
         drawableCard1.setOnMouseClicked(event -> {
             if(yourDraw){
                 cardDrawn = 4;
-                System.out.println("Carta che stai scegliendo " + cardDrawn);
             }
         });
         drawableCard2.setOnMouseClicked(event -> {
             if(yourDraw){
                 cardDrawn = 0;
-                System.out.println("Carta che stai scegliendo " + cardDrawn);
             }
         });
         drawableCard3.setOnMouseClicked(event -> {
             if(yourDraw){
                 cardDrawn = 1;
-                System.out.println("Carta che stai scegliendo " + cardDrawn);
             }
         });
         drawableCard4.setOnMouseClicked(event -> {
             if(yourDraw){
                 cardDrawn = 5;
-                System.out.println("Carta che stai scegliendo " + cardDrawn);
             }
         });
         drawableCard5.setOnMouseClicked(event -> {
             if(yourDraw){
                 cardDrawn = 2;
-                System.out.println("Carta che stai scegliendo " + cardDrawn);
             }
         });
         drawableCard6.setOnMouseClicked(event -> {
             if(yourDraw){
                 cardDrawn = 3;
-                System.out.println("Carta che stai scegliendo " + cardDrawn);
             }
         });
     }
-
+    /**
+     * Sets the correct images for the drawable cards
+     */
     public void updateDrawableCardsImages(){
         drawableCard1.setImage(null);
         drawableCard2.setImage(null);
@@ -278,7 +293,9 @@ public class GamePhaseController extends GUIController {
         Image img6 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + gui.getVisibleGoldCards().get(1).getId() + ".png"));
         drawableCard6.setImage(img6);
     }
-
+    /**
+     * Sets the correct images for the cards in your hand
+     */
     public void updateHandImages(){
         handCard1.setImage(null);
         handCard2.setImage(null);
@@ -303,7 +320,10 @@ public class GamePhaseController extends GUIController {
 
     }
 
-
+    /**
+     * Sets the correct images for the hand of the player and sets the event
+     * that allows you to play a card when you click on it during your turn
+     */
     public void setHandImages(){
         System.out.println("Your hand:");
         System.out.println(gui.getHandsMap().get(gui.getClient().getNickname()).get(1).getId());
@@ -377,7 +397,7 @@ public class GamePhaseController extends GUIController {
     }
 
     /**
-     * Method to populate adjacent cells with Buttons if they are null.
+     * Method to populate the cells with button in the correct position
      */
     public void populateAdjacentCellsWithButtons() {
         List<Pair<Integer, Integer>> positionsToAddButtons = new ArrayList<>();
@@ -392,7 +412,6 @@ public class GamePhaseController extends GUIController {
             }
         }
 
-        // Now add buttons after collecting all positions
         for (Pair<Integer, Integer> position : positionsToAddButtons) {
             int newRow = position.getKey();
             int newCol = position.getValue();
@@ -402,7 +421,9 @@ public class GamePhaseController extends GUIController {
             playArea.add(button, newCol, newRow);
         }
     }
-
+    /**
+     * Method to calculate the correct positions where you will add the button in the playArea gridPane
+     */
     private void collectCornerPositions(int row, int col, List<Pair<Integer, Integer>> positions) {
         int[] rowOffsets = {-1, -1, 1, 1};
         int[] colOffsets = {-1, 1, -1, 1};
@@ -482,7 +503,9 @@ public class GamePhaseController extends GUIController {
 
         }
     }
-
+    /**
+     * Disable all the buttons present in the gridPane
+     */
     public void disableAllButtons() {
         for (Node node : playArea.getChildren()) {
             if (node instanceof Button) {
@@ -490,14 +513,20 @@ public class GamePhaseController extends GUIController {
             }
         }
     }
-
+    /**
+     * This method is called when the server notifies you that you tried to play an invalid move.
+     * It asks you to play a new move and sets the scene to allow you to do it
+     */
     public void invalidMove(){
         Platform.runLater(()->{
             showAlert("Invalid move", "Please make a different move");
         });
         yourTurn = true;
     }
-
+    /**
+     * Called when you click on the drawing button. Check that the drawnCard is valid, send it to the server
+     * and set yourDraw to true
+     */
     public void handleDrawButton(){
         if(yourDraw){
             if (cardDrawn==7) {
@@ -505,7 +534,6 @@ public class GamePhaseController extends GUIController {
             }else{
                 try {
                     drawingButton.setDisable(true);
-                    System.out.println("Carta scelta: " + cardDrawn);
                     gui.getClient().sendMessage(new Message("CardToDrawChoice", cardDrawn));
                     yourDraw = false;
                 } catch (IOException e) {
@@ -514,7 +542,9 @@ public class GamePhaseController extends GUIController {
             }
         }
     }
-
+    /**
+     * Sets the images for the objective cards.
+     */
     private void setObjectiveImages(){
         Image img1 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + gui.getCommonObjectiveCards().get(0).getId() + ".png"));
         commonObjective1.setImage(img1);
@@ -523,7 +553,9 @@ public class GamePhaseController extends GUIController {
         Image img3 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + gui.getSecretObjectiveCard().getId() + ".png"));
         secretObjective.setImage(img3);
     }
-
+    /**
+     * Sets up the player scores in the VBox.
+     */
     private void setScores(){
         playerScores.getChildren().clear();
         Label scoreTitle = new Label();
@@ -541,6 +573,9 @@ public class GamePhaseController extends GUIController {
             }
         }
     }
+    /**
+     * Sets up the buttons for switching between play areas.
+     */
     private void setPLayAreasButtons(){
         System.out.println(gui.getHandsMap().keySet().size());
         List<String> nicknames = new ArrayList<>(gui.getHandsMap().keySet());
@@ -568,7 +603,9 @@ public class GamePhaseController extends GUIController {
             }
         }
     }
-
+    /**
+     * Charges the new stage with the playArea of the player identified by the nickname
+     */
     private void handlePlayerButtonClick1(String nickname){
         if(otherPlayAreaController1 == null){
             otherPlayAreaController1 = new OtherPlayAreaController();
@@ -581,7 +618,9 @@ public class GamePhaseController extends GUIController {
         }
 
     }
-
+    /**
+     * Charges the new stage with the playArea of the player identified by the nickname
+     */
     private void handlePlayerButtonClick2(String nickname){
         if(otherPlayAreaController2 == null){
             otherPlayAreaController2 = new OtherPlayAreaController();
@@ -593,7 +632,9 @@ public class GamePhaseController extends GUIController {
             otherPlayAreaController2.update(nickname);
         }
     }
-
+    /**
+     * Charges the new stage with the playArea of the player identified by the nickname
+     */
     private void handlePlayerButtonClick3(String nickname){
         if(otherPlayAreaController3 == null){
             otherPlayAreaController3 = new OtherPlayAreaController();
