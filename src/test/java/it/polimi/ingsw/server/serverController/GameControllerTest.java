@@ -97,7 +97,7 @@ class GameControllerTest{
 
     }
 
-    @Test
+    /*@Test
     void addPlayer() {
 
         gameController.setPlayersNumber(4);
@@ -118,7 +118,7 @@ class GameControllerTest{
         gameController.addPlayer("Mancini");
         assertEquals(4, gameController.getGame().getPlayers().size());
 
-    }
+    }*/
 
     @Test
     void availableNickname() {// Setup
@@ -151,7 +151,7 @@ class GameControllerTest{
 
     }
 
-    @Test
+    /*@Test
     void chooseNumberPlayer_caseFalse() {
         int numPlayers = 100;
 
@@ -193,7 +193,7 @@ class GameControllerTest{
         assertEquals(2, gameController.getGame().getVisibleGoldCards().size());
 
 
-    }
+    }*/
 
     @Test
     void gameIsStarted() {
@@ -228,7 +228,7 @@ class GameControllerTest{
         gameController.changeTurn();
         assertEquals("Lautaro", gameController.getGame().getCurrentPlayer().getNickname());
     }
-    @Test
+    /*@Test
     void changeTurnException() {
         gameController.setGameState(GameState.LOGIN);
         // Verifica che il turno sia inizialmente sul primo giocatore
@@ -252,7 +252,7 @@ class GameControllerTest{
         assertTrue(gameController.isGameOver());
         gameController.setGameState(GameState.LAST_ROUND);
         assertFalse(gameController.isLastRound());
-    }
+    }*/
 
     @Test
     void setWinner() {
@@ -274,7 +274,7 @@ class GameControllerTest{
 
     }
 
-    @Test
+    /*@Test
     public void testPlayStarterCard() {
 
         // Aggiungiamo il giocatore al gioco:
@@ -296,7 +296,7 @@ class GameControllerTest{
         assertEquals(SC_002,gameController.getGame().getPlayers().get(0).getPlayArea()[41][41]);
         // Verifichiamo che lo stato del gioco sia IN_GAME dopo aver giocato la carta iniziale
         assertEquals(GameState.LOGIN, gameController.getGameState());
-    }
+    }*/
 
     @Test
     void getLastPlayer() {

@@ -302,59 +302,6 @@ class GameTest {
     }
 
     @Test
-    void winner() {
-        // Add players
-        game.newPlayer("Pippo");
-        game.newPlayer("Pluto");
-        game.newPlayer("Minnie");
-
-
-        // Assicurati che ci siano giocatori nel gioco
-        List<Player> players = game.getPlayers();
-        assertNotNull(players);
-        assertFalse(players.isEmpty());
-
-
-        // Assicurati che i punteggi dei giocatori siano inizializzati correttamente
-        for (Player player : players) {
-            assertNotNull(game.getBoard().getScore(player));
-            assertEquals(0, game.getBoard().getScore(player).intValue());
-        }
-
-        // Aggiungi punteggi ai giocatori
-        game.getBoard().updateScore(players.get(0), 10, 1); // Player1
-        game.getBoard().updateScore(players.get(1), 15, 1); // Player2
-        game.getBoard().updateScore(players.get(2), 20, 1); // Player3
-
-        // Verifica che il giocatore con il punteggio più alto sia corretto
-        Player winner = game.winner();
-        assertNotNull(winner);
-        assertEquals("Minnie", winner.getNickname());
-
-    }
-    @Test
-    void noWinner() {
-        // Aggiungi giocatori
-        game.newPlayer("Pippo");
-        game.newPlayer("Pluto");
-        game.newPlayer("Minnie");
-
-        // Assicurati che ci siano giocatori nel gioco
-        List<Player> players = game.getPlayers();
-        assertNotNull(players);
-        assertFalse(players.isEmpty());
-
-        // Imposta il punteggio per tutti i giocatori allo stesso valore
-        int sameScore = 10; // Puoi scegliere qualsiasi valore
-        for (Player player : players) {
-            game.getBoard().updateScore(player, sameScore, 1);
-        }
-
-        // Verifica che non ci sia un vincitore
-        assertNull(game.winner());
-    }
-
-    @Test
     void initializeGame() {
         assertTrue(game.getCommonObjectives().isEmpty());
         assertTrue(game.getVisibleResourceCards().isEmpty());

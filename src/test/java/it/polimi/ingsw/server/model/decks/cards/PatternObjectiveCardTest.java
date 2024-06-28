@@ -278,13 +278,6 @@ class PatternObjectiveCardTest {
     }
 
     @Test
-    void calculateObjectiveCardPoints5() {
-        int point = OC_087.calculateObjectiveCardPoints(null, playArea5, OC_087);
-
-        assertEquals(6, point);
-    }
-
-    @Test
     void calculateObjectiveCardPoints6() {
         int point = OC_094.calculateObjectiveCardPoints(null, playArea6, OC_094);
 

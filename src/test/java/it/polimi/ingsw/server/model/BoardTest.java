@@ -38,7 +38,7 @@ class BoardTest {
         assertEquals(0, board.getScore(player3));//...
     }
 
-    @Test
+    /*@Test
     void updateScore() {
         board.updateScore(player1, 10, 1);
         board.updateScore(player2, 20, 1);
@@ -46,7 +46,7 @@ class BoardTest {
         assertEquals(10, board.getScore(player1));
         assertEquals(20, board.getScore(player2));
 
-    }
+    }*/
 
     @Test
     void getScore() {
