@@ -109,6 +109,22 @@ class GameTest {
 
     }
 
+    @Test
+    void testGameInitialization() {
+        // Verifica che la board sia inizializzata
+        assertNotNull(game.getBoard());
+        initializeGame();
+
+        // Verifica che le common objectives siano inizializzate
+        assertEquals(2, game.getCommonObjectives().size());
+
+        // Verifica che le visibleResourceCards siano inizializzate
+        assertEquals(2, game.getVisibleResourceCards().size());
+
+        // Verifica che le visibleGoldCards siano inizializzate
+        assertEquals(2, game.getVisibleGoldCards().size());
+    }
+
 
 
     @Test
@@ -157,7 +173,7 @@ class GameTest {
     }
 
     @Test
-    void placeStarterCard() { //verifico che la carta venga piazzata o anche i punti??
+    void placeStarterCard() { //verifico che la carta venga piazzata
         // Add players
         game.newPlayer("Pippo");
         game.newPlayer("Pluto");
@@ -209,6 +225,7 @@ class GameTest {
 
     @Test
     void getCommonObjectives() {
+        initializeGame();
         // Check that there are two initial common objective cards
         assertEquals(2, game.getCommonObjectives().size());
     }
@@ -296,6 +313,7 @@ class GameTest {
         List<Player> players = game.getPlayers();
         assertNotNull(players);
         assertFalse(players.isEmpty());
+
 
         // Assicurati che i punteggi dei giocatori siano inizializzati correttamente
         for (Player player : players) {
