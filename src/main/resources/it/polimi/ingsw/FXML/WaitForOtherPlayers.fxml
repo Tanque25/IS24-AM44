@@ -5,7 +5,7 @@
 <?import javafx.scene.shape.Arc?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="background" stylesheets="@../Style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="background" stylesheets="@../Style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label fx:id="waitingForPlayers" alignment="CENTER" contentDisplay="CENTER" layoutY="34.0" opacity="0.8" prefHeight="67.0" prefWidth="611.0" style="-fx-background-color: black;" text="Wait for other players to join the game" textAlignment="CENTER" textFill="WHITE">
          <font>

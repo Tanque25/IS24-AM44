@@ -39,7 +39,7 @@ public class WaitForOtherPlayersController extends GUIController {
     public void waitScreen() {
         Platform.runLater(() -> {
             try {
-                URL fxmlLocation = (new File("src/main/resources/org/example/myversion/FXML/WaitForOtherPlayers.fxml")).toURI().toURL();
+                URL fxmlLocation = (new File("src/main/resources/it/polimi/ingsw/FXML/WaitForOtherPlayers.fxml")).toURI().toURL();
                 FXMLLoader loader = new FXMLLoader(fxmlLocation);
                 loader.setController(this);
                 Parent root = loader.load();

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.GUI.Controllers;
 
+import it.polimi.ingsw.server.model.decks.cards.*;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
@@ -20,13 +21,10 @@ import it.polimi.ingsw.client.GUI.GUI;
 import it.polimi.ingsw.client.GUI.GUIController;
 import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.server.model.Coordinates;
-import it.polimi.ingsw.server.model.decks.cards.GoldCard;
-import it.polimi.ingsw.server.model.decks.cards.ObjectiveCard;
-import it.polimi.ingsw.server.model.decks.cards.PlayableCard;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import javafx.fxml.Initializable;
-import it.polimi.ingsw.server.model.decks.cards.StarterCard;
+import javafx.util.Pair;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,546 +32,579 @@ import java.net.URL;
 import java.util.*;
 
 public class GamePhaseController extends GUIController {
+    @FXML
+    GridPane playArea;
+    @FXML
+    Button drawCard;
+    @FXML
+    GridPane yourHand;
+    @FXML
+    GridPane cardToDraw;
+    @FXML
+    ImageView secretObjective;
+    @FXML
+    ImageView commonObjective1;
+    @FXML
+    ImageView commonObjective2;
+    @FXML
+    ImageView handCard1;
+    @FXML
+    ImageView handCard2;
+    @FXML
+    ImageView handCard3;
+    @FXML
+    ImageView handCard4;
+    @FXML
+    ImageView handCard5;
+    @FXML
+    ImageView handCard6;
+    @FXML
+    ImageView drawableCard1;
+    @FXML
+    ImageView drawableCard2;
+    @FXML
+    ImageView drawableCard3;
+    @FXML
+    ImageView drawableCard4;
+    @FXML
+    ImageView drawableCard5;
+    @FXML
+    ImageView drawableCard6;
+    @FXML
+    Button drawingButton;
+    @FXML
+    VBox playerScores;
+    @FXML
+    VBox otherPlayAreas;
+    @FXML
+    Button buttonPlayArea1;
+    @FXML
+    Button buttonPlayArea2;
+    @FXML
+    Button buttonPlayArea3;
+    private PlayableCard cardPlayed;
+    private int cardDrawn;
+    private boolean yourTurn = false;
+    private boolean yourDraw = false;
+    private OtherPlayAreaController otherPlayAreaController1;
+    private OtherPlayAreaController otherPlayAreaController2;
+    private OtherPlayAreaController otherPlayAreaController3;
 
 
-    @FXML
-    private AnchorPane mainAnchor;
-    @FXML
-    private GridPane gridPL;
-    @FXML
-    private Label nicknameP1;
-    @FXML
-    private Label yourPoints;
-    @FXML
-    private ScrollPane myPlayArea;
 
-
-    @FXML
-    private Label nicknameP2;
-    @FXML
-    private Label player2Points;
-    @FXML
-    private Pane player2Pane;
-    @FXML
-    private Pane playArea2;
-
-
-    @FXML
-    private Label nicknameP3;
-    @FXML
-    private Label player3Points;
-    @FXML
-    private Pane player3Pane;
-    @FXML
-    private Pane playArea3;
-
-
-    @FXML
-    private Label nicknameP4;
-    @FXML
-    private Label player4Points;
-    @FXML
-    private Pane player4Pane;
-    @FXML
-    private Pane playArea4;
-
-    //hand cards
-    @FXML
-    private ImageView cdf1;
-    @FXML
-    private ImageView cardFront2;
-    @FXML
-    private ImageView cardFront3;
-
-    @FXML
-    private ImageView cdb1;
-    @FXML
-    private ImageView cardBack2;
-    @FXML
-    private ImageView cardBack3;
-
-    @FXML
-    private ImageView co02;
-    @FXML
-    private ImageView co01;
-
-    @FXML
-    private ImageView co03;
-    @FXML
-    private ImageView co04;
-
-    @FXML
-    private ImageView gc01;
-    @FXML
-    private ImageView gc02;
-
-
-    @FXML
-    private ImageView pc01;
-    @FXML
-    private ImageView pc02;
-
-    @FXML
-    private ImageView deckG;
-    @FXML
-    private ImageView deckP;
-
-    //chat
-    @FXML
-    private Label labelMessage;
-    @FXML
-    private TextField messageText;
-    @FXML
-    private ListView chatList;
-
-    //important events
-    @FXML
-    private ListView importantEventsList;
-    @FXML
-    private ComboBox comboBoxMessage;
-
-    private Map<String, List<PlayableCard>> playerHand;
-    private List<ObjectiveCard> personalObjectiveCards;
-    private List<ObjectiveCard> commonObjectiveCards;
-    private List<GoldCard> goldCards;
-    private List<PlayableCard> playableCards;
-    private List<PlayableCard> myHand = new ArrayList<>();
-    private StarterCard starterCard;
-    private int xCard = 94;
-    private int yCard = 57;
-    private PlayableCard selectedCard;
-    private PlayableCard drawnCard;
-    private Point2D selectedCell;
-    private ObjectiveCard personalObjectiveCard;
-    private Boolean yourTurn = false;
-    private Boolean yourDraw = false;
-    private boolean isPlacingCard = false;
-
-
-    public GamePhaseController() {
-        super();
+    public void activateTurn(){
+        Platform.runLater(()->{
+            showAlert("It's your turn", "Please make a move");
+        });
+        yourTurn = true;
     }
 
-    //phase: choose a card to play from the hand
-    public void activateTurn() {
-        yourTurn = true;
+    public void activateDraw(){
+        Platform.runLater(()->{
+            showAlert("It's your turn", "Please draw a card");
+        });
+        yourDraw = true;
+        cardDrawn = 7;
+        drawingButton.setDisable(false);
+    }
+
+    public void chargeScene(){
+        try {
+            URL fxmlLocation = (new File("src/main/resources/it/polimi/ingsw/FXML/GamePhase.fxml")).toURI().toURL();
+            FXMLLoader loader = new FXMLLoader(fxmlLocation);
+            loader.setController(this);
+            Parent root = loader.load();
+
+            setPLayAreasButtons();
+            setScores();
+            setObjectiveImages();
+            setGridPaneImages();
+            updateHandImages();
+            setDrawableCardsImages();
+
+
+            Platform.runLater(() -> {
+                gui.getStage().setTitle("Codex Naturalis");
+                gui.getStage().setScene(new Scene(root));
+                gui.getStage().show();
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+            return; // Exit method if FXML loading fails
+        }
+    }
+
+    public void gamePhase(){
         Platform.runLater(() -> {
-            showAlert("Your turn", "Make your move");
+            setHandImages();
+        });
+
+    }
+
+    public void updateScene(){
+        Platform.runLater(()->{
+            updateHandImages();
+            updateDrawableCardsImages();
+            setScores();
         });
     }
 
-    public void clickOnButton() {
-        //Disattiva gli altri bottoni
-        // salva coordinate
-        // invia coordinate salvate e carta al server
-        yourTurn = false;
-        sendCoordinatesToServer();
-        disableAllButtons();
-
+    public void drawPhase(){
+        drawingButton.setOnMouseClicked(event -> handleDrawButton());
+        Platform.runLater(() -> {
+            updateHandImages();
+            setGridPaneImages();
+        });
     }
 
-    private void disableAllButtons() {
-        for (Node node : gridPL.getChildren()) {
-            if (node instanceof Button) {
-                node.setDisable(true);
+    public void setGridPaneImages() {
+        for (int i = 0; i < playArea.getColumnCount(); i++) {
+            playArea.getColumnConstraints().get(i).setPrefWidth(100);
+            playArea.getColumnConstraints().get(i).setMinWidth(100);
+            playArea.getColumnConstraints().get(i).setMaxWidth(100);
+        }
+        for (int i = 0; i < playArea.getRowCount(); i++) {
+            playArea.getRowConstraints().get(i).setPrefHeight(50);
+            playArea.getRowConstraints().get(i).setMinHeight(50);
+            playArea.getRowConstraints().get(i).setMaxHeight(50);
+        }
+        for (int row = 0; row < gui.getPlayAreasMap().get(gui.getClient().getNickname()).length; row++) {
+            for (int col = 0; col < gui.getPlayAreasMap().get(gui.getClient().getNickname()).length; col++) {
+                Card card = gui.getPlayAreasMap().get(gui.getClient().getNickname())[row][col];
+                if (card != null) {
+                    if(card.isPlayedBack()){
+                        Image imgFront = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_back/back" + card.getId() + ".png"));
+                        ImageView imageView = new ImageView(imgFront);
+                        double cellWidth = playArea.getColumnConstraints().get(col).getPrefWidth();
+                        double cellHeight = playArea.getRowConstraints().get(row).getPrefHeight();
+
+                        imageView.setFitWidth(cellWidth);
+                        imageView.setFitHeight(cellHeight);
+                        imageView.setPreserveRatio(true);
+                        playArea.add(imageView, col, row);
+
+                    }else{
+                        Image imgFront = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + card.getId() + ".png"));
+                        ImageView imageView = new ImageView(imgFront);
+                        double cellWidth = playArea.getColumnConstraints().get(col).getPrefWidth();
+                        double cellHeight = playArea.getRowConstraints().get(row).getPrefHeight();
+
+                        imageView.setFitWidth(cellWidth);
+                        imageView.setFitHeight(cellHeight);
+                        imageView.setPreserveRatio(true);
+                        playArea.add(imageView, col, row);
+                    }
+
+                }
             }
         }
     }
 
-    private void saveCoordinates(Point2D cell) {
-        selectedCell = cell;
+    public void setDrawableCardsImages(){
+        drawableCard1.setImage(null);
+        drawableCard2.setImage(null);
+        drawableCard3.setImage(null);
+        drawableCard4.setImage(null);
+        drawableCard5.setImage(null);
+        drawableCard6.setImage(null);
+        Image img1 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_back/back" + gui.getCoveredResourceCard().getId() + ".png"));
+        drawableCard1.setImage(img1);
+
+        Image img2 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + gui.getVisibleResourceCards().get(0).getId() + ".png"));
+        drawableCard2.setImage(img2);
+        Image img3 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + gui.getVisibleResourceCards().get(1).getId() + ".png"));
+        drawableCard3.setImage(img3);
+        Image img4 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_back/back" + gui.getCoveredGoldCard().getId() + ".png"));
+        drawableCard4.setImage(img4);
+        Image img5 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + gui.getVisibleGoldCards().get(0).getId() + ".png"));
+        drawableCard5.setImage(img5);
+        Image img6 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + gui.getVisibleGoldCards().get(1).getId() + ".png"));
+        drawableCard6.setImage(img6);
+        drawableCard1.setOnMouseClicked(event -> {
+            if(yourDraw){
+                cardDrawn = 4;
+                System.out.println("Carta che stai scegliendo " + cardDrawn);
+            }
+        });
+        drawableCard2.setOnMouseClicked(event -> {
+            if(yourDraw){
+                cardDrawn = 0;
+                System.out.println("Carta che stai scegliendo " + cardDrawn);
+            }
+        });
+        drawableCard3.setOnMouseClicked(event -> {
+            if(yourDraw){
+                cardDrawn = 1;
+                System.out.println("Carta che stai scegliendo " + cardDrawn);
+            }
+        });
+        drawableCard4.setOnMouseClicked(event -> {
+            if(yourDraw){
+                cardDrawn = 5;
+                System.out.println("Carta che stai scegliendo " + cardDrawn);
+            }
+        });
+        drawableCard5.setOnMouseClicked(event -> {
+            if(yourDraw){
+                cardDrawn = 2;
+                System.out.println("Carta che stai scegliendo " + cardDrawn);
+            }
+        });
+        drawableCard6.setOnMouseClicked(event -> {
+            if(yourDraw){
+                cardDrawn = 3;
+                System.out.println("Carta che stai scegliendo " + cardDrawn);
+            }
+        });
     }
 
-    private void sendCoordinatesToServer() {
-        try {
-            gridPL.getChildren().removeIf(node -> node instanceof Button); // Rimuovi gli altri bottoni
-            if (gui.getSelectedCard() instanceof GoldCard)
-                gui.getClient().sendMessage(new Message("CardToPlayChoice", (GoldCard)gui.getSelectedCard() , new Coordinates((int) selectedCell.getX(), (int) selectedCell.getY())));
-            else
-                gui.getClient().sendMessage(new Message("CardToPlayChoice", gui.getSelectedCard(), new Coordinates((int) selectedCell.getX(), (int) selectedCell.getY())));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void updateDrawableCardsImages(){
+        drawableCard1.setImage(null);
+        drawableCard2.setImage(null);
+        drawableCard3.setImage(null);
+        drawableCard4.setImage(null);
+        drawableCard5.setImage(null);
+        drawableCard6.setImage(null);
+        Image img1 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_back/back" + gui.getCoveredResourceCard().getId() + ".png"));
+        drawableCard1.setImage(img1);
+        Image img2 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + gui.getVisibleResourceCards().get(0).getId() + ".png"));
+        drawableCard2.setImage(img2);
+        Image img3 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + gui.getVisibleResourceCards().get(1).getId() + ".png"));
+        drawableCard3.setImage(img3);
+        Image img4 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_back/back" + gui.getCoveredGoldCard().getId() + ".png"));
+        drawableCard4.setImage(img4);
+        Image img5 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + gui.getVisibleGoldCards().get(0).getId() + ".png"));
+        drawableCard5.setImage(img5);
+        Image img6 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + gui.getVisibleGoldCards().get(1).getId() + ".png"));
+        drawableCard6.setImage(img6);
     }
 
-    public void showPlacementOptions() {
-        List<Point2D> occupiedCells = getOccupiedCells(); // Ottieni le celle occupate
-        Set<Point2D> placementOptions = new HashSet<>();
-
-        for (Point2D cell : occupiedCells) {
-            // Controlla le celle diagonali
-            addIfValid(placementOptions, cell.add(1, 1)); // Basso-Destra
-            addIfValid(placementOptions, cell.add(-1, -1)); // Alto-Sinistra
-            addIfValid(placementOptions, cell.add(-1, 1)); // Basso-Sinistra
-            addIfValid(placementOptions, cell.add(1, -1)); // Alto-Destra
+    public void updateHandImages(){
+        handCard1.setImage(null);
+        handCard2.setImage(null);
+        handCard3.setImage(null);
+        handCard4.setImage(null);
+        handCard5.setImage(null);
+        handCard6.setImage(null);
+        Image img1 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_back/back" + gui.getHandsMap().get(gui.getClient().getNickname()).getFirst().getId() + ".png"));
+        handCard1.setImage(img1);
+        Image img2 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_back/back" + gui.getHandsMap().get(gui.getClient().getNickname()).get(1).getId() + ".png"));
+        handCard2.setImage(img2);
+        Image img4 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + gui.getHandsMap().get(gui.getClient().getNickname()).getFirst().getId() + ".png"));
+        handCard4.setImage(img4);
+        Image img5 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + gui.getHandsMap().get(gui.getClient().getNickname()).get(1).getId() + ".png"));
+        handCard5.setImage(img5);
+        if(gui.getHandsMap().get(gui.getClient().getNickname()).size()==3){
+            Image img6 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + gui.getHandsMap().get(gui.getClient().getNickname()).get(2).getId() + ".png"));
+            handCard6.setImage(img6);
+            Image img3 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_back/back" + gui.getHandsMap().get(gui.getClient().getNickname()).get(2).getId() + ".png"));
+            handCard3.setImage(img3);
         }
 
-        // Aggiungi bottoni alle celle di piazzamento
-        for (Point2D option : placementOptions) {
-            Button placeButton = new Button("Place");
-            placeButton.setOnMouseClicked(event -> {
-                saveCoordinates(option); // Salva le coordinate del bottone cliccato
-                clickOnButton(); // Gestisce il click sul bottone
+    }
+
+
+    public void setHandImages(){
+        System.out.println("Your hand:");
+        System.out.println(gui.getHandsMap().get(gui.getClient().getNickname()).get(1).getId());
+        System.out.println(gui.getHandsMap().get(gui.getClient().getNickname()).get(0).getId());
+        if(gui.getHandsMap().get(gui.getClient().getNickname()).size() == 3){
+            System.out.println(gui.getHandsMap().get(gui.getClient().getNickname()).get(2).getId());
+        }
+
+        handCard1.setImage(null);
+        handCard2.setImage(null);
+        handCard3.setImage(null);
+        handCard4.setImage(null);
+        handCard5.setImage(null);
+        handCard6.setImage(null);
+        Image img1 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_back/back" + gui.getHandsMap().get(gui.getClient().getNickname()).getFirst().getId() + ".png"));
+        handCard1.setImage(img1);
+        Image img2 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_back/back" + gui.getHandsMap().get(gui.getClient().getNickname()).get(1).getId() + ".png"));
+        handCard2.setImage(img2);
+        Image img4 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + gui.getHandsMap().get(gui.getClient().getNickname()).getFirst().getId() + ".png"));
+        handCard4.setImage(img4);
+        Image img5 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + gui.getHandsMap().get(gui.getClient().getNickname()).get(1).getId() + ".png"));
+        handCard5.setImage(img5);
+        if(gui.getHandsMap().get(gui.getClient().getNickname()).size() == 3){
+            Image img6 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + gui.getHandsMap().get(gui.getClient().getNickname()).get(2).getId() + ".png"));
+            handCard6.setImage(img6);
+            Image img3 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_back/back" + gui.getHandsMap().get(gui.getClient().getNickname()).get(2).getId() + ".png"));
+            handCard3.setImage(img3);
+            handCard3.setOnMouseClicked(event -> {
+                if(yourTurn){
+                    cardPlayed = gui.getHandsMap().get(gui.getClient().getNickname()).get(2);
+                    cardPlayed.setPlayedBack(true);
+                    populateAdjacentCellsWithButtons();
+                }
             });
-            gridPL.add(placeButton, (int) option.getX(), (int) option.getY());
+            handCard6.setOnMouseClicked(event -> {
+                if(yourTurn){
+                    cardPlayed = gui.getHandsMap().get(gui.getClient().getNickname()).get(2);
+                    cardPlayed.setPlayedBack(false);
+                    populateAdjacentCellsWithButtons();
+                }
+            });
+        }
+        handCard1.setOnMouseClicked(event -> {
+            if(yourTurn){
+                cardPlayed = gui.getHandsMap().get(gui.getClient().getNickname()).getFirst();
+                cardPlayed.setPlayedBack(true);
+                populateAdjacentCellsWithButtons();
+            }
+        });
+        handCard2.setOnMouseClicked(event -> {
+            if(yourTurn){
+                cardPlayed = gui.getHandsMap().get(gui.getClient().getNickname()).get(1);
+                cardPlayed.setPlayedBack(true);
+                populateAdjacentCellsWithButtons();
+            }
+        });
+        handCard4.setOnMouseClicked(event -> {
+            if(yourTurn){
+                cardPlayed = gui.getHandsMap().get(gui.getClient().getNickname()).getFirst();
+                cardPlayed.setPlayedBack(false);
+                populateAdjacentCellsWithButtons();
+            }
+        });
+        handCard5.setOnMouseClicked(event -> {
+            if(yourTurn){
+                cardPlayed = gui.getHandsMap().get(gui.getClient().getNickname()).get(1);
+                cardPlayed.setPlayedBack(false);
+                populateAdjacentCellsWithButtons();
+            }
+        });
+    }
+
+    /**
+     * Method to populate adjacent cells with Buttons if they are null.
+     */
+    public void populateAdjacentCellsWithButtons() {
+        List<Pair<Integer, Integer>> positionsToAddButtons = new ArrayList<>();
+
+        for (Node node : playArea.getChildren()) {
+            if (node instanceof ImageView) {
+                Integer col = GridPane.getColumnIndex(node);
+                Integer row = GridPane.getRowIndex(node);
+                if (col != null && row != null) {
+                    collectCornerPositions(row, col, positionsToAddButtons);
+                }
+            }
+        }
+
+        // Now add buttons after collecting all positions
+        for (Pair<Integer, Integer> position : positionsToAddButtons) {
+            int newRow = position.getKey();
+            int newCol = position.getValue();
+
+            Button button = new Button("Click Me");
+            button.setOnAction(event -> handleButtonClick(newRow, newCol));
+            playArea.add(button, newCol, newRow);
         }
     }
 
-    private void addIfValid(Set<Point2D> options, Point2D cell) {
-        if (isValidCell(cell) && !isOccupied(cell)) {
-            options.add(cell);
+    private void collectCornerPositions(int row, int col, List<Pair<Integer, Integer>> positions) {
+        int[] rowOffsets = {-1, -1, 1, 1};
+        int[] colOffsets = {-1, 1, -1, 1};
+
+        for (int i = 0; i < rowOffsets.length; i++) {
+            int newRow = row + rowOffsets[i];
+            int newCol = col + colOffsets[i];
+
+            if (isValidCell(newRow, newCol) && !isCellOccupied(newRow, newCol)) {
+                positions.add(new Pair<>(newRow, newCol));
+            }
         }
     }
 
-    private boolean isValidCell(Point2D cell) {
-        // Controlla che la cella sia all'interno dei limiti della griglia
-        return cell.getX() >= 0 && cell.getX() < gridPL.getColumnCount() &&
-                cell.getY() >= 0 && cell.getY() < gridPL.getRowCount();
+    /**
+     * Adds buttons to the cells around a specific ImageView located at (row, col) in the GridPane.
+     * @param row The row index of the ImageView.
+     * @param col The column index of the ImageView.
+     */
+    private void addButtonsAroundImageView(int row, int col) {
+        int[] rowOffsets = {-1, -1, -1, 0, 0, 1, 1, 1};
+        int[] colOffsets = {-1, 0, 1, -1, 1, -1, 0, 1};
+
+        for (int i = 0; i < rowOffsets.length; i++) {
+            int newRow = row + rowOffsets[i];
+            int newCol = col + colOffsets[i];
+
+            if (isValidCell(newRow, newCol) && !isCellOccupied(newRow, newCol)) {
+                Button button = new Button("Click Me");
+                button.setOnAction(event -> handleButtonClick(newRow, newCol));
+                playArea.add(button, newCol, newRow);
+            }
+        }
     }
 
-    private boolean isOccupied(Point2D cell) {
-        // Controlla se la cella è occupata
-        for (Node node : gridPL.getChildren()) {
-            if (GridPane.getColumnIndex(node) == (int) cell.getX() &&
-                    GridPane.getRowIndex(node) == (int) cell.getY()) {
+    /**
+     * Checks if the specified cell (row, col) is within the bounds of the GridPane.
+     * @param row The row index of the cell.
+     * @param col The column index of the cell.
+     * @return True if the cell is within bounds, false otherwise.
+     */
+    private boolean isValidCell(int row, int col) {
+        return row >= 0 && row < 81 && col >= 0 && col < 81;
+    }
+
+    /**
+     * Checks if the specified cell (row, col) is already occupied by an ImageView.
+     * @param row The row index of the cell.
+     * @param col The column index of the cell.
+     * @return True if the cell is occupied, false otherwise.
+     */
+    private boolean isCellOccupied(int row, int col) {
+        for (Node node : playArea.getChildren()) {
+            Integer nodeRow = GridPane.getRowIndex(node);
+            Integer nodeCol = GridPane.getColumnIndex(node);
+            if (nodeRow != null && nodeRow == row && nodeCol != null && nodeCol == col && node instanceof ImageView) {
                 return true;
             }
         }
         return false;
     }
 
-    private List<Point2D> getOccupiedCells() {
-        List<Point2D> occupiedCells = new ArrayList<>();
-        for (Node node : gridPL.getChildren()) {
-            Integer col = GridPane.getColumnIndex(node);
-            Integer row = GridPane.getRowIndex(node);
-            if (col != null && row != null) {
-                occupiedCells.add(new Point2D(col, row));
-            }
-        }
-        return occupiedCells;
-    }
-
-    public void invalidMove() {
-        yourTurn = true;
-        Platform.runLater(() -> {
-            showAlert("Invalid move", "Please make another move");
-        });
-    }
-
-    public void updateScene() {
-        addCardToPlayArea();
-        Platform.runLater(() -> {
-
-            try {
-                URL fxmlLocation = getClass().getResource("/org/example/myversion/FXML/GamePhase.fxml");
-                FXMLLoader loader = new FXMLLoader(fxmlLocation);
-                loader.setController(this);
-                Parent root = loader.load();
-
-                // Aggiungiamo la carta alle coordinate che ci siamo salvati nel gridpane
-
-                initializeGameScene(personalObjectiveCard, commonObjectiveCards, goldCards, playableCards);
-
-                gui.getStage().setTitle("Codex Naturalis");
-                gui.getStage().setScene(new Scene(root));
-                gui.getStage().show();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    public void drawPhase() {
-        yourDraw = true;
-    }
-
-    public void clickOnCardToDraw() {
-        if (yourDraw) {
-            // Quando clicchi su una carta aggiorni myhand
-            clickOnCardToD();
-            // Mandi al server cosa hai pescato
-            try {
-                gui.getClient().sendMessage(new Message("CardToDrawChoice", drawnCard));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            Platform.runLater(() -> {
-                try {
-                    URL fxmlLocation = getClass().getResource("/org/example/myversion/FXML/GamePhase.fxml");
-                    FXMLLoader loader = new FXMLLoader(fxmlLocation);
-                    loader.setController(this);
-                    Parent root = loader.load();
-
-                    initializeGameScene(personalObjectiveCard, commonObjectiveCards, goldCards, playableCards);
-
-                    gui.getStage().setTitle("Codex Naturalis");
-                    gui.getStage().setScene(new Scene(root));
-                    gui.getStage().show();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
-        }
-    }
-
-    public void clickOnCardToD() {
-        gc01.setOnMouseClicked(event -> {
-            drawnCard = goldCards.get(0);
-            myHand.add(drawnCard);
-        });
-
-        gc02.setOnMouseClicked(event -> {
-            drawnCard = goldCards.get(1);
-            myHand.add(drawnCard);
-        });
-        pc01.setOnMouseClicked(event -> {
-            drawnCard = playableCards.get(0);
-            myHand.add(drawnCard);
-        });
-        pc02.setOnMouseClicked(event -> {
-            drawnCard = playableCards.get(1);
-            myHand.add(drawnCard);
-        });
-        deckG.setOnMouseClicked(event -> {
-            drawnCard = gui.getCoveredGoldCard();
-            myHand.add(drawnCard);
-        });
-        deckP.setOnMouseClicked(event -> {
-            drawnCard = gui.getCoveredResourceCard();
-            myHand.add(drawnCard);
-        });
-    }
-
     /**
-     * Initialize the game scene
-     *
-     * @param personalObjectiveCard
-     * @param commonObjectiveCards
-     * @param goldCards
-     * @param playableCards
+     * Handles the action when a button is clicked.
+     * @param row The row index of the button.
+     * @param col The column index of the button.
      */
-    public void initializeScene(ObjectiveCard personalObjectiveCard, List<ObjectiveCard> commonObjectiveCards, List<GoldCard> goldCards, List<PlayableCard> playableCards) {
-        Platform.runLater(() -> {
-            try {
-                URL fxmlLocation = getClass().getResource("/org/example/myversion/FXML/GamePhase.fxml");
-                FXMLLoader loader = new FXMLLoader(fxmlLocation);
-                loader.setController(this);
-                Parent root = loader.load();
+    private void handleButtonClick(int row, int col) {
+        try{
+            yourTurn = false;
+            disableAllButtons();
+            if (cardPlayed instanceof GoldCard)
+                gui.getClient().sendMessage(new Message("CardToPlayChoice", (GoldCard) cardPlayed, new Coordinates(row, col)));
+            else
+                gui.getClient().sendMessage(new Message("CardToPlayChoice", cardPlayed, new Coordinates(row, col)));
+        }catch(IOException e){
 
-                gridPL.setMinSize((81 * xCard), (81 * yCard));
-                gridPL.setMaxSize((81 * xCard), (81 * yCard));
+        }
+    }
 
-                for (int i = 0; i < 81; i++) {
-                    ColumnConstraints column = new ColumnConstraints();
-                    column.setPercentWidth(100 / 81);
-                    gridPL.getColumnConstraints().add(column);
+    public void disableAllButtons() {
+        for (Node node : playArea.getChildren()) {
+            if (node instanceof Button) {
+                node.setDisable(true);
+            }
+        }
+    }
 
-                    RowConstraints row = new RowConstraints();
-                    row.setPercentHeight(100 / 81);
-                    gridPL.getRowConstraints().add(row);
-                    updatePlayerHand();
+    public void invalidMove(){
+        Platform.runLater(()->{
+            showAlert("Invalid move", "Please make a different move");
+        });
+        yourTurn = true;
+    }
+
+    public void handleDrawButton(){
+        if(yourDraw){
+            if (cardDrawn==7) {
+                Platform.runLater(()-> showAlert("Invalid drawing", "Please selct a card before drawing"));
+            }else{
+                try {
+                    drawingButton.setDisable(true);
+                    System.out.println("Carta scelta: " + cardDrawn);
+                    gui.getClient().sendMessage(new Message("CardToDrawChoice", cardDrawn));
+                    yourDraw = false;
+                } catch (IOException e) {
 
                 }
-                putStarterCard(gui.getStarterCard());
-                initializeGameScene(personalObjectiveCard, commonObjectiveCards, goldCards, playableCards);
-
-                this.personalObjectiveCard = personalObjectiveCard;
-                gui.getStage().setTitle("Codex Naturalis");
-                gui.getStage().setScene(new Scene(root));
-                gui.getStage().show();
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-        });
+        }
     }
 
-
-    public void initializeGameScene(ObjectiveCard personalObjectiveCard, List<ObjectiveCard> commonObjectiveCards, List<GoldCard> goldCards, List<PlayableCard> playableCards) {
-
-        //Common Objective
-        Image CommonObjective1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + gui.getCommonObjectiveCards().get(0).getId() + ".png"));
-        co01.setImage(CommonObjective1);
-        Image CommonObjective2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + gui.getCommonObjectiveCards().get(1).getId() + ".png"));
-        co02.setImage(CommonObjective2);
-
-        //Personal Objective
-        Image PersonalObjective1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + gui.getSecretObjectiveCard().getId() + ".png"));
-        co03.setImage(PersonalObjective1);
-
-        this.goldCards = goldCards;
-        updateGoldCards();
-
-        this.playableCards = playableCards;
-        updatePlayableCards();
-
-        updatePlayerHand();
-        nicknameP1.setText(gui.getClient().getNickname());
-
+    private void setObjectiveImages(){
+        Image img1 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + gui.getCommonObjectiveCards().get(0).getId() + ".png"));
+        commonObjective1.setImage(img1);
+        Image img2 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + gui.getCommonObjectiveCards().get(1).getId() + ".png"));
+        commonObjective2.setImage(img2);
+        Image img3 = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + gui.getSecretObjectiveCard().getId() + ".png"));
+        secretObjective.setImage(img3);
     }
 
-    private List<PlayableCard> getMyHand() {
-        return myHand;
+    private void setScores(){
+        playerScores.getChildren().clear();
+        Label scoreTitle = new Label();
+        scoreTitle.setPrefSize(100, 20);
+        scoreTitle.setText("Scores: ");
+        playerScores.getChildren().add(scoreTitle);
+        if(gui.getScores()!=null){
+            for (String nickname : gui.getScores().keySet()) {
+                Label scoreLabel = new Label();
+
+                scoreLabel.setPrefSize(100, 20);
+                scoreLabel.setText(nickname + ": " + gui.getScores().get(nickname));
+
+                playerScores.getChildren().add(scoreLabel);
+            }
+        }
+    }
+    private void setPLayAreasButtons(){
+        System.out.println(gui.getHandsMap().keySet().size());
+        List<String> nicknames = new ArrayList<>(gui.getHandsMap().keySet());
+        nicknames.remove(gui.getClient().getNickname());
+        switch (gui.getHandsMap().keySet().size()) {
+            case 2 -> {
+                buttonPlayArea1.setText(nicknames.getFirst());
+                buttonPlayArea1.setOnAction(event -> handlePlayerButtonClick1(nicknames.getFirst()));
+                otherPlayAreas.getChildren().removeAll(buttonPlayArea2, buttonPlayArea3);
+            }
+            case 3 -> {
+                buttonPlayArea1.setText(nicknames.getFirst());
+                buttonPlayArea1.setOnAction(event -> handlePlayerButtonClick1(nicknames.getFirst()));
+                buttonPlayArea2.setText(nicknames.get(1));
+                buttonPlayArea2.setOnAction(event -> handlePlayerButtonClick1(nicknames.get(1)));
+                otherPlayAreas.getChildren().remove(buttonPlayArea3);
+            }
+            case 4 -> {
+                buttonPlayArea1.setText(nicknames.getFirst());
+                buttonPlayArea1.setOnAction(event -> handlePlayerButtonClick1(nicknames.getFirst()));
+                buttonPlayArea2.setText(nicknames.get(1));
+                buttonPlayArea2.setOnAction(event -> handlePlayerButtonClick1(nicknames.get(1)));
+                buttonPlayArea2.setText(nicknames.get(2));
+                buttonPlayArea2.setOnAction(event -> handlePlayerButtonClick1(nicknames.get(2)));
+            }
+        }
     }
 
-    private void updateGoldCards() {
-        //Gold cards
-        Image deckGold = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredGoldCard().getId() + ".png"));
-        deckG.setImage(deckGold);
-
-        Image visibleGold1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + goldCards.get(0).getId() + ".png"));
-        gc01.setImage(visibleGold1);
-
-        Image visibleGold2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + goldCards.get(1).getId() + ".png"));
-        gc02.setImage(visibleGold2);
-
-    }
-
-    private void updatePlayableCards() {
-        //Playable cards
-        Image deckResource = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + gui.getCoveredResourceCard().getId() + ".png"));
-        deckP.setImage(deckResource);
-
-        Image visibleResource1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + playableCards.get(0).getId() + ".png"));
-        pc01.setImage(visibleResource1);
-
-        Image visibleResource2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + playableCards.get(1).getId() + ".png"));
-        pc02.setImage(visibleResource2);
-    }
-
-
-    //StarterCard
-    public void putStarterCard(StarterCard starterCard) {
-
-        this.starterCard = starterCard;
-        ImageView imgStarterCard = new ImageView();
-
-        if (starterCard.isPlayedBack()) {
-            Image imgBack = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + starterCard.getId() + ".png"));
-            imgStarterCard.setImage(imgBack);
-        } else {
-            Image imgFront = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + starterCard.getId() + ".png"));
-            imgStarterCard.setImage(imgFront);
+    private void handlePlayerButtonClick1(String nickname){
+        if(otherPlayAreaController1 == null){
+            otherPlayAreaController1 = new OtherPlayAreaController();
+            otherPlayAreaController1.setGui(getGui());
+        }
+        if(otherPlayAreaController1.getSecondaryStage()==null){
+            otherPlayAreaController1.showPlayArea(nickname);
+        }else{
+            otherPlayAreaController1.update(nickname);
         }
 
-        imgStarterCard.setPreserveRatio(true);
-        imgStarterCard.setFitWidth(xCard);
-        imgStarterCard.setFitHeight(yCard);
-
-
-        gridPL.add(imgStarterCard, 41, 41);
-
-
-                /*myPlayArea.layout();
-                double gridWidth = gridPL.getWidth();
-                double gridHeight = gridPL.getHeight();
-                double viewportWidth = myPlayArea.getViewportBounds().getWidth();
-                double viewportHeight = myPlayArea.getViewportBounds().getHeight();
-
-                // Adjust offsets
-                double horizontalOffset = xCard * 3;
-                double verticalOffset = yCard * 9 ;
-
-                double hValue = (40 * xCard - viewportWidth / 2 + horizontalOffset) / (gridWidth - viewportWidth);
-                double vValue = (40 * yCard - viewportHeight / 2 + verticalOffset) / (gridHeight - viewportHeight);
-
-                myPlayArea.setHvalue(hValue);
-                myPlayArea.setVvalue(vValue);*/
-
-
     }
 
-    public void updatePlayerHand() {
-        // Controlla il numero di carte nella mano e aggiorna le immagini di conseguenza
-        myHand = gui.getHandsMap().get(gui.getClient().getNickname());
-        Image cardFront1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + myHand.get(0).getId() + ".png"));
-        cdf1.setImage(cardFront1);
-        Image cardBack1 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + myHand.get(0).getId() + ".png"));
-        cdb1.setImage(cardBack1);
-        Image cdf2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + myHand.get(1).getId() + ".png"));
-        cardFront2.setImage(cdf2);
-        Image cdb2 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + myHand.get(1).getId() + ".png"));
-        cardBack2.setImage(cdb2);
-        Image cdf3 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + myHand.get(2).getId() + ".png"));
-        cardFront3.setImage(cdf3);
-        Image cdb3 = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + myHand.get(2).getId() + ".png"));
-        cardBack3.setImage(cdb3);
-
-        cdf1.setOnMouseClicked(event -> {
-            if (yourTurn) {
-                gui.setSelectedCard(myHand.get(0));
-                //selectedCard = myHand.get(0);
-                gui.getSelectedCard().setPlayedBack(false);
-                //myHand.remove(selectedCard);
-                //playerHandChanged(new ArrayList<>(myHand));
-                showPlacementOptions();
-            }
-        });
-        cdb1.setOnMouseClicked(event -> {
-            if (yourTurn) {
-                gui.setSelectedCard(myHand.get(0));
-                //selectedCard = myHand.get(0);
-                gui.getSelectedCard().setPlayedBack(true);
-                //myHand.remove(selectedCard);
-                //playerHandChanged(new ArrayList<>(myHand));
-                showPlacementOptions();
-            }
-        });
-        cardFront2.setOnMouseClicked(event -> {
-            if (yourTurn) {
-                gui.setSelectedCard(myHand.get(1));
-                //selectedCard = myHand.get(1);
-                gui.getSelectedCard().setPlayedBack(false);
-                //myHand.remove(selectedCard);
-                //playerHandChanged(new ArrayList<>(myHand));
-                showPlacementOptions();
-            }
-        });
-        cardBack2.setOnMouseClicked(event -> {
-            if (yourTurn) {
-                gui.setSelectedCard(myHand.get(1));
-                //selectedCard = myHand.get(1);
-                gui.getSelectedCard().setPlayedBack(true);
-                //myHand.remove(selectedCard);
-                //playerHandChanged(new ArrayList<>(myHand));
-                showPlacementOptions();
-            }
-        });
-        cardFront3.setOnMouseClicked(event -> {
-            if (yourTurn) {
-                gui.setSelectedCard(myHand.get(2));
-                //selectedCard = myHand.get(2);
-                gui.getSelectedCard().setPlayedBack(false);
-                //myHand.remove(selectedCard);
-                //playerHandChanged(new ArrayList<>(myHand));
-                showPlacementOptions();
-            }
-        });
-        cardBack3.setOnMouseClicked(event -> {
-            if (yourTurn) {
-                gui.setSelectedCard(myHand.get(2));
-                //selectedCard = myHand.get(2);
-                gui.getSelectedCard().setPlayedBack(true);
-                //myHand.remove(selectedCard);
-                //playerHandChanged(new ArrayList<>(myHand));
-                showPlacementOptions();
-            }
-        });
+    private void handlePlayerButtonClick2(String nickname){
+        if(otherPlayAreaController2 == null){
+            otherPlayAreaController2 = new OtherPlayAreaController();
+            otherPlayAreaController2.setGui(getGui());
+        }
+        if(otherPlayAreaController2.getSecondaryStage()==null){
+            otherPlayAreaController2.showPlayArea(nickname);
+        }else{
+            otherPlayAreaController2.update(nickname);
+        }
     }
 
-    public void addCardToPlayArea() {
-    Platform.runLater(() -> {
-            Point2D coordinates = selectedCell;
+    private void handlePlayerButtonClick3(String nickname){
+        if(otherPlayAreaController3 == null){
+            otherPlayAreaController3 = new OtherPlayAreaController();
+            otherPlayAreaController3.setGui(getGui());
+        }
+        if(otherPlayAreaController3.getSecondaryStage()==null){
+            otherPlayAreaController3.showPlayArea(nickname);
+        }else{
+            otherPlayAreaController3.update(nickname);
+        }
 
-            ImageView cardImageView = new ImageView();
-            Image cardImage = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + gui.getSelectedCard().getId() + ".png"));
-            cardImageView.setImage(cardImage);
-            cardImageView.setFitWidth(xCard);
-            cardImageView.setFitHeight(yCard);
-
-            gridPL.add(cardImageView, (int) coordinates.getX(), (int) coordinates.getY());
-
-        });
     }
 }
 

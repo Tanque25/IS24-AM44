@@ -45,9 +45,9 @@ public class CodexNaturalis {
             System.exit(0);
         }
 
-        String modeType = line.getOptionValue("view", "cli");
+        String modeType = line.getOptionValue("view", "gui");
         hostname = line.getOptionValue("hostname", "localhost"); // default to localhost if not provided
-        communicationProtocol = line.getOptionValue("protocol", "rmi"); // default to TCP if not provided
+        communicationProtocol = line.getOptionValue("protocol", "tcp"); // default to TCP if not provided
 
         switch (modeType) {
             case "cli" -> gameView = new CLIView();

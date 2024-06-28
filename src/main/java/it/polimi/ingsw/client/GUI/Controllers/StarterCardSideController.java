@@ -58,14 +58,14 @@ public class StarterCardSideController extends GUIController {
     public void sideChoice(StarterCard starterCard) {
         Platform.runLater(() -> {
             try {
-                URL fxmlLocation = (new File("src/main/resources/org/example/myversion/FXML/StarterCardSide.fxml")).toURI().toURL();
+                URL fxmlLocation = (new File("src/main/resources/it/polimi/ingsw/FXML/StarterCardSide.fxml")).toURI().toURL();
                 FXMLLoader loader = new FXMLLoader(fxmlLocation);
                 loader.setController(this);
                 Parent root = loader.load();
 
-                Image imgFront = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_front/front" + starterCard.getId() + ".png"));
+                Image imgFront = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_front/front" + starterCard.getId() + ".png"));
                 imgViewFront.setImage(imgFront);
-                Image imgBack = new Image(getClass().getResourceAsStream("/org/example/myversion/Images/cards_gold_back/back" + starterCard.getId() + ".png"));
+                Image imgBack = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/Images/cards_gold_back/back" + starterCard.getId() + ".png"));
                 imgViewBack.setImage(imgBack);
 
                 gui.getStage().setTitle("Codex Naturalis");
