@@ -53,20 +53,20 @@ public class LoginController extends GUIController {
      * Sets up the login GUI and displays the corresponding scene.
      */
     public void login() {
-        Platform.runLater(() -> {
             try {
                 URL fxmlLocation = (new File("src/main/resources/it/polimi/ingsw/FXML/Login.fxml")).toURI().toURL();
                 FXMLLoader loader = new FXMLLoader(fxmlLocation);
                 loader.setController(this);
                 Parent root = loader.load();
-                gui.getStage().setTitle("Codex Naturalis");
-                gui.getStage().setScene(new Scene(root));
-                gui.getStage().show();
+                Platform.runLater(()->{
+                    gui.getStage().setTitle("Codex Naturalis");
+                    gui.getStage().setScene(new Scene(root));
+                    gui.getStage().show();
+                });
             } catch (IOException e) {
                 e.printStackTrace();
             }
             connect.setOnMouseClicked(event -> handleLogin());
-        });
     }
 
     /**
@@ -74,15 +74,17 @@ public class LoginController extends GUIController {
      * and allowing the client to send another one to the server
      */
     public void loginFailed() {
-        Platform.runLater(() -> {
             try {
                 URL fxmlLocation = (new File("src/main/resources/it/polimi/ingsw/FXML/Login.fxml")).toURI().toURL();
                 FXMLLoader loader = new FXMLLoader(fxmlLocation);
                 loader.setController(this);
                 Parent root = loader.load();
-                gui.getStage().setTitle("Codex Naturalis");
-                gui.getStage().setScene(new Scene(root));
-                gui.getStage().show();
+                Platform.runLater(()->
+                {
+                    gui.getStage().setTitle("Codex Naturalis");
+                    gui.getStage().setScene(new Scene(root));
+                    gui.getStage().show();
+                });
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -91,7 +93,6 @@ public class LoginController extends GUIController {
                 handleLogin();
                 gui.waitForOtherPlayers();
             });
-        });
     }
 
 }
