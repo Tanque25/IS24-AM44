@@ -433,7 +433,7 @@ public class GameController {
 
     public boolean checkScores() {
         for (Player player : game.getPlayers()) {
-            if (game.getBoard().getScore(player) >= 1) {
+            if (game.getBoard().getScore(player) >= 20) {
                 return true;
             }
         }

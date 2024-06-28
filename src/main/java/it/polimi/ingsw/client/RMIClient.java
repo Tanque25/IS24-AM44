@@ -16,6 +16,11 @@ public class RMIClient extends Client implements ClientCommunicationInterface {
     private Registry registry;
     private CommunicationInterface server;
 
+    /**
+     * Constructor for the RMIClient.
+     * @param hostname
+     * @throws RemoteException RMI Exception
+     */
     public RMIClient(String hostname) throws RemoteException {
         super();
 
@@ -37,11 +42,8 @@ public class RMIClient extends Client implements ClientCommunicationInterface {
         server = (CommunicationInterface) registry.lookup("CommunicationInterface");
     }
 
-    /**
+   /**
      * Sends a message to the server.
-     *
-     * @param message the message to send.
-     * @throws IOException if the message send fails.
      */
     @Override
     public void sendMessage(Message message) {
@@ -56,6 +58,10 @@ public class RMIClient extends Client implements ClientCommunicationInterface {
         }
     }
 
+    /**
+     * Sends a chat message to the server.
+     * @param message The message to send.
+     */
     @Override
     public void sendChatMessage(ChatMessage message) {
         try {
@@ -66,6 +72,9 @@ public class RMIClient extends Client implements ClientCommunicationInterface {
         }
     }
 
+    /**
+     * Starts the game.
+     */
     @Override
     public void startGame() throws RemoteException {
 

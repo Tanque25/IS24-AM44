@@ -45,8 +45,8 @@ public class CodexNaturalis {
             System.exit(0);
         }
 
-        String modeType = line.getOptionValue("view", "gui");
-        hostname = line.getOptionValue("hostname", "192.168.191.218"); // default to localhost if not provided
+        String modeType = line.getOptionValue("view", "cli");
+        hostname = line.getOptionValue("hostname", "localhost"); // default to localhost if not provided
         communicationProtocol = line.getOptionValue("protocol", "tcp"); // default to TCP if not provided
 
         switch (modeType) {

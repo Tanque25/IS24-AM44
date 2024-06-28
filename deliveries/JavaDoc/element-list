@@ -1,0 +1,15 @@
+module:it.polimi.ingsw
+it.polimi.ingsw.client
+it.polimi.ingsw.client.chatClient
+it.polimi.ingsw.client.GUI
+it.polimi.ingsw.client.GUI.Controllers
+it.polimi.ingsw.client.view
+it.polimi.ingsw.messages
+it.polimi.ingsw.server
+it.polimi.ingsw.server.ChatServer
+it.polimi.ingsw.server.model
+it.polimi.ingsw.server.model.decks
+it.polimi.ingsw.server.model.decks.cards
+it.polimi.ingsw.server.model.enumerations
+it.polimi.ingsw.server.model.exceptions
+it.polimi.ingsw.server.serverController

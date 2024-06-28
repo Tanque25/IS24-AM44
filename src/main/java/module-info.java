@@ -23,4 +23,7 @@ module it.polimi.ingsw {
     exports it.polimi.ingsw.client.GUI.Controllers to javafx.fxml;
     opens it.polimi.ingsw.client.GUI.Controllers to javafx.fxml;
 
+    exports it.polimi.ingsw.client.chatClient;
+    exports it.polimi.ingsw.server.model.enumerations;
+    exports it.polimi.ingsw.server.model.exceptions;
 }
