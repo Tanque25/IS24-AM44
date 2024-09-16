@@ -1,4 +1,6 @@
 # IS24-AM44
+This project is a Java-based implementation of the table game "Codex Naturalis", developed as the Final Project for the 2023/2024 Software Engineering course at Politecnico di Milano.
+The final rating was 27/30.
 
 Members of the group:
 
